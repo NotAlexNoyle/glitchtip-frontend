@@ -139,22 +139,10 @@
         <target>Pour activer les rapports d&apos;utilisateurs, consultez `showReportDialog` dans le SDK JS.</target>
       </segment>
     </unit>
-    <unit id="6722197117273372334">
-      <segment state="translated">
-        <source>Reopen</source>
-        <target>Rouvrir</target>
-      </segment>
-    </unit>
     <unit id="2454050363478003966">
       <segment state="translated">
         <source>Login</source>
         <target>Connexion</target>
-      </segment>
-    </unit>
-    <unit id="2481283412904907364">
-      <segment state="translated">
-        <source>Support GlitchTip</source>
-        <target>Soutenir GlitchTip</target>
       </segment>
     </unit>
     <unit id="2907070106267329067">
@@ -193,12 +181,6 @@
         <target>Votre mot de passe est nécessaire pour vous connecter</target>
       </segment>
     </unit>
-    <unit id="6312371663219634282">
-      <segment state="translated">
-        <source>Mark as resolved</source>
-        <target>Marquer comme résolu</target>
-      </segment>
-    </unit>
     <unit id="4053112335752964687">
       <segment state="translated">
         <source>Add Project</source>
@@ -227,12 +209,6 @@
       <segment state="translated">
         <source>Account</source>
         <target>Compte</target>
-      </segment>
-    </unit>
-    <unit id="4539315091720234670">
-      <segment state="translated">
-        <source>Multi-factor Authentication</source>
-        <target>Authentification multifacteur</target>
       </segment>
     </unit>
     <unit id="4736017430891007987">
@@ -277,9 +253,9 @@
         <target>Réinitialiser le mot de passe</target>
       </segment>
     </unit>
-    <unit id="1240739868347418586">
-      <segment state="translated">
-        <source>Ignore</source>
+    <unit id="4679371106199891013">
+      <segment state="initial">
+        <source>Ignored</source>
         <target>Ignorer</target>
       </segment>
     </unit>
@@ -481,12 +457,6 @@
         <target>Cette alerte n&apos;est envoyée nulle part. Sélectionnez &quot;Ajouter un destinataire d&apos;alerte&quot; ci-dessous pour commencer.</target>
       </segment>
     </unit>
-    <unit id="8525090520605150470">
-      <segment state="translated">
-        <source>Once you have the app running, proceed to the next step.</source>
-        <target>Une fois l&apos;application en cours d&apos;exécution, passez à l&apos;étape suivante.</target>
-      </segment>
-    </unit>
     <unit id="8597728355047941352">
       <segment state="translated">
         <source>New Alert</source>
@@ -523,46 +493,16 @@
         <target>Commencer</target>
       </segment>
     </unit>
-    <unit id="2876784140114247021">
-      <segment state="translated">
-        <source>or your favorite TOTP app on your mobile device</source>
-        <target>ou votre application TOTP préférée sur votre appareil mobile</target>
-      </segment>
-    </unit>
-    <unit id="1738896816778317550">
-      <segment state="initial">
-        <source>Download </source>
-        <target>Télécharger</target>
-      </segment>
-    </unit>
-    <unit id="7822329547663295003">
-      <segment state="initial">
-        <source>Make your account more secure by requiring a time-based one time password (TOTP) code after you log in.</source>
-        <target>Sécurisez votre compte en exigeant un mot de passe à usage unique basé sur le temps (TOTP) après vous être connecté.</target>
-      </segment>
-    </unit>
     <unit id="3885497195825665706">
       <segment state="translated">
         <source>Next</source>
         <target>Suivant</target>
       </segment>
     </unit>
-    <unit id="3971398713275316255">
-      <segment state="translated">
-        <source>Enable TOTP</source>
-        <target>Activer TOTP</target>
-      </segment>
-    </unit>
-    <unit id="4071496549933477149">
-      <segment state="translated">
-        <source>6-digit Code</source>
-        <target>Code à 6 chiffres</target>
-      </segment>
-    </unit>
-    <unit id="2726971803372813135">
+    <unit id="3677937541764740600">
       <segment state="initial">
-        <source>Scan the QR Code in your authenticator app or enter the code below:</source>
-        <target>Scannez le code QR dans votre application d&apos;authentification ou saisissez le code ci-dessous :</target>
+        <source>6-digit code</source>
+        <target>Code à 6 chiffres</target>
       </segment>
     </unit>
     <unit id="5995673810894749629">
@@ -571,52 +511,16 @@
         <target>Le code doit être composé de 6 chiffres</target>
       </segment>
     </unit>
-    <unit id="641978626769494466">
-      <segment state="translated">
-        <source>TOTP authentication</source>
-        <target>Authentification TOTP</target>
-      </segment>
-    </unit>
     <unit id="7156742322731584028">
       <segment state="translated">
         <source>Disable TOTP</source>
         <target>Désactiver TOTP</target>
       </segment>
     </unit>
-    <unit id="7830120603266316643">
-      <segment state="translated">
-        <source>TOTP authentication is currently enabled on your account.</source>
-        <target>L&apos;authentification TOTP est actuellement activée sur votre compte.</target>
-      </segment>
-    </unit>
-    <unit id="291649817233009176">
-      <segment state="initial">
-        <source>Enter a six-digit password generated by your authenticator app and submit this form to enable TOTP authentication:</source>
-        <target>Entrez un mot de passe à six chiffres généré par votre application d&apos;authentification et validez ce formulaire pour activer l&apos;authentification TOTP :</target>
-      </segment>
-    </unit>
     <unit id="520980174761118864">
       <segment state="initial">
         <source>Log in with <ph id="0" equiv="INTERPOLATION" disp="{{ socialApp.name }}"/></source>
         <target>Se connecter avec <ph id="0" equiv="INTERPOLATION" disp="{{ socialApp.name }}"/></target>
-      </segment>
-    </unit>
-    <unit id="5715233980836936433">
-      <segment state="initial">
-        <source>Donate <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot; href=&quot;https://liberapay.com/GlitchTip/donate&quot; &gt;" dispEnd="&lt;/a&gt;"> via Liberapay </pc></source>
-        <target>Donate <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot; href=&quot;https://liberapay.com/GlitchTip/donate&quot; &gt;" dispEnd="&lt;/a&gt;"> via Liberapay </pc></target>
-      </segment>
-    </unit>
-    <unit id="5349000458605027240">
-      <segment state="initial">
-        <source> Switch to <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a target=&quot;_blank&quot; rel=&quot;noopener&quot; href=&quot;https://app.glitchtip.com/register?utm_medium=website&amp;utm_source=glitchtip&amp;utm_campaign=selfhost_nagware&quot; &gt;" dispEnd="&lt;/a &gt;">Hosted GlitchTip</pc></source>
-        <target> Switch to <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a target=&quot;_blank&quot; rel=&quot;noopener&quot; href=&quot;https://app.glitchtip.com/register?utm_medium=website&amp;utm_source=glitchtip&amp;utm_campaign=selfhost_nagware&quot; &gt;" dispEnd="&lt;/a &gt;">Hosted GlitchTip</pc></target>
-      </segment>
-    </unit>
-    <unit id="3509639242131814864">
-      <segment state="initial">
-        <source> Purchase support: <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;mailto:support@glitchtip.com?subject=Purchase support inquiry&quot; &gt;" dispEnd="&lt;/a &gt;">support@glitchtip.com</pc></source>
-        <target> Purchase support: <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;mailto:support@glitchtip.com?subject=Purchase support inquiry&quot; &gt;" dispEnd="&lt;/a &gt;">support@glitchtip.com</pc></target>
       </segment>
     </unit>
     <unit id="1830742686550996935">
@@ -657,26 +561,8 @@
     </unit>
     <unit id="177080935354192505">
       <segment state="initial">
-        <source>If you go to this project&apos;s <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a [routerLink]=&quot;[ &apos;/&apos;, activeOrganizationSlug(), &apos;settings&apos;, &apos;projects&apos;, activeProjectSlug(), ]&quot; &gt;" dispEnd="&lt;/a &gt;"> settings page</pc>, you can pick a platform. If you do, you&apos;ll get more specific instructions about how to get started. </source>
-        <target>If you go to this project&apos;s <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a [routerLink]=&quot;[ &apos;/&apos;, activeOrganizationSlug(), &apos;settings&apos;, &apos;projects&apos;, activeProjectSlug(), ]&quot; &gt;" dispEnd="&lt;/a &gt;"> settings page</pc>, you can pick a platform. If you do, you&apos;ll get more specific instructions about how to get started. </target>
-      </segment>
-    </unit>
-    <unit id="4739937000925855165">
-      <segment state="initial">
-        <source>Most instructions will have a spot that says &quot;YOUR-GLITCHTIP-DSN-HERE&quot;. Copy the DSN and paste it into that spot.</source>
-        <target>Most instructions will have a spot that says &quot;YOUR-GLITCHTIP-DSN-HERE&quot;. Copy the DSN and paste it into that spot.</target>
-      </segment>
-    </unit>
-    <unit id="5874780279351956748">
-      <segment state="initial">
-        <source>What&apos;s this all about?</source>
-        <target>What&apos;s this all about?</target>
-      </segment>
-    </unit>
-    <unit id="6481795403650848876">
-      <segment state="initial">
-        <source>This page is showing instructions on how to connect GlitchTip to your project based on the platform you specified.</source>
-        <target>This page is showing instructions on how to connect GlitchTip to your project based on the platform you specified.</target>
+        <source>If you go to this project&apos;s <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a data-cy=&quot;platform-settings-link&quot; [routerLink]=&quot;[ &apos;/&apos;, activeOrganizationSlug(), &apos;settings&apos;, &apos;projects&apos;, activeProjectSlug(), ]&quot; &gt;" dispEnd="&lt;/a &gt;"> settings page</pc>, you can pick a platform. If you do, you&apos;ll get more specific instructions about how to get started. </source>
+        <target>If you go to this project&apos;s <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a data-cy=&quot;platform-settings-link&quot; [routerLink]=&quot;[ &apos;/&apos;, activeOrganizationSlug(), &apos;settings&apos;, &apos;projects&apos;, activeProjectSlug(), ]&quot; &gt;" dispEnd="&lt;/a &gt;"> settings page</pc>, you can pick a platform. If you do, you&apos;ll get more specific instructions about how to get started. </target>
       </segment>
     </unit>
     <unit id="5448343062628656309">
@@ -689,12 +575,6 @@
       <segment state="initial">
         <source>Try changing your search parameters to get something to show here.</source>
         <target>Try changing your search parameters to get something to show here.</target>
-      </segment>
-    </unit>
-    <unit id="1002135012519641907">
-      <segment state="initial">
-        <source>You have multiple projects selected. Select a single project to learn more about why there&apos;s nothing here.</source>
-        <target>You have multiple projects selected. Select a single project to learn more about why there&apos;s nothing here.</target>
       </segment>
     </unit>
     <unit id="4388879716045736175">
@@ -763,36 +643,6 @@
         <target>By deleting your project, you will lose all associated data. This cannot be undone.</target>
       </segment>
     </unit>
-    <unit id="5729418620241283277">
-      <segment state="initial">
-        <source>Events</source>
-        <target>Events</target>
-      </segment>
-    </unit>
-    <unit id="848861324662209850">
-      <segment state="initial">
-        <source>Events are the unit of measure for tracking GlitchTip usage. An organization&apos;s maximum number of events per month is determined by its subscription type. Events are used to measure four GlitchTip features:</source>
-        <target>Events are the unit of measure for tracking GlitchTip usage. An organization&apos;s maximum number of events per month is determined by its subscription type. Events are used to measure four GlitchTip features:</target>
-      </segment>
-    </unit>
-    <unit id="7350070325817798539">
-      <segment state="initial">
-        <source><pc id="0" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">Issues:</pc> Each occurrence of an event reported to GlitchTip</source>
-        <target><pc id="0" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">Issues:</pc> Each occurrence of an event reported to GlitchTip</target>
-      </segment>
-    </unit>
-    <unit id="4605329245463156030">
-      <segment state="initial">
-        <source><pc id="0" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">Performance:</pc> Each time your app sends GlitchTip a transaction report for a tracked activity on your app</source>
-        <target><pc id="0" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">Performance:</pc> Each time your app sends GlitchTip a transaction report for a tracked activity on your app</target>
-      </segment>
-    </unit>
-    <unit id="44869671307620538">
-      <segment state="initial">
-        <source><pc id="0" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">Releases:</pc> Each megabyte of file storage is counted as an event</source>
-        <target><pc id="0" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">Releases:</pc> Each megabyte of file storage is counted as an event</target>
-      </segment>
-    </unit>
     <unit id="7819314041543176992">
       <segment state="initial">
         <source>Close</source>
@@ -811,46 +661,16 @@
         <target>In order to use GlitchTip, you&apos;ll need to create an organization.</target>
       </segment>
     </unit>
-    <unit id="6960036943669975538">
+    <unit id="2959157372543624146">
       <segment state="initial">
-        <source>Create new project in <ph id="0" equiv="INTERPOLATION" disp="{{ organization.name }}"/></source>
-        <target>Create new project in <ph id="0" equiv="INTERPOLATION" disp="{{ organization.name }}"/></target>
-      </segment>
-    </unit>
-    <unit id="1935221132513179654">
-      <segment state="initial">
-        <source>Error tracking</source>
-        <target>Error tracking</target>
-      </segment>
-    </unit>
-    <unit id="2336062695979702768">
-      <segment state="initial">
-        <source>Unlimited projects</source>
-        <target>Unlimited projects</target>
-      </segment>
-    </unit>
-    <unit id="6204819636508367774">
-      <segment state="initial">
-        <source>Unlimited team members</source>
-        <target>Unlimited team members</target>
+        <source>Create new project in <ph id="0" equiv="INTERPOLATION" disp="{{ organization.name }}"/> </source>
+        <target>Create new project in <ph id="0" equiv="INTERPOLATION" disp="{{ organization.name }}"/> </target>
       </segment>
     </unit>
     <unit id="4894116049835995028">
       <segment state="initial">
         <source>Questions about subscriptions? Need assistance, or a bigger plan? Contact us at <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;mailto:{{ billingEmail }}&quot;&gt;" dispEnd="&lt;/a &gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ billingEmail }}"/></pc>.</source>
         <target>Questions about subscriptions? Need assistance, or a bigger plan? Contact us at <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;mailto:{{ billingEmail }}&quot;&gt;" dispEnd="&lt;/a &gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ billingEmail }}"/></pc>.</target>
-      </segment>
-    </unit>
-    <unit id="2506462652585445837">
-      <segment state="initial">
-        <source>You have selected the free plan. Please consider making a monthly <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;https://liberapay.com/GlitchTip/donate&quot; target=&quot;_blank&quot; &gt;" dispEnd="&lt;/a &gt;">donation</pc> to help keep open source development sustainable. Thank you for choosing GlitchTip!</source>
-        <target>You have selected the free plan. Please consider making a monthly <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;https://liberapay.com/GlitchTip/donate&quot; target=&quot;_blank&quot; &gt;" dispEnd="&lt;/a &gt;">donation</pc> to help keep open source development sustainable. Thank you for choosing GlitchTip!</target>
-      </segment>
-    </unit>
-    <unit id="1109945939275542736">
-      <segment state="initial">
-        <source>This organization has an active subscription to GlitchTip. Thank you!</source>
-        <target>This organization has an active subscription to GlitchTip. Thank you!</target>
       </segment>
     </unit>
     <unit id="5363625141068095814">
@@ -863,78 +683,6 @@
       <segment state="initial">
         <source>This organization has a subscription to GlitchTip, but the payment is past due.</source>
         <target>This organization has a subscription to GlitchTip, but the payment is past due.</target>
-      </segment>
-    </unit>
-    <unit id="5028777105388019087">
-      <segment state="initial">
-        <source>Details</source>
-        <target>Details</target>
-      </segment>
-    </unit>
-    <unit id="4996538950129944353">
-      <segment state="initial">
-        <source>Issue events:</source>
-        <target>Issue events:</target>
-      </segment>
-    </unit>
-    <unit id="105639553198587677">
-      <segment state="initial">
-        <source>Uptime events:</source>
-        <target>Uptime events:</target>
-      </segment>
-    </unit>
-    <unit id="2333988009900140990">
-      <segment state="initial">
-        <source>Performance events:</source>
-        <target>Performance events:</target>
-      </segment>
-    </unit>
-    <unit id="6168919365016053724">
-      <segment state="initial">
-        <source>File storage:</source>
-        <target>File storage:</target>
-      </segment>
-    </unit>
-    <unit id="1651520185990416775">
-      <segment state="initial">
-        <source>Total <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a [routerLink]=&quot;[]&quot; (click)=&quot;openEventInfoDialog()&quot; &gt;" dispEnd="&lt;/a &gt;">events</pc> used in billing period: <ph id="1" equiv="INTERPOLATION" disp="{{ count.total }}"/> </source>
-        <target>Total <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a [routerLink]=&quot;[]&quot; (click)=&quot;openEventInfoDialog()&quot; &gt;" dispEnd="&lt;/a &gt;">events</pc> used in billing period: <ph id="1" equiv="INTERPOLATION" disp="{{ count.total }}"/> </target>
-      </segment>
-    </unit>
-    <unit id="1098433909560821849">
-      <segment state="initial">
-        <source>Start date for this plan: <ph id="0" equiv="INTERPOLATION" disp="{{ subscription.startDate | date }}"/></source>
-        <target>Start date for this plan: <ph id="0" equiv="INTERPOLATION" disp="{{ subscription.startDate | date }}"/></target>
-      </segment>
-    </unit>
-    <unit id="1219619838898772490">
-      <segment state="initial">
-        <source>Plan cost: <ph id="0" equiv="INTERPOLATION" disp="{{ subscription.effectivePrice | currency }}"/></source>
-        <target>Plan cost: <ph id="0" equiv="INTERPOLATION" disp="{{ subscription.effectivePrice | currency }}"/></target>
-      </segment>
-    </unit>
-    <unit id="5875130684997376720">
-      <segment state="initial">
-        <source>Billing</source>
-        <target>Billing</target>
-      </segment>
-    </unit>
-    <unit id="810888510148304696">
-      <segment state="initial">
-        <source>Automatic</source>
-        <target>Automatic</target>
-      </segment>
-    </unit>
-    <unit id="2432384855929218388">
-      <segment state="initial">
-        <source>Send invoice</source>
-        <target>Send invoice</target>
-      </segment>
-    </unit>
-    <unit id="5618100320383468888">
-      <segment state="initial">
-        <source>Billing period: <ph id="0" equiv="INTERPOLATION" disp="{{ subscription.currentPeriodStart | date }}"/> to <ph id="1" equiv="INTERPOLATION_1" disp="{{ subscription.currentPeriodEnd | date }}"/></source>
-        <target>Billing period: <ph id="0" equiv="INTERPOLATION" disp="{{ subscription.currentPeriodStart | date }}"/> to <ph id="1" equiv="INTERPOLATION_1" disp="{{ subscription.currentPeriodEnd | date }}"/></target>
       </segment>
     </unit>
     <unit id="7486830422791899026">
@@ -1061,12 +809,6 @@
       <segment state="initial">
         <source>Other Teams</source>
         <target>Other Teams</target>
-      </segment>
-    </unit>
-    <unit id="9153853260021860021">
-      <segment state="initial">
-        <source>If you ever lose access to your codes, you can recover your account with your <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">backup codes</pc>.</source>
-        <target>If you ever lose access to your codes, you can recover your account with your <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">backup codes</pc>.</target>
       </segment>
     </unit>
     <unit id="8951128623878467862">
@@ -1303,12 +1045,6 @@
         <target>Unable to log in with provided credentials.</target>
       </segment>
     </unit>
-    <unit id="4591000937604211863">
-      <segment state="initial">
-        <source>500 Server Error</source>
-        <target>500 Server Error</target>
-      </segment>
-    </unit>
     <unit id="960665565485640516">
       <segment state="initial">
         <source>Something went wrong</source>
@@ -1393,12 +1129,6 @@
         <target>Your new password has been saved.</target>
       </segment>
     </unit>
-    <unit id="1944173575291952346">
-      <segment state="initial">
-        <source>Supports Slack, Microsoft Teams, Rocket.Chat, and more</source>
-        <target>Supports Slack, Microsoft Teams, Rocket.Chat, and more</target>
-      </segment>
-    </unit>
     <unit id="7135122203377475337">
       <segment state="initial">
         <source>Use only letters, numbers, underscores and/or hyphens</source>
@@ -1421,18 +1151,6 @@
       <segment state="initial">
         <source>Documentation</source>
         <target>Documentation</target>
-      </segment>
-    </unit>
-    <unit id="451200972202964504">
-      <segment state="initial">
-        <source>Show all checks</source>
-        <target>Show all checks</target>
-      </segment>
-    </unit>
-    <unit id="6735249038962761269">
-      <segment state="initial">
-        <source>Show incidents</source>
-        <target>Show incidents</target>
       </segment>
     </unit>
     <unit id="8316175416734096923">
@@ -1495,28 +1213,10 @@
         <target>Device activation was unsuccessful.</target>
       </segment>
     </unit>
-    <unit id="4663796819689603423">
-      <segment state="initial">
-        <source>Regenerate backup codes</source>
-        <target>Regenerate backup codes</target>
-      </segment>
-    </unit>
-    <unit id="4622788799334711424">
-      <segment state="initial">
-        <source>If you have lost your backup codes you can generate new ones, invalidating all previous codes. <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">Print out these new codes or save them someplace safe.</pc></source>
-        <target>If you have lost your backup codes you can generate new ones, invalidating all previous codes. <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">Print out these new codes or save them someplace safe.</pc></target>
-      </segment>
-    </unit>
     <unit id="6430072333383968514">
       <segment state="initial">
         <source>Regenerate codes</source>
         <target>Regenerate codes</target>
-      </segment>
-    </unit>
-    <unit id="2167241020391967059">
-      <segment state="initial">
-        <source>Download or copy a list of backup codes. If you ever lose your phone, each of these recovery codes can be used one time to regain access to your account. <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">Print them out or save them someplace safe.</pc></source>
-        <target>Download or copy a list of backup codes. If you ever lose your phone, each of these recovery codes can be used one time to regain access to your account. <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">Print them out or save them someplace safe.</pc></target>
       </segment>
     </unit>
     <unit id="3099741642167775297">
@@ -1529,12 +1229,6 @@
       <segment state="initial">
         <source>Copy</source>
         <target>Copy</target>
-      </segment>
-    </unit>
-    <unit id="2617201451708142937">
-      <segment state="initial">
-        <source>Enter one of the backup codes to confirm that you have saved them:</source>
-        <target>Enter one of the backup codes to confirm that you have saved them:</target>
       </segment>
     </unit>
     <unit id="305233477996347721">
@@ -1637,10 +1331,10 @@
         <target>Enter an integer greater than 0.</target>
       </segment>
     </unit>
-    <unit id="5718859187781924335">
+    <unit id="6159412721278290372">
       <segment state="initial">
-        <source>in <ph id="0" equiv="INTERPOLATION" disp="{{ projectFormTimespan.value | i18nPlural: minutesI18nMapping }}"/>, send an alert.</source>
-        <target>in <ph id="0" equiv="INTERPOLATION" disp="{{ projectFormTimespan.value | i18nPlural: minutesI18nMapping }}"/>, send an alert.</target>
+        <source><ph id="0" equiv="INTERPOLATION" disp="{{ projectFormTimespan.value | i18nPlural: minutesI18nMapping }}"/>, send an alert.</source>
+        <target><ph id="0" equiv="INTERPOLATION" disp="{{ projectFormTimespan.value | i18nPlural: minutesI18nMapping }}"/>, send an alert.</target>
       </segment>
     </unit>
     <unit id="2342149656142683501">
@@ -2015,10 +1709,10 @@
         <target>Success: Your recipient has been deleted</target>
       </segment>
     </unit>
-    <unit id="8592656378036261137">
+    <unit id="5791228471722946494">
       <segment state="initial">
-        <source>Your project has been sucessfully deleted</source>
-        <target>Your project has been sucessfully deleted</target>
+        <source>Your project has been successfully deleted</source>
+        <target>Your project has been successfully deleted</target>
       </segment>
     </unit>
     <unit id="7589121772315788199">
@@ -2055,6 +1749,1122 @@
       <segment state="initial">
         <source>There was an error retrieving your uptime monitors.</source>
         <target>There was an error retrieving your uptime monitors.</target>
+      </segment>
+    </unit>
+    <unit id="7890820056892966789">
+      <segment state="initial">
+        <source>A confirmation email has been sent to <ph id="0" equiv="PH" disp="email"/>.</source>
+        <target>A confirmation email has been sent to <ph id="0" equiv="PH" disp="email"/>.</target>
+      </segment>
+    </unit>
+    <unit id="29705931015876576">
+      <segment state="initial">
+        <source>Could not delete account. Delete or transfer ownership of all organizations you are the owner of before deleting your user account.</source>
+        <target>Could not delete account. Delete or transfer ownership of all organizations you are the owner of before deleting your user account.</target>
+      </segment>
+    </unit>
+    <unit id="4158049716505128655">
+      <segment state="initial">
+        <source>There was an error deleting your account. Please try again.</source>
+        <target>There was an error deleting your account. Please try again.</target>
+      </segment>
+    </unit>
+    <unit id="4487118624061086799">
+      <segment state="initial">
+        <source>500: Internal server error. Please refresh the page and try again.</source>
+        <target>500: Internal server error. Please refresh the page and try again.</target>
+      </segment>
+    </unit>
+    <unit id="5148439736793042731">
+      <segment state="initial">
+        <source> copy for AI </source>
+        <target> copy for AI </target>
+      </segment>
+    </unit>
+    <unit id="2213303907290585549">
+      <segment state="initial">
+        <source>Copied. You can also connect your agent directly via MCP to pull this event, its related logs, and traces live instead of pasting.</source>
+        <target>Copied. You can also connect your agent directly via MCP to pull this event, its related logs, and traces live instead of pasting.</target>
+      </segment>
+    </unit>
+    <unit id="3735103420734835435">
+      <segment state="initial">
+        <source>Set up MCP</source>
+        <target>Set up MCP</target>
+      </segment>
+    </unit>
+    <unit id="6859680602069910119">
+      <segment state="initial">
+        <source>Copied for AI</source>
+        <target>Copied for AI</target>
+      </segment>
+    </unit>
+    <unit id="2669293632677878810">
+      <segment state="initial">
+        <source>Resolved in</source>
+        <target>Resolved in</target>
+      </segment>
+    </unit>
+    <unit id="1532927315362442004">
+      <segment state="initial">
+        <source>Issue will be resolved as of release <ph id="0" equiv="PH" disp="resolvedInRelease"/>.</source>
+        <target>Issue will be resolved as of release <ph id="0" equiv="PH" disp="resolvedInRelease"/>.</target>
+      </segment>
+    </unit>
+    <unit id="8675226376965769343">
+      <segment state="initial">
+        <source>Issue resolved. No release was found to tie it to.</source>
+        <target>Issue resolved. No release was found to tie it to.</target>
+      </segment>
+    </unit>
+    <unit id="3394127703705208683">
+      <segment state="initial">
+        <source>To start using GlitchTip, you need to:</source>
+        <target>To start using GlitchTip, you need to:</target>
+      </segment>
+    </unit>
+    <unit id="6737001230921582501">
+      <segment state="initial">
+        <source>Install the sentry SDK for your platform into your project.</source>
+        <target>Install the sentry SDK for your platform into your project.</target>
+      </segment>
+    </unit>
+    <unit id="7951009620799507577">
+      <segment state="initial">
+        <source>Configure it with your <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">DSN</pc> (Data Source Name) so it knows where to send events. Your DSN is shown on this page, and can also be found in your project&apos;s settings.</source>
+        <target>Configure it with your <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">DSN</pc> (Data Source Name) so it knows where to send events. Your DSN is shown on this page, and can also be found in your project&apos;s settings.</target>
+      </segment>
+    </unit>
+    <unit id="5916134442795352001">
+      <segment state="initial">
+        <source>Initialize the SDK early in your application&apos;s startup.</source>
+        <target>Initialize the SDK early in your application&apos;s startup.</target>
+      </segment>
+    </unit>
+    <unit id="198471031488977990">
+      <segment state="initial">
+        <source>General Configuration</source>
+        <target>General Configuration</target>
+      </segment>
+    </unit>
+    <unit id="3318523364772817208">
+      <segment state="initial">
+        <source>Most SDKs support these options:</source>
+        <target>Most SDKs support these options:</target>
+      </segment>
+    </unit>
+    <unit id="8048591278687742899">
+      <segment state="initial">
+        <source><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">dsn</pc> — Where to send event data. Found in GlitchTip under project settings.</source>
+        <target><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">dsn</pc> — Where to send event data. Found in GlitchTip under project settings.</target>
+      </segment>
+    </unit>
+    <unit id="1985492201537719447">
+      <segment state="initial">
+        <source><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">release</pc> — Your application version (e.g., <pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">&quot;1.0.0&quot;</pc>). Helps track which releases introduce errors.</source>
+        <target><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">release</pc> — Your application version (e.g., <pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">&quot;1.0.0&quot;</pc>). Helps track which releases introduce errors.</target>
+      </segment>
+    </unit>
+    <unit id="5409298298706299891">
+      <segment state="initial">
+        <source><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">environment</pc> — The running environment name (e.g., <pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">&quot;production&quot;</pc>, <pc id="2" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">&quot;staging&quot;</pc>).</source>
+        <target><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">environment</pc> — The running environment name (e.g., <pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">&quot;production&quot;</pc>, <pc id="2" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">&quot;staging&quot;</pc>).</target>
+      </segment>
+    </unit>
+    <unit id="6607541293183686120">
+      <segment state="initial">
+        <source><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">traces_sample_rate</pc> — Sample rate for performance transactions (<pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">0.0</pc> to <pc id="2" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">1.0</pc>). Use a low value like <pc id="3" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">0.01</pc> (1%) in production to save disk space.</source>
+        <target><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">traces_sample_rate</pc> — Sample rate for performance transactions (<pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">0.0</pc> to <pc id="2" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">1.0</pc>). Use a low value like <pc id="3" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">0.01</pc> (1%) in production to save disk space.</target>
+      </segment>
+    </unit>
+    <unit id="8246537847392930078">
+      <segment state="initial">
+        <source><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">auto_session_tracking</pc> — Set to <pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">false</pc>. GlitchTip does not support session tracking.</source>
+        <target><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">auto_session_tracking</pc> — Set to <pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">false</pc>. GlitchTip does not support session tracking.</target>
+      </segment>
+    </unit>
+    <unit id="883341321910713030">
+      <segment state="initial">
+        <source>Performance Monitoring</source>
+        <target>Performance Monitoring</target>
+      </segment>
+    </unit>
+    <unit id="4664874365831932842">
+      <segment state="initial">
+        <source>Enable <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a target=&quot;_blank&quot; href=&quot;https://glitchtip.com/documentation/performance&quot; &gt;" dispEnd="&lt;/a &gt;">performance monitoring</pc> by setting <pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">traces_sample_rate</pc>. Sample your transactions to keep data volume manageable — most teams find 1–10% sufficient.</source>
+        <target>Enable <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a target=&quot;_blank&quot; href=&quot;https://glitchtip.com/documentation/performance&quot; &gt;" dispEnd="&lt;/a &gt;">performance monitoring</pc> by setting <pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">traces_sample_rate</pc>. Sample your transactions to keep data volume manageable — most teams find 1–10% sufficient.</target>
+      </segment>
+    </unit>
+    <unit id="4804785061014590286">
+      <segment state="initial">
+        <source>Logs</source>
+        <target>Logs</target>
+      </segment>
+    </unit>
+    <unit id="2849436559874800914">
+      <segment state="initial">
+        <source>GlitchTip can ingest <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a target=&quot;_blank&quot; href=&quot;https://glitchtip.com/documentation/logs&quot; &gt;" dispEnd="&lt;/a &gt;">application logs</pc> via OpenTelemetry. See the logs documentation for setup.</source>
+        <target>GlitchTip can ingest <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a target=&quot;_blank&quot; href=&quot;https://glitchtip.com/documentation/logs&quot; &gt;" dispEnd="&lt;/a &gt;">application logs</pc> via OpenTelemetry. See the logs documentation for setup.</target>
+      </segment>
+    </unit>
+    <unit id="744244165374460871">
+      <segment state="initial">
+        <source>Source Maps &amp; Debug Symbols</source>
+        <target>Source Maps &amp; Debug Symbols</target>
+      </segment>
+    </unit>
+    <unit id="679502950068478075">
+      <segment state="initial">
+        <source>Use the <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a target=&quot;_blank&quot; href=&quot;https://glitchtip.com/documentation/cli&quot; &gt;" dispEnd="&lt;/a &gt;">GlitchTip CLI</pc> to upload source maps and debug symbols for readable stack traces in production.</source>
+        <target>Use the <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a target=&quot;_blank&quot; href=&quot;https://glitchtip.com/documentation/cli&quot; &gt;" dispEnd="&lt;/a &gt;">GlitchTip CLI</pc> to upload source maps and debug symbols for readable stack traces in production.</target>
+      </segment>
+    </unit>
+    <unit id="2681991107727126286">
+      <segment state="initial">
+        <source>AI-Assisted Debugging</source>
+        <target>AI-Assisted Debugging</target>
+      </segment>
+    </unit>
+    <unit id="3285184083870027983">
+      <segment state="initial">
+        <source>GlitchTip includes an <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a target=&quot;_blank&quot; href=&quot;https://glitchtip.com/documentation/mcp&quot; &gt;" dispEnd="&lt;/a &gt;">MCP server</pc> that lets AI assistants investigate errors, analyze performance, and query logs.</source>
+        <target>GlitchTip includes an <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a target=&quot;_blank&quot; href=&quot;https://glitchtip.com/documentation/mcp&quot; &gt;" dispEnd="&lt;/a &gt;">MCP server</pc> that lets AI assistants investigate errors, analyze performance, and query logs.</target>
+      </segment>
+    </unit>
+    <unit id="5144966841571402100">
+      <segment state="initial">
+        <source>The platform you selected doesn&apos;t have specific setup instructions yet. Many sentry-compatible SDKs are available as open-source packages — search for a sentry SDK for your language or framework on your package manager.</source>
+        <target>The platform you selected doesn&apos;t have specific setup instructions yet. Many sentry-compatible SDKs are available as open-source packages — search for a sentry SDK for your language or framework on your package manager.</target>
+      </segment>
+    </unit>
+    <unit id="3746183499642587543">
+      <segment state="initial">
+        <source>Your DSN is pre-filled in the setup instructions. Copy it here if you need it for additional environments or tools. The Security Endpoint is used for browser Content Security Policy (CSP) reporting.</source>
+        <target>Your DSN is pre-filled in the setup instructions. Copy it here if you need it for additional environments or tools. The Security Endpoint is used for browser Content Security Policy (CSP) reporting.</target>
+      </segment>
+    </unit>
+    <unit id="8424845532412516589">
+      <segment state="initial">
+        <source>Your DSN tells your SDK how to send events to your GlitchTip project. The Security Endpoint is used for browser Content Security Policy (CSP) reporting.</source>
+        <target>Your DSN tells your SDK how to send events to your GlitchTip project. The Security Endpoint is used for browser Content Security Policy (CSP) reporting.</target>
+      </segment>
+    </unit>
+    <unit id="3486318045815416322">
+      <segment state="initial">
+        <source>Mark resolved</source>
+        <target>Mark resolved</target>
+      </segment>
+    </unit>
+    <unit id="4201099783002228618">
+      <segment state="initial">
+        <source>Mark unresolved</source>
+        <target>Mark unresolved</target>
+      </segment>
+    </unit>
+    <unit id="326607852595106445">
+      <segment state="initial">
+        <source>Mark ignored</source>
+        <target>Mark ignored</target>
+      </segment>
+    </unit>
+    <unit id="4029649057038200865">
+      <segment state="initial">
+        <source>Search syntax</source>
+        <target>Search syntax</target>
+      </segment>
+    </unit>
+    <unit id="3733215288982610673">
+      <segment state="initial">
+        <source>Level</source>
+        <target>Level</target>
+      </segment>
+    </unit>
+    <unit id="7886570921510760899">
+      <segment state="initial">
+        <source>Tags</source>
+        <target>Tags</target>
+      </segment>
+    </unit>
+    <unit id="6192930354402829130">
+      <segment state="initial">
+        <source>Any tag works, e.g. environment:production or release:v1.2.0. One value per key.</source>
+        <target>Any tag works, e.g. environment:production or release:v1.2.0. One value per key.</target>
+      </segment>
+    </unit>
+    <unit id="967524872396885653">
+      <segment state="initial">
+        <source>Text (must come last)</source>
+        <target>Text (must come last)</target>
+      </segment>
+    </unit>
+    <unit id="3272820784736358258">
+      <segment state="initial">
+        <source>Whole words by default. Add * for a prefix match. Anything after the first plain word becomes part of the text search, so put filters first.</source>
+        <target>Whole words by default. Add * for a prefix match. Anything after the first plain word becomes part of the text search, so put filters first.</target>
+      </segment>
+    </unit>
+    <unit id="9206334208746012915">
+      <segment state="initial">
+        <source>Tokens combine with a space (AND). There is no OR.</source>
+        <target>Tokens combine with a space (AND). There is no OR.</target>
+      </segment>
+    </unit>
+    <unit id="2670107596340962168">
+      <segment state="initial">
+        <source>Delete issues</source>
+        <target>Delete issues</target>
+      </segment>
+    </unit>
+    <unit id="6236390993609688799">
+      <segment state="initial">
+        <source>Are you sure you want to delete <ph id="0" equiv="PH" disp="count"/> issue(s)? You will permanently lose these issues and all associated events.</source>
+        <target>Are you sure you want to delete <ph id="0" equiv="PH" disp="count"/> issue(s)? You will permanently lose these issues and all associated events.</target>
+      </segment>
+    </unit>
+    <unit id="799254361008065064">
+      <segment state="initial">
+        <source>Error, unable to delete issues</source>
+        <target>Error, unable to delete issues</target>
+      </segment>
+    </unit>
+    <unit id="7188521810884384359">
+      <segment state="initial">
+        <source>Search syntax help</source>
+        <target>Search syntax help</target>
+      </segment>
+    </unit>
+    <unit id="4032763770452115138">
+      <segment state="initial">
+        <source>Set trend charts period</source>
+        <target>Set trend charts period</target>
+      </segment>
+    </unit>
+    <unit id="6425467213960794982">
+      <segment state="initial">
+        <source>All projects</source>
+        <target>All projects</target>
+      </segment>
+    </unit>
+    <unit id="4580988005648117665">
+      <segment state="initial">
+        <source>Search</source>
+        <target>Search</target>
+      </segment>
+    </unit>
+    <unit id="8949368183634013537">
+      <segment state="initial">
+        <source>No projects found</source>
+        <target>No projects found</target>
+      </segment>
+    </unit>
+    <unit id="1500099262662584579">
+      <segment state="initial">
+        <source>Time range:</source>
+        <target>Time range:</target>
+      </segment>
+    </unit>
+    <unit id="4391289919356861627">
+      <segment state="initial">
+        <source>Apply</source>
+        <target>Apply</target>
+      </segment>
+    </unit>
+    <unit id="6234985323744540610">
+      <segment state="initial">
+        <source>Date range</source>
+        <target>Date range</target>
+      </segment>
+    </unit>
+    <unit id="5495676136158732653">
+      <segment state="initial">
+        <source>Time range</source>
+        <target>Time range</target>
+      </segment>
+    </unit>
+    <unit id="8248908745082706548">
+      <segment state="initial">
+        <source>Custom range</source>
+        <target>Custom range</target>
+      </segment>
+    </unit>
+    <unit id="7301620538128979310">
+      <segment state="initial">
+        <source>All times</source>
+        <target>All times</target>
+      </segment>
+    </unit>
+    <unit id="9178360613965745088">
+      <segment state="initial">
+        <source>Last hour</source>
+        <target>Last hour</target>
+      </segment>
+    </unit>
+    <unit id="9186529157286281693">
+      <segment state="initial">
+        <source>Last 24 hours</source>
+        <target>Last 24 hours</target>
+      </segment>
+    </unit>
+    <unit id="4873149362496451858">
+      <segment state="initial">
+        <source>Last 7 days</source>
+        <target>Last 7 days</target>
+      </segment>
+    </unit>
+    <unit id="6292286448154259248">
+      <segment state="initial">
+        <source>Last 14 days</source>
+        <target>Last 14 days</target>
+      </segment>
+    </unit>
+    <unit id="2949150997160654358">
+      <segment state="initial">
+        <source>Last 30 days</source>
+        <target>Last 30 days</target>
+      </segment>
+    </unit>
+    <unit id="1214368793285560058">
+      <segment state="initial">
+        <source>Search logs</source>
+        <target>Search logs</target>
+      </segment>
+    </unit>
+    <unit id="2218082343053095278">
+      <segment state="initial">
+        <source>Service</source>
+        <target>Service</target>
+      </segment>
+    </unit>
+    <unit id="6559246822757089203">
+      <segment state="initial">
+        <source>Clear filters</source>
+        <target>Clear filters</target>
+      </segment>
+    </unit>
+    <unit id="8643937855400353832">
+      <segment state="initial">
+        <source>No logs found.</source>
+        <target>No logs found.</target>
+      </segment>
+    </unit>
+    <unit id="6349168611124992157">
+      <segment state="initial">
+        <source> Try adjusting your filters.</source>
+        <target> Try adjusting your filters.</target>
+      </segment>
+    </unit>
+    <unit id="3071389344573298592">
+      <segment state="initial">
+        <source> Configure your SDK to start capturing logs.</source>
+        <target> Configure your SDK to start capturing logs.</target>
+      </segment>
+    </unit>
+    <unit id="33149636091572968">
+      <segment state="initial">
+        <source>Load more</source>
+        <target>Load more</target>
+      </segment>
+    </unit>
+    <unit id="2093702966497728784">
+      <segment state="initial">
+        <source>Create Organization<pc id="0" equivStart="START_TAG_MAT_ICON" equivEnd="CLOSE_TAG_MAT_ICON" type="other" dispStart="&lt;mat-icon iconPositionEnd&gt;" dispEnd="&lt;/mat-icon&gt;">add</pc></source>
+        <target>Create Organization<pc id="0" equivStart="START_TAG_MAT_ICON" equivEnd="CLOSE_TAG_MAT_ICON" type="other" dispStart="&lt;mat-icon iconPositionEnd&gt;" dispEnd="&lt;/mat-icon&gt;">add</pc></target>
+      </segment>
+    </unit>
+    <unit id="7374671888521665415">
+      <segment state="initial">
+        <source>Create organization</source>
+        <target>Create organization</target>
+      </segment>
+    </unit>
+    <unit id="3076687427621376223">
+      <segment state="initial">
+        <source>Organization</source>
+        <target>Organization</target>
+      </segment>
+    </unit>
+    <unit id="2288513108450439427">
+      <segment state="initial">
+        <source>Support</source>
+        <target>Support</target>
+      </segment>
+    </unit>
+    <unit id="1347241542439262355">
+      <segment state="initial">
+        <source>General settings</source>
+        <target>General settings</target>
+      </segment>
+    </unit>
+    <unit id="4776048193435822947">
+      <segment state="initial">
+        <source>MFA</source>
+        <target>MFA</target>
+      </segment>
+    </unit>
+    <unit id="9110363267178274426">
+      <segment state="initial">
+        <source>Report a bug</source>
+        <target>Report a bug</target>
+      </segment>
+    </unit>
+    <unit id="8852819672524659401">
+      <segment state="initial">
+        <source>Sponsor on Liberapay</source>
+        <target>Sponsor on Liberapay</target>
+      </segment>
+    </unit>
+    <unit id="84794025138950643">
+      <segment state="initial">
+        <source>Open Support Chat</source>
+        <target>Open Support Chat</target>
+      </segment>
+    </unit>
+    <unit id="90506265415127351">
+      <segment state="initial">
+        <source>Get Priority Support</source>
+        <target>Get Priority Support</target>
+      </segment>
+    </unit>
+    <unit id="1760380914125168379">
+      <segment state="initial">
+        <source> You&apos;ve reached the maximum number of events that your plan allows for this billing period. </source>
+        <target> You&apos;ve reached the maximum number of events that your plan allows for this billing period. </target>
+      </segment>
+    </unit>
+    <unit id="3561866231707911512">
+      <segment state="initial">
+        <source> Change your subscription </source>
+        <target> Change your subscription </target>
+      </segment>
+    </unit>
+    <unit id="5485930912805976052">
+      <segment state="initial">
+        <source> if you&apos;d like to get things moving again.</source>
+        <target> if you&apos;d like to get things moving again.</target>
+      </segment>
+    </unit>
+    <unit id="9144349604807767226">
+      <segment state="initial">
+        <source>No transaction groups were found.</source>
+        <target>No transaction groups were found.</target>
+      </segment>
+    </unit>
+    <unit id="2973061628865967914">
+      <segment state="initial">
+        <source>Backup codes</source>
+        <target>Backup codes</target>
+      </segment>
+    </unit>
+    <unit id="1987589372843569754">
+      <segment state="initial">
+        <source> Lost your codes? Generate a new set. This invalidates the old one, so save the new codes somewhere safe. </source>
+        <target> Lost your codes? Generate a new set. This invalidates the old one, so save the new codes somewhere safe. </target>
+      </segment>
+    </unit>
+    <unit id="1409236630147612478">
+      <segment state="initial">
+        <source> Save these codes somewhere safe. Each one lets you sign in once if you lose your phone. </source>
+        <target> Save these codes somewhere safe. Each one lets you sign in once if you lose your phone. </target>
+      </segment>
+    </unit>
+    <unit id="2219171205167811845">
+      <segment state="initial">
+        <source>Enter one of the codes to confirm you have saved them:</source>
+        <target>Enter one of the codes to confirm you have saved them:</target>
+      </segment>
+    </unit>
+    <unit id="353965083777629357">
+      <segment state="initial">
+        <source>Authenticator app</source>
+        <target>Authenticator app</target>
+      </segment>
+    </unit>
+    <unit id="3650236615036812295">
+      <segment state="initial">
+        <source>An authenticator app is protecting your account.</source>
+        <target>An authenticator app is protecting your account.</target>
+      </segment>
+    </unit>
+    <unit id="8150927731388569232">
+      <segment state="initial">
+        <source> Disable </source>
+        <target> Disable </target>
+      </segment>
+    </unit>
+    <unit id="372253476753871793">
+      <segment state="initial">
+        <source> Verify your email address before setting up two-factor authentication. </source>
+        <target> Verify your email address before setting up two-factor authentication. </target>
+      </segment>
+    </unit>
+    <unit id="4659537058158752460">
+      <segment state="initial">
+        <source>Add a second step at login with an authenticator app.</source>
+        <target>Add a second step at login with an authenticator app.</target>
+      </segment>
+    </unit>
+    <unit id="1014900852249024343">
+      <segment state="initial">
+        <source> Get started </source>
+        <target> Get started </target>
+      </segment>
+    </unit>
+    <unit id="5206959576487617077">
+      <segment state="initial">
+        <source>Install an authenticator app</source>
+        <target>Install an authenticator app</target>
+      </segment>
+    </unit>
+    <unit id="9110048041619766424">
+      <segment state="initial">
+        <source> Use <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;https://authy.com/download/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot; &gt;" dispEnd="&lt;/a &gt;">Authy</pc>, <pc id="1" equivStart="START_LINK_1" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot; &gt;" dispEnd="&lt;/a &gt;">Google Authenticator</pc>, or any TOTP app on your phone. </source>
+        <target> Use <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;https://authy.com/download/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot; &gt;" dispEnd="&lt;/a &gt;">Authy</pc>, <pc id="1" equivStart="START_LINK_1" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot; &gt;" dispEnd="&lt;/a &gt;">Google Authenticator</pc>, or any TOTP app on your phone. </target>
+      </segment>
+    </unit>
+    <unit id="3971100408152984961">
+      <segment state="initial">
+        <source> Next </source>
+        <target> Next </target>
+      </segment>
+    </unit>
+    <unit id="5653699239734075539">
+      <segment state="initial">
+        <source>Save your backup codes</source>
+        <target>Save your backup codes</target>
+      </segment>
+    </unit>
+    <unit id="6652394106594262390">
+      <segment state="initial">
+        <source>Scan and verify</source>
+        <target>Scan and verify</target>
+      </segment>
+    </unit>
+    <unit id="5445645543721190926">
+      <segment state="initial">
+        <source>Scan the QR code with your app, or enter the key by hand.</source>
+        <target>Scan the QR code with your app, or enter the key by hand.</target>
+      </segment>
+    </unit>
+    <unit id="4948440289765392916">
+      <segment state="initial">
+        <source>Authenticator setup QR code</source>
+        <target>Authenticator setup QR code</target>
+      </segment>
+    </unit>
+    <unit id="3514149438333724015">
+      <segment state="initial">
+        <source>Setup key</source>
+        <target>Setup key</target>
+      </segment>
+    </unit>
+    <unit id="2180291763949669799">
+      <segment state="initial">
+        <source>Enable</source>
+        <target>Enable</target>
+      </segment>
+    </unit>
+    <unit id="7796789454513080982">
+      <segment state="initial">
+        <source>Two-factor authentication will be turned off for your account.</source>
+        <target>Two-factor authentication will be turned off for your account.</target>
+      </segment>
+    </unit>
+    <unit id="9187855490716817910">
+      <segment state="initial">
+        <source>Disable</source>
+        <target>Disable</target>
+      </segment>
+    </unit>
+    <unit id="7103588127254721505">
+      <segment state="initial">
+        <source>Theme</source>
+        <target>Theme</target>
+      </segment>
+    </unit>
+    <unit id="5039333631217808070">
+      <segment state="initial">
+        <source> Registration is currently unavailable. Contact your server administrator. </source>
+        <target> Registration is currently unavailable. Contact your server administrator. </target>
+      </segment>
+    </unit>
+    <unit id="1871336547835393592">
+      <segment state="initial">
+        <source>There are no files associated with this release.</source>
+        <target>There are no files associated with this release.</target>
+      </segment>
+    </unit>
+    <unit id="6135551083632800789">
+      <segment state="initial">
+        <source>Release files for </source>
+        <target>Release files for </target>
+      </segment>
+    </unit>
+    <unit id="1293820901842765850">
+      <segment state="initial">
+        <source>Supports Slack, Mattermost, Rocket.Chat, and more</source>
+        <target>Supports Slack, Mattermost, Rocket.Chat, and more</target>
+      </segment>
+    </unit>
+    <unit id="7818840609640140503">
+      <segment state="initial">
+        <source>ntfy.sh topic URL or self-hosted endpoint</source>
+        <target>ntfy.sh topic URL or self-hosted endpoint</target>
+      </segment>
+    </unit>
+    <unit id="5273032674861258152">
+      <segment state="initial">
+        <source>Feishu custom bot webhook URL (https://open.feishu.cn/open-apis/bot/v2/hook/...)</source>
+        <target>Feishu custom bot webhook URL (https://open.feishu.cn/open-apis/bot/v2/hook/...)</target>
+      </segment>
+    </unit>
+    <unit id="1868960829276031899">
+      <segment state="initial">
+        <source>Microsoft Teams Workflows webhook URL</source>
+        <target>Microsoft Teams Workflows webhook URL</target>
+      </segment>
+    </unit>
+    <unit id="2398354803539761750">
+      <segment state="initial">
+        <source> Create a <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">Generic bot</pc> in your Zulip organization settings under &quot;Bots&quot;. Copy the bot&apos;s email and API key below. </source>
+        <target> Create a <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">Generic bot</pc> in your Zulip organization settings under &quot;Bots&quot;. Copy the bot&apos;s email and API key below. </target>
+      </segment>
+    </unit>
+    <unit id="8135601959842552749">
+      <segment state="initial">
+        <source>Your Zulip organization URL</source>
+        <target>Your Zulip organization URL</target>
+      </segment>
+    </unit>
+    <unit id="7547858369571452204">
+      <segment state="initial">
+        <source>Found in the bot&apos;s settings under &quot;Bots&quot;</source>
+        <target>Found in the bot&apos;s settings under &quot;Bots&quot;</target>
+      </segment>
+    </unit>
+    <unit id="5084757846026616483">
+      <segment state="initial">
+        <source>The bot&apos;s API key, shown when the bot is created</source>
+        <target>The bot&apos;s API key, shown when the bot is created</target>
+      </segment>
+    </unit>
+    <unit id="8783745595002444567">
+      <segment state="initial">
+        <source>The channel to post alerts to</source>
+        <target>The channel to post alerts to</target>
+      </segment>
+    </unit>
+    <unit id="3365827921329858639">
+      <segment state="initial">
+        <source>Messages in a channel are grouped by topic</source>
+        <target>Messages in a channel are grouped by topic</target>
+      </segment>
+    </unit>
+    <unit id="2032719064430979056">
+      <segment state="initial">
+        <source>Select a valid platform</source>
+        <target>Select a valid platform</target>
+      </segment>
+    </unit>
+    <unit id="6762743264882388498">
+      <segment state="initial">
+        <source>Monthly</source>
+        <target>Monthly</target>
+      </segment>
+    </unit>
+    <unit id="3745223847280240225">
+      <segment state="initial">
+        <source>Annual</source>
+        <target>Annual</target>
+      </segment>
+    </unit>
+    <unit id="2143992992922814172">
+      <segment state="initial">
+        <source> Everything from <ph id="0" equiv="INTERPOLATION" disp="{{ products[i - 1].name }}"/> + </source>
+        <target> Everything from <ph id="0" equiv="INTERPOLATION" disp="{{ products[i - 1].name }}"/> + </target>
+      </segment>
+    </unit>
+    <unit id="465664631077016099">
+      <segment state="initial">
+        <source>
+          <pc id="0" equivStart="START_TAG_SPAN" equivEnd="CLOSE_TAG_SPAN" type="other" dispStart="&lt;span class=&quot;price-amount&quot;&gt;" dispEnd="&lt;/span&gt;">Free</pc>
+          <pc id="1" equivStart="START_TAG_SPAN_1" equivEnd="CLOSE_TAG_SPAN" type="other" dispStart="&lt;span class=&quot;price-detail&quot;&gt;" dispEnd="&lt;/span&gt;">($0)</pc>
+        </source>
+        <target>
+          <pc id="0" equivStart="START_TAG_SPAN" equivEnd="CLOSE_TAG_SPAN" type="other" dispStart="&lt;span class=&quot;price-amount&quot;&gt;" dispEnd="&lt;/span&gt;">Free</pc>
+          <pc id="1" equivStart="START_TAG_SPAN_1" equivEnd="CLOSE_TAG_SPAN" type="other" dispStart="&lt;span class=&quot;price-detail&quot;&gt;" dispEnd="&lt;/span&gt;">($0)</pc>
+        </target>
+      </segment>
+    </unit>
+    <unit id="6753799837235923045">
+      <segment state="initial">
+        <source>/ <ph id="0" equiv="INTERPOLATION" disp="{{ activePrice.interval === &quot;year&quot; ? &quot;year&quot; : &quot;month&quot; }}"/></source>
+        <target>/ <ph id="0" equiv="INTERPOLATION" disp="{{ activePrice.interval === &quot;year&quot; ? &quot;year&quot; : &quot;month&quot; }}"/></target>
+      </segment>
+    </unit>
+    <unit id="1814721909646440919">
+      <segment state="initial">
+        <source>Manage Billing</source>
+        <target>Manage Billing</target>
+      </segment>
+    </unit>
+    <unit id="5044576521773126838">
+      <segment state="initial">
+        <source>Self-Hosted</source>
+        <target>Self-Hosted</target>
+      </segment>
+    </unit>
+    <unit id="5768343853895020811">
+      <segment state="initial">
+        <source>Usage: Last 30 Days</source>
+        <target>Usage: Last 30 Days</target>
+      </segment>
+    </unit>
+    <unit id="2124226966549313545">
+      <segment state="initial">
+        <source> Questions? Contact us at <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;mailto:{{ billingEmail }}&quot;&gt;" dispEnd="&lt;/a &gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ billingEmail }}"/></pc>. </source>
+        <target> Questions? Contact us at <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;mailto:{{ billingEmail }}&quot;&gt;" dispEnd="&lt;/a &gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ billingEmail }}"/></pc>. </target>
+      </segment>
+    </unit>
+    <unit id="3097725565524951500">
+      <segment state="initial">
+        <source>Contribute Code</source>
+        <target>Contribute Code</target>
+      </segment>
+    </unit>
+    <unit id="7216818923768556093">
+      <segment state="initial">
+        <source>Help build GlitchTip on GitLab</source>
+        <target>Help build GlitchTip on GitLab</target>
+      </segment>
+    </unit>
+    <unit id="89970906091089947">
+      <segment state="initial">
+        <source>Donate</source>
+        <target>Donate</target>
+      </segment>
+    </unit>
+    <unit id="8393494693907472546">
+      <segment state="initial">
+        <source>Support open source development on Liberapay</source>
+        <target>Support open source development on Liberapay</target>
+      </segment>
+    </unit>
+    <unit id="8838254186564675838">
+      <segment state="initial">
+        <source>Try GlitchTip Cloud</source>
+        <target>Try GlitchTip Cloud</target>
+      </segment>
+    </unit>
+    <unit id="5944666342346398830">
+      <segment state="initial">
+        <source>Let us handle hosting, updates, and backups for you.</source>
+        <target>Let us handle hosting, updates, and backups for you.</target>
+      </segment>
+    </unit>
+    <unit id="1662170432588987648">
+      <segment state="initial">
+        <source>Last 30 Days</source>
+        <target>Last 30 Days</target>
+      </segment>
+    </unit>
+    <unit id="3861559140187372291">
+      <segment state="initial">
+        <source>Previous 30 Days</source>
+        <target>Previous 30 Days</target>
+      </segment>
+    </unit>
+    <unit id="1312167747630425287">
+      <segment state="initial">
+        <source>Number of Events</source>
+        <target>Number of Events</target>
+      </segment>
+    </unit>
+    <unit id="1929039531311944328">
+      <segment state="initial">
+        <source>Uptime</source>
+        <target>Uptime</target>
+      </segment>
+    </unit>
+    <unit id="1480856902951863661">
+      <segment state="initial">
+        <source>Projected</source>
+        <target>Projected</target>
+      </segment>
+    </unit>
+    <unit id="1420343270177022915">
+      <segment state="initial">
+        <source>No event data available for this period.</source>
+        <target>No event data available for this period.</target>
+      </segment>
+    </unit>
+    <unit id="8648986371331516485">
+      <segment state="initial">
+        <source>Predicted end of month: ~<ph id="0" equiv="INTERPOLATION" disp="{{ predictedTotal() | number: &quot;1.0-0&quot; }}"/></source>
+        <target>Predicted end of month: ~<ph id="0" equiv="INTERPOLATION" disp="{{ predictedTotal() | number: &quot;1.0-0&quot; }}"/></target>
+      </segment>
+    </unit>
+    <unit id="5636312106761697772">
+      <segment state="initial">
+        <source>Predicted End of Month</source>
+        <target>Predicted End of Month</target>
+      </segment>
+    </unit>
+    <unit id="6556140613153986106">
+      <segment state="initial">
+        <source>Event Breakdown</source>
+        <target>Event Breakdown</target>
+      </segment>
+    </unit>
+    <unit id="4418983244366202082">
+      <segment state="initial">
+        <source>File storage: <ph id="0" equiv="INTERPOLATION" disp="{{ breakdown.fileSizeMb }}"/> MB</source>
+        <target>File storage: <ph id="0" equiv="INTERPOLATION" disp="{{ breakdown.fileSizeMb }}"/> MB</target>
+      </segment>
+    </unit>
+    <unit id="4674318460512567698">
+      <segment state="initial">
+        <source>This Month</source>
+        <target>This Month</target>
+      </segment>
+    </unit>
+    <unit id="5301451406229114785">
+      <segment state="initial">
+        <source>Last Month</source>
+        <target>Last Month</target>
+      </segment>
+    </unit>
+    <unit id="4496572774093976020">
+      <segment state="initial">
+        <source>Not enough data</source>
+        <target>Not enough data</target>
+      </segment>
+    </unit>
+    <unit id="9008104769462456988">
+      <segment state="initial">
+        <source>Over limit</source>
+        <target>Over limit</target>
+      </segment>
+    </unit>
+    <unit id="6095052631454715389">
+      <segment state="initial">
+        <source>Manage Subscription</source>
+        <target>Manage Subscription</target>
+      </segment>
+    </unit>
+    <unit id="3897348120591552265">
+      <segment state="initial">
+        <source>Manage</source>
+        <target>Manage</target>
+      </segment>
+    </unit>
+    <unit id="6099995138616604139">
+      <segment state="initial">
+        <source>Billing Cycle: <ph id="0" equiv="INTERPOLATION" disp="{{ subscription.subscriptionCycleStart ?? subscription.currentPeriodStart | date }}"/> to <ph id="1" equiv="INTERPOLATION_1" disp="{{ subscription.subscriptionCycleEnd ?? subscription.currentPeriodEnd | date }}"/> <pc id="2" equivStart="START_BLOCK_IF" equivEnd="CLOSE_BLOCK_IF" type="other" dispStart="@if (daysRemaining() !== null) {" dispEnd="}"> (<ph id="3" equiv="INTERPOLATION_2" disp="{{ daysRemaining() }}"/> <ph id="4" equiv="INTERPOLATION_3" disp="{{ daysRemaining() === 1 ? &quot;day&quot; : &quot;days&quot; }}"/> remaining) </pc></source>
+        <target>Billing Cycle: <ph id="0" equiv="INTERPOLATION" disp="{{ subscription.subscriptionCycleStart ?? subscription.currentPeriodStart | date }}"/> to <ph id="1" equiv="INTERPOLATION_1" disp="{{ subscription.subscriptionCycleEnd ?? subscription.currentPeriodEnd | date }}"/> <pc id="2" equivStart="START_BLOCK_IF" equivEnd="CLOSE_BLOCK_IF" type="other" dispStart="@if (daysRemaining() !== null) {" dispEnd="}"> (<ph id="3" equiv="INTERPOLATION_2" disp="{{ daysRemaining() }}"/> <ph id="4" equiv="INTERPOLATION_3" disp="{{ daysRemaining() === 1 ? &quot;day&quot; : &quot;days&quot; }}"/> remaining) </pc></target>
+      </segment>
+    </unit>
+    <unit id="203328093718583608">
+      <segment state="initial">
+        <source>What counts as an event?</source>
+        <target>What counts as an event?</target>
+      </segment>
+    </unit>
+    <unit id="6329070940389557822">
+      <segment state="initial">
+        <source>Events are the unit of measure for tracking GlitchTip usage. Your plan&apos;s monthly limit is shared across all features.</source>
+        <target>Events are the unit of measure for tracking GlitchTip usage. Your plan&apos;s monthly limit is shared across all features.</target>
+      </segment>
+    </unit>
+    <unit id="3617897902871519294">
+      <segment state="initial">
+        <source>Each occurrence of an error or exception reported to GlitchTip</source>
+        <target>Each occurrence of an error or exception reported to GlitchTip</target>
+      </segment>
+    </unit>
+    <unit id="6409383856975229343">
+      <segment state="initial">
+        <source>Each health check counts as 1/10 of an event — 10 checks equal 1 event, whether polled by GlitchTip or pushed from your app</source>
+        <target>Each health check counts as 1/10 of an event — 10 checks equal 1 event, whether polled by GlitchTip or pushed from your app</target>
+      </segment>
+    </unit>
+    <unit id="6837724342954729520">
+      <segment state="initial">
+        <source>Each transaction report for a tracked activity on your app</source>
+        <target>Each transaction report for a tracked activity on your app</target>
+      </segment>
+    </unit>
+    <unit id="3808550909625305765">
+      <segment state="initial">
+        <source>Each log entry counts as 1/10 of an event — 10 log entries equal 1 event</source>
+        <target>Each log entry counts as 1/10 of an event — 10 log entries equal 1 event</target>
+      </segment>
+    </unit>
+    <unit id="3867517862135491572">
+      <segment state="initial">
+        <source>Each megabyte of file storage is counted as an event</source>
+        <target>Each megabyte of file storage is counted as an event</target>
+      </segment>
+    </unit>
+    <unit id="4756014564250067539">
+      <segment state="initial">
+        <source>Resolve in next release</source>
+        <target>Resolve in next release</target>
+      </segment>
+    </unit>
+    <unit id="5370838177584249385">
+      <segment state="initial">
+        <source>Resolved</source>
+        <target>Resolved</target>
+      </segment>
+    </unit>
+    <unit id="2974118934038476769">
+      <segment state="initial">
+        <source>Unresolved</source>
+        <target>Unresolved</target>
+      </segment>
+    </unit>
+    <unit id="6286501917375397305">
+      <segment state="initial">
+        <source>Mark As</source>
+        <target>Mark As</target>
+      </segment>
+    </unit>
+    <unit id="1675381835782655174">
+      <segment state="initial">
+        <source>Get priority support for your GlitchTip deployment</source>
+        <target>Get priority support for your GlitchTip deployment</target>
+      </segment>
+    </unit>
+    <unit id="3375481157395019697">
+      <segment state="initial">
+        <source> Priority email and live chat support direct from the engineers who build GlitchTip. </source>
+        <target> Priority email and live chat support direct from the engineers who build GlitchTip. </target>
+      </segment>
+    </unit>
+    <unit id="5377494958922638201">
+      <segment state="initial">
+        <source> Add your license key in Django admin once subscribed. </source>
+        <target> Add your license key in Django admin once subscribed. </target>
+      </segment>
+    </unit>
+    <unit id="6845549858773411205">
+      <segment state="initial">
+        <source>Get a support plan</source>
+        <target>Get a support plan</target>
+      </segment>
+    </unit>
+    <unit id="7619773636555096367">
+      <segment state="initial">
+        <source>Get started with GlitchTip</source>
+        <target>Get started with GlitchTip</target>
+      </segment>
+    </unit>
+    <unit id="8783352021501063415">
+      <segment state="initial">
+        <source>Start free with <ph id="0" equiv="INTERPOLATION" disp="{{ freeEventLabel() }}"/> events/month, or go paid to scale up and support open source error tracking with priority support.</source>
+        <target>Start free with <ph id="0" equiv="INTERPOLATION" disp="{{ freeEventLabel() }}"/> events/month, or go paid to scale up and support open source error tracking with priority support.</target>
+      </segment>
+    </unit>
+    <unit id="5254377412613509729">
+      <segment state="initial">
+        <source>Don&apos;t lose events!</source>
+        <target>Don&apos;t lose events!</target>
+      </segment>
+    </unit>
+    <unit id="6687274602224610983">
+      <segment state="initial">
+        <source> Your events are being rejected. Upgrade to resume event tracking. </source>
+        <target> Your events are being rejected. Upgrade to resume event tracking. </target>
+      </segment>
+    </unit>
+    <unit id="7796896248780270295">
+      <segment state="initial">
+        <source> About <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ eventThrottleRate() }}"/>%</pc> of your incoming events are being dropped. Upgrade to restore full coverage. </source>
+        <target> About <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ eventThrottleRate() }}"/>%</pc> of your incoming events are being dropped. Upgrade to restore full coverage. </target>
+      </segment>
+    </unit>
+    <unit id="4052546330076196016">
+      <segment state="initial">
+        <source> You&apos;re at <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ usagePercent() }}"/>%</pc> of your event limit. Upgrade before throttling kicks in and support open source error tracking. </source>
+        <target> You&apos;re at <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ usagePercent() }}"/>%</pc> of your event limit. Upgrade before throttling kicks in and support open source error tracking. </target>
+      </segment>
+    </unit>
+    <unit id="1520811785931570955">
+      <segment state="initial">
+        <source> Support open source error tracking and avoid event loss as you scale. </source>
+        <target> Support open source error tracking and avoid event loss as you scale. </target>
+      </segment>
+    </unit>
+    <unit id="4773225740896583514">
+      <segment state="initial">
+        <source>Upgrade to <ph id="0" equiv="INTERPOLATION" disp="{{ nextPlanLabel() }}"/> events/mo</source>
+        <target>Upgrade to <ph id="0" equiv="INTERPOLATION" disp="{{ nextPlanLabel() }}"/> events/mo</target>
+      </segment>
+    </unit>
+    <unit id="1792027532696134167">
+      <segment state="initial">
+        <source> Compare Plans </source>
+        <target> Compare Plans </target>
+      </segment>
+    </unit>
+    <unit id="8819356210354103101">
+      <segment state="initial">
+        <source>Verify your email to continue</source>
+        <target>Verify your email to continue</target>
+      </segment>
+    </unit>
+    <unit id="1206469004229143307">
+      <segment state="initial">
+        <source> For your account&apos;s security, you need a verified email address before you can set up multi-factor authentication. We use it to recover your account if you ever lose access. </source>
+        <target> For your account&apos;s security, you need a verified email address before you can set up multi-factor authentication. We use it to recover your account if you ever lose access. </target>
+      </segment>
+    </unit>
+    <unit id="1302589354774989773">
+      <segment state="initial">
+        <source> A verification link was sent to <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ email }}"/></pc>. </source>
+        <target> A verification link was sent to <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ email }}"/></pc>. </target>
+      </segment>
+    </unit>
+    <unit id="4388712199830758321">
+      <segment state="initial">
+        <source>Resend verification email</source>
+        <target>Resend verification email</target>
+      </segment>
+    </unit>
+    <unit id="4185886669386916621">
+      <segment state="initial">
+        <source> I&apos;ve verified — refresh </source>
+        <target> I&apos;ve verified — refresh </target>
+      </segment>
+    </unit>
+    <unit id="7273336248682509272">
+      <segment state="initial">
+        <source> Manage email addresses </source>
+        <target> Manage email addresses </target>
+      </segment>
+    </unit>
+    <unit id="4295547764764047619">
+      <segment state="initial">
+        <source>No monitor checks were found.</source>
+        <target>No monitor checks were found.</target>
+      </segment>
+    </unit>
+    <unit id="2044535834632996695">
+      <segment state="initial">
+        <source>Add monitor</source>
+        <target>Add monitor</target>
+      </segment>
+    </unit>
+    <unit id="3249513483374643425">
+      <segment state="initial">
+        <source>Add</source>
+        <target>Add</target>
+      </segment>
+    </unit>
+    <unit id="2693599899411110236">
+      <segment state="initial">
+        <source> No monitors were found. </source>
+        <target> No monitors were found. </target>
       </segment>
     </unit>
   </file>

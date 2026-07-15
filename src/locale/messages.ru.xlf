@@ -1,0 +1,2871 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="2.0" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-US" trgLang="ru">
+  <file id="ngi18n" original="ng.template">
+    <unit id="827275858583778252">
+      <segment>
+        <source>Organization Invite</source>
+        <target>Приглашение в организацию</target>
+      </segment>
+    </unit>
+    <unit id="8464263618615235731">
+      <segment>
+        <source>Create New Organization</source>
+        <target>Создать новую организацию</target>
+      </segment>
+    </unit>
+    <unit id="2804049603671779506">
+      <segment>
+        <source>Delete User Account</source>
+        <target>Удалить учётную запись</target>
+      </segment>
+    </unit>
+    <unit id="1203636405699791528">
+      <segment>
+        <source>By deleting your user account, you will permanently lose all data, including access to organization projects and their associated events.</source>
+        <target>Удалив свою учётную запись, вы безвозвратно потеряете все данные, включая доступ к проектам организаций и связанным с ними событиям.</target>
+      </segment>
+    </unit>
+    <unit id="8069478311783909563">
+      <segment>
+        <source>Make sure to delete or transfer ownership of any organizations before deleting your account. Owners of paid organization subscriptions are not able to delete their account.</source>
+        <target>Прежде чем удалять учётную запись, обязательно удалите организации или передайте права владения ими. Владельцы платных подписок организаций не могут удалить свою учётную запись.</target>
+      </segment>
+    </unit>
+    <unit id="3078760420237279624">
+      <segment>
+        <source>Auth Tokens</source>
+        <target>Токены аутентификации</target>
+      </segment>
+    </unit>
+    <unit id="7345261406944700511">
+      <segment>
+        <source>Create New Token</source>
+        <target>Создать новый токен</target>
+      </segment>
+    </unit>
+    <unit id="7890916963184797167">
+      <segment>
+        <source>Authentication tokens give you access to the GlitchTip API. You can create these tokens as authentication to gain specific access around the app.</source>
+        <target>Токены аутентификации дают доступ к API GlitchTip. Вы можете создавать их для аутентификации и получения определённого доступа к приложению.</target>
+      </segment>
+    </unit>
+    <unit id="7538977961049758582">
+      <segment>
+        <source>Your Tokens</source>
+        <target>Ваши токены</target>
+      </segment>
+    </unit>
+    <unit id="5612078901304454283">
+      <segment>
+        <source>Once you create a token, it will show up here.</source>
+        <target>Созданные токены будут отображаться здесь.</target>
+      </segment>
+    </unit>
+    <unit id="4587452935087847438">
+      <segment>
+        <source>Releases</source>
+        <target>Релизы</target>
+      </segment>
+    </unit>
+    <unit id="2251615247560743164">
+      <segment>
+        <source>There are no releases for this organization.</source>
+        <target>У этой организации нет релизов.</target>
+      </segment>
+    </unit>
+    <unit id="6326759550347037576">
+      <segment>
+        <source>Accept invitation</source>
+        <target>Принять приглашение</target>
+      </segment>
+    </unit>
+    <unit id="7055509398589474309">
+      <segment>
+        <source>Log in with existing account</source>
+        <target>Войти с существующей учётной записью</target>
+      </segment>
+    </unit>
+    <unit id="4648253303476880511">
+      <segment>
+        <source>Create new account</source>
+        <target>Создать новую учётную запись</target>
+      </segment>
+    </unit>
+    <unit id="4406952910598958793">
+      <segment>
+        <source>To continue, you must either log in to your existing account, or create a new one.</source>
+        <target>Чтобы продолжить, войдите в существующую учётную запись или создайте новую.</target>
+      </segment>
+    </unit>
+    <unit id="1095247315180807956">
+      <segment>
+        <source>New to GlitchTip?</source>
+        <target>Впервые в GlitchTip?</target>
+      </segment>
+    </unit>
+    <unit id="1176990449799757498">
+      <segment>
+        <source>Issues</source>
+        <target>Проблемы</target>
+      </segment>
+    </unit>
+    <unit id="4691887509600985309">
+      <segment>
+        <source>Members</source>
+        <target>Участники</target>
+      </segment>
+    </unit>
+    <unit id="1399934467160441489">
+      <segment>
+        <source>Create a New Organization</source>
+        <target>Создать новую организацию</target>
+      </segment>
+    </unit>
+    <unit id="22386476955637539">
+      <segment>
+        <source>Enter the code from the authenticator app on your mobile device. If you’ve lost your device, you may enter one of your recovery codes.</source>
+        <target>Введите код из приложения-аутентификатора на вашем мобильном устройстве. Если вы потеряли устройство, можете ввести один из резервных кодов.</target>
+      </segment>
+    </unit>
+    <unit id="1466012768716286509">
+      <segment>
+        <source>Sign Up</source>
+        <target>Зарегистрироваться</target>
+      </segment>
+    </unit>
+    <unit id="6509290351210910224">
+      <segment>
+        <source>To enable user reports, take a look at `showReportDialog` in the JS SDK.</source>
+        <target>Чтобы включить отчёты пользователей, обратите внимание на `showReportDialog` в JS SDK.</target>
+      </segment>
+    </unit>
+    <unit id="2454050363478003966">
+      <segment>
+        <source>Login</source>
+        <target>Вход</target>
+      </segment>
+    </unit>
+    <unit id="2907070106267329067">
+      <segment>
+        <source>Log in with authenticator app instead</source>
+        <target>Войти с помощью приложения-аутентификатора</target>
+      </segment>
+    </unit>
+    <unit id="4930506384627295710">
+      <segment>
+        <source>Settings</source>
+        <target>Настройки</target>
+      </segment>
+    </unit>
+    <unit id="4915431133669985304">
+      <segment>
+        <source>Profile</source>
+        <target>Профиль</target>
+      </segment>
+    </unit>
+    <unit id="3056614778231322145">
+      <segment>
+        <source>No user reports have been submitted.</source>
+        <target>Отчёты пользователей не отправлялись.</target>
+      </segment>
+    </unit>
+    <unit id="3328654199895417292">
+      <segment>
+        <source>Log in with authenticator app</source>
+        <target>Войти с помощью приложения-аутентификатора</target>
+      </segment>
+    </unit>
+    <unit id="3737185603553645778">
+      <segment>
+        <source>Your password is required to log in</source>
+        <target>Для входа требуется пароль</target>
+      </segment>
+    </unit>
+    <unit id="4053112335752964687">
+      <segment>
+        <source>Add Project</source>
+        <target>Добавить проект</target>
+      </segment>
+    </unit>
+    <unit id="7934833136974560675">
+      <segment>
+        <source>Retry</source>
+        <target>Повторить</target>
+      </segment>
+    </unit>
+    <unit id="5851560788527570644">
+      <segment>
+        <source>Notifications</source>
+        <target>Уведомления</target>
+      </segment>
+    </unit>
+    <unit id="4253861884986496315">
+      <segment>
+        <source>Your email is required to log in</source>
+        <target>Для входа требуется адрес электронной почты</target>
+      </segment>
+    </unit>
+    <unit id="4086606389696938932">
+      <segment>
+        <source>Account</source>
+        <target>Учётная запись</target>
+      </segment>
+    </unit>
+    <unit id="4736017430891007987">
+      <segment>
+        <source>Log in with security key</source>
+        <target>Войти с помощью ключа безопасности</target>
+      </segment>
+    </unit>
+    <unit id="5113165610004622651">
+      <segment>
+        <source>Log Out</source>
+        <target>Выйти</target>
+      </segment>
+    </unit>
+    <unit id="4551866846795587701">
+      <segment>
+        <source>Create Organization</source>
+        <target>Создать организацию</target>
+      </segment>
+    </unit>
+    <unit id="2336550011721758066">
+      <segment>
+        <source>Log in</source>
+        <target>Войти</target>
+      </segment>
+    </unit>
+    <unit id="6627551976444260400">
+      <segment>
+        <source>or</source>
+        <target>или</target>
+      </segment>
+    </unit>
+    <unit id="2152994175880724805">
+      <segment>
+        <source>Code must be of length 6, 8, or 16</source>
+        <target>Код должен состоять из 6, 8 или 16 символов</target>
+      </segment>
+    </unit>
+    <unit id="6972105223770675605">
+      <segment>
+        <source>Reset Password</source>
+        <target>Сбросить пароль</target>
+      </segment>
+    </unit>
+    <unit id="4679371106199891013">
+      <segment state="initial">
+        <source>Ignored</source>
+        <target>Игнорировать</target>
+      </segment>
+    </unit>
+    <unit id="7045123878111147511">
+      <segment>
+        <source>Required</source>
+        <target>Обязательное поле</target>
+      </segment>
+    </unit>
+    <unit id="2305074984265047688">
+      <segment>
+        <source>Plug in your security key and follow the prompt from your browser to finish logging in.</source>
+        <target>Подключите ключ безопасности и следуйте указаниям браузера, чтобы завершить вход.</target>
+      </segment>
+    </unit>
+    <unit id="7451233168808859381">
+      <segment>
+        <source>Verification Code</source>
+        <target>Код подтверждения</target>
+      </segment>
+    </unit>
+    <unit id="9008968878373693685">
+      <segment>
+        <source>Teams</source>
+        <target>Команды</target>
+      </segment>
+    </unit>
+    <unit id="7079167664042577585">
+      <segment>
+        <source>This is the first step to get started with GlitchTip.</source>
+        <target>Это первый шаг для начала работы с GlitchTip.</target>
+      </segment>
+    </unit>
+    <unit id="7830707034534607415">
+      <segment>
+        <source>Subscription</source>
+        <target>Подписка</target>
+      </segment>
+    </unit>
+    <unit id="8938510541215036054">
+      <segment>
+        <source>Enter a valid email address</source>
+        <target>Введите корректный адрес электронной почты</target>
+      </segment>
+    </unit>
+    <unit id="9040838861188606319">
+      <segment>
+        <source>Log in with security key instead</source>
+        <target>Войти с помощью ключа безопасности</target>
+      </segment>
+    </unit>
+    <unit id="907767253133208536">
+      <segment>
+        <source>Your password should be at least 8 characters long</source>
+        <target>Пароль должен содержать не менее 8 символов</target>
+      </segment>
+    </unit>
+    <unit id="2935794773842380882">
+      <segment>
+        <source>Organization creation has been disabled on this instance of GlitchTip. Contact an administrator to be invited into an existing organization.</source>
+        <target>Создание организаций отключено на этом экземпляре GlitchTip. Обратитесь к администратору, чтобы получить приглашение в существующую организацию.</target>
+      </segment>
+    </unit>
+    <unit id="3301086086650990787">
+      <segment>
+        <source>Register</source>
+        <target>Зарегистрироваться</target>
+      </segment>
+    </unit>
+    <unit id="5277739594710154939">
+      <segment>
+        <source>Already have an account?</source>
+        <target>Уже есть учётная запись?</target>
+      </segment>
+    </unit>
+    <unit id="8520023152129279437">
+      <segment>
+        <source>Log In</source>
+        <target>Войти</target>
+      </segment>
+    </unit>
+    <unit id="4426319772533875265">
+      <segment>
+        <source> Settings </source>
+        <target> Настройки </target>
+      </segment>
+    </unit>
+    <unit id="375247309021166846">
+      <notes>
+        <note category="description">Uptime check reports down</note>
+      </notes>
+      <segment>
+        <source>Down</source>
+        <target>Недоступен</target>
+      </segment>
+    </unit>
+    <unit id="4355002072406321718">
+      <segment>
+        <source>Request not received</source>
+        <target>Запрос не получен</target>
+      </segment>
+    </unit>
+    <unit id="4775550080689015987">
+      <segment>
+        <source>Reason</source>
+        <target>Причина</target>
+      </segment>
+    </unit>
+    <unit id="5573486145935722913">
+      <notes>
+        <note category="description">Uptime check reports up</note>
+      </notes>
+      <segment>
+        <source>Up</source>
+        <target>Доступен</target>
+      </segment>
+    </unit>
+    <unit id="5611592591303869712">
+      <segment>
+        <source>Status</source>
+        <target>Статус</target>
+      </segment>
+    </unit>
+    <unit id="663614338028506842">
+      <segment>
+        <source>Response time</source>
+        <target>Время ответа</target>
+      </segment>
+    </unit>
+    <unit id="6998318993417414160">
+      <segment>
+        <source>Response Time</source>
+        <target>Время ответа</target>
+      </segment>
+    </unit>
+    <unit id="8154453727027523235">
+      <segment>
+        <source>Alerts</source>
+        <target>Оповещения</target>
+      </segment>
+    </unit>
+    <unit id="8470311110519302542">
+      <segment>
+        <source>No data</source>
+        <target>Нет данных</target>
+      </segment>
+    </unit>
+    <unit id="8998179362936748717">
+      <segment>
+        <source>OK</source>
+        <target>ОК</target>
+      </segment>
+    </unit>
+    <unit id="2159130950882492111">
+      <segment>
+        <source>Cancel</source>
+        <target>Отмена</target>
+      </segment>
+    </unit>
+    <unit id="4267924302851864012">
+      <segment>
+        <source>Add An Alert Recipient</source>
+        <target>Добавить получателя оповещений</target>
+      </segment>
+    </unit>
+    <unit id="4292593925952604077">
+      <segment>
+        <source>Send an email to team members on this project.</source>
+        <target>Отправлять письма участникам команды этого проекта.</target>
+      </segment>
+    </unit>
+    <unit id="1339421090554377874">
+      <segment>
+        <source>You don&apos;t have any alerts set up. Click &quot;Create New Alert&quot; on the top right of this card to get started.</source>
+        <target>У вас не настроено ни одного оповещения. Нажмите «Создать новое оповещение» в правом верхнем углу этой карточки, чтобы начать.</target>
+      </segment>
+    </unit>
+    <unit id="5534317372657539313">
+      <segment>
+        <source>Create New Alert</source>
+        <target>Создать новое оповещение</target>
+      </segment>
+    </unit>
+    <unit id="5841403146698469514">
+      <segment>
+        <source>Create New Project</source>
+        <target>Создать новый проект</target>
+      </segment>
+    </unit>
+    <unit id="7091571651222742304">
+      <segment>
+        <source>Projects</source>
+        <target>Проекты</target>
+      </segment>
+    </unit>
+    <unit id="7903124738511795245">
+      <segment>
+        <source>This alert isn&apos;t being sent anywhere. Select &quot;Add An Alert Recipient&quot; below to get started.</source>
+        <target>Это оповещение никуда не отправляется. Нажмите «Добавить получателя оповещений» ниже, чтобы начать.</target>
+      </segment>
+    </unit>
+    <unit id="8597728355047941352">
+      <segment>
+        <source>New Alert</source>
+        <target>Новое оповещение</target>
+      </segment>
+    </unit>
+    <unit id="8953033926734869941">
+      <segment>
+        <source>Name</source>
+        <target>Название</target>
+      </segment>
+    </unit>
+    <unit id="935187492052582731">
+      <segment>
+        <source>Submit</source>
+        <target>Отправить</target>
+      </segment>
+    </unit>
+    <unit id="1322586333669103999">
+      <segment>
+        <source>Performance</source>
+        <target>Производительность</target>
+      </segment>
+    </unit>
+    <unit id="4630994130285969053">
+      <segment>
+        <source>Uptime Monitors</source>
+        <target>Мониторы доступности</target>
+      </segment>
+    </unit>
+    <unit id="2045779543869682721">
+      <segment>
+        <source>Get Started</source>
+        <target>Начать</target>
+      </segment>
+    </unit>
+    <unit id="3885497195825665706">
+      <segment>
+        <source>Next</source>
+        <target>Далее</target>
+      </segment>
+    </unit>
+    <unit id="3677937541764740600">
+      <segment state="initial">
+        <source>6-digit code</source>
+        <target>6-значный код</target>
+      </segment>
+    </unit>
+    <unit id="5995673810894749629">
+      <segment>
+        <source>Code must be 6 digits</source>
+        <target>Код должен состоять из 6 цифр</target>
+      </segment>
+    </unit>
+    <unit id="7156742322731584028">
+      <segment>
+        <source>Disable TOTP</source>
+        <target>Отключить TOTP</target>
+      </segment>
+    </unit>
+    <unit id="520980174761118864">
+      <segment>
+        <source>Log in with <ph id="0" equiv="INTERPOLATION" disp="{{ socialApp.name }}"/></source>
+        <target>Войти через <ph id="0" equiv="INTERPOLATION" disp="{{ socialApp.name }}"/></target>
+      </segment>
+    </unit>
+    <unit id="100331146953492785">
+      <segment>
+        <source>Connect your <ph id="0" equiv="INTERPOLATION" disp="{{ activeProjectPlatformName() }}"/> project to GlitchTip</source>
+        <target>Подключите ваш проект <ph id="0" equiv="INTERPOLATION" disp="{{ activeProjectPlatformName() }}"/> к GlitchTip</target>
+      </segment>
+    </unit>
+    <unit id="177080935354192505">
+      <segment state="initial">
+        <source>If you go to this project&apos;s <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a data-cy=&quot;platform-settings-link&quot; [routerLink]=&quot;[ &apos;/&apos;, activeOrganizationSlug(), &apos;settings&apos;, &apos;projects&apos;, activeProjectSlug(), ]&quot; &gt;" dispEnd="&lt;/a &gt;"> settings page</pc>, you can pick a platform. If you do, you&apos;ll get more specific instructions about how to get started. </source>
+        <target>Если вы перейдёте на <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a data-cy=&quot;platform-settings-link&quot; [routerLink]=&quot;[ &apos;/&apos;, activeOrganizationSlug(), &apos;settings&apos;, &apos;projects&apos;, activeProjectSlug(), ]&quot; &gt;" dispEnd="&lt;/a &gt;"> страницу настроек</pc> этого проекта, то сможете выбрать платформу. В этом случае вы получите более конкретные инструкции по началу работы. </target>
+      </segment>
+    </unit>
+    <unit id="1308044504532512434">
+      <segment>
+        <source>Personal Project Notifications</source>
+        <target>Личные уведомления по проекту</target>
+      </segment>
+    </unit>
+    <unit id="1744184913467319832">
+      <segment>
+        <source> Data Source Name: The code that connects your project to GlitchTip. Install a library into your project, then configure it with the DSN so that it knows how to send errors to your GlitchTip account. </source>
+        <target> Data Source Name (DSN): код, связывающий ваш проект с GlitchTip. Установите библиотеку в свой проект, затем настройте её, указав DSN, чтобы она знала, как отправлять ошибки в вашу учётную запись GlitchTip. </target>
+      </segment>
+    </unit>
+    <unit id="1830742686550996935">
+      <segment>
+        <source>This organization has no projects.</source>
+        <target>У этой организации нет проектов.</target>
+      </segment>
+    </unit>
+    <unit id="2431017377186650072">
+      <segment>
+        <source>Edit Preferences</source>
+        <target>Изменить настройки</target>
+      </segment>
+    </unit>
+    <unit id="2959157372543624146">
+      <segment>
+        <source>Create new project in <ph id="0" equiv="INTERPOLATION" disp="{{ organization.name }}"/> </source>
+        <target>Создать новый проект в <ph id="0" equiv="INTERPOLATION" disp="{{ organization.name }}"/> </target>
+      </segment>
+    </unit>
+    <unit id="3647474424920112919">
+      <segment>
+        <source>Connect your project to GlitchTip</source>
+        <target>Подключите ваш проект к GlitchTip</target>
+      </segment>
+    </unit>
+    <unit id="3821671973040323145">
+      <segment>
+        <source> Because you are an admin for <ph id="0" equiv="INTERPOLATION" disp="{{ project.organization.name }}"/>, you have access to all of its projects. However, if you want to view issues for <ph id="1" equiv="INTERPOLATION_1" disp="{{ project.name }}"/>, you must be a member of one of its teams. </source>
+        <target> Поскольку вы администратор <ph id="0" equiv="INTERPOLATION" disp="{{ project.organization.name }}"/>, у вас есть доступ ко всем её проектам. Однако, чтобы просматривать проблемы <ph id="1" equiv="INTERPOLATION_1" disp="{{ project.name }}"/>, вы должны состоять в одной из его команд. </target>
+      </segment>
+    </unit>
+    <unit id="3834295552674710150">
+      <segment>
+        <source>In order to use GlitchTip, you&apos;ll need to create an organization.</source>
+        <target>Для использования GlitchTip необходимо создать организацию.</target>
+      </segment>
+    </unit>
+    <unit id="4388879716045736175">
+      <segment>
+        <source>Note</source>
+        <target>Примечание</target>
+      </segment>
+    </unit>
+    <unit id="5183247000083361116">
+      <segment>
+        <source>Out of the projects you have selected, you are not a part of that project&apos;s team for at least one of them.</source>
+        <target>Как минимум для одного из выбранных проектов вы не состоите в его команде.</target>
+      </segment>
+    </unit>
+    <unit id="5448343062628656309">
+      <segment>
+        <source>No events match your filters.</source>
+        <target>Нет событий, соответствующих вашим фильтрам.</target>
+      </segment>
+    </unit>
+    <unit id="5621052107213107389">
+      <segment>
+        <source>Update Project</source>
+        <target>Обновить проект</target>
+      </segment>
+    </unit>
+    <unit id="5923980840626905087">
+      <segment>
+        <source> Platform Documentation </source>
+        <target> Документация по платформе </target>
+      </segment>
+    </unit>
+    <unit id="6302903762785466130">
+      <segment>
+        <source>Delete Project</source>
+        <target>Удалить проект</target>
+      </segment>
+    </unit>
+    <unit id="6699311255070036397">
+      <segment>
+        <source>Edit whether or not you want to receive notifications for this project</source>
+        <target>Настройте, хотите ли вы получать уведомления для этого проекта</target>
+      </segment>
+    </unit>
+    <unit id="6940348790913679018">
+      <segment>
+        <source>To add a project to this organization, press the &quot;Create New Project&quot; button.</source>
+        <target>Чтобы добавить проект в эту организацию, нажмите кнопку «Создать новый проект».</target>
+      </segment>
+    </unit>
+    <unit id="7033296732013526864">
+      <segment>
+        <source>Client Keys (DSN)</source>
+        <target>Клиентские ключи (DSN)</target>
+      </segment>
+    </unit>
+    <unit id="7226346166840376717">
+      <segment>
+        <source>By deleting your project, you will lose all associated data. This cannot be undone.</source>
+        <target>Удалив проект, вы потеряете все связанные с ним данные. Это действие нельзя отменить.</target>
+      </segment>
+    </unit>
+    <unit id="7819314041543176992">
+      <segment>
+        <source>Close</source>
+        <target>Закрыть</target>
+      </segment>
+    </unit>
+    <unit id="79938863716203390">
+      <segment>
+        <source>To add a project to this organization, press the &quot;Add Project&quot; button.</source>
+        <target>Чтобы добавить проект в эту организацию, нажмите кнопку «Добавить проект».</target>
+      </segment>
+    </unit>
+    <unit id="8251107285080064288">
+      <segment>
+        <source>Try changing your search parameters to get something to show here.</source>
+        <target>Попробуйте изменить параметры поиска, чтобы здесь что-то отобразилось.</target>
+      </segment>
+    </unit>
+    <unit id="8267592046747299006">
+      <segment>
+        <source>You can&apos;t see issues for this project because you&apos;re not on the team.</source>
+        <target>Вы не можете видеть проблемы этого проекта, так как не состоите в его команде.</target>
+      </segment>
+    </unit>
+    <unit id="1678548018195726594">
+      <segment>
+        <source>Create Team</source>
+        <target>Создать команду</target>
+      </segment>
+    </unit>
+    <unit id="1743088859194300989">
+      <segment>
+        <source>Your Teams</source>
+        <target>Ваши команды</target>
+      </segment>
+    </unit>
+    <unit id="182653714972067036">
+      <segment>
+        <source>Enter a valid slug to create a team</source>
+        <target>Введите корректный slug для создания команды</target>
+      </segment>
+    </unit>
+    <unit id="2115863840021276098">
+      <segment>
+        <source>Now that you have an organization and a subscription, create a project.</source>
+        <target>Теперь, когда у вас есть организация и подписка, создайте проект.</target>
+      </segment>
+    </unit>
+    <unit id="2167503793894173335">
+      <segment>
+        <source>Create a New Team</source>
+        <target>Создать новую команду</target>
+      </segment>
+    </unit>
+    <unit id="2314099574053878289">
+      <segment>
+        <source>Enter a team name</source>
+        <target>Введите название команды</target>
+      </segment>
+    </unit>
+    <unit id="2501480779300161804">
+      <segment>
+        <source>By deleting your team, you will lose all associated data. This cannot be undone.</source>
+        <target>Удалив команду, вы потеряете все связанные с ней данные. Это действие нельзя отменить.</target>
+      </segment>
+    </unit>
+    <unit id="2832668001279440249">
+      <segment>
+        <source>Delete Team</source>
+        <target>Удалить команду</target>
+      </segment>
+    </unit>
+    <unit id="332657983215308739">
+      <segment>
+        <source>This team doesn&apos;t have any projects</source>
+        <target>У этой команды нет проектов</target>
+      </segment>
+    </unit>
+    <unit id="3348547714642337740">
+      <segment>
+        <source>No members</source>
+        <target>Нет участников</target>
+      </segment>
+    </unit>
+    <unit id="3768641442274728020">
+      <segment>
+        <source>No projects</source>
+        <target>Нет проектов</target>
+      </segment>
+    </unit>
+    <unit id="4358157694468493157">
+      <segment>
+        <source>Other Teams</source>
+        <target>Другие команды</target>
+      </segment>
+    </unit>
+    <unit id="4479333657075318113">
+      <segment>
+        <source>You aren&apos;t part of any teams. Join a team below or press the &quot;Create Team&quot; button in the upper right.</source>
+        <target>Вы не состоите ни в одной команде. Присоединитесь к команде ниже или нажмите кнопку «Создать команду» в правом верхнем углу.</target>
+      </segment>
+    </unit>
+    <unit id="4687980611669913181">
+      <segment>
+        <source>You don&apos;t have any teams set up. Teams determine which users have access to projects in your organization.</source>
+        <target>У вас не создано ни одной команды. Команды определяют, какие пользователи имеют доступ к проектам вашей организации.</target>
+      </segment>
+    </unit>
+    <unit id="4894116049835995028">
+      <segment>
+        <source>Questions about subscriptions? Need assistance, or a bigger plan? Contact us at <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;mailto:{{ billingEmail }}&quot;&gt;" dispEnd="&lt;/a &gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ billingEmail }}"/></pc>.</source>
+        <target>Есть вопросы о подписках? Нужна помощь или более крупный тариф? Свяжитесь с нами: <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;mailto:{{ billingEmail }}&quot;&gt;" dispEnd="&lt;/a &gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ billingEmail }}"/></pc>.</target>
+      </segment>
+    </unit>
+    <unit id="5105557512709552795">
+      <segment>
+        <source>Add Member</source>
+        <target>Добавить участника</target>
+      </segment>
+    </unit>
+    <unit id="5363625141068095814">
+      <segment>
+        <source>This organization has a trial subscription to GlitchTip.</source>
+        <target>У этой организации пробная подписка на GlitchTip.</target>
+      </segment>
+    </unit>
+    <unit id="5432975988429346472">
+      <segment>
+        <source>This team doesn&apos;t have any members</source>
+        <target>У этой команды нет участников</target>
+      </segment>
+    </unit>
+    <unit id="5799782740550832490">
+      <segment>
+        <source>This organization does not have an active subscription to GlitchTip. Pick a plan to get started.</source>
+        <target>У этой организации нет активной подписки на GlitchTip. Выберите тариф, чтобы начать.</target>
+      </segment>
+    </unit>
+    <unit id="7486830422791899026">
+      <segment>
+        <source>If you have questions about your subscription, please contact us at <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;mailto:{{ billingEmail }}&quot;&gt;" dispEnd="&lt;/a &gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ billingEmail }}"/></pc>. </source>
+        <target>Если у вас есть вопросы о подписке, свяжитесь с нами: <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;mailto:{{ billingEmail }}&quot;&gt;" dispEnd="&lt;/a &gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ billingEmail }}"/></pc>. </target>
+      </segment>
+    </unit>
+    <unit id="6240182255609880044">
+      <segment>
+        <source>Your team slug can only consist of letters, numbers, underscores and/or hyphens.</source>
+        <target>Slug команды может содержать только буквы, цифры, подчёркивания и дефисы.</target>
+      </segment>
+    </unit>
+    <unit id="6560990714812373531">
+      <segment>
+        <source>To create a new team, press the &quot;Create Team&quot; button in the upper right.</source>
+        <target>Чтобы создать новую команду, нажмите кнопку «Создать команду» в правом верхнем углу.</target>
+      </segment>
+    </unit>
+    <unit id="7478140689790892603">
+      <segment>
+        <source>Teams are for managing issue notifications and workflow. View permissions are handled through <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a routerLink=&quot;../members&quot;&gt;" dispEnd="&lt;/a&gt;"> organization membership.</pc></source>
+        <target>Команды предназначены для управления уведомлениями о проблемах и рабочим процессом. Права на просмотр определяются через <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a routerLink=&quot;../members&quot;&gt;" dispEnd="&lt;/a&gt;"> членство в организации.</pc></target>
+      </segment>
+    </unit>
+    <unit id="8120474743695089696">
+      <segment>
+        <source>This organization has a subscription to GlitchTip, but the payment is past due.</source>
+        <target>У этой организации есть подписка на GlitchTip, но оплата просрочена.</target>
+      </segment>
+    </unit>
+    <unit id="5279770905523465379">
+      <segment>
+        <source>Select a valid time zone</source>
+        <target>Выберите корректный часовой пояс</target>
+      </segment>
+    </unit>
+    <unit id="8951128623878467862">
+      <segment>
+        <source>Preferences</source>
+        <target>Настройки</target>
+      </segment>
+    </unit>
+    <unit id="4185629687342786413">
+      <segment>
+        <source>The account you&apos;re logged into is already a part of this organization. You might want to <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a (click)=&quot;logout()&quot; href=&quot;javascript:void(0)&quot;&gt;" dispEnd="&lt;/a&gt;">log out</pc>, then create an account for or log into the account that this invite link was intended for.</source>
+        <target>Учётная запись, в которую вы вошли, уже состоит в этой организации. Возможно, вам стоит <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a (click)=&quot;logout()&quot; href=&quot;javascript:void(0)&quot;&gt;" dispEnd="&lt;/a&gt;">выйти</pc>, а затем создать учётную запись или войти в ту, для которой предназначена эта ссылка-приглашение.</target>
+      </segment>
+    </unit>
+    <unit id="8433883189750412090">
+      <segment>
+        <source>You have been invited to join<pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;"> <ph id="1" equiv="INTERPOLATION" disp="{{ acceptInfo.orgUser.organization.name }}"/> </pc> so you can keep track of errors.</source>
+        <target>Вас пригласили присоединиться к<pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;"> <ph id="1" equiv="INTERPOLATION" disp="{{ acceptInfo.orgUser.organization.name }}"/> </pc>, чтобы вы могли отслеживать ошибки.</target>
+      </segment>
+    </unit>
+    <unit id="1581886603273423006">
+      <segment>
+        <source>Account Owner</source>
+        <target>Владелец учётной записи</target>
+      </segment>
+    </unit>
+    <unit id="1740276691614535252">
+      <segment>
+        <source>Gains admin access on all teams as well as the ability to add and remove members.</source>
+        <target>Получает права администратора во всех командах, а также возможность добавлять и удалять участников.</target>
+      </segment>
+    </unit>
+    <unit id="1922838090212936091">
+      <segment>
+        <source>Admin privileges on any teams of which user is a member. They can create new teams and projects, as well as delete teams and projects they are already members of. Additionally, they can manage memberships of teams that they are members of.</source>
+        <target>Права администратора в командах, участником которых является пользователь. Может создавать новые команды и проекты, а также удалять команды и проекты, в которых уже состоит. Кроме того, может управлять составом команд, участником которых является.</target>
+      </segment>
+    </unit>
+    <unit id="2267387778265004491">
+      <segment>
+        <source>Organization Account Ownership</source>
+        <target>Владение учётной записью организации</target>
+      </segment>
+    </unit>
+    <unit id="231679111972850796">
+      <segment>
+        <source>Added</source>
+        <target>Добавлен</target>
+      </segment>
+    </unit>
+    <unit id="3444805486131364421">
+      <segment>
+        <source>Scopes:</source>
+        <target>Области доступа:</target>
+      </segment>
+    </unit>
+    <unit id="3916787140877704867">
+      <segment>
+        <source>Team(s)</source>
+        <target>Команда(ы)</target>
+      </segment>
+    </unit>
+    <unit id="4145496584631696119">
+      <segment>
+        <source>Role</source>
+        <target>Роль</target>
+      </segment>
+    </unit>
+    <unit id="4729000058409517470">
+      <segment>
+        <source>Unrestricted access to the organization, its data, and its settings. Can add, modify, and delete projects and members.</source>
+        <target>Неограниченный доступ к организации, её данным и настройкам. Может добавлять, изменять и удалять проекты и участников.</target>
+      </segment>
+    </unit>
+    <unit id="4768749765465246664">
+      <segment>
+        <source>Email</source>
+        <target>Электронная почта</target>
+      </segment>
+    </unit>
+    <unit id="5909691734964157223">
+      <segment>
+        <source> This member is the organization account owner and has access to the organization&apos;s GlitchTip subscription settings. </source>
+        <target> Этот участник является владельцем учётной записи организации и имеет доступ к настройкам подписки организации на GlitchTip. </target>
+      </segment>
+    </unit>
+    <unit id="6146979090477797496">
+      <segment>
+        <source> The account owner has access to the organization&apos;s GlitchTip subscription settings. If you are the current account owner or have an owner role, you may transfer ownership to this member. </source>
+        <target> Владелец учётной записи имеет доступ к настройкам подписки организации на GlitchTip. Если вы текущий владелец учётной записи или имеете роль владельца, вы можете передать права владения этому участнику. </target>
+      </segment>
+    </unit>
+    <unit id="6895800612787584413">
+      <segment>
+        <source>Members can view and act on events, as well as view most other data within the organization.</source>
+        <target>Участники могут просматривать события и работать с ними, а также просматривать большую часть остальных данных организации.</target>
+      </segment>
+    </unit>
+    <unit id="6921336596257236722">
+      <segment>
+        <source>New version available. Load New Version?</source>
+        <target>Доступна новая версия. Загрузить её?</target>
+      </segment>
+    </unit>
+    <unit id="9208909205064884220">
+      <segment>
+        <source>This user isn&apos;t on any teams.</source>
+        <target>Этот пользователь не состоит ни в одной команде.</target>
+      </segment>
+    </unit>
+    <unit id="1312433286376470649">
+      <segment>
+        <source>Site URL</source>
+        <target>URL сайта</target>
+      </segment>
+    </unit>
+    <unit id="1398754421418372278">
+      <segment>
+        <source>Monitor Name</source>
+        <target>Название монитора</target>
+      </segment>
+    </unit>
+    <unit id="1418979860895365047">
+      <segment>
+        <source> GlitchTip will &quot;ping&quot; the specified URL using an HTTP HEAD request with no payload. </source>
+        <target> GlitchTip будет «пинговать» указанный URL с помощью HTTP-запроса HEAD без тела. </target>
+      </segment>
+    </unit>
+    <unit id="6910864712437104509">
+      <segment>
+        <source>Uptime email notifications are sent to the team assigned to the associated project.</source>
+        <target>Уведомления о доступности отправляются по электронной почте команде, назначенной на связанный проект.</target>
+      </segment>
+    </unit>
+    <unit id="3255939212816298806">
+      <segment>
+        <source>Enter a status code number </source>
+        <target>Введите числовой код состояния </target>
+      </segment>
+    </unit>
+    <unit id="3335933778689867657">
+      <segment>
+        <source>Expected Status</source>
+        <target>Ожидаемый статус</target>
+      </segment>
+    </unit>
+    <unit id="3724940541438351467">
+      <segment>
+        <source>Time in seconds GlitchTip will wait for a response from your app. Defaults to 20 seconds.</source>
+        <target>Время в секундах, в течение которого GlitchTip будет ждать ответа от вашего приложения. По умолчанию — 20 секунд.</target>
+      </segment>
+    </unit>
+    <unit id="3802089991568977129">
+      <segment>
+        <source>Interval (seconds)</source>
+        <target>Интервал (в секундах)</target>
+      </segment>
+    </unit>
+    <unit id="2168400886938239735">
+      <segment>
+        <source>Enter an integer.</source>
+        <target>Введите целое число.</target>
+      </segment>
+    </unit>
+    <unit id="8658719885168030493">
+      <segment>
+        <source>Must be 60 or higher.</source>
+        <target>Должно быть не менее 60.</target>
+      </segment>
+    </unit>
+    <unit id="4970236371480835408">
+      <segment>
+        <source> GlitchTip will send an HTTP POST request to the specified URL. If the expected response is not received, the site will be marked as Down. </source>
+        <target> GlitchTip отправит HTTP-запрос POST на указанный URL. Если ожидаемый ответ не будет получен, сайт будет отмечен как недоступный. </target>
+      </segment>
+    </unit>
+    <unit id="5049957255900483968">
+      <segment>
+        <source>Enter an integer between 1 and 60.</source>
+        <target>Введите целое число от 1 до 60.</target>
+      </segment>
+    </unit>
+    <unit id="5956316725115867558">
+      <segment>
+        <source>Timeout</source>
+        <target>Тайм-аут</target>
+      </segment>
+    </unit>
+    <unit id="7307117116794596244">
+      <segment>
+        <source>Monitor type</source>
+        <target>Тип монитора</target>
+      </segment>
+    </unit>
+    <unit id="7679156164610222177">
+      <segment>
+        <source> GlitchTip will send an HTTP GET request to the specified URL. If the expected response is not received, the site will be marked as Down. </source>
+        <target> GlitchTip отправит HTTP-запрос GET на указанный URL. Если ожидаемый ответ не будет получен, сайт будет отмечен как недоступный. </target>
+      </segment>
+    </unit>
+    <unit id="8098214202153793679">
+      <segment>
+        <source> The quantity needs to be greater than or equal to 100. </source>
+        <target> Значение должно быть больше или равно 100. </target>
+      </segment>
+    </unit>
+    <unit id="8190727095346221313">
+      <segment>
+        <source>Associated Project</source>
+        <target>Связанный проект</target>
+      </segment>
+    </unit>
+    <unit id="2118666744161927873">
+      <segment>
+        <source>GlitchTip will await requests from your site to ensure it is active. If it doesn&apos;t receive the request, the site will be marked as Down.</source>
+        <target>GlitchTip будет ожидать запросы от вашего сайта, чтобы убедиться, что он активен. Если запрос не поступит, сайт будет отмечен как недоступный.</target>
+      </segment>
+    </unit>
+    <unit id="1107238992361664159">
+      <segment>
+        <source>Enter a valid URL with protocol (ex. https://example.com)</source>
+        <target>Введите корректный URL с протоколом (например, https://example.com)</target>
+      </segment>
+    </unit>
+    <unit id="1221596867309460035">
+      <segment>
+        <source>New Password</source>
+        <target>Новый пароль</target>
+      </segment>
+    </unit>
+    <unit id="1846542227840529109">
+      <segment>
+        <source>Current Password</source>
+        <target>Текущий пароль</target>
+      </segment>
+    </unit>
+    <unit id="2118438278570914652">
+      <segment>
+        <source>Expected Response Body</source>
+        <target>Ожидаемое тело ответа</target>
+      </segment>
+    </unit>
+    <unit id="2172491100431008170">
+      <segment>
+        <source>Your passwords don&apos;t match</source>
+        <target>Пароли не совпадают</target>
+      </segment>
+    </unit>
+    <unit id="3221948488301825969">
+      <segment>
+        <source>Issue not found</source>
+        <target>Проблема не найдена</target>
+      </segment>
+    </unit>
+    <unit id="3811407979880504315">
+      <segment>
+        <source>System Info</source>
+        <target>Информация о системе</target>
+      </segment>
+    </unit>
+    <unit id="4052010728262248283">
+      <segment>
+        <source>Backend configuration</source>
+        <target>Конфигурация бэкенда</target>
+      </segment>
+    </unit>
+    <unit id="4841998368096526659">
+      <segment>
+        <source>View all issues in <ph id="0" equiv="INTERPOLATION" disp="{{ organization.name }}"/></source>
+        <target>Посмотреть все проблемы в <ph id="0" equiv="INTERPOLATION" disp="{{ organization.name }}"/></target>
+      </segment>
+    </unit>
+    <unit id="4895326106573044490">
+      <segment>
+        <source>Documentation</source>
+        <target>Документация</target>
+      </segment>
+    </unit>
+    <unit id="5478056060243048045">
+      <segment>
+        <source>This may be because the URL is pointing to an issue that doesn&apos;t exist or was deleted.</source>
+        <target>Возможно, URL указывает на проблему, которая не существует или была удалена.</target>
+      </segment>
+    </unit>
+    <unit id="7276967761111129879">
+      <segment>
+        <source>URL may not be more than <ph id="0" equiv="INTERPOLATION" disp="{{ formUrl.errors.maxlength.requiredLength }}"/> characters</source>
+        <target>URL не может быть длиннее <ph id="0" equiv="INTERPOLATION" disp="{{ formUrl.errors.maxlength.requiredLength }}"/> символов</target>
+      </segment>
+    </unit>
+    <unit id="6164834099500157112">
+      <segment>
+        <source>Unable to log in with provided credentials.</source>
+        <target>Не удалось войти с указанными учётными данными.</target>
+      </segment>
+    </unit>
+    <unit id="6306074632981769484">
+      <segment>
+        <source>It&apos;s also possible that this issue was reported to a project that you are not able to access.</source>
+        <target>Также возможно, что эта проблема относится к проекту, к которому у вас нет доступа.</target>
+      </segment>
+    </unit>
+    <unit id="6582573664846559511">
+      <segment>
+        <source>Change Password</source>
+        <target>Изменить пароль</target>
+      </segment>
+    </unit>
+    <unit id="6796247291544680076">
+      <segment>
+        <source>Type in your new password</source>
+        <target>Введите новый пароль</target>
+      </segment>
+    </unit>
+    <unit id="7135122203377475337">
+      <segment>
+        <source>Use only letters, numbers, underscores and/or hyphens</source>
+        <target>Используйте только буквы, цифры, подчёркивания и дефисы</target>
+      </segment>
+    </unit>
+    <unit id="7994060186123483149">
+      <segment>
+        <source>Your new password has been saved.</source>
+        <target>Новый пароль сохранён.</target>
+      </segment>
+    </unit>
+    <unit id="7464216857382824881">
+      <segment>
+        <source>GlitchTip will check to make sure the port at the specified URL is accessible.</source>
+        <target>GlitchTip проверит, что порт по указанному адресу доступен.</target>
+      </segment>
+    </unit>
+    <unit id="830996102207481987">
+      <segment>
+        <source>If string isn&apos;t found in response body, the monitor will report as down</source>
+        <target>Если строка не будет найдена в теле ответа, монитор сообщит о недоступности</target>
+      </segment>
+    </unit>
+    <unit id="8316175416734096923">
+      <segment>
+        <source> Uptime check interval: <ph id="0" equiv="INTERPOLATION" disp="{{ monitor.interval | number }}"/> seconds </source>
+        <target> Интервал проверки доступности: <ph id="0" equiv="INTERPOLATION" disp="{{ monitor.interval | number }}"/> секунд </target>
+      </segment>
+    </unit>
+    <unit id="8483269670688589838">
+      <segment>
+        <source>Your current is required to change your password</source>
+        <target>Для смены пароля требуется текущий пароль</target>
+      </segment>
+    </unit>
+    <unit id="8797007391593964199">
+      <segment>
+        <source>Enter a host name and port (ex. example.com:80)</source>
+        <target>Введите имя хоста и порт (например, example.com:80)</target>
+      </segment>
+    </unit>
+    <unit id="8916408973006340984">
+      <segment>
+        <source>GlitchTip <ph id="0" equiv="INTERPOLATION" disp="{{ version() }}"/></source>
+        <target>GlitchTip <ph id="0" equiv="INTERPOLATION" disp="{{ version() }}"/></target>
+      </segment>
+    </unit>
+    <unit id="911145468998987410">
+      <segment>
+        <source>Confirm New Password</source>
+        <target>Подтвердите новый пароль</target>
+      </segment>
+    </unit>
+    <unit id="960665565485640516">
+      <segment>
+        <source>Something went wrong</source>
+        <target>Что-то пошло не так</target>
+      </segment>
+    </unit>
+    <unit id="1017066204420437090">
+      <segment>
+        <source>Set New Password</source>
+        <target>Установить новый пароль</target>
+      </segment>
+    </unit>
+    <unit id="1431416938026210429">
+      <segment>
+        <source>Password</source>
+        <target>Пароль</target>
+      </segment>
+    </unit>
+    <unit id="1538995058317034003">
+      <segment>
+        <source>Device activation was unsuccessful.</source>
+        <target>Не удалось активировать устройство.</target>
+      </segment>
+    </unit>
+    <unit id="187187500641108332">
+      <segment>
+        <source>
+          <ph id="0" equiv="INTERPOLATION" disp="{{ backupCode?.errors?.serverError }}"/>
+        </source>
+        <target>
+          <ph id="0" equiv="INTERPOLATION" disp="{{ backupCode?.errors?.serverError }}"/>
+        </target>
+      </segment>
+    </unit>
+    <unit id="305233477996347721">
+      <segment>
+        <source>Code must be 8 digits</source>
+        <target>Код должен состоять из 8 цифр</target>
+      </segment>
+    </unit>
+    <unit id="3099741642167775297">
+      <segment>
+        <source>Download</source>
+        <target>Скачать</target>
+      </segment>
+    </unit>
+    <unit id="3677197196283475273">
+      <segment>
+        <source>You have successfully disconnected your social auth account</source>
+        <target>Учётная запись социальной сети успешно отключена</target>
+      </segment>
+    </unit>
+    <unit id="3782563238994348625">
+      <segment>
+        <source>Confirm password</source>
+        <target>Подтвердите пароль</target>
+      </segment>
+    </unit>
+    <unit id="4323470180912194028">
+      <segment>
+        <source>Copy</source>
+        <target>Копировать</target>
+      </segment>
+    </unit>
+    <unit id="6359908116364527838">
+      <segment>
+        <source>Project Alerts</source>
+        <target>Оповещения проекта</target>
+      </segment>
+    </unit>
+    <unit id="6373761293150491680">
+      <segment>
+        <source>Return to initial login page</source>
+        <target>Вернуться на начальную страницу входа</target>
+      </segment>
+    </unit>
+    <unit id="6430072333383968514">
+      <segment>
+        <source>Regenerate codes</source>
+        <target>Сгенерировать новые коды</target>
+      </segment>
+    </unit>
+    <unit id="7308123627289097296">
+      <segment>
+        <source>Unknown problem using Social Authentication</source>
+        <target>Неизвестная ошибка при входе через социальную сеть</target>
+      </segment>
+    </unit>
+    <unit id="7704379049286251361">
+      <segment>
+        <source>Your current password is incorrect.</source>
+        <target>Текущий пароль неверен.</target>
+      </segment>
+    </unit>
+    <unit id="8434191191397593923">
+      <segment>
+        <source>Your account has no password set up.</source>
+        <target>В вашей учётной записи не установлен пароль.</target>
+      </segment>
+    </unit>
+    <unit id="8489391551429309663">
+      <segment>
+        <source>Your security key has been registered.</source>
+        <target>Ключ безопасности зарегистрирован.</target>
+      </segment>
+    </unit>
+    <unit id="9053544882734151327">
+      <segment>
+        <source>Provide a name for your device to complete registration.</source>
+        <target>Укажите имя устройства, чтобы завершить регистрацию.</target>
+      </segment>
+    </unit>
+    <unit id="2045774391739296209">
+      <segment>
+        <source>Timespan</source>
+        <target>Промежуток времени</target>
+      </segment>
+    </unit>
+    <unit id="2342149656142683501">
+      <segment>
+        <source>If an uptime monitor is triggered.</source>
+        <target>Если сработает монитор доступности.</target>
+      </segment>
+    </unit>
+    <unit id="2582356557395842562">
+      <segment>
+        <source>Enter an integer greater than 0.</source>
+        <target>Введите целое число больше 0.</target>
+      </segment>
+    </unit>
+    <unit id="3084686770297988088">
+      <segment>
+        <source>Return to login</source>
+        <target>Вернуться ко входу</target>
+      </segment>
+    </unit>
+    <unit id="3595833482001508466">
+      <segment>
+        <source><ph id="0" equiv="INTERPOLATION" disp="{{ projectFormQuantity.value | i18nPlural: timesI18nMapping }}"/> in</source>
+        <target><ph id="0" equiv="INTERPOLATION" disp="{{ projectFormQuantity.value | i18nPlural: timesI18nMapping }}"/> в течение</target>
+      </segment>
+    </unit>
+    <unit id="3695251475145999588">
+      <segment>
+        <source>time</source>
+        <target>раз</target>
+      </segment>
+    </unit>
+    <unit id="5405071297219936776">
+      <segment>
+        <source>minute</source>
+        <target>минуты</target>
+      </segment>
+    </unit>
+    <unit id="6159412721278290372">
+      <segment state="initial">
+        <source><ph id="0" equiv="INTERPOLATION" disp="{{ projectFormTimespan.value | i18nPlural: minutesI18nMapping }}"/>, send an alert.</source>
+        <target>в течение <ph id="0" equiv="INTERPOLATION" disp="{{ projectFormTimespan.value | i18nPlural: minutesI18nMapping }}"/> — отправить оповещение.</target>
+      </segment>
+    </unit>
+    <unit id="5966633327405012171">
+      <segment>
+        <source> If an <pc id="0" equivStart="START_TAG_SPAN" equivEnd="CLOSE_TAG_SPAN" type="other" dispStart="&lt;span class=&quot;tooltip&quot; matTooltip=&quot;An event is every occurrence of the same error (aka: issue) in your application.&quot; &gt;" dispEnd="&lt;/span &gt;">event</pc> happens</source>
+        <target> Если <pc id="0" equivStart="START_TAG_SPAN" equivEnd="CLOSE_TAG_SPAN" type="other" dispStart="&lt;span class=&quot;tooltip&quot; matTooltip=&quot;An event is every occurrence of the same error (aka: issue) in your application.&quot; &gt;" dispEnd="&lt;/span &gt;">событие</pc> происходит</target>
+      </segment>
+    </unit>
+    <unit id="7074388989229825051">
+      <segment>
+        <source>times</source>
+        <target>раз</target>
+      </segment>
+    </unit>
+    <unit id="8222747160094057941">
+      <segment>
+        <source>If you have an account with GlitchTip, an email has been sent to the email address you provided.</source>
+        <target>Если у вас есть учётная запись GlitchTip, на указанный вами адрес электронной почты отправлено письмо.</target>
+      </segment>
+    </unit>
+    <unit id="982745398054129955">
+      <segment>
+        <source>minutes</source>
+        <target>минут</target>
+      </segment>
+    </unit>
+    <unit id="1232610167578746045">
+      <segment>
+        <source>Unable to connect to @sentry/wizard</source>
+        <target>Не удалось подключиться к @sentry/wizard</target>
+      </segment>
+    </unit>
+    <unit id="1277316148999198227">
+      <segment>
+        <source>Unmerge</source>
+        <target>Разъединить</target>
+      </segment>
+    </unit>
+    <unit id="1417995330725483974">
+      <segment>
+        <source>The name of your organization has been updated to <ph id="0" equiv="PH" disp="data.name"/></source>
+        <target>Название вашей организации изменено на <ph id="0" equiv="PH" disp="data.name"/></target>
+      </segment>
+    </unit>
+    <unit id="1554838717931748985">
+      <segment>
+        <source>Merged</source>
+        <target>Объединено</target>
+      </segment>
+    </unit>
+    <unit id="1655069838040430737">
+      <segment>
+        <source>Event Details</source>
+        <target>Детали события</target>
+      </segment>
+    </unit>
+    <unit id="168526128992551302">
+      <segment>
+        <source>You have been added to <ph id="0" equiv="PH" disp="data.orgUser.organization.name"/>.</source>
+        <target>Вы добавлены в <ph id="0" equiv="PH" disp="data.orgUser.organization.name"/>.</target>
+      </segment>
+    </unit>
+    <unit id="1874370182429640371">
+      <segment>
+        <source> There was an error. Try again later. </source>
+        <target> Произошла ошибка. Повторите попытку позже. </target>
+      </segment>
+    </unit>
+    <unit id="2047102130540283011">
+      <segment>
+        <source> This e-mail confirmation link expired or is invalid. Please issue a new e-mail confirmation request. </source>
+        <target> Срок действия этой ссылки для подтверждения адреса электронной почты истёк, или она недействительна. Запросите новое письмо с подтверждением. </target>
+      </segment>
+    </unit>
+    <unit id="2110065830957672842">
+      <segment>
+        <source>Are you sure you want to remove <ph id="0" equiv="PH" disp="name"/>? You will permanently lose all projects and teams associated with it.</source>
+        <target>Вы уверены, что хотите удалить <ph id="0" equiv="PH" disp="name"/>? Вы безвозвратно потеряете все связанные проекты и команды.</target>
+      </segment>
+    </unit>
+    <unit id="21729799810425671">
+      <segment>
+        <source>No title found for this merged issue</source>
+        <target>Заголовок для этой объединённой проблемы не найден</target>
+      </segment>
+    </unit>
+    <unit id="2323166636157815284">
+      <segment>
+        <source>Successfully removed <ph id="0" equiv="PH" disp="member.email"/> from organization</source>
+        <target><ph id="0" equiv="PH" disp="member.email"/> успешно удалён из организации</target>
+      </segment>
+    </unit>
+    <unit id="2347464874722958215">
+      <segment>
+        <source>There was an error when attempting to load issues.</source>
+        <target>Произошла ошибка при загрузке проблем.</target>
+      </segment>
+    </unit>
+    <unit id="2420295336574381180">
+      <segment>
+        <source>Confirming email…</source>
+        <target>Подтверждение адреса электронной почты…</target>
+      </segment>
+    </unit>
+    <unit id="2499193577100705366">
+      <segment>
+        <source>You have left <ph id="0" equiv="PH" disp="data.slug"/></source>
+        <target>Вы покинули <ph id="0" equiv="PH" disp="data.slug"/></target>
+      </segment>
+    </unit>
+    <unit id="2764329308967524576">
+      <segment>
+        <source>Error, unable to update issue</source>
+        <target>Ошибка: не удалось обновить проблему</target>
+      </segment>
+    </unit>
+    <unit id="2815134129784182138">
+      <segment>
+        <source>Something went wrong. Try reloading the page.</source>
+        <target>Что-то пошло не так. Попробуйте перезагрузить страницу.</target>
+      </segment>
+    </unit>
+    <unit id="3206542606001340679">
+      <segment>
+        <source>Merge</source>
+        <target>Объединить</target>
+      </segment>
+    </unit>
+    <unit id="3333500469510040036">
+      <segment>
+        <source>Are you sure you want to delete this authentication token?</source>
+        <target>Вы уверены, что хотите удалить этот токен аутентификации?</target>
+      </segment>
+    </unit>
+    <unit id="339150322539484059">
+      <segment>
+        <source>Finalizing your login</source>
+        <target>Завершение входа</target>
+      </segment>
+    </unit>
+    <unit id="344300948538394896">
+      <segment>
+        <source>Your email address has been confirmed.</source>
+        <target>Ваш адрес электронной почты подтверждён.</target>
+      </segment>
+    </unit>
+    <unit id="3685661039544326124">
+      <segment>
+        <source><ph id="0" equiv="PH" disp="email"/> has been removed from your account.</source>
+        <target><ph id="0" equiv="PH" disp="email"/> удалён из вашей учётной записи.</target>
+      </segment>
+    </unit>
+    <unit id="3807699453257291879">
+      <segment>
+        <source>Comments</source>
+        <target>Комментарии</target>
+      </segment>
+    </unit>
+    <unit id="3869317699802216328">
+      <segment>
+        <source>Unable to unmerge selected hashes.</source>
+        <target>Не удалось разъединить выбранные хеши.</target>
+      </segment>
+    </unit>
+    <unit id="3944070578105872601">
+      <segment>
+        <source>There was an error. Please try again.</source>
+        <target>Произошла ошибка. Пожалуйста, попробуйте ещё раз.</target>
+      </segment>
+    </unit>
+    <unit id="3976301030203826563">
+      <segment>
+        <source>You lack permission to create a new project</source>
+        <target>У вас нет прав на создание нового проекта</target>
+      </segment>
+    </unit>
+    <unit id="4000360891880872696">
+      <segment>
+        <source>You joined <ph id="0" equiv="PH" disp="data.slug"/></source>
+        <target>Вы присоединились к <ph id="0" equiv="PH" disp="data.slug"/></target>
+      </segment>
+    </unit>
+    <unit id="4461430420011995077">
+      <segment>
+        <source>Delete Auth Token</source>
+        <target>Удалить токен аутентификации</target>
+      </segment>
+    </unit>
+    <unit id="45527735672619032">
+      <segment>
+        <source>Successfully transferred organization account ownership to <ph id="0" equiv="PH" disp="data.email"/>.</source>
+        <target>Права владения учётной записью организации успешно переданы <ph id="0" equiv="PH" disp="data.email"/>.</target>
+      </segment>
+    </unit>
+    <unit id="4814285799071780083">
+      <segment>
+        <source>Remove</source>
+        <target>Удалить</target>
+      </segment>
+    </unit>
+    <unit id="4935617373107665748">
+      <segment>
+        <source><ph id="0" equiv="PH" disp="member.email"/> has been added to #<ph id="1" equiv="PH_1" disp="team.slug"/></source>
+        <target><ph id="0" equiv="PH" disp="member.email"/> добавлен в #<ph id="1" equiv="PH_1" disp="team.slug"/></target>
+      </segment>
+    </unit>
+    <unit id="525202038336328287">
+      <segment>
+        <source>Issue <ph id="0" equiv="PH" disp="id"/> has been deleted.</source>
+        <target>Проблема <ph id="0" equiv="PH" disp="id"/> удалена.</target>
+      </segment>
+    </unit>
+    <unit id="5521710262088082373">
+      <segment>
+        <source>Successfully connected to @sentry/wizard.</source>
+        <target>Успешное подключение к @sentry/wizard.</target>
+      </segment>
+    </unit>
+    <unit id="5963361173550459881">
+      <segment>
+        <source> There was an error deleting your token, please try again. </source>
+        <target> Произошла ошибка при удалении токена, попробуйте ещё раз. </target>
+      </segment>
+    </unit>
+    <unit id="5974237347502898380">
+      <segment>
+        <source>Email invites have been sent to the addresses you provided.</source>
+        <target>Приглашения отправлены на указанные вами адреса электронной почты.</target>
+      </segment>
+    </unit>
+    <unit id="6193408969997737484">
+      <segment>
+        <source>There was an error loading your alerts. Try refreshing the page.</source>
+        <target>Произошла ошибка при загрузке оповещений. Попробуйте обновить страницу.</target>
+      </segment>
+    </unit>
+    <unit id="6270991639782521904">
+      <segment>
+        <source>There was an error deleting this comment. Please try again.</source>
+        <target>Произошла ошибка при удалении комментария. Пожалуйста, попробуйте ещё раз.</target>
+      </segment>
+    </unit>
+    <unit id="627180059350047308">
+      <segment>
+        <source>Error attempting to remove <ph id="0" equiv="PH" disp="member.email"/> from organization</source>
+        <target>Ошибка при попытке удалить <ph id="0" equiv="PH" disp="member.email"/> из организации</target>
+      </segment>
+    </unit>
+    <unit id="6318415796179463435">
+      <segment>
+        <source>Merge issues</source>
+        <target>Объединить проблемы</target>
+      </segment>
+    </unit>
+    <unit id="6566431624195050143">
+      <segment>
+        <source>Only users with a role of manager or above can update organizations.</source>
+        <target>Изменять организации могут только пользователи с ролью менеджера и выше.</target>
+      </segment>
+    </unit>
+    <unit id="6776045478354313726">
+      <segment>
+        <source>Successfully updated <ph id="0" equiv="PH" disp="data.email"/>&apos;s role to <ph id="1" equiv="PH_1" disp="data.roleName"/></source>
+        <target>Роль пользователя <ph id="0" equiv="PH" disp="data.email"/> успешно изменена на <ph id="1" equiv="PH_1" disp="data.roleName"/></target>
+      </segment>
+    </unit>
+    <unit id="689538422335046890">
+      <segment>
+        <source>User Reports</source>
+        <target>Отчёты пользователей</target>
+      </segment>
+    </unit>
+    <unit id="7022070615528435141">
+      <segment>
+        <source>Delete</source>
+        <target>Удалить</target>
+      </segment>
+    </unit>
+    <unit id="712588482447231923">
+      <segment>
+        <source>Your team slug has been changed to #<ph id="0" equiv="PH" disp="data.slug"/></source>
+        <target>Slug вашей команды изменён на #<ph id="0" equiv="PH" disp="data.slug"/></target>
+      </segment>
+    </unit>
+    <unit id="7131676118619088880">
+      <segment>
+        <source>Only users with a role of manager or above can delete organizations.</source>
+        <target>Удалять организации могут только пользователи с ролью менеджера и выше.</target>
+      </segment>
+    </unit>
+    <unit id="7167798427319552621">
+      <segment>
+        <source>There was an error retrieving your uptime monitors.</source>
+        <target>Произошла ошибка при получении мониторов доступности.</target>
+      </segment>
+    </unit>
+    <unit id="7233514443257462364">
+      <segment>
+        <source>There was a problem. Try again later.</source>
+        <target>Возникла проблема. Повторите попытку позже.</target>
+      </segment>
+    </unit>
+    <unit id="751755198881789855">
+      <segment>
+        <source>Must be less than 32768.</source>
+        <target>Должно быть меньше 32768.</target>
+      </segment>
+    </unit>
+    <unit id="7589121772315788199">
+      <segment>
+        <source>The name of your project has been updated to <ph id="0" equiv="PH" disp="resp.name"/></source>
+        <target>Название вашего проекта изменено на <ph id="0" equiv="PH" disp="resp.name"/></target>
+      </segment>
+    </unit>
+    <unit id="7753116604377136747">
+      <segment>
+        <source>An email invite has been sent to</source>
+        <target>Приглашение отправлено на адрес</target>
+      </segment>
+    </unit>
+    <unit id="781140390035637726">
+      <segment>
+        <source>Connecting to @sentry/wizard…</source>
+        <target>Подключение к @sentry/wizard…</target>
+      </segment>
+    </unit>
+    <unit id="7823379790822798031">
+      <segment>
+        <source>Too many invitations attempted. Not all invitations were sent. Please try again later</source>
+        <target>Слишком много попыток приглашения. Не все приглашения были отправлены. Повторите попытку позже</target>
+      </segment>
+    </unit>
+    <unit id="7828159368784233084">
+      <segment>
+        <source>Unmerged seleced hashes.</source>
+        <target>Выбранные хеши разъединены.</target>
+      </segment>
+    </unit>
+    <unit id="7831613273502162805">
+      <segment>
+        <source>Too many invitations attempted. Please try again later.</source>
+        <target>Слишком много попыток приглашения. Повторите попытку позже.</target>
+      </segment>
+    </unit>
+    <unit id="806152040251876311">
+      <segment>
+        <source>Success: Your recipient has been deleted</source>
+        <target>Готово: получатель удалён</target>
+      </segment>
+    </unit>
+    <unit id="8396934914861741559">
+      <segment>
+        <source> This invitation link expired or is invalid. Please issue a new invitation request. </source>
+        <target> Срок действия этой ссылки-приглашения истёк, или она недействительна. Запросите новое приглашение. </target>
+      </segment>
+    </unit>
+    <unit id="8455768552389044425">
+      <segment>
+        <source>You do not have permission to create a team</source>
+        <target>У вас нет прав на создание команды</target>
+      </segment>
+    </unit>
+    <unit id="855933412451231239">
+      <segment>
+        <source>Comments </source>
+        <target>Комментарии </target>
+      </segment>
+    </unit>
+    <unit id="5791228471722946494">
+      <segment state="initial">
+        <source>Your project has been successfully deleted</source>
+        <target>Ваш проект успешно удалён</target>
+      </segment>
+    </unit>
+    <unit id="8781927759674212057">
+      <segment>
+        <source><ph id="0" equiv="PH" disp="memberEmail"/> has been removed from #<ph id="1" equiv="PH_1" disp="team.slug"/></source>
+        <target><ph id="0" equiv="PH" disp="memberEmail"/> удалён из #<ph id="1" equiv="PH_1" disp="team.slug"/></target>
+      </segment>
+    </unit>
+    <unit id="8848756484835270621">
+      <segment>
+        <source> There was an error, probably because you tried to join an organization that you&apos;re already a part of. </source>
+        <target> Произошла ошибка — вероятно, вы попытались присоединиться к организации, в которой уже состоите. </target>
+      </segment>
+    </unit>
+    <unit id="8913962995110224982">
+      <segment>
+        <source>Remove organization</source>
+        <target>Удалить организацию</target>
+      </segment>
+    </unit>
+    <unit id="8983558994144621668">
+      <segment>
+        <source><ph id="0" equiv="PH" disp="email"/> is now your primary email address.</source>
+        <target><ph id="0" equiv="PH" disp="email"/> теперь ваш основной адрес электронной почты.</target>
+      </segment>
+    </unit>
+    <unit id="9058835702501543425">
+      <segment>
+        <source>This action will merge your selected issues into a single issue.</source>
+        <target>Это действие объединит выбранные проблемы в одну.</target>
+      </segment>
+    </unit>
+    <unit id="917481646578897614">
+      <segment>
+        <source><ph id="0" equiv="PH" disp="data.name"/> has been created</source>
+        <target>Создано: <ph id="0" equiv="PH" disp="data.name"/></target>
+      </segment>
+    </unit>
+    <unit id="7890820056892966789">
+      <segment state="initial">
+        <source>A confirmation email has been sent to <ph id="0" equiv="PH" disp="email"/>.</source>
+        <target>Письмо с подтверждением отправлено на <ph id="0" equiv="PH" disp="email"/>.</target>
+      </segment>
+    </unit>
+    <unit id="29705931015876576">
+      <segment state="initial">
+        <source>Could not delete account. Delete or transfer ownership of all organizations you are the owner of before deleting your user account.</source>
+        <target>Не удалось удалить учётную запись. Перед удалением учётной записи удалите все организации, владельцем которых вы являетесь, или передайте права владения ими.</target>
+      </segment>
+    </unit>
+    <unit id="4158049716505128655">
+      <segment state="initial">
+        <source>There was an error deleting your account. Please try again.</source>
+        <target>Произошла ошибка при удалении учётной записи. Пожалуйста, попробуйте ещё раз.</target>
+      </segment>
+    </unit>
+    <unit id="4487118624061086799">
+      <segment state="initial">
+        <source>500: Internal server error. Please refresh the page and try again.</source>
+        <target>500: внутренняя ошибка сервера. Обновите страницу и попробуйте ещё раз.</target>
+      </segment>
+    </unit>
+    <unit id="5148439736793042731">
+      <segment state="initial">
+        <source> copy for AI </source>
+        <target> копировать для ИИ </target>
+      </segment>
+    </unit>
+    <unit id="2213303907290585549">
+      <segment state="initial">
+        <source>Copied. You can also connect your agent directly via MCP to pull this event, its related logs, and traces live instead of pasting.</source>
+        <target>Скопировано. Вы также можете подключить своего агента напрямую через MCP, чтобы он получал это событие, связанные логи и трассировки в реальном времени вместо вставки.</target>
+      </segment>
+    </unit>
+    <unit id="3735103420734835435">
+      <segment state="initial">
+        <source>Set up MCP</source>
+        <target>Настроить MCP</target>
+      </segment>
+    </unit>
+    <unit id="6859680602069910119">
+      <segment state="initial">
+        <source>Copied for AI</source>
+        <target>Скопировано для ИИ</target>
+      </segment>
+    </unit>
+    <unit id="2669293632677878810">
+      <segment state="initial">
+        <source>Resolved in</source>
+        <target>Решено в</target>
+      </segment>
+    </unit>
+    <unit id="1532927315362442004">
+      <segment state="initial">
+        <source>Issue will be resolved as of release <ph id="0" equiv="PH" disp="resolvedInRelease"/>.</source>
+        <target>Проблема будет считаться решённой начиная с релиза <ph id="0" equiv="PH" disp="resolvedInRelease"/>.</target>
+      </segment>
+    </unit>
+    <unit id="8675226376965769343">
+      <segment state="initial">
+        <source>Issue resolved. No release was found to tie it to.</source>
+        <target>Проблема решена. Релиз, к которому её можно привязать, не найден.</target>
+      </segment>
+    </unit>
+    <unit id="3394127703705208683">
+      <segment state="initial">
+        <source>To start using GlitchTip, you need to:</source>
+        <target>Чтобы начать использовать GlitchTip, нужно:</target>
+      </segment>
+    </unit>
+    <unit id="6737001230921582501">
+      <segment state="initial">
+        <source>Install the sentry SDK for your platform into your project.</source>
+        <target>Установите sentry SDK для вашей платформы в свой проект.</target>
+      </segment>
+    </unit>
+    <unit id="7951009620799507577">
+      <segment state="initial">
+        <source>Configure it with your <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">DSN</pc> (Data Source Name) so it knows where to send events. Your DSN is shown on this page, and can also be found in your project&apos;s settings.</source>
+        <target>Настройте его, указав ваш <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">DSN</pc> (Data Source Name), чтобы он знал, куда отправлять события. DSN показан на этой странице, а также доступен в настройках проекта.</target>
+      </segment>
+    </unit>
+    <unit id="5916134442795352001">
+      <segment state="initial">
+        <source>Initialize the SDK early in your application&apos;s startup.</source>
+        <target>Инициализируйте SDK как можно раньше при запуске приложения.</target>
+      </segment>
+    </unit>
+    <unit id="198471031488977990">
+      <segment state="initial">
+        <source>General Configuration</source>
+        <target>Общая конфигурация</target>
+      </segment>
+    </unit>
+    <unit id="3318523364772817208">
+      <segment state="initial">
+        <source>Most SDKs support these options:</source>
+        <target>Большинство SDK поддерживают следующие параметры:</target>
+      </segment>
+    </unit>
+    <unit id="8048591278687742899">
+      <segment state="initial">
+        <source><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">dsn</pc> — Where to send event data. Found in GlitchTip under project settings.</source>
+        <target><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">dsn</pc> — куда отправлять данные о событиях. Указан в GlitchTip в настройках проекта.</target>
+      </segment>
+    </unit>
+    <unit id="1985492201537719447">
+      <segment state="initial">
+        <source><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">release</pc> — Your application version (e.g., <pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">&quot;1.0.0&quot;</pc>). Helps track which releases introduce errors.</source>
+        <target><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">release</pc> — версия вашего приложения (например, <pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">&quot;1.0.0&quot;</pc>). Помогает отслеживать, какие релизы приносят ошибки.</target>
+      </segment>
+    </unit>
+    <unit id="5409298298706299891">
+      <segment state="initial">
+        <source><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">environment</pc> — The running environment name (e.g., <pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">&quot;production&quot;</pc>, <pc id="2" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">&quot;staging&quot;</pc>).</source>
+        <target><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">environment</pc> — название рабочего окружения (например, <pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">&quot;production&quot;</pc>, <pc id="2" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">&quot;staging&quot;</pc>).</target>
+      </segment>
+    </unit>
+    <unit id="6607541293183686120">
+      <segment state="initial">
+        <source><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">traces_sample_rate</pc> — Sample rate for performance transactions (<pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">0.0</pc> to <pc id="2" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">1.0</pc>). Use a low value like <pc id="3" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">0.01</pc> (1%) in production to save disk space.</source>
+        <target><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">traces_sample_rate</pc> — частота выборки транзакций производительности (от <pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">0.0</pc> до <pc id="2" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">1.0</pc>). В продакшене используйте низкое значение вроде <pc id="3" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">0.01</pc> (1%), чтобы экономить место на диске.</target>
+      </segment>
+    </unit>
+    <unit id="8246537847392930078">
+      <segment state="initial">
+        <source><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">auto_session_tracking</pc> — Set to <pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">false</pc>. GlitchTip does not support session tracking.</source>
+        <target><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">auto_session_tracking</pc> — установите в <pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">false</pc>. GlitchTip не поддерживает отслеживание сессий.</target>
+      </segment>
+    </unit>
+    <unit id="883341321910713030">
+      <segment state="initial">
+        <source>Performance Monitoring</source>
+        <target>Мониторинг производительности</target>
+      </segment>
+    </unit>
+    <unit id="4664874365831932842">
+      <segment state="initial">
+        <source>Enable <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a target=&quot;_blank&quot; href=&quot;https://glitchtip.com/documentation/performance&quot; &gt;" dispEnd="&lt;/a &gt;">performance monitoring</pc> by setting <pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">traces_sample_rate</pc>. Sample your transactions to keep data volume manageable — most teams find 1–10% sufficient.</source>
+        <target>Включите <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a target=&quot;_blank&quot; href=&quot;https://glitchtip.com/documentation/performance&quot; &gt;" dispEnd="&lt;/a &gt;">мониторинг производительности</pc>, задав <pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">traces_sample_rate</pc>. Используйте выборку транзакций, чтобы объём данных оставался управляемым — большинству команд достаточно 1–10%.</target>
+      </segment>
+    </unit>
+    <unit id="4804785061014590286">
+      <segment state="initial">
+        <source>Logs</source>
+        <target>Логи</target>
+      </segment>
+    </unit>
+    <unit id="2849436559874800914">
+      <segment state="initial">
+        <source>GlitchTip can ingest <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a target=&quot;_blank&quot; href=&quot;https://glitchtip.com/documentation/logs&quot; &gt;" dispEnd="&lt;/a &gt;">application logs</pc> via OpenTelemetry. See the logs documentation for setup.</source>
+        <target>GlitchTip может принимать <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a target=&quot;_blank&quot; href=&quot;https://glitchtip.com/documentation/logs&quot; &gt;" dispEnd="&lt;/a &gt;">логи приложения</pc> через OpenTelemetry. Настройка описана в документации по логам.</target>
+      </segment>
+    </unit>
+    <unit id="744244165374460871">
+      <segment state="initial">
+        <source>Source Maps &amp; Debug Symbols</source>
+        <target>Source maps и отладочные символы</target>
+      </segment>
+    </unit>
+    <unit id="679502950068478075">
+      <segment state="initial">
+        <source>Use the <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a target=&quot;_blank&quot; href=&quot;https://glitchtip.com/documentation/cli&quot; &gt;" dispEnd="&lt;/a &gt;">GlitchTip CLI</pc> to upload source maps and debug symbols for readable stack traces in production.</source>
+        <target>Используйте <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a target=&quot;_blank&quot; href=&quot;https://glitchtip.com/documentation/cli&quot; &gt;" dispEnd="&lt;/a &gt;">GlitchTip CLI</pc> для загрузки source maps и отладочных символов, чтобы получать читаемые трассировки стека в продакшене.</target>
+      </segment>
+    </unit>
+    <unit id="2681991107727126286">
+      <segment state="initial">
+        <source>AI-Assisted Debugging</source>
+        <target>Отладка с помощью ИИ</target>
+      </segment>
+    </unit>
+    <unit id="3285184083870027983">
+      <segment state="initial">
+        <source>GlitchTip includes an <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a target=&quot;_blank&quot; href=&quot;https://glitchtip.com/documentation/mcp&quot; &gt;" dispEnd="&lt;/a &gt;">MCP server</pc> that lets AI assistants investigate errors, analyze performance, and query logs.</source>
+        <target>GlitchTip включает <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a target=&quot;_blank&quot; href=&quot;https://glitchtip.com/documentation/mcp&quot; &gt;" dispEnd="&lt;/a &gt;">MCP-сервер</pc>, который позволяет ИИ-ассистентам исследовать ошибки, анализировать производительность и запрашивать логи.</target>
+      </segment>
+    </unit>
+    <unit id="5144966841571402100">
+      <segment state="initial">
+        <source>The platform you selected doesn&apos;t have specific setup instructions yet. Many sentry-compatible SDKs are available as open-source packages — search for a sentry SDK for your language or framework on your package manager.</source>
+        <target>Для выбранной платформы пока нет отдельных инструкций по настройке. Многие sentry-совместимые SDK доступны как open-source-пакеты — поищите sentry SDK для вашего языка или фреймворка в вашем менеджере пакетов.</target>
+      </segment>
+    </unit>
+    <unit id="3746183499642587543">
+      <segment state="initial">
+        <source>Your DSN is pre-filled in the setup instructions. Copy it here if you need it for additional environments or tools. The Security Endpoint is used for browser Content Security Policy (CSP) reporting.</source>
+        <target>Ваш DSN уже подставлен в инструкции по настройке. Скопируйте его здесь, если он нужен для дополнительных окружений или инструментов. Security Endpoint используется для отчётов браузера о Content Security Policy (CSP).</target>
+      </segment>
+    </unit>
+    <unit id="8424845532412516589">
+      <segment state="initial">
+        <source>Your DSN tells your SDK how to send events to your GlitchTip project. The Security Endpoint is used for browser Content Security Policy (CSP) reporting.</source>
+        <target>DSN сообщает вашему SDK, как отправлять события в ваш проект GlitchTip. Security Endpoint используется для отчётов браузера о Content Security Policy (CSP).</target>
+      </segment>
+    </unit>
+    <unit id="3486318045815416322">
+      <segment state="initial">
+        <source>Mark resolved</source>
+        <target>Отметить решённой</target>
+      </segment>
+    </unit>
+    <unit id="4201099783002228618">
+      <segment state="initial">
+        <source>Mark unresolved</source>
+        <target>Отметить нерешённой</target>
+      </segment>
+    </unit>
+    <unit id="326607852595106445">
+      <segment state="initial">
+        <source>Mark ignored</source>
+        <target>Отметить игнорируемой</target>
+      </segment>
+    </unit>
+    <unit id="4029649057038200865">
+      <segment state="initial">
+        <source>Search syntax</source>
+        <target>Синтаксис поиска</target>
+      </segment>
+    </unit>
+    <unit id="3733215288982610673">
+      <segment state="initial">
+        <source>Level</source>
+        <target>Уровень</target>
+      </segment>
+    </unit>
+    <unit id="7886570921510760899">
+      <segment state="initial">
+        <source>Tags</source>
+        <target>Теги</target>
+      </segment>
+    </unit>
+    <unit id="6192930354402829130">
+      <segment state="initial">
+        <source>Any tag works, e.g. environment:production or release:v1.2.0. One value per key.</source>
+        <target>Работает любой тег, например environment:production или release:v1.2.0. Одно значение на ключ.</target>
+      </segment>
+    </unit>
+    <unit id="967524872396885653">
+      <segment state="initial">
+        <source>Text (must come last)</source>
+        <target>Текст (должен идти последним)</target>
+      </segment>
+    </unit>
+    <unit id="3272820784736358258">
+      <segment state="initial">
+        <source>Whole words by default. Add * for a prefix match. Anything after the first plain word becomes part of the text search, so put filters first.</source>
+        <target>По умолчанию ищутся целые слова. Добавьте * для поиска по префиксу. Всё, что идёт после первого обычного слова, становится частью текстового поиска, поэтому ставьте фильтры первыми.</target>
+      </segment>
+    </unit>
+    <unit id="9206334208746012915">
+      <segment state="initial">
+        <source>Tokens combine with a space (AND). There is no OR.</source>
+        <target>Токены объединяются через пробел (И). Оператора ИЛИ нет.</target>
+      </segment>
+    </unit>
+    <unit id="2670107596340962168">
+      <segment state="initial">
+        <source>Delete issues</source>
+        <target>Удалить проблемы</target>
+      </segment>
+    </unit>
+    <unit id="6236390993609688799">
+      <segment state="initial">
+        <source>Are you sure you want to delete <ph id="0" equiv="PH" disp="count"/> issue(s)? You will permanently lose these issues and all associated events.</source>
+        <target>Вы уверены, что хотите удалить проблемы (<ph id="0" equiv="PH" disp="count"/> шт.)? Вы безвозвратно потеряете эти проблемы и все связанные с ними события.</target>
+      </segment>
+    </unit>
+    <unit id="799254361008065064">
+      <segment state="initial">
+        <source>Error, unable to delete issues</source>
+        <target>Ошибка: не удалось удалить проблемы</target>
+      </segment>
+    </unit>
+    <unit id="7188521810884384359">
+      <segment state="initial">
+        <source>Search syntax help</source>
+        <target>Справка по синтаксису поиска</target>
+      </segment>
+    </unit>
+    <unit id="4032763770452115138">
+      <segment state="initial">
+        <source>Set trend charts period</source>
+        <target>Задать период графиков трендов</target>
+      </segment>
+    </unit>
+    <unit id="6425467213960794982">
+      <segment state="initial">
+        <source>All projects</source>
+        <target>Все проекты</target>
+      </segment>
+    </unit>
+    <unit id="4580988005648117665">
+      <segment state="initial">
+        <source>Search</source>
+        <target>Поиск</target>
+      </segment>
+    </unit>
+    <unit id="8949368183634013537">
+      <segment state="initial">
+        <source>No projects found</source>
+        <target>Проекты не найдены</target>
+      </segment>
+    </unit>
+    <unit id="1500099262662584579">
+      <segment state="initial">
+        <source>Time range:</source>
+        <target>Период времени:</target>
+      </segment>
+    </unit>
+    <unit id="4391289919356861627">
+      <segment state="initial">
+        <source>Apply</source>
+        <target>Применить</target>
+      </segment>
+    </unit>
+    <unit id="6234985323744540610">
+      <segment state="initial">
+        <source>Date range</source>
+        <target>Диапазон дат</target>
+      </segment>
+    </unit>
+    <unit id="5495676136158732653">
+      <segment state="initial">
+        <source>Time range</source>
+        <target>Период времени</target>
+      </segment>
+    </unit>
+    <unit id="8248908745082706548">
+      <segment state="initial">
+        <source>Custom range</source>
+        <target>Произвольный период</target>
+      </segment>
+    </unit>
+    <unit id="7301620538128979310">
+      <segment state="initial">
+        <source>All times</source>
+        <target>За всё время</target>
+      </segment>
+    </unit>
+    <unit id="9178360613965745088">
+      <segment state="initial">
+        <source>Last hour</source>
+        <target>Последний час</target>
+      </segment>
+    </unit>
+    <unit id="9186529157286281693">
+      <segment state="initial">
+        <source>Last 24 hours</source>
+        <target>Последние 24 часа</target>
+      </segment>
+    </unit>
+    <unit id="4873149362496451858">
+      <segment state="initial">
+        <source>Last 7 days</source>
+        <target>Последние 7 дней</target>
+      </segment>
+    </unit>
+    <unit id="6292286448154259248">
+      <segment state="initial">
+        <source>Last 14 days</source>
+        <target>Последние 14 дней</target>
+      </segment>
+    </unit>
+    <unit id="2949150997160654358">
+      <segment state="initial">
+        <source>Last 30 days</source>
+        <target>Последние 30 дней</target>
+      </segment>
+    </unit>
+    <unit id="1214368793285560058">
+      <segment state="initial">
+        <source>Search logs</source>
+        <target>Поиск по логам</target>
+      </segment>
+    </unit>
+    <unit id="2218082343053095278">
+      <segment state="initial">
+        <source>Service</source>
+        <target>Сервис</target>
+      </segment>
+    </unit>
+    <unit id="6559246822757089203">
+      <segment state="initial">
+        <source>Clear filters</source>
+        <target>Сбросить фильтры</target>
+      </segment>
+    </unit>
+    <unit id="8643937855400353832">
+      <segment state="initial">
+        <source>No logs found.</source>
+        <target>Логи не найдены.</target>
+      </segment>
+    </unit>
+    <unit id="6349168611124992157">
+      <segment state="initial">
+        <source> Try adjusting your filters.</source>
+        <target> Попробуйте изменить фильтры.</target>
+      </segment>
+    </unit>
+    <unit id="3071389344573298592">
+      <segment state="initial">
+        <source> Configure your SDK to start capturing logs.</source>
+        <target> Настройте SDK, чтобы начать собирать логи.</target>
+      </segment>
+    </unit>
+    <unit id="33149636091572968">
+      <segment state="initial">
+        <source>Load more</source>
+        <target>Загрузить ещё</target>
+      </segment>
+    </unit>
+    <unit id="2093702966497728784">
+      <segment state="initial">
+        <source>Create Organization<pc id="0" equivStart="START_TAG_MAT_ICON" equivEnd="CLOSE_TAG_MAT_ICON" type="other" dispStart="&lt;mat-icon iconPositionEnd&gt;" dispEnd="&lt;/mat-icon&gt;">add</pc></source>
+        <target>Создать организацию<pc id="0" equivStart="START_TAG_MAT_ICON" equivEnd="CLOSE_TAG_MAT_ICON" type="other" dispStart="&lt;mat-icon iconPositionEnd&gt;" dispEnd="&lt;/mat-icon&gt;">add</pc></target>
+      </segment>
+    </unit>
+    <unit id="7374671888521665415">
+      <segment state="initial">
+        <source>Create organization</source>
+        <target>Создать организацию</target>
+      </segment>
+    </unit>
+    <unit id="3076687427621376223">
+      <segment state="initial">
+        <source>Organization</source>
+        <target>Организация</target>
+      </segment>
+    </unit>
+    <unit id="2288513108450439427">
+      <segment state="initial">
+        <source>Support</source>
+        <target>Поддержка</target>
+      </segment>
+    </unit>
+    <unit id="1347241542439262355">
+      <segment state="initial">
+        <source>General settings</source>
+        <target>Общие настройки</target>
+      </segment>
+    </unit>
+    <unit id="4776048193435822947">
+      <segment state="initial">
+        <source>MFA</source>
+        <target>MFA</target>
+      </segment>
+    </unit>
+    <unit id="9110363267178274426">
+      <segment state="initial">
+        <source>Report a bug</source>
+        <target>Сообщить об ошибке</target>
+      </segment>
+    </unit>
+    <unit id="8852819672524659401">
+      <segment state="initial">
+        <source>Sponsor on Liberapay</source>
+        <target>Спонсировать на Liberapay</target>
+      </segment>
+    </unit>
+    <unit id="84794025138950643">
+      <segment state="initial">
+        <source>Open Support Chat</source>
+        <target>Открыть чат поддержки</target>
+      </segment>
+    </unit>
+    <unit id="90506265415127351">
+      <segment state="initial">
+        <source>Get Priority Support</source>
+        <target>Получить приоритетную поддержку</target>
+      </segment>
+    </unit>
+    <unit id="1760380914125168379">
+      <segment state="initial">
+        <source> You&apos;ve reached the maximum number of events that your plan allows for this billing period. </source>
+        <target> Вы достигли максимального числа событий, доступного по вашему тарифу в этом расчётном периоде. </target>
+      </segment>
+    </unit>
+    <unit id="3561866231707911512">
+      <segment state="initial">
+        <source> Change your subscription </source>
+        <target> Измените подписку </target>
+      </segment>
+    </unit>
+    <unit id="5485930912805976052">
+      <segment state="initial">
+        <source> if you&apos;d like to get things moving again.</source>
+        <target> — если хотите, чтобы всё снова заработало.</target>
+      </segment>
+    </unit>
+    <unit id="9144349604807767226">
+      <segment state="initial">
+        <source>No transaction groups were found.</source>
+        <target>Группы транзакций не найдены.</target>
+      </segment>
+    </unit>
+    <unit id="2973061628865967914">
+      <segment state="initial">
+        <source>Backup codes</source>
+        <target>Резервные коды</target>
+      </segment>
+    </unit>
+    <unit id="1987589372843569754">
+      <segment state="initial">
+        <source> Lost your codes? Generate a new set. This invalidates the old one, so save the new codes somewhere safe. </source>
+        <target> Потеряли коды? Сгенерируйте новый набор. Старый при этом станет недействительным, поэтому сохраните новые коды в надёжном месте. </target>
+      </segment>
+    </unit>
+    <unit id="1409236630147612478">
+      <segment state="initial">
+        <source> Save these codes somewhere safe. Each one lets you sign in once if you lose your phone. </source>
+        <target> Сохраните эти коды в надёжном месте. Каждый из них позволяет один раз войти, если вы потеряете телефон. </target>
+      </segment>
+    </unit>
+    <unit id="2219171205167811845">
+      <segment state="initial">
+        <source>Enter one of the codes to confirm you have saved them:</source>
+        <target>Введите один из кодов, чтобы подтвердить, что вы их сохранили:</target>
+      </segment>
+    </unit>
+    <unit id="353965083777629357">
+      <segment state="initial">
+        <source>Authenticator app</source>
+        <target>Приложение-аутентификатор</target>
+      </segment>
+    </unit>
+    <unit id="3650236615036812295">
+      <segment state="initial">
+        <source>An authenticator app is protecting your account.</source>
+        <target>Ваша учётная запись защищена приложением-аутентификатором.</target>
+      </segment>
+    </unit>
+    <unit id="8150927731388569232">
+      <segment state="initial">
+        <source> Disable </source>
+        <target> Отключить </target>
+      </segment>
+    </unit>
+    <unit id="372253476753871793">
+      <segment state="initial">
+        <source> Verify your email address before setting up two-factor authentication. </source>
+        <target> Подтвердите адрес электронной почты, прежде чем настраивать двухфакторную аутентификацию. </target>
+      </segment>
+    </unit>
+    <unit id="4659537058158752460">
+      <segment state="initial">
+        <source>Add a second step at login with an authenticator app.</source>
+        <target>Добавьте второй шаг при входе с помощью приложения-аутентификатора.</target>
+      </segment>
+    </unit>
+    <unit id="1014900852249024343">
+      <segment state="initial">
+        <source> Get started </source>
+        <target> Начать </target>
+      </segment>
+    </unit>
+    <unit id="5206959576487617077">
+      <segment state="initial">
+        <source>Install an authenticator app</source>
+        <target>Установите приложение-аутентификатор</target>
+      </segment>
+    </unit>
+    <unit id="9110048041619766424">
+      <segment state="initial">
+        <source> Use <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;https://authy.com/download/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot; &gt;" dispEnd="&lt;/a &gt;">Authy</pc>, <pc id="1" equivStart="START_LINK_1" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot; &gt;" dispEnd="&lt;/a &gt;">Google Authenticator</pc>, or any TOTP app on your phone. </source>
+        <target> Используйте <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;https://authy.com/download/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot; &gt;" dispEnd="&lt;/a &gt;">Authy</pc>, <pc id="1" equivStart="START_LINK_1" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot; &gt;" dispEnd="&lt;/a &gt;">Google Authenticator</pc> или любое TOTP-приложение на телефоне. </target>
+      </segment>
+    </unit>
+    <unit id="3971100408152984961">
+      <segment state="initial">
+        <source> Next </source>
+        <target> Далее </target>
+      </segment>
+    </unit>
+    <unit id="5653699239734075539">
+      <segment state="initial">
+        <source>Save your backup codes</source>
+        <target>Сохраните резервные коды</target>
+      </segment>
+    </unit>
+    <unit id="6652394106594262390">
+      <segment state="initial">
+        <source>Scan and verify</source>
+        <target>Отсканируйте и подтвердите</target>
+      </segment>
+    </unit>
+    <unit id="5445645543721190926">
+      <segment state="initial">
+        <source>Scan the QR code with your app, or enter the key by hand.</source>
+        <target>Отсканируйте QR-код приложением или введите ключ вручную.</target>
+      </segment>
+    </unit>
+    <unit id="4948440289765392916">
+      <segment state="initial">
+        <source>Authenticator setup QR code</source>
+        <target>QR-код настройки аутентификатора</target>
+      </segment>
+    </unit>
+    <unit id="3514149438333724015">
+      <segment state="initial">
+        <source>Setup key</source>
+        <target>Ключ настройки</target>
+      </segment>
+    </unit>
+    <unit id="2180291763949669799">
+      <segment state="initial">
+        <source>Enable</source>
+        <target>Включить</target>
+      </segment>
+    </unit>
+    <unit id="7796789454513080982">
+      <segment state="initial">
+        <source>Two-factor authentication will be turned off for your account.</source>
+        <target>Двухфакторная аутентификация будет отключена для вашей учётной записи.</target>
+      </segment>
+    </unit>
+    <unit id="9187855490716817910">
+      <segment state="initial">
+        <source>Disable</source>
+        <target>Отключить</target>
+      </segment>
+    </unit>
+    <unit id="7103588127254721505">
+      <segment state="initial">
+        <source>Theme</source>
+        <target>Тема</target>
+      </segment>
+    </unit>
+    <unit id="5039333631217808070">
+      <segment state="initial">
+        <source> Registration is currently unavailable. Contact your server administrator. </source>
+        <target> Регистрация сейчас недоступна. Обратитесь к администратору сервера. </target>
+      </segment>
+    </unit>
+    <unit id="1871336547835393592">
+      <segment state="initial">
+        <source>There are no files associated with this release.</source>
+        <target>С этим релизом не связано ни одного файла.</target>
+      </segment>
+    </unit>
+    <unit id="6135551083632800789">
+      <segment state="initial">
+        <source>Release files for </source>
+        <target>Файлы релиза </target>
+      </segment>
+    </unit>
+    <unit id="1293820901842765850">
+      <segment state="initial">
+        <source>Supports Slack, Mattermost, Rocket.Chat, and more</source>
+        <target>Поддерживаются Slack, Mattermost, Rocket.Chat и другие</target>
+      </segment>
+    </unit>
+    <unit id="7818840609640140503">
+      <segment state="initial">
+        <source>ntfy.sh topic URL or self-hosted endpoint</source>
+        <target>URL темы ntfy.sh или собственный (self-hosted) эндпоинт</target>
+      </segment>
+    </unit>
+    <unit id="5273032674861258152">
+      <segment state="initial">
+        <source>Feishu custom bot webhook URL (https://open.feishu.cn/open-apis/bot/v2/hook/...)</source>
+        <target>URL вебхука пользовательского бота Feishu (https://open.feishu.cn/open-apis/bot/v2/hook/...)</target>
+      </segment>
+    </unit>
+    <unit id="1868960829276031899">
+      <segment state="initial">
+        <source>Microsoft Teams Workflows webhook URL</source>
+        <target>URL вебхука Microsoft Teams Workflows</target>
+      </segment>
+    </unit>
+    <unit id="2398354803539761750">
+      <segment state="initial">
+        <source> Create a <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">Generic bot</pc> in your Zulip organization settings under &quot;Bots&quot;. Copy the bot&apos;s email and API key below. </source>
+        <target> Создайте <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">Generic bot</pc> в настройках вашей организации Zulip в разделе «Bots». Скопируйте адрес электронной почты бота и API-ключ ниже. </target>
+      </segment>
+    </unit>
+    <unit id="8135601959842552749">
+      <segment state="initial">
+        <source>Your Zulip organization URL</source>
+        <target>URL вашей организации Zulip</target>
+      </segment>
+    </unit>
+    <unit id="7547858369571452204">
+      <segment state="initial">
+        <source>Found in the bot&apos;s settings under &quot;Bots&quot;</source>
+        <target>Указан в настройках бота в разделе «Bots»</target>
+      </segment>
+    </unit>
+    <unit id="5084757846026616483">
+      <segment state="initial">
+        <source>The bot&apos;s API key, shown when the bot is created</source>
+        <target>API-ключ бота, отображается при создании бота</target>
+      </segment>
+    </unit>
+    <unit id="8783745595002444567">
+      <segment state="initial">
+        <source>The channel to post alerts to</source>
+        <target>Канал для публикации оповещений</target>
+      </segment>
+    </unit>
+    <unit id="3365827921329858639">
+      <segment state="initial">
+        <source>Messages in a channel are grouped by topic</source>
+        <target>Сообщения в канале группируются по темам</target>
+      </segment>
+    </unit>
+    <unit id="2032719064430979056">
+      <segment state="initial">
+        <source>Select a valid platform</source>
+        <target>Выберите корректную платформу</target>
+      </segment>
+    </unit>
+    <unit id="6762743264882388498">
+      <segment state="initial">
+        <source>Monthly</source>
+        <target>Ежемесячно</target>
+      </segment>
+    </unit>
+    <unit id="3745223847280240225">
+      <segment state="initial">
+        <source>Annual</source>
+        <target>Ежегодно</target>
+      </segment>
+    </unit>
+    <unit id="2143992992922814172">
+      <segment state="initial">
+        <source> Everything from <ph id="0" equiv="INTERPOLATION" disp="{{ products[i - 1].name }}"/> + </source>
+        <target> Всё из <ph id="0" equiv="INTERPOLATION" disp="{{ products[i - 1].name }}"/> + </target>
+      </segment>
+    </unit>
+    <unit id="465664631077016099">
+      <segment state="initial">
+        <source>
+          <pc id="0" equivStart="START_TAG_SPAN" equivEnd="CLOSE_TAG_SPAN" type="other" dispStart="&lt;span class=&quot;price-amount&quot;&gt;" dispEnd="&lt;/span&gt;">Free</pc>
+          <pc id="1" equivStart="START_TAG_SPAN_1" equivEnd="CLOSE_TAG_SPAN" type="other" dispStart="&lt;span class=&quot;price-detail&quot;&gt;" dispEnd="&lt;/span&gt;">($0)</pc>
+        </source>
+        <target>
+          <pc id="0" equivStart="START_TAG_SPAN" equivEnd="CLOSE_TAG_SPAN" type="other" dispStart="&lt;span class=&quot;price-amount&quot;&gt;" dispEnd="&lt;/span&gt;">Бесплатно</pc>
+          <pc id="1" equivStart="START_TAG_SPAN_1" equivEnd="CLOSE_TAG_SPAN" type="other" dispStart="&lt;span class=&quot;price-detail&quot;&gt;" dispEnd="&lt;/span&gt;">($0)</pc>
+        </target>
+      </segment>
+    </unit>
+    <unit id="6753799837235923045">
+      <segment state="initial">
+        <source>/ <ph id="0" equiv="INTERPOLATION" disp="{{ activePrice.interval === &quot;year&quot; ? &quot;year&quot; : &quot;month&quot; }}"/></source>
+        <target>/ <ph id="0" equiv="INTERPOLATION" disp="{{ activePrice.interval === &quot;year&quot; ? &quot;year&quot; : &quot;month&quot; }}"/></target>
+      </segment>
+    </unit>
+    <unit id="1814721909646440919">
+      <segment state="initial">
+        <source>Manage Billing</source>
+        <target>Управление оплатой</target>
+      </segment>
+    </unit>
+    <unit id="5044576521773126838">
+      <segment state="initial">
+        <source>Self-Hosted</source>
+        <target>Собственный хостинг</target>
+      </segment>
+    </unit>
+    <unit id="5768343853895020811">
+      <segment state="initial">
+        <source>Usage: Last 30 Days</source>
+        <target>Использование: последние 30 дней</target>
+      </segment>
+    </unit>
+    <unit id="2124226966549313545">
+      <segment state="initial">
+        <source> Questions? Contact us at <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;mailto:{{ billingEmail }}&quot;&gt;" dispEnd="&lt;/a &gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ billingEmail }}"/></pc>. </source>
+        <target> Есть вопросы? Свяжитесь с нами: <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;mailto:{{ billingEmail }}&quot;&gt;" dispEnd="&lt;/a &gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ billingEmail }}"/></pc>. </target>
+      </segment>
+    </unit>
+    <unit id="3097725565524951500">
+      <segment state="initial">
+        <source>Contribute Code</source>
+        <target>Помочь с кодом</target>
+      </segment>
+    </unit>
+    <unit id="7216818923768556093">
+      <segment state="initial">
+        <source>Help build GlitchTip on GitLab</source>
+        <target>Помогайте развивать GlitchTip на GitLab</target>
+      </segment>
+    </unit>
+    <unit id="89970906091089947">
+      <segment state="initial">
+        <source>Donate</source>
+        <target>Пожертвовать</target>
+      </segment>
+    </unit>
+    <unit id="8393494693907472546">
+      <segment state="initial">
+        <source>Support open source development on Liberapay</source>
+        <target>Поддержите разработку открытого ПО на Liberapay</target>
+      </segment>
+    </unit>
+    <unit id="8838254186564675838">
+      <segment state="initial">
+        <source>Try GlitchTip Cloud</source>
+        <target>Попробуйте GlitchTip Cloud</target>
+      </segment>
+    </unit>
+    <unit id="5944666342346398830">
+      <segment state="initial">
+        <source>Let us handle hosting, updates, and backups for you.</source>
+        <target>Мы возьмём на себя хостинг, обновления и резервные копии.</target>
+      </segment>
+    </unit>
+    <unit id="1662170432588987648">
+      <segment state="initial">
+        <source>Last 30 Days</source>
+        <target>Последние 30 дней</target>
+      </segment>
+    </unit>
+    <unit id="3861559140187372291">
+      <segment state="initial">
+        <source>Previous 30 Days</source>
+        <target>Предыдущие 30 дней</target>
+      </segment>
+    </unit>
+    <unit id="1312167747630425287">
+      <segment state="initial">
+        <source>Number of Events</source>
+        <target>Число событий</target>
+      </segment>
+    </unit>
+    <unit id="1929039531311944328">
+      <segment state="initial">
+        <source>Uptime</source>
+        <target>Доступность</target>
+      </segment>
+    </unit>
+    <unit id="1480856902951863661">
+      <segment state="initial">
+        <source>Projected</source>
+        <target>Прогноз</target>
+      </segment>
+    </unit>
+    <unit id="1420343270177022915">
+      <segment state="initial">
+        <source>No event data available for this period.</source>
+        <target>Нет данных о событиях за этот период.</target>
+      </segment>
+    </unit>
+    <unit id="8648986371331516485">
+      <segment state="initial">
+        <source>Predicted end of month: ~<ph id="0" equiv="INTERPOLATION" disp="{{ predictedTotal() | number: &quot;1.0-0&quot; }}"/></source>
+        <target>Прогноз на конец месяца: ~<ph id="0" equiv="INTERPOLATION" disp="{{ predictedTotal() | number: &quot;1.0-0&quot; }}"/></target>
+      </segment>
+    </unit>
+    <unit id="5636312106761697772">
+      <segment state="initial">
+        <source>Predicted End of Month</source>
+        <target>Прогноз на конец месяца</target>
+      </segment>
+    </unit>
+    <unit id="6556140613153986106">
+      <segment state="initial">
+        <source>Event Breakdown</source>
+        <target>Разбивка событий</target>
+      </segment>
+    </unit>
+    <unit id="4418983244366202082">
+      <segment state="initial">
+        <source>File storage: <ph id="0" equiv="INTERPOLATION" disp="{{ breakdown.fileSizeMb }}"/> MB</source>
+        <target>Файловое хранилище: <ph id="0" equiv="INTERPOLATION" disp="{{ breakdown.fileSizeMb }}"/> МБ</target>
+      </segment>
+    </unit>
+    <unit id="4674318460512567698">
+      <segment state="initial">
+        <source>This Month</source>
+        <target>Этот месяц</target>
+      </segment>
+    </unit>
+    <unit id="5301451406229114785">
+      <segment state="initial">
+        <source>Last Month</source>
+        <target>Прошлый месяц</target>
+      </segment>
+    </unit>
+    <unit id="4496572774093976020">
+      <segment state="initial">
+        <source>Not enough data</source>
+        <target>Недостаточно данных</target>
+      </segment>
+    </unit>
+    <unit id="9008104769462456988">
+      <segment state="initial">
+        <source>Over limit</source>
+        <target>Превышен лимит</target>
+      </segment>
+    </unit>
+    <unit id="6095052631454715389">
+      <segment state="initial">
+        <source>Manage Subscription</source>
+        <target>Управление подпиской</target>
+      </segment>
+    </unit>
+    <unit id="3897348120591552265">
+      <segment state="initial">
+        <source>Manage</source>
+        <target>Управлять</target>
+      </segment>
+    </unit>
+    <unit id="6099995138616604139">
+      <segment state="initial">
+        <source>Billing Cycle: <ph id="0" equiv="INTERPOLATION" disp="{{ subscription.subscriptionCycleStart ?? subscription.currentPeriodStart | date }}"/> to <ph id="1" equiv="INTERPOLATION_1" disp="{{ subscription.subscriptionCycleEnd ?? subscription.currentPeriodEnd | date }}"/> <pc id="2" equivStart="START_BLOCK_IF" equivEnd="CLOSE_BLOCK_IF" type="other" dispStart="@if (daysRemaining() !== null) {" dispEnd="}"> (<ph id="3" equiv="INTERPOLATION_2" disp="{{ daysRemaining() }}"/> <ph id="4" equiv="INTERPOLATION_3" disp="{{ daysRemaining() === 1 ? &quot;day&quot; : &quot;days&quot; }}"/> remaining) </pc></source>
+        <target>Расчётный цикл: с <ph id="0" equiv="INTERPOLATION" disp="{{ subscription.subscriptionCycleStart ?? subscription.currentPeriodStart | date }}"/> по <ph id="1" equiv="INTERPOLATION_1" disp="{{ subscription.subscriptionCycleEnd ?? subscription.currentPeriodEnd | date }}"/> <pc id="2" equivStart="START_BLOCK_IF" equivEnd="CLOSE_BLOCK_IF" type="other" dispStart="@if (daysRemaining() !== null) {" dispEnd="}"> (осталось <ph id="3" equiv="INTERPOLATION_2" disp="{{ daysRemaining() }}"/> <ph id="4" equiv="INTERPOLATION_3" disp="{{ daysRemaining() === 1 ? &quot;day&quot; : &quot;days&quot; }}"/>) </pc></target>
+      </segment>
+    </unit>
+    <unit id="203328093718583608">
+      <segment state="initial">
+        <source>What counts as an event?</source>
+        <target>Что считается событием?</target>
+      </segment>
+    </unit>
+    <unit id="6329070940389557822">
+      <segment state="initial">
+        <source>Events are the unit of measure for tracking GlitchTip usage. Your plan&apos;s monthly limit is shared across all features.</source>
+        <target>События — единица измерения использования GlitchTip. Месячный лимит вашего тарифа общий для всех функций.</target>
+      </segment>
+    </unit>
+    <unit id="3617897902871519294">
+      <segment state="initial">
+        <source>Each occurrence of an error or exception reported to GlitchTip</source>
+        <target>Каждое возникновение ошибки или исключения, о котором сообщено в GlitchTip</target>
+      </segment>
+    </unit>
+    <unit id="6409383856975229343">
+      <segment state="initial">
+        <source>Each health check counts as 1/10 of an event — 10 checks equal 1 event, whether polled by GlitchTip or pushed from your app</source>
+        <target>Каждая проверка доступности считается как 1/10 события — 10 проверок равны 1 событию, независимо от того, опрашивает ли сайт сам GlitchTip или запрос приходит из вашего приложения</target>
+      </segment>
+    </unit>
+    <unit id="6837724342954729520">
+      <segment state="initial">
+        <source>Each transaction report for a tracked activity on your app</source>
+        <target>Каждый отчёт о транзакции для отслеживаемого действия в вашем приложении</target>
+      </segment>
+    </unit>
+    <unit id="3808550909625305765">
+      <segment state="initial">
+        <source>Each log entry counts as 1/10 of an event — 10 log entries equal 1 event</source>
+        <target>Каждая запись лога считается как 1/10 события — 10 записей лога равны 1 событию</target>
+      </segment>
+    </unit>
+    <unit id="3867517862135491572">
+      <segment state="initial">
+        <source>Each megabyte of file storage is counted as an event</source>
+        <target>Каждый мегабайт файлового хранилища считается за одно событие</target>
+      </segment>
+    </unit>
+    <unit id="4756014564250067539">
+      <segment state="initial">
+        <source>Resolve in next release</source>
+        <target>Решить в следующем релизе</target>
+      </segment>
+    </unit>
+    <unit id="5370838177584249385">
+      <segment state="initial">
+        <source>Resolved</source>
+        <target>Решённые</target>
+      </segment>
+    </unit>
+    <unit id="2974118934038476769">
+      <segment state="initial">
+        <source>Unresolved</source>
+        <target>Нерешённые</target>
+      </segment>
+    </unit>
+    <unit id="6286501917375397305">
+      <segment state="initial">
+        <source>Mark As</source>
+        <target>Отметить как</target>
+      </segment>
+    </unit>
+    <unit id="1675381835782655174">
+      <segment state="initial">
+        <source>Get priority support for your GlitchTip deployment</source>
+        <target>Получите приоритетную поддержку для вашей установки GlitchTip</target>
+      </segment>
+    </unit>
+    <unit id="3375481157395019697">
+      <segment state="initial">
+        <source> Priority email and live chat support direct from the engineers who build GlitchTip. </source>
+        <target> Приоритетная поддержка по электронной почте и в чате напрямую от инженеров, создающих GlitchTip. </target>
+      </segment>
+    </unit>
+    <unit id="5377494958922638201">
+      <segment state="initial">
+        <source> Add your license key in Django admin once subscribed. </source>
+        <target> После оформления подписки добавьте лицензионный ключ в админке Django. </target>
+      </segment>
+    </unit>
+    <unit id="6845549858773411205">
+      <segment state="initial">
+        <source>Get a support plan</source>
+        <target>Оформить план поддержки</target>
+      </segment>
+    </unit>
+    <unit id="7619773636555096367">
+      <segment state="initial">
+        <source>Get started with GlitchTip</source>
+        <target>Начните работу с GlitchTip</target>
+      </segment>
+    </unit>
+    <unit id="8783352021501063415">
+      <segment state="initial">
+        <source>Start free with <ph id="0" equiv="INTERPOLATION" disp="{{ freeEventLabel() }}"/> events/month, or go paid to scale up and support open source error tracking with priority support.</source>
+        <target>Начните бесплатно с <ph id="0" equiv="INTERPOLATION" disp="{{ freeEventLabel() }}"/> событий в месяц или перейдите на платный тариф, чтобы масштабироваться и поддержать открытое отслеживание ошибок с приоритетной поддержкой.</target>
+      </segment>
+    </unit>
+    <unit id="5254377412613509729">
+      <segment state="initial">
+        <source>Don&apos;t lose events!</source>
+        <target>Не теряйте события!</target>
+      </segment>
+    </unit>
+    <unit id="6687274602224610983">
+      <segment state="initial">
+        <source> Your events are being rejected. Upgrade to resume event tracking. </source>
+        <target> Ваши события отклоняются. Повысьте тариф, чтобы возобновить отслеживание событий. </target>
+      </segment>
+    </unit>
+    <unit id="7796896248780270295">
+      <segment state="initial">
+        <source> About <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ eventThrottleRate() }}"/>%</pc> of your incoming events are being dropped. Upgrade to restore full coverage. </source>
+        <target> Около <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ eventThrottleRate() }}"/>%</pc> входящих событий отбрасывается. Повысьте тариф, чтобы восстановить полный охват. </target>
+      </segment>
+    </unit>
+    <unit id="4052546330076196016">
+      <segment state="initial">
+        <source> You&apos;re at <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ usagePercent() }}"/>%</pc> of your event limit. Upgrade before throttling kicks in and support open source error tracking. </source>
+        <target> Вы использовали <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ usagePercent() }}"/>%</pc> лимита событий. Повысьте тариф до включения ограничений и поддержите открытое отслеживание ошибок. </target>
+      </segment>
+    </unit>
+    <unit id="1520811785931570955">
+      <segment state="initial">
+        <source> Support open source error tracking and avoid event loss as you scale. </source>
+        <target> Поддержите открытое отслеживание ошибок и избегайте потери событий по мере роста. </target>
+      </segment>
+    </unit>
+    <unit id="4773225740896583514">
+      <segment state="initial">
+        <source>Upgrade to <ph id="0" equiv="INTERPOLATION" disp="{{ nextPlanLabel() }}"/> events/mo</source>
+        <target>Перейти на <ph id="0" equiv="INTERPOLATION" disp="{{ nextPlanLabel() }}"/> событий/мес</target>
+      </segment>
+    </unit>
+    <unit id="1792027532696134167">
+      <segment state="initial">
+        <source> Compare Plans </source>
+        <target> Сравнить тарифы </target>
+      </segment>
+    </unit>
+    <unit id="8819356210354103101">
+      <segment state="initial">
+        <source>Verify your email to continue</source>
+        <target>Подтвердите адрес электронной почты, чтобы продолжить</target>
+      </segment>
+    </unit>
+    <unit id="1206469004229143307">
+      <segment state="initial">
+        <source> For your account&apos;s security, you need a verified email address before you can set up multi-factor authentication. We use it to recover your account if you ever lose access. </source>
+        <target> Для безопасности вашей учётной записи перед настройкой многофакторной аутентификации нужен подтверждённый адрес электронной почты. Он используется для восстановления учётной записи, если вы потеряете доступ. </target>
+      </segment>
+    </unit>
+    <unit id="1302589354774989773">
+      <segment state="initial">
+        <source> A verification link was sent to <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ email }}"/></pc>. </source>
+        <target> Ссылка для подтверждения отправлена на <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ email }}"/></pc>. </target>
+      </segment>
+    </unit>
+    <unit id="4388712199830758321">
+      <segment state="initial">
+        <source>Resend verification email</source>
+        <target>Отправить письмо ещё раз</target>
+      </segment>
+    </unit>
+    <unit id="4185886669386916621">
+      <segment state="initial">
+        <source> I&apos;ve verified — refresh </source>
+        <target> Я подтвердил — обновить </target>
+      </segment>
+    </unit>
+    <unit id="7273336248682509272">
+      <segment state="initial">
+        <source> Manage email addresses </source>
+        <target> Управление адресами электронной почты </target>
+      </segment>
+    </unit>
+    <unit id="4295547764764047619">
+      <segment state="initial">
+        <source>No monitor checks were found.</source>
+        <target>Проверки монитора не найдены.</target>
+      </segment>
+    </unit>
+    <unit id="2044535834632996695">
+      <segment state="initial">
+        <source>Add monitor</source>
+        <target>Добавить монитор</target>
+      </segment>
+    </unit>
+    <unit id="3249513483374643425">
+      <segment state="initial">
+        <source>Add</source>
+        <target>Добавить</target>
+      </segment>
+    </unit>
+    <unit id="2693599899411110236">
+      <segment state="initial">
+        <source> No monitors were found. </source>
+        <target> Мониторы не найдены. </target>
+      </segment>
+    </unit>
+  </file>
+</xliff>
