@@ -119,40 +119,48 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
   issueID = signal("");
   eventID = signal<string | null>(null);
   #issueResource = resource({
-    params: () => ({ issueID: this.issueID() }),
+    params: () => ({
+      issueID: this.issueID(),
+      orgSlug: this.organization.selectedOrganizationSlug(),
+    }),
     loader: async ({ params }) => {
-      if (!params.issueID) {
+      if (!params.issueID || !params.orgSlug) {
         return;
       }
-      const { data } = await client.GET("/api/0/issues/{issue_id}/", {
-        params: { path: { issue_id: parseInt(params.issueID) } },
+      const { data } = await client.GET("/api/0/organizations/{organization_slug}/issues/{issue_id}/", {
+        params: { path: { issue_id: parseInt(params.issueID), organization_slug: params.orgSlug } },
       });
       return data;
     },
   });
   #eventResource = resource({
-    params: () => ({ issueID: this.issueID(), eventID: this.eventID() }),
+    params: () => ({
+      issueID: this.issueID(),
+      eventID: this.eventID(),
+      orgSlug: this.organization.selectedOrganizationSlug(),
+    }),
     loader: async ({ params }) => {
       const issueID = parseInt(params.issueID);
       const eventID = params.eventID;
-      if (!issueID) {
+      const orgSlug = params.orgSlug;
+      if (!issueID || !orgSlug) {
         return undefined;
       }
       if (eventID) {
         const { data } = await client.GET(
-          "/api/0/issues/{issue_id}/events/{event_id}/",
+          "/api/0/organizations/{organization_slug}/issues/{issue_id}/events/{event_id}/",
           {
             params: {
-              path: { issue_id: issueID, event_id: eventID },
+              path: { issue_id: issueID, event_id: eventID, organization_slug: orgSlug },
             },
           },
         );
         return data;
       }
       const { data } = await client.GET(
-        "/api/0/issues/{issue_id}/events/latest/",
+        "/api/0/organizations/{organization_slug}/issues/{issue_id}/events/latest/",
         {
-          params: { path: { issue_id: issueID } },
+          params: { path: { issue_id: issueID, organization_slug: orgSlug } },
         },
       );
       return data;
@@ -165,8 +173,8 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
 
   async retrieveTags(id: number, query?: string) {
     const queryParams: any = query ? { query: query } : {};
-    const { data } = await client.GET("/api/0/issues/{issue_id}/tags/", {
-      params: { path: { issue_id: id }, query: queryParams },
+    const { data } = await client.GET("/api/0/organizations/{organization_slug}/issues/{issue_id}/tags/", {
+      params: { path: { issue_id: id, organization_slug: this.organization.selectedOrganizationSlug() ?? "" }, query: queryParams },
     });
     if (data) {
       this.setTags(data as any);
@@ -229,8 +237,8 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
   }
 
   async deleteIssue(id: string) {
-    const { error } = await client.DELETE("/api/0/issues/{issue_id}/", {
-      params: { path: { issue_id: parseInt(id) } },
+    const { error } = await client.DELETE("/api/0/organizations/{organization_slug}/issues/{issue_id}/", {
+      params: { path: { issue_id: parseInt(id), organization_slug: this.organization.selectedOrganizationSlug() ?? "" } },
     });
     if (error) {
       this.snackBar.open(

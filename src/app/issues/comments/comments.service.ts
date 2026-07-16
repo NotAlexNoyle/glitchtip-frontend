@@ -2,6 +2,7 @@ import { Injectable, computed, inject, resource, signal } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { IssueDetailService } from "../issue-detail/issue-detail.service";
 import { StatefulService } from "src/app/shared/stateful-service/signal-state.service";
+import { OrganizationsService } from "src/app/api/organizations.service";
 import { client } from "src/app/shared/api/api";
 import { components } from "src/app/api/api-schema";
 
@@ -25,19 +26,23 @@ const initialState: CommentsState = {
 export class CommentsService extends StatefulService<CommentsState> {
   private issueDetailService = inject(IssueDetailService);
   private snackbar = inject(MatSnackBar);
+  private organization = inject(OrganizationsService)
   issueID = signal<number | undefined>(undefined);
 
   private commentsResource = resource({
-    params: () => ({ issueID: this.issueID() }),
+    params: () => ({
+      issueID: this.issueID(),
+      orgSlug: this.organization.selectedOrganizationSlug(),
+    }),
     loader: async ({ params }) => {
-      if (!params.issueID) {
+      if (!params.issueID || !params.orgSlug) {
         return undefined;
       }
       const { data, error } = await client.GET(
-        "/api/0/issues/{issue_id}/comments/",
+        "/api/0/organizations/{organization_slug}/issues/{issue_id}/comments/",
         {
           params: {
-            path: { issue_id: params.issueID },
+            path: { issue_id: params.issueID, organization_slug: params.orgSlug },
           },
         },
       );
@@ -82,9 +87,9 @@ export class CommentsService extends StatefulService<CommentsState> {
   async createComment(issueId: number, text: string) {
     this.setCreateCommentLoadingStart();
     const { data, error } = await client.POST(
-      "/api/0/issues/{issue_id}/comments/",
+      "/api/0/organizations/{organization_slug}/issues/{issue_id}/comments/",
       {
-        params: { path: { issue_id: issueId } },
+        params: { path: { issue_id: issueId, organization_slug: this.organization.selectedOrganizationSlug() ?? ""} },
         body: { data: { text } },
       },
     );
@@ -111,12 +116,13 @@ export class CommentsService extends StatefulService<CommentsState> {
   async updateComment(issueId: number, commentId: number, text: string) {
     this.setCommentUpdateLoadingStart(commentId);
     const { data, error } = await client.PUT(
-      "/api/0/issues/{issue_id}/comments/{comment_id}/",
+      "/api/0/organizations/{organization_slug}/issues/{issue_id}/comments/{comment_id}/",
       {
         params: {
           path: {
             issue_id: issueId,
             comment_id: commentId,
+            organization_slug: this.organization.selectedOrganizationSlug() ?? ""
           },
         },
         body: {
@@ -139,12 +145,13 @@ export class CommentsService extends StatefulService<CommentsState> {
   async deleteComment(issueId: number, commentId: number) {
     this.setCommentDeleteLoadingStart(commentId);
     const { error, response } = await client.DELETE(
-      "/api/0/issues/{issue_id}/comments/{comment_id}/",
+      "/api/0/organizations/{organization_slug}/issues/{issue_id}/comments/{comment_id}/",
       {
         params: {
           path: {
             issue_id: issueId,
             comment_id: commentId,
+            organization_slug: this.organization.selectedOrganizationSlug() ?? ""
           },
         },
       },

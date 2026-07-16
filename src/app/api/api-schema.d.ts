@@ -371,6 +371,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/0/organizations/{organization_slug}/issues/{issue_id}/comments/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Organizations List Comments */
+        get: operations["apps_issue_events_api_comments_organizations_list_comments"];
+        put?: never;
+        /** Organization Add Comment */
+        post: operations["apps_issue_events_api_comments_organization_add_comment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/0/issues/{issue_id}/comments/{comment_id}/": {
         parameters: {
             query?: never;
@@ -389,6 +407,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/0/organizations/{organization_slug}/issues/{issue_id}/comments/{comment_id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Organization Update Comment */
+        put: operations["apps_issue_events_api_comments_organization_update_comment"];
+        post?: never;
+        /** Organization Delete Comment */
+        delete: operations["apps_issue_events_api_comments_organization_delete_comment"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/0/issues/{issue_id}/events/": {
         parameters: {
             query?: never;
@@ -398,6 +434,23 @@ export interface paths {
         };
         /** List Issue Event */
         get: operations["apps_issue_events_api_events_list_issue_event"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/0/organizations/{organization_slug}/issues/{issue_id}/events/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Organization Issue Event */
+        get: operations["apps_issue_events_api_events_list_organization_issue_event"];
         put?: never;
         post?: never;
         delete?: never;
@@ -423,6 +476,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/0/organizations/{organization_slug}/issues/{issue_id}/events/latest/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Organization Latest Issue Event */
+        get: operations["apps_issue_events_api_events_get_organization_latest_issue_event"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/0/issues/{issue_id}/events/{event_id}/": {
         parameters: {
             query?: never;
@@ -432,6 +502,23 @@ export interface paths {
         };
         /** Get Issue Event */
         get: operations["apps_issue_events_api_events_get_issue_event"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/0/organizations/{organization_slug}/issues/{issue_id}/events/{event_id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Organization Issue Event */
+        get: operations["apps_issue_events_api_events_get_organization_issue_event"];
         put?: never;
         post?: never;
         delete?: never;
@@ -510,6 +597,25 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/0/organizations/{organization_slug}/issues/{issue_id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Org Issues */
+        get: operations["apps_issue_events_api_issues_get_org_issues"];
+        /** Update Organization Issue */
+        put: operations["apps_issue_events_api_issues_update_organization_issue"];
+        post?: never;
+        /** Delete Organization Issue */
+        delete: operations["apps_issue_events_api_issues_delete_organization_issue"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/0/issues/{issue_id}/commits/": {
         parameters: {
             query?: never;
@@ -530,16 +636,16 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/0/organizations/{organization_slug}/issues/{issue_id}/": {
+    "/api/0/organizations/{organization_slug}/issues/{issue_id}/commits/": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
-        /** Update Organization Issue */
-        put: operations["apps_issue_events_api_issues_update_organization_issue"];
+        /** List Org Issue Commits */
+        get: operations["apps_issue_events_api_issues_list_org_issue_commits"];
+        put?: never;
         post?: never;
         delete?: never;
         options?: never;
@@ -600,6 +706,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/0/organizations/{organization_slug}/issues/{issue_id}/tags/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Organization Issue Tags */
+        get: operations["apps_issue_events_api_issues_list_organization_issue_tags"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/0/organizations/{organization_slug}/issues-stats/": {
         parameters: {
             query?: never;
@@ -632,6 +755,23 @@ export interface paths {
         };
         /** List User Reports */
         get: operations["apps_issue_events_api_user_reports_list_user_reports"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/0/organizations/{organization_slug}/issues/{issue_id}/user-reports/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Organization User Reports */
+        get: operations["apps_issue_events_api_user_reports_list_organization_user_reports"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1317,6 +1457,49 @@ export interface paths {
         get: operations["apps_stripe_api_subscription_events_count_daily"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/0/stripe/subscriptions/{organization_slug}/overage/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Overage Status */
+        get: operations["apps_stripe_api_get_overage_status"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/0/stripe/organizations/{organization_slug}/overage/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Configure Overage
+         * @description Enable/disable metered overage billing and set the spend cap (owner-only).
+         *
+         *     Enabling attaches the metered overage price as a second subscription item.
+         *     Disabling only clears the flag: the item stays attached (dormant, billing
+         *     zero) so a re-enable within the same cycle can't re-bill reported usage.
+         *     Either way a throttle re-check is enqueued so the new headroom (or block)
+         *     takes effect promptly.
+         */
+        post: operations["apps_stripe_api_configure_overage"];
         delete?: never;
         options?: never;
         head?: never;
@@ -4142,6 +4325,40 @@ export interface components {
             /** Isowner */
             isOwner: boolean;
         };
+        /**
+         * OrganizationUserInviteSchema
+         * @description Response for the invite (member create) endpoint.
+         *
+         *     Surfaces the acceptance link so the frontend can offer a copy-link invite
+         *     flow. This is the only delivery path when email is disabled, and a harmless
+         *     convenience when email works. The link carries the same time-limited token
+         *     the invite email uses, so possessing it is what grants acceptance.
+         */
+        OrganizationUserInviteSchema: {
+            /** Id */
+            id: string;
+            /**
+             * Role
+             * @enum {string}
+             */
+            role: "member" | "admin" | "manager" | "owner";
+            /** Rolename */
+            roleName: string;
+            /**
+             * Datecreated
+             * Format: date-time
+             */
+            dateCreated: string;
+            /** Email */
+            email: string;
+            user?: components["schemas"]["UserSchema"] | null;
+            /** Pending */
+            pending: boolean;
+            /** Isowner */
+            isOwner: boolean;
+            /** Invitelink */
+            inviteLink?: string | null;
+        };
         /** OrganizationUserIn */
         OrganizationUserIn: {
             /**
@@ -4820,6 +5037,42 @@ export interface components {
             /** Data */
             data: components["schemas"]["DailyEventCountEntry"][];
         };
+        /**
+         * OverageStatusSchema
+         * @description Current overage state for an org, for rendering the choice at the limit.
+         */
+        OverageStatusSchema: {
+            /** Enabled */
+            enabled: boolean;
+            /** Eligible */
+            eligible: boolean;
+            /** Configured */
+            configured: boolean;
+            /** Capcents */
+            capCents: number;
+            /** Capunits */
+            capUnits: number;
+            /** Quota */
+            quota: number;
+            /** Usage */
+            usage: number;
+            /** Overageunits */
+            overageUnits: number;
+            /** Overagecostcents */
+            overageCostCents: number;
+            /** Throttlerate */
+            throttleRate: number;
+        };
+        /** OverageConfigIn */
+        OverageConfigIn: {
+            /** Enabled */
+            enabled: boolean;
+            /**
+             * Capcents
+             * @default 0
+             */
+            capCents: number;
+        };
         /** RepositorySchema */
         RepositorySchema: {
             /** Id */
@@ -4968,6 +5221,12 @@ export interface components {
              * @description Blank implies default value of 20
              */
             timeout?: number | null;
+            /**
+             * Confirmation Threshold
+             * @description Number of consecutive failed checks before the monitor is considered down and a notification is sent. 1 alerts on the first failure.
+             * @default 1
+             */
+            confirmationThreshold: number;
         };
         /**
          * MonitorType
@@ -4980,8 +5239,15 @@ export interface components {
             expectedBody: string;
             /** Expectedstatus */
             expectedStatus: number | null;
+            /** Interval */
+            interval: number;
             /** Timeout */
             timeout: number | null;
+            /**
+             * Confirmationthreshold
+             * @default 1
+             */
+            confirmationThreshold: number;
             /** Project */
             project?: string | null;
             /**
@@ -4993,11 +5259,6 @@ export interface components {
             name: string;
             /** Url */
             url?: string | null;
-            /**
-             * Interval
-             * @default 60
-             */
-            interval: number;
         };
         /**
          * MonitorCheckResponseTimeSchema
@@ -5077,6 +5338,12 @@ export interface components {
              * @description Blank implies default value of 20
              */
             timeout?: number | null;
+            /**
+             * Confirmation Threshold
+             * @description Number of consecutive failed checks before the monitor is considered down and a notification is sent. 1 alerts on the first failure.
+             * @default 1
+             */
+            confirmationThreshold: number;
         };
         /** StatusPageSchema */
         StatusPageSchema: {
@@ -6081,6 +6348,61 @@ export interface operations {
             };
         };
     };
+    apps_issue_events_api_comments_organizations_list_comments: {
+        parameters: {
+            query?: {
+                /** @description Number of results to return per page. */
+                limit?: number | null;
+                /** @description The pagination cursor value. */
+                cursor?: string | null;
+            };
+            header?: never;
+            path: {
+                issue_id: number;
+                organization_slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommentSchema"][];
+                };
+            };
+        };
+    };
+    apps_issue_events_api_comments_organization_add_comment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+                issue_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostCommentSchema"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommentSchema"];
+                };
+            };
+        };
+    };
     apps_issue_events_api_comments_update_comment: {
         parameters: {
             query?: never;
@@ -6129,6 +6451,56 @@ export interface operations {
             };
         };
     };
+    apps_issue_events_api_comments_organization_update_comment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+                issue_id: number;
+                comment_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostCommentSchema"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommentSchema"];
+                };
+            };
+        };
+    };
+    apps_issue_events_api_comments_organization_delete_comment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+                issue_id: number;
+                comment_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     apps_issue_events_api_events_list_issue_event: {
         parameters: {
             query?: {
@@ -6140,6 +6512,34 @@ export interface operations {
             header?: never;
             path: {
                 issue_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IssueEventSchema"][];
+                };
+            };
+        };
+    };
+    apps_issue_events_api_events_list_organization_issue_event: {
+        parameters: {
+            query?: {
+                /** @description Number of results to return per page. */
+                limit?: number | null;
+                /** @description The pagination cursor value. */
+                cursor?: string | null;
+            };
+            header?: never;
+            path: {
+                issue_id: number;
+                organization_slug: string;
             };
             cookie?: never;
         };
@@ -6178,11 +6578,58 @@ export interface operations {
             };
         };
     };
+    apps_issue_events_api_events_get_organization_latest_issue_event: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+                issue_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IssueEventDetailSchema"];
+                };
+            };
+        };
+    };
     apps_issue_events_api_events_get_issue_event: {
         parameters: {
             query?: never;
             header?: never;
             path: {
+                issue_id: number;
+                event_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IssueEventDetailSchema"];
+                };
+            };
+        };
+    };
+    apps_issue_events_api_events_get_organization_issue_event: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
                 issue_id: number;
                 event_id: string;
             };
@@ -6345,11 +6792,12 @@ export interface operations {
             };
         };
     };
-    apps_issue_events_api_issues_list_issue_commits: {
+    apps_issue_events_api_issues_get_org_issues: {
         parameters: {
             query?: never;
             header?: never;
             path: {
+                organization_slug: string;
                 issue_id: number;
             };
             cookie?: never;
@@ -6362,7 +6810,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CommitSchema"][];
+                    "application/json": components["schemas"]["IssueDetailSchema"];
                 };
             };
         };
@@ -6390,6 +6838,72 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["IssueDetailSchema"];
+                };
+            };
+        };
+    };
+    apps_issue_events_api_issues_delete_organization_issue: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+                issue_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    apps_issue_events_api_issues_list_issue_commits: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                issue_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommitSchema"][];
+                };
+            };
+        };
+    };
+    apps_issue_events_api_issues_list_org_issue_commits: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+                issue_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommitSchema"][];
                 };
             };
         };
@@ -6549,6 +7063,31 @@ export interface operations {
             };
         };
     };
+    apps_issue_events_api_issues_list_organization_issue_tags: {
+        parameters: {
+            query?: {
+                key?: string | null;
+            };
+            header?: never;
+            path: {
+                organization_slug: string;
+                issue_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IssueTagSchema"][];
+                };
+            };
+        };
+    };
     apps_issue_events_api_issues_issue_stats: {
         parameters: {
             query: {
@@ -6584,6 +7123,34 @@ export interface operations {
             };
             header?: never;
             path: {
+                issue_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserReportSchema"][];
+                };
+            };
+        };
+    };
+    apps_issue_events_api_user_reports_list_organization_user_reports: {
+        parameters: {
+            query?: {
+                /** @description Number of results to return per page. */
+                limit?: number | null;
+                /** @description The pagination cursor value. */
+                cursor?: string | null;
+            };
+            header?: never;
+            path: {
+                organization_slug: string;
                 issue_id: number;
             };
             cookie?: never;
@@ -6947,7 +7514,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["OrganizationUserSchema"];
+                    "application/json": components["schemas"]["OrganizationUserInviteSchema"];
                 };
             };
         };
@@ -7827,6 +8394,54 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DailyEventsCountSchema"];
+                };
+            };
+        };
+    };
+    apps_stripe_api_get_overage_status: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OverageStatusSchema"];
+                };
+            };
+        };
+    };
+    apps_stripe_api_configure_overage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OverageConfigIn"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OverageStatusSchema"];
                 };
             };
         };

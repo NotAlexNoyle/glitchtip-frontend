@@ -1,4 +1,4 @@
-import { computed, Injectable, resource, signal } from "@angular/core";
+import { computed, inject, Injectable, resource, signal } from "@angular/core";
 import {
   client,
   handleError,
@@ -8,23 +8,30 @@ import {
   getPaginationHeaders,
   getPaginator,
 } from "src/app/shared/pagination.utils";
+import { OrganizationsService } from "src/app/api/organizations.service";
 
 @Injectable()
 export class UserReportsService {
+  private organization = inject(OrganizationsService)
   issueID = signal("");
   cursor = signal("");
   #reportsResource = resource({
-    params: () => ({ issueID: this.issueID(), cursor: this.cursor() }),
+    params: () => ({
+      issueID: this.issueID(),
+      cursor: this.cursor(),
+      orgSlug: this.organization.selectedOrganizationSlug(),
+    }),
     loader: async ({ params }) => {
-      if (!params.issueID) {
+      if (!params.issueID || !params.orgSlug) {
         return undefined;
       }
       const { data, response, error } = await client.GET(
-        "/api/0/issues/{issue_id}/user-reports/",
+        "/api/0/organizations/{organization_slug}/issues/{issue_id}/user-reports/",
         {
           params: {
             path: {
               issue_id: parseInt(params.issueID),
+              organization_slug: params.orgSlug
             },
           },
         },
