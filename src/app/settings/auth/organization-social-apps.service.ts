@@ -1,4 +1,4 @@
-import { computed, Injectable, inject } from "@angular/core";
+import { computed, Injectable, inject, signal } from "@angular/core";
 import { OrganizationsService } from "src/app/api/organizations.service";
 import { components } from "src/app/api/api-schema";
 import { client, handleError } from "src/app/shared/api/api";
@@ -20,17 +20,23 @@ export interface SocialAppMutationResult {
 export class OrganizationSocialAppsService {
   private organizationsService = inject(OrganizationsService);
 
-  socialAppsResource = apiResource(
-    this.organizationsService.activeOrganizationSlug,
-    (slug) => ({
-      url: "/api/0/organizations/{organization_slug}/social-apps/",
-      options: { params: { path: { organization_slug: slug } } },
-    }),
-  );
+  // Keyed on a page-set signal rather than the live active-org signal, so
+  // this root service doesn't refetch (403 for plain members) on every org
+  // switch after the page has been visited once. The page keeps it in sync
+  // while mounted; see TeamsService for the same pattern.
+  private orgSlug = signal<string | null>(null);
+  socialAppsResource = apiResource(this.orgSlug, (slug) => ({
+    url: "/api/0/organizations/{organization_slug}/social-apps/",
+    options: { params: { path: { organization_slug: slug } } },
+  }));
   socialApps = computed(() => this.socialAppsResource.value() ?? []);
 
+  setOrganization(slug: string) {
+    this.orgSlug.set(slug);
+  }
+
   async createSocialApp(
-    payload: OrganizationSocialAppPayload,
+    payload: components["schemas"]["OrganizationSocialAppIn"],
   ): Promise<SocialAppMutationResult> {
     const { data, error, response } = await client.POST(
       "/api/0/organizations/{organization_slug}/social-apps/",
@@ -41,7 +47,7 @@ export class OrganizationSocialAppsService {
               this.organizationsService.activeOrganizationSlug(),
           },
         },
-        body: { ...payload, clientSecret: payload.clientSecret! },
+        body: payload,
       },
     );
     if (data) {

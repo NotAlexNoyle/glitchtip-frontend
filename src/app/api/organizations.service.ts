@@ -73,6 +73,8 @@ export class OrganizationsService {
       this.access().includes("member:write"),
   );
   accessOrgAdmin = computed(() => this.access().includes("org:admin"));
+  /** Manager and owner roles; matches backend endpoints gated on manager+ */
+  accessOrgWrite = computed(() => this.access().includes("org:write"));
 
   constructor() {
     setTimeout(() => this.refresh(), 30000);

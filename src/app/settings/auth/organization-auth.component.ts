@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
   signal,
 } from "@angular/core";
@@ -64,9 +65,24 @@ export class OrganizationAuthComponent {
   socialApps = this.service.socialApps;
   resourceError = computed(() => this.service.socialAppsResource.serverError());
   loadingApps = computed(() => this.service.socialAppsResource.isLoading());
-  accessOrgAdmin = this.organizationsService.accessOrgAdmin;
-  billingEnabled = this.settings.billingEnabled;
+  accessOrgWrite = this.organizationsService.accessOrgWrite;
   orgSlug = this.organizationsService.activeOrganizationSlug;
+  /** The public-login-page toggle only exists on single-tenant self-host */
+  showIsPublicToggle = computed(
+    () =>
+      this.settings.billingEnabled() === false &&
+      this.settings.enableOrganizationCreation() === false,
+  );
+
+  constructor() {
+    // Keep the page's resource keyed to the active org only while mounted
+    effect(() => {
+      const slug = this.orgSlug();
+      if (slug) {
+        this.service.setOrganization(slug);
+      }
+    });
+  }
 
   showForm = signal(false);
   editingApp = signal<OrganizationSocialApp | null>(null);
@@ -161,13 +177,18 @@ export class OrganizationAuthComponent {
       name: value.name!,
       serverUrl: this.showIssuerField() ? value.serverUrl : null,
       clientID: value.clientID!,
-      clientSecret: value.clientSecret ? value.clientSecret : null,
       isPublic: value.isPublic ?? false,
     };
     const editing = this.editingApp();
     const result = editing
-      ? await this.service.updateSocialApp(editing.id!, payload)
-      : await this.service.createSocialApp(payload);
+      ? await this.service.updateSocialApp(editing.id!, {
+          ...payload,
+          clientSecret: value.clientSecret ? value.clientSecret : null,
+        })
+      : await this.service.createSocialApp({
+          ...payload,
+          clientSecret: value.clientSecret!,
+        });
     this.saving.set(false);
     if (result.success) {
       this.snackBar.open(
