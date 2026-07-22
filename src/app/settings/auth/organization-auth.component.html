@@ -93,6 +93,14 @@
                 >
               </mat-radio-group>
             }
+            @if (!showIssuerField()) {
+              <p class="body-text" i18n>
+                Anyone who signs in through this provider joins the
+                organization, so use a Google OAuth client restricted to your
+                own workspace (audience "Internal"). An external client lets
+                anyone with a Google account in.
+              </p>
+            }
             <mat-form-field class="full-width" appearance="outline">
               <mat-label i18n>Name</mat-label>
               <input
