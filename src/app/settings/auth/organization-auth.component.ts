@@ -20,6 +20,7 @@ import { MatDividerModule } from "@angular/material/divider";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
+import { MatRadioModule } from "@angular/material/radio";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { OrganizationsService } from "src/app/api/organizations.service";
 import { SettingsService } from "src/app/api/settings.service";
@@ -45,6 +46,7 @@ import {
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
+    MatRadioModule,
     ReactiveFormsModule,
     RouterLink,
     CopyInputComponent,
@@ -73,19 +75,54 @@ export class OrganizationAuthComponent {
   planLimited = signal(false);
 
   form = new FormGroup({
+    provider: new FormControl<"google" | "openid_connect">("google", {
+      nonNullable: true,
+    }),
     name: new FormControl("", [Validators.required]),
-    serverUrl: new FormControl("", [Validators.required]),
+    serverUrl: new FormControl(""),
     clientID: new FormControl("", [Validators.required]),
     clientSecret: new FormControl(""),
     isPublic: new FormControl(false),
   });
 
+  /** The issuer URL only applies to bring-your-own OIDC providers */
+  showIssuerField() {
+    const editing = this.editingApp();
+    if (editing) {
+      return editing.brand !== "google";
+    }
+    return this.form.controls.provider.value === "openid_connect";
+  }
+
+  onProviderChange() {
+    const name = this.form.controls.name;
+    if (this.form.controls.provider.value === "google") {
+      if (!name.value) {
+        name.setValue("Google");
+      }
+    } else if (name.value === "Google") {
+      name.setValue("");
+    }
+    this.syncServerUrlValidator();
+  }
+
+  private syncServerUrlValidator() {
+    const serverUrl = this.form.controls.serverUrl;
+    if (this.showIssuerField()) {
+      serverUrl.setValidators([Validators.required]);
+    } else {
+      serverUrl.clearValidators();
+    }
+    serverUrl.updateValueAndValidity();
+  }
+
   startAdd() {
     this.editingApp.set(null);
     this.error.set(null);
-    this.form.reset({ isPublic: false });
+    this.form.reset({ provider: "google", name: "Google", isPublic: false });
     this.form.controls.clientSecret.setValidators([Validators.required]);
     this.form.controls.clientSecret.updateValueAndValidity();
+    this.syncServerUrlValidator();
     this.showForm.set(true);
   }
 
@@ -93,6 +130,7 @@ export class OrganizationAuthComponent {
     this.editingApp.set(app);
     this.error.set(null);
     this.form.reset({
+      provider: app.brand === "google" ? "google" : "openid_connect",
       name: app.name,
       serverUrl: app.serverUrl,
       clientID: app.clientID,
@@ -101,6 +139,7 @@ export class OrganizationAuthComponent {
     });
     this.form.controls.clientSecret.clearValidators();
     this.form.controls.clientSecret.updateValueAndValidity();
+    this.syncServerUrlValidator();
     this.showForm.set(true);
   }
 
@@ -118,8 +157,9 @@ export class OrganizationAuthComponent {
     this.error.set(null);
     const value = this.form.value;
     const payload = {
+      provider: value.provider!,
       name: value.name!,
-      serverUrl: value.serverUrl!,
+      serverUrl: this.showIssuerField() ? value.serverUrl : null,
       clientID: value.clientID!,
       clientSecret: value.clientSecret ? value.clientSecret : null,
       isPublic: value.isPublic ?? false,

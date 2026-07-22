@@ -32,6 +32,12 @@ mat-card {
 form {
   margin-top: 16px;
 
+  .provider-choice {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
   mat-checkbox {
     display: block;
     margin-bottom: 16px;

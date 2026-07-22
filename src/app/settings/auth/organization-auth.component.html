@@ -81,6 +81,18 @@
                 <ng-container i18n>Add provider</ng-container>
               }
             </h3>
+            @if (!editingApp()) {
+              <mat-radio-group
+                formControlName="provider"
+                (change)="onProviderChange()"
+                class="provider-choice"
+              >
+                <mat-radio-button value="google" i18n>Google</mat-radio-button>
+                <mat-radio-button value="openid_connect" i18n
+                  >Other (OpenID Connect)</mat-radio-button
+                >
+              </mat-radio-group>
+            }
             <mat-form-field class="full-width" appearance="outline">
               <mat-label i18n>Name</mat-label>
               <input
@@ -91,18 +103,20 @@
               />
               <mat-hint i18n>Shown on the sign-in button</mat-hint>
             </mat-form-field>
-            <mat-form-field class="full-width" appearance="outline">
-              <mat-label i18n>Issuer URL</mat-label>
-              <input
-                matInput
-                formControlName="serverUrl"
-                placeholder="https://acme.okta.com"
-              />
-              <mat-hint i18n
-                >The OpenID Connect issuer or discovery document URL, from your
-                identity provider</mat-hint
-              >
-            </mat-form-field>
+            @if (showIssuerField()) {
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label i18n>Issuer URL</mat-label>
+                <input
+                  matInput
+                  formControlName="serverUrl"
+                  placeholder="https://acme.okta.com"
+                />
+                <mat-hint i18n
+                  >The OIDC issuer or discovery URL from your identity
+                  provider</mat-hint
+                >
+              </mat-form-field>
+            }
             <mat-form-field class="full-width" appearance="outline">
               <mat-label i18n>Client ID</mat-label>
               <input matInput formControlName="clientID" />

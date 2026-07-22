@@ -2113,6 +2113,8 @@ export interface components {
             scopes: string[];
             /** Authorize Url */
             authorize_url: string | null;
+            /** Brand */
+            brand: string;
             /** Name */
             name: string;
             /**
@@ -4397,6 +4399,8 @@ export interface components {
         OrganizationSocialAppSchema: {
             /** Serverurl */
             serverUrl: string | null;
+            /** Brand */
+            brand: string;
             /** Ispublic */
             isPublic: boolean;
             /** Callbackurl */
@@ -4419,13 +4423,24 @@ export interface components {
         };
         /**
          * OrganizationSocialAppIn
-         * @description Create an organization-managed OpenID Connect social app.
+         * @description Create an organization-managed social app.
+         *
+         *     Every choice runs on the OpenID Connect machinery — each app gets its own
+         *     provider_id-scoped callback URL, which is what makes several apps of the
+         *     same brand (one per organization) coexist. Non-OIDC providers share one
+         *     callback URL per provider and cannot be disambiguated per organization.
          */
         OrganizationSocialAppIn: {
             /** Name */
             name: string;
+            /**
+             * Provider
+             * @default openid_connect
+             * @enum {string}
+             */
+            provider: "openid_connect" | "google";
             /** Serverurl */
-            serverUrl: string;
+            serverUrl?: string | null;
             /** Clientid */
             clientID: string;
             /** Clientsecret */
@@ -4440,8 +4455,14 @@ export interface components {
         OrganizationSocialAppUpdateIn: {
             /** Name */
             name: string;
+            /**
+             * Provider
+             * @default openid_connect
+             * @enum {string}
+             */
+            provider: "openid_connect" | "google";
             /** Serverurl */
-            serverUrl: string;
+            serverUrl?: string | null;
             /** Clientid */
             clientID: string;
             /** Clientsecret */
