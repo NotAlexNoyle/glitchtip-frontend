@@ -1,4 +1,5 @@
 import { Route } from "@angular/router";
+import { OrganizationAuthComponent } from "./auth/organization-auth.component";
 import { ProjectsComponent } from "./projects/projects.component";
 import { NewProject } from "./projects/new-project/new-project";
 import { ProjectDetailComponent } from "./projects/project-detail/project-detail.component";
@@ -14,6 +15,7 @@ import { TeamsComponent } from "./teams/teams.component";
 
 export default [
   { path: "", component: OrganizationComponent },
+  { path: "auth", component: OrganizationAuthComponent },
   { path: "projects", component: ProjectsComponent },
   { path: "projects/new", component: NewProject },
   { path: "projects/:project-slug", component: ProjectDetailComponent },

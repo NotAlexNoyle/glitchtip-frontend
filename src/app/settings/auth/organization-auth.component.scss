@@ -1,0 +1,54 @@
+mat-card {
+  max-width: 800px;
+}
+
+.social-app {
+  margin: 16px 0;
+
+  .social-app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    button {
+      margin-left: 8px;
+    }
+  }
+}
+
+.copy-field {
+  margin-bottom: 16px;
+
+  p {
+    margin: 4px 0 8px;
+  }
+
+  gt-copy-input {
+    display: block;
+    max-width: 600px;
+  }
+}
+
+form {
+  margin-top: 16px;
+
+  mat-checkbox {
+    display: block;
+    margin-bottom: 16px;
+  }
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+mat-error {
+  margin: 8px 0;
+}

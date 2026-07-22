@@ -1,0 +1,164 @@
+<gt-top-app-bar>
+  <ng-container slot="left">
+    <h1 class="section-header-text" i18n>Single Sign-On</h1>
+  </ng-container>
+</gt-top-app-bar>
+<section class="l-body">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title i18n>OpenID Connect Providers</mat-card-title>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content>
+      <p i18n>
+        Connect your own identity provider (Okta, Microsoft Entra ID, Auth0,
+        Keycloak, Google Workspace, and others) so your team can sign in with
+        it. Anyone who signs in through your provider automatically joins this
+        organization. Sign-in buttons appear on your organization's own login
+        page, which you can share with your team.
+      </p>
+      @if (resourceError()) {
+        <mat-error i18n
+          >Unable to load SSO providers. A role of manager or above is required
+          to view them.</mat-error
+        >
+      } @else {
+        @for (app of socialApps(); track app.id) {
+          <div class="social-app">
+            <div class="social-app-header">
+              <h3>{{ app.name }}</h3>
+              <div>
+                <button
+                  mat-stroked-button
+                  (click)="startEdit(app)"
+                  [disabled]="!accessOrgAdmin()"
+                  i18n
+                >
+                  Edit
+                </button>
+                <button
+                  mat-stroked-button
+                  class="remove-button"
+                  (click)="removeSocialApp(app)"
+                  [disabled]="!accessOrgAdmin()"
+                  i18n
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+            <p class="body-text">{{ app.serverUrl }}</p>
+            <div class="copy-field">
+              <span class="body-text-strong" i18n>Callback URL</span>
+              <p class="body-text" i18n>
+                Register this redirect URI with your identity provider.
+              </p>
+              <gt-copy-input [value]="app.callbackUrl ?? ''"></gt-copy-input>
+            </div>
+            <div class="copy-field">
+              <span class="body-text-strong" i18n>Organization login page</span>
+              <p class="body-text" i18n>
+                Share this address with your team; it lists this sign-in option.
+              </p>
+              <gt-copy-input [value]="app.loginUrl"></gt-copy-input>
+            </div>
+          </div>
+          <mat-divider></mat-divider>
+        } @empty {
+          @if (!loadingApps() && !showForm()) {
+            <p class="body-text" i18n>
+              No SSO providers configured for this organization yet.
+            </p>
+          }
+        }
+
+        @if (showForm()) {
+          <form [formGroup]="form" (ngSubmit)="onSubmit()">
+            <h3>
+              @if (editingApp()) {
+                <ng-container i18n>Edit provider</ng-container>
+              } @else {
+                <ng-container i18n>Add provider</ng-container>
+              }
+            </h3>
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label i18n>Name</mat-label>
+              <input
+                matInput
+                formControlName="name"
+                placeholder="Acme Okta"
+                i18n-placeholder
+              />
+              <mat-hint i18n>Shown on the sign-in button</mat-hint>
+            </mat-form-field>
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label i18n>Issuer URL</mat-label>
+              <input
+                matInput
+                formControlName="serverUrl"
+                placeholder="https://acme.okta.com"
+              />
+              <mat-hint i18n
+                >The OpenID Connect issuer or discovery document URL, from your
+                identity provider</mat-hint
+              >
+            </mat-form-field>
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label i18n>Client ID</mat-label>
+              <input matInput formControlName="clientID" />
+            </mat-form-field>
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label i18n>Client secret</mat-label>
+              <input matInput type="password" formControlName="clientSecret" />
+              @if (editingApp()) {
+                <mat-hint i18n>Leave blank to keep the current secret</mat-hint>
+              }
+            </mat-form-field>
+            @if (billingEnabled() === false) {
+              <mat-checkbox formControlName="isPublic" i18n
+                >Show on this server's main login page</mat-checkbox
+              >
+            }
+            @if (error()) {
+              <mat-error>{{ error() }}</mat-error>
+            }
+            @if (planLimited()) {
+              <p class="body-text">
+                <a
+                  [routerLink]="['/', orgSlug(), 'settings', 'subscription']"
+                  i18n
+                  >Change your subscription</a
+                >
+              </p>
+            }
+            <div class="form-actions">
+              <gt-loading-button
+                buttonText="Save"
+                i18n-buttonText
+                [loading]="saving()"
+              ></gt-loading-button>
+              <button
+                mat-stroked-button
+                type="button"
+                (click)="cancelForm()"
+                i18n
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        } @else {
+          <button
+            mat-flat-button
+            color="primary"
+            (click)="startAdd()"
+            [disabled]="!accessOrgAdmin()"
+            i18n
+          >
+            Add provider
+          </button>
+        }
+      }
+    </mat-card-content>
+  </mat-card>
+</section>

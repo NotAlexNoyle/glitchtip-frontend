@@ -125,6 +125,11 @@ export class MainNavComponent {
       route: ["org_slug", "settings", "teams"],
     },
     {
+      name: $localize`Single Sign-On`,
+      icon: "vpn_key",
+      route: ["org_slug", "settings", "auth"],
+    },
+    {
       name: $localize`Members`,
       icon: "people",
       route: ["org_slug", "settings", "members"],

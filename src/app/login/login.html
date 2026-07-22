@@ -14,6 +14,18 @@
         <mat-card-title>
           <h3 i18n>Login</h3>
         </mat-card-title>
+        @if (orgSlug(); as orgSlug) {
+          <p class="body-text org-login-note" i18n>
+            Signing in to <strong>{{ orgSlug }}</strong>
+          </p>
+          @if (orgLoginSettingsLoaded() && !socialApps().length) {
+            <p class="body-text org-login-note" i18n>
+              This organization has no single sign-on providers configured. Use
+              your email and password, or the
+              <a class="auth-link" routerLink="/login">standard login page</a>.
+            </p>
+          }
+        }
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
           <gt-form-error [errors]="formErrors()"></gt-form-error>
           <mat-form-field class="full-width" appearance="outline">
@@ -21,14 +33,14 @@
             <input matInput autofocus type="email" formControlName="email" />
             @if (email?.errors) {
               <mat-error>
-                @if (email?.errors?.['required']) {
+                @if (email?.errors?.["required"]) {
                   <span i18n>Your email is required to log in</span>
                 }
-                @if (email?.errors?.['email']) {
+                @if (email?.errors?.["email"]) {
                   <span i18n>Enter a valid email address</span>
                 }
-                @if (email?.errors?.['serverError']) {
-                  <span>{{ email?.errors?.['serverError'] }}</span>
+                @if (email?.errors?.["serverError"]) {
+                  <span>{{ email?.errors?.["serverError"] }}</span>
                 }
               </mat-error>
             }
@@ -38,16 +50,16 @@
             <input matInput type="password" formControlName="password" />
             @if (password?.errors) {
               <mat-error>
-                @if (password?.errors?.['minlength']) {
+                @if (password?.errors?.["minlength"]) {
                   <span i18n
                     >Your password should be at least 8 characters long</span
                   >
                 }
-                @if (password?.errors?.['required']) {
+                @if (password?.errors?.["required"]) {
                   <span i18n>Your password is required to log in</span>
                 }
-                @if (password?.errors?.['serverError']) {
-                  <span>{{ password?.errors?.['serverError'] }}</span>
+                @if (password?.errors?.["serverError"]) {
+                  <span>{{ password?.errors?.["serverError"] }}</span>
                 }
               </mat-error>
             }
@@ -89,11 +101,13 @@
           @if (enableUserRegistration() || enableSocialAppsUserRegistration()) {
             <p class="body-text">
               <ng-container i18n>New to GlitchTip?</ng-container>
-              <a class="auth-link" routerLink="../register" i18n>Sign Up</a>
+              <a class="auth-link" routerLink="/register" i18n>Sign Up</a>
             </p>
           }
           <p class="body-text">
-            <a class="auth-link" routerLink="/reset-password" i18n>Reset Password</a>
+            <a class="auth-link" routerLink="/reset-password" i18n
+              >Reset Password</a
+            >
           </p>
 
           <p class="alternative-instance" markdown>

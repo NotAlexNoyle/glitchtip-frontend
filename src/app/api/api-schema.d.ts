@@ -21,6 +21,29 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/settings/{organization_slug}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Organization Login Settings
+         * @description Sign-in options for one organization's login page (/login/<org slug>),
+         *     including social apps hidden from the instance-wide login page. Responds
+         *     200 with an empty list for unknown slugs so anonymous requests cannot
+         *     enumerate which organizations exist.
+         */
+        get: operations["glitchtip_api_api_get_organization_login_settings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/0/instance-license/": {
         parameters: {
             query?: never;
@@ -918,6 +941,42 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/0/organizations/{organization_slug}/social-apps/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Organization Social Apps */
+        get: operations["apps_organizations_ext_social_app_api_list_organization_social_apps"];
+        put?: never;
+        /** Create Organization Social App */
+        post: operations["apps_organizations_ext_social_app_api_create_organization_social_app"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/0/organizations/{organization_slug}/social-apps/{social_app_id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update Organization Social App */
+        put: operations["apps_organizations_ext_social_app_api_update_organization_social_app"];
+        post?: never;
+        /** Delete Organization Social App */
+        delete: operations["apps_organizations_ext_social_app_api_delete_organization_social_app"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/0/organizations/{organization_slug}/transaction-groups/": {
         parameters: {
             query?: never;
@@ -1317,6 +1376,49 @@ export interface paths {
         get: operations["apps_stripe_api_subscription_events_count_daily"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/0/stripe/subscriptions/{organization_slug}/overage/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Overage Status */
+        get: operations["apps_stripe_api_get_overage_status"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/0/stripe/organizations/{organization_slug}/overage/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Configure Overage
+         * @description Enable/disable metered overage billing and set the spend cap (owner-only).
+         *
+         *     Enabling attaches the metered overage price as a second subscription item.
+         *     Disabling only clears the flag: the item stays attached (dormant, billing
+         *     zero) so a re-enable within the same cycle can't re-bill reported usage.
+         *     Either way a throttle re-check is enqueued so the new headroom (or block)
+         *     takes effect promptly.
+         */
+        post: operations["apps_stripe_api_configure_overage"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2020,6 +2122,11 @@ export interface components {
             client_id: string;
             /** Provider */
             provider: string;
+        };
+        /** LoginSettingsOut */
+        LoginSettingsOut: {
+            /** Socialapps */
+            socialApps: components["schemas"]["SocialAppSchema"][];
         };
         /** InstanceLicenseOut */
         InstanceLicenseOut: {
@@ -4142,6 +4249,40 @@ export interface components {
             /** Isowner */
             isOwner: boolean;
         };
+        /**
+         * OrganizationUserInviteSchema
+         * @description Response for the invite (member create) endpoint.
+         *
+         *     Surfaces the acceptance link so the frontend can offer a copy-link invite
+         *     flow. This is the only delivery path when email is disabled, and a harmless
+         *     convenience when email works. The link carries the same time-limited token
+         *     the invite email uses, so possessing it is what grants acceptance.
+         */
+        OrganizationUserInviteSchema: {
+            /** Id */
+            id: string;
+            /**
+             * Role
+             * @enum {string}
+             */
+            role: "member" | "admin" | "manager" | "owner";
+            /** Rolename */
+            roleName: string;
+            /**
+             * Datecreated
+             * Format: date-time
+             */
+            dateCreated: string;
+            /** Email */
+            email: string;
+            user?: components["schemas"]["UserSchema"] | null;
+            /** Pending */
+            pending: boolean;
+            /** Isowner */
+            isOwner: boolean;
+            /** Invitelink */
+            inviteLink?: string | null;
+        };
         /** OrganizationUserIn */
         OrganizationUserIn: {
             /**
@@ -4251,6 +4392,65 @@ export interface components {
         AcceptInviteIn: {
             /** Acceptinvite */
             acceptInvite: boolean;
+        };
+        /** OrganizationSocialAppSchema */
+        OrganizationSocialAppSchema: {
+            /** Serverurl */
+            serverUrl: string | null;
+            /** Ispublic */
+            isPublic: boolean;
+            /** Callbackurl */
+            callbackUrl: string | null;
+            /** Loginurl */
+            loginUrl: string;
+            /** ID */
+            id?: number | null;
+            /** Name */
+            name: string;
+            /** Provider */
+            provider: string;
+            /** provider ID */
+            providerID?: string | null;
+            /**
+             * Client Id
+             * @description App ID, or consumer key
+             */
+            clientID: string;
+        };
+        /**
+         * OrganizationSocialAppIn
+         * @description Create an organization-managed OpenID Connect social app.
+         */
+        OrganizationSocialAppIn: {
+            /** Name */
+            name: string;
+            /** Serverurl */
+            serverUrl: string;
+            /** Clientid */
+            clientID: string;
+            /** Clientsecret */
+            clientSecret: string;
+            /**
+             * Ispublic
+             * @default false
+             */
+            isPublic: boolean;
+        };
+        /** OrganizationSocialAppUpdateIn */
+        OrganizationSocialAppUpdateIn: {
+            /** Name */
+            name: string;
+            /** Serverurl */
+            serverUrl: string;
+            /** Clientid */
+            clientID: string;
+            /** Clientsecret */
+            clientSecret?: string | null;
+            /**
+             * Ispublic
+             * @default false
+             */
+            isPublic: boolean;
         };
         /** TransactionGroupFilters */
         TransactionGroupFilters: {
@@ -4820,6 +5020,42 @@ export interface components {
             /** Data */
             data: components["schemas"]["DailyEventCountEntry"][];
         };
+        /**
+         * OverageStatusSchema
+         * @description Current overage state for an org, for rendering the choice at the limit.
+         */
+        OverageStatusSchema: {
+            /** Enabled */
+            enabled: boolean;
+            /** Eligible */
+            eligible: boolean;
+            /** Configured */
+            configured: boolean;
+            /** Capcents */
+            capCents: number;
+            /** Capunits */
+            capUnits: number;
+            /** Quota */
+            quota: number;
+            /** Usage */
+            usage: number;
+            /** Overageunits */
+            overageUnits: number;
+            /** Overagecostcents */
+            overageCostCents: number;
+            /** Throttlerate */
+            throttleRate: number;
+        };
+        /** OverageConfigIn */
+        OverageConfigIn: {
+            /** Enabled */
+            enabled: boolean;
+            /**
+             * Capcents
+             * @default 0
+             */
+            capCents: number;
+        };
         /** RepositorySchema */
         RepositorySchema: {
             /** Id */
@@ -4968,6 +5204,12 @@ export interface components {
              * @description Blank implies default value of 20
              */
             timeout?: number | null;
+            /**
+             * Confirmation Threshold
+             * @description Number of consecutive failed checks before the monitor is considered down and a notification is sent. 1 alerts on the first failure.
+             * @default 1
+             */
+            confirmationThreshold: number;
         };
         /**
          * MonitorType
@@ -4980,8 +5222,15 @@ export interface components {
             expectedBody: string;
             /** Expectedstatus */
             expectedStatus: number | null;
+            /** Interval */
+            interval: number;
             /** Timeout */
             timeout: number | null;
+            /**
+             * Confirmationthreshold
+             * @default 1
+             */
+            confirmationThreshold: number;
             /** Project */
             project?: string | null;
             /**
@@ -4993,11 +5242,6 @@ export interface components {
             name: string;
             /** Url */
             url?: string | null;
-            /**
-             * Interval
-             * @default 60
-             */
-            interval: number;
         };
         /**
          * MonitorCheckResponseTimeSchema
@@ -5077,6 +5321,12 @@ export interface components {
              * @description Blank implies default value of 20
              */
             timeout?: number | null;
+            /**
+             * Confirmation Threshold
+             * @description Number of consecutive failed checks before the monitor is considered down and a notification is sent. 1 alerts on the first failure.
+             * @default 1
+             */
+            confirmationThreshold: number;
         };
         /** StatusPageSchema */
         StatusPageSchema: {
@@ -5455,6 +5705,28 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SettingsOut"];
+                };
+            };
+        };
+    };
+    glitchtip_api_api_get_organization_login_settings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LoginSettingsOut"];
                 };
             };
         };
@@ -6947,7 +7219,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["OrganizationUserSchema"];
+                    "application/json": components["schemas"]["OrganizationUserInviteSchema"];
                 };
             };
         };
@@ -7121,6 +7393,102 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["AcceptInviteSchema"];
                 };
+            };
+        };
+    };
+    apps_organizations_ext_social_app_api_list_organization_social_apps: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrganizationSocialAppSchema"][];
+                };
+            };
+        };
+    };
+    apps_organizations_ext_social_app_api_create_organization_social_app: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OrganizationSocialAppIn"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrganizationSocialAppSchema"];
+                };
+            };
+        };
+    };
+    apps_organizations_ext_social_app_api_update_organization_social_app: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+                social_app_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OrganizationSocialAppUpdateIn"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrganizationSocialAppSchema"];
+                };
+            };
+        };
+    };
+    apps_organizations_ext_social_app_api_delete_organization_social_app: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+                social_app_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
@@ -7827,6 +8195,54 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DailyEventsCountSchema"];
+                };
+            };
+        };
+    };
+    apps_stripe_api_get_overage_status: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OverageStatusSchema"];
+                };
+            };
+        };
+    };
+    apps_stripe_api_configure_overage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OverageConfigIn"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OverageStatusSchema"];
                 };
             };
         };

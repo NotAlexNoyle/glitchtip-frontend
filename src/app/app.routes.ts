@@ -19,6 +19,13 @@ export const routes: Routes = [
     title: "Log In",
   },
   {
+    // Per-organization login page listing the org's own SSO providers
+    path: "login/:org-slug",
+    loadComponent: () => import("./login/login").then((m) => m.LoginComponent),
+    canActivate: [alreadyLoggedInGuard],
+    title: "Log In",
+  },
+  {
     path: "register",
     loadChildren: () => import("./register/routes"),
     canActivate: [alreadyLoggedInGuard],

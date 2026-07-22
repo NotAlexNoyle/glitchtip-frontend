@@ -1,10 +1,13 @@
 import {
   Component,
   OnInit,
+  computed,
   inject,
   effect,
   ChangeDetectionStrategy,
 } from "@angular/core";
+import { toSignal } from "@angular/core/rxjs-interop";
+import { map } from "rxjs/operators";
 import {
   Validators,
   ReactiveFormsModule,
@@ -28,6 +31,7 @@ import { SettingsService } from "../api/settings.service";
 import { AuthSvgComponent } from "../shared/auth-svg/auth-svg.component";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { components } from "../api/api-schema";
+import { apiResource } from "../shared/api/api-resource-factory";
 
 type SocialApp = components["schemas"]["SocialAppSchema"];
 
@@ -75,7 +79,23 @@ export class LoginComponent
   });
   instanceName = this.settings.instanceName;
 
-  socialApps = this.settings.socialApps;
+  /** Set on the per-organization login page (/login/<org slug>) */
+  orgSlug = toSignal(
+    this.activatedRoute.paramMap.pipe(map((params) => params.get("org-slug"))),
+  );
+  private orgLoginSettingsResource = apiResource(this.orgSlug, (slug) => ({
+    url: "/api/settings/{organization_slug}/",
+    options: { params: { path: { organization_slug: slug } } },
+  }));
+
+  socialApps = computed(() =>
+    this.orgSlug()
+      ? (this.orgLoginSettingsResource.value()?.socialApps ?? [])
+      : this.settings.socialApps(),
+  );
+  orgLoginSettingsLoaded = computed(() =>
+    this.orgLoginSettingsResource.hasValue(),
+  );
   enableUserRegistration = this.settings.enableUserRegistration;
   enableSocialAppsUserRegistration =
     this.settings.enableSocialAppsUserRegistration;
