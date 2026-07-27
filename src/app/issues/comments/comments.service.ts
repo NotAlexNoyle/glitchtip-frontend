@@ -2,7 +2,6 @@ import { Injectable, computed, inject, resource, signal } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { IssueDetailService } from "../issue-detail/issue-detail.service";
 import { StatefulService } from "src/app/shared/stateful-service/signal-state.service";
-import { OrganizationsService } from "src/app/api/organizations.service";
 import { client } from "src/app/shared/api/api";
 import { components } from "src/app/api/api-schema";
 
@@ -26,7 +25,6 @@ const initialState: CommentsState = {
 export class CommentsService extends StatefulService<CommentsState> {
   private issueDetailService = inject(IssueDetailService);
   private snackbar = inject(MatSnackBar);
-  private organization = inject(OrganizationsService)
   issueID = signal<number | undefined>(undefined);
   orgSlug = signal<string | undefined>(undefined);
 

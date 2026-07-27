@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, resource, signal } from "@angular/core";
+import { computed, Injectable, resource, signal } from "@angular/core";
 import {
   client,
   handleError,
