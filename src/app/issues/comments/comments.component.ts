@@ -2,6 +2,7 @@ import {
   Component,
   OnInit,
   computed,
+  effect,
   inject,
   input,
   ChangeDetectionStrategy,
@@ -45,6 +46,13 @@ export class CommentsComponent implements OnInit {
   user = this.userService.user;
   displayCommentCreation = computed(() => this.comments().length < 50);
   issueID = input.required<string>({ alias: "issue-id" });
+  orgSlug = input.required<string>({ alias: "org-slug" });
+
+  constructor() {
+    effect(() => {
+      this.commentsService.orgSlug.set(this.orgSlug());
+    });
+  }
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {

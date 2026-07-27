@@ -22,8 +22,9 @@ export class IssueDetailTagsComponent implements OnInit {
 
   tags = this.issueService.tags;
   issueID = input.required<string>();
+  orgSlug = input.required<string>();
 
   ngOnInit() {
-    this.issueService.retrieveTags(+this.issueID());
+    this.issueService.retrieveTags(this.orgSlug(), +this.issueID());
   }
 }

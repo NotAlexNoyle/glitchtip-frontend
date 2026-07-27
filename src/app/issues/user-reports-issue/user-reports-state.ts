@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, resource, signal } from "@angular/core";
+import { computed, Injectable, resource, signal } from "@angular/core";
 import {
   client,
   handleError,
@@ -8,18 +8,17 @@ import {
   getPaginationHeaders,
   getPaginator,
 } from "src/app/shared/pagination.utils";
-import { OrganizationsService } from "src/app/api/organizations.service";
 
 @Injectable()
 export class UserReportsService {
-  private organization = inject(OrganizationsService)
+  orgSlug = signal("");
   issueID = signal("");
   cursor = signal("");
   #reportsResource = resource({
     params: () => ({
       issueID: this.issueID(),
       cursor: this.cursor(),
-      orgSlug: this.organization.selectedOrganizationSlug(),
+      orgSlug: this.orgSlug(),
     }),
     loader: async ({ params }) => {
       if (!params.issueID || !params.orgSlug) {
@@ -31,7 +30,7 @@ export class UserReportsService {
           params: {
             path: {
               issue_id: parseInt(params.issueID),
-              organization_slug: params.orgSlug
+              organization_slug: params.orgSlug,
             },
           },
         },
@@ -50,7 +49,8 @@ export class UserReportsService {
   paginator = computed(() => getPaginator(this.pagination()));
   loading = computed(() => this.#reportsResource.isLoading());
 
-  setParams(issueID: string, cursor: string) {
+  setParams(orgSlug: string, issueID: string, cursor: string) {
+    this.orgSlug.set(orgSlug);
     this.issueID.set(issueID);
     this.cursor.set(cursor);
   }

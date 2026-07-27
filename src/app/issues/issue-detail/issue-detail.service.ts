@@ -17,7 +17,6 @@ import {
 } from "../interfaces";
 import { generateIconPath } from "../../shared/shared.utils";
 import { Json } from "src/app/interface-primitives";
-import { OrganizationsService } from "src/app/api/organizations.service";
 import { StatefulService } from "src/app/shared/stateful-service/signal-state.service";
 import { client } from "src/app/shared/api/api";
 import { components } from "src/app/api/api-schema";
@@ -41,7 +40,6 @@ const initialState: IssueDetailState = {
   providedIn: "root",
 })
 export class IssueDetailService extends StatefulService<IssueDetailState> {
-  private organization = inject(OrganizationsService);
   private snackBar = inject(MatSnackBar);
   private router = inject(Router);
 
@@ -66,7 +64,7 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
     () => this.event() && this.event()?.previousEventID !== null,
   );
   readonly nextEventUrl = computed(() => {
-    const orgSlug = this.organization.activeOrganizationSlug();
+    const orgSlug = this.orgSlug();
     const issue = this.issue();
     const event = this.event();
 
@@ -76,7 +74,7 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
     return null;
   });
   readonly previousEventUrl = computed(() => {
-    const orgSlug = this.organization.activeOrganizationSlug();
+    const orgSlug = this.orgSlug();
     const issue = this.issue();
     const event = this.event();
 
@@ -117,19 +115,28 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
   });
 
   issueID = signal("");
+  orgSlug = signal("");
   eventID = signal<string | null>(null);
   #issueResource = resource({
     params: () => ({
       issueID: this.issueID(),
-      orgSlug: this.organization.selectedOrganizationSlug(),
+      orgSlug: this.orgSlug(),
     }),
     loader: async ({ params }) => {
       if (!params.issueID || !params.orgSlug) {
         return;
       }
-      const { data } = await client.GET("/api/0/organizations/{organization_slug}/issues/{issue_id}/", {
-        params: { path: { issue_id: parseInt(params.issueID), organization_slug: params.orgSlug } },
-      });
+      const { data } = await client.GET(
+        "/api/0/organizations/{organization_slug}/issues/{issue_id}/",
+        {
+          params: {
+            path: {
+              issue_id: parseInt(params.issueID),
+              organization_slug: params.orgSlug,
+            },
+          },
+        },
+      );
       return data;
     },
   });
@@ -137,7 +144,7 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
     params: () => ({
       issueID: this.issueID(),
       eventID: this.eventID(),
-      orgSlug: this.organization.selectedOrganizationSlug(),
+      orgSlug: this.orgSlug(),
     }),
     loader: async ({ params }) => {
       const issueID = parseInt(params.issueID);
@@ -151,7 +158,11 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
           "/api/0/organizations/{organization_slug}/issues/{issue_id}/events/{event_id}/",
           {
             params: {
-              path: { issue_id: issueID, event_id: eventID, organization_slug: orgSlug },
+              path: {
+                issue_id: issueID,
+                event_id: eventID,
+                organization_slug: orgSlug,
+              },
             },
           },
         );
@@ -171,11 +182,17 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
     super(initialState);
   }
 
-  async retrieveTags(id: number, query?: string) {
+  async retrieveTags(orgSlug: string, id: number, query?: string) {
     const queryParams: any = query ? { query: query } : {};
-    const { data } = await client.GET("/api/0/organizations/{organization_slug}/issues/{issue_id}/tags/", {
-      params: { path: { issue_id: id, organization_slug: this.organization.selectedOrganizationSlug() ?? "" }, query: queryParams },
-    });
+    const { data } = await client.GET(
+      "/api/0/organizations/{organization_slug}/issues/{issue_id}/tags/",
+      {
+        params: {
+          path: { issue_id: id, organization_slug: orgSlug },
+          query: queryParams,
+        },
+      },
+    );
     if (data) {
       this.setTags(data as any);
     }
@@ -204,7 +221,7 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
         {
           params: {
             path: {
-              organization_slug: this.organization.activeOrganizationSlug(),
+              organization_slug: this.orgSlug(),
               issue_id: parseInt(this.issueID()),
             },
           },
@@ -237,19 +254,25 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
   }
 
   async deleteIssue(id: string) {
-    const { error } = await client.DELETE("/api/0/organizations/{organization_slug}/issues/{issue_id}/", {
-      params: { path: { issue_id: parseInt(id), organization_slug: this.organization.selectedOrganizationSlug() ?? "" } },
-    });
+    const orgSlug = this.orgSlug();
+    if (!orgSlug) {
+      return;
+    }
+    const { error } = await client.DELETE(
+      "/api/0/organizations/{organization_slug}/issues/{issue_id}/",
+      {
+        params: {
+          path: { issue_id: parseInt(id), organization_slug: orgSlug },
+        },
+      },
+    );
     if (error) {
       this.snackBar.open(
         `There was an error deleting this issue. Please try again.`,
       );
     } else {
       this.snackBar.open($localize`Issue ${id} has been deleted.`);
-      this.router.navigate([
-        this.organization.activeOrganizationSlug(),
-        "issues",
-      ]);
+      this.router.navigate([orgSlug, "issues"]);
     }
   }
 
@@ -600,7 +623,7 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
 
   /** Build event detail url string */
   private eventUrl(
-    orgSlug: string | null,
+    orgSlug: string,
     issue: IssueDetail | null,
     eventID: string,
   ) {
