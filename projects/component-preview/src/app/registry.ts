@@ -1,7 +1,7 @@
 import { Type } from "@angular/core";
 import { LoadingButtonPreview } from "./previews/loading-button.preview";
 import { CopyInputPreview } from "./previews/copy-input.preview";
-import { ToDoItemPreview } from "./previews/to-do-item.preview";
+import { StepperPreview } from "./previews/stepper.preview";
 import { TablePatternPreview } from "./previews/table-pattern.preview";
 import { ChartsPreview } from "./previews/charts.preview";
 import { FormsPreview } from "./previews/forms.preview";
@@ -34,6 +34,8 @@ import { TokensCatalogPreview } from "./previews/tokens-catalog.preview";
 import { TabsPreview } from "./previews/tabs.preview";
 import { ToastsPreview } from "./previews/toasts.preview";
 import { DialogsPreview } from "./previews/dialogs.preview";
+import { LoadingOverlayPreview } from "./previews/loading-overlay.preview";
+import { EmptyStatePreview } from "./previews/empty-state.preview";
 
 /**
  * Component lifecycle status, following the practice of published design
@@ -136,10 +138,10 @@ export const PREVIEWS: PreviewEntry[] = [
     status: "stable",
   },
   {
-    id: "to-do-item",
-    label: "To-do item",
+    id: "stepper",
+    label: "Stepper",
     group: "Components",
-    component: ToDoItemPreview,
+    component: StepperPreview,
     status: "stable",
   },
   {
@@ -171,6 +173,13 @@ export const PREVIEWS: PreviewEntry[] = [
     status: "legacy",
   },
   {
+    id: "loading-overlay",
+    label: "Loading overlay",
+    group: "Components",
+    component: LoadingOverlayPreview,
+    status: "stable",
+  },
+  {
     id: "entry-data",
     label: "Entry data",
     group: "Components",
@@ -182,6 +191,13 @@ export const PREVIEWS: PreviewEntry[] = [
     label: "Summary card",
     group: "Components",
     component: SummaryCardPreview,
+    status: "stable",
+  },
+  {
+    id: "empty-state",
+    label: "Empty state",
+    group: "Components",
+    component: EmptyStatePreview,
     status: "stable",
   },
   {

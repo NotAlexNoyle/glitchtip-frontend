@@ -34,6 +34,7 @@ import {
   stringAttribute,
 } from "src/app/shared/shared.utils";
 import { ConfirmDialogComponent } from "src/app/shared/confirm-dialog/confirm-dialog.component";
+import { LoadingOverlayComponent } from "src/app/shared/loading-overlay/loading-overlay.component";
 import { EnvironmentsService } from "src/app/api/environments.service";
 import { ListAppBar } from "src/app/list-elements/list-app-bar/list-app-bar";
 import { IssueChart } from "./charts/issue-chart";
@@ -54,6 +55,7 @@ import { SearchHelpConfig } from "../../list-elements/data-filter-bar/data-filte
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
+    LoadingOverlayComponent,
     RouterLink,
     IssueZeroStatesComponent,
     DatePipe,

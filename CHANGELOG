@@ -1,3 +1,8 @@
+# 6.2.2
+
+- Fix: Hide the "Open Support Chat" item in the Support menu on hosted instances — it linked to a self-hosted, license-key-gated support page that hosted users cannot use. Hosted support remains the in-app chat widget.
+- Chore: Update dependencies (Angular 22.0.7).
+
 # 6.2.1
 
 - Feat: Converge the issue status controls into a single dropdown, add a "resolve in next release" option, and confirm the action with a chip and snackbar.
