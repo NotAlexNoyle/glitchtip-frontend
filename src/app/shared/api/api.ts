@@ -5,7 +5,7 @@ import createClient, {
 import type { paths } from "../../api/api-schema";
 import type { paths as allauthPaths } from "../../api/allauth-schema";
 import { getCSRFToken } from "../shared.utils";
-import { SERVER_ERROR, UNHANDLED_ERROR } from "../../constants";
+import { SERVER_ERROR, UNHANDLED_ERROR, AUTH_ERROR } from "../../constants";
 
 /** Represents structured django-ninja error raised from Pydantic validation */
 interface UnprocessableEntityDetail {
@@ -44,6 +44,8 @@ export function handleError(
         return { detail: [{ msg: error.detail }] };
       }
       break;
+    case 403:
+      return { detail: [{ msg: AUTH_ERROR }] };
     case 404:
       return { detail: [{ msg: response.statusText }] };
     case 422:
