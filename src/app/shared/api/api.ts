@@ -45,6 +45,14 @@ export function handleError(
       }
       break;
     case 403:
+      if (
+        error &&
+        typeof error === "object" &&
+        typeof error.detail === "string" &&
+        error.detail
+      ) {
+        return { detail: [{ msg: error.detail }] };
+      }
       return { detail: [{ msg: AUTH_ERROR }] };
     case 404:
       return { detail: [{ msg: response.statusText }] };
