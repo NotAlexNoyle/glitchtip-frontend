@@ -85,7 +85,11 @@ export class OrganizationsService {
 
   // Each list mirrors the @has_permission list on the endpoint the gated button
   // calls; update them together when a decorator changes.
-  /** create_project, update_project, create/update/test_project_alert */
+  /**
+   * create_project, update_project, create/update/test_project_alert. Also gates
+   * Delete Project and Remove Alert, which require project:admin — a looser gate
+   * than those two endpoints, harmless only while ROLES grants both to admin.
+   */
   accessProjectWrite = this.hasScope("project:write", "project:admin");
   /** create_team */
   accessTeamWrite = this.hasScope(
