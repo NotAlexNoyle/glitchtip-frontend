@@ -60,7 +60,19 @@ export class OrganizationsService {
   initialLoad = computed(
     () => this.organizationsLoaded() && this.activeOrganizationLoaded(),
   );
-  access = computed(() => this.activeOrganization()?.access || []);
+  /**
+   * Scopes for the org actually being viewed. Fails closed to [] until the
+   * loaded detail matches selectedOrganizationSlug: activeOrganization can
+   * briefly hold the first-org fallback, gating buttons on the wrong org's role.
+   */
+  access = computed(() => {
+    const selectedSlug = this.selectedOrganizationSlug();
+    const organization = this.activeOrganization();
+    if (!organization || organization.slug !== selectedSlug) {
+      return [];
+    }
+    return organization.access || [];
+  });
   accessProjectWrite = computed(() => this.access().includes("project:write"));
   accessTeamWrite = computed(
     () =>
