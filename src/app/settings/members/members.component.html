@@ -7,7 +7,7 @@
       mat-flat-button
       color="primary"
       [routerLink]="['new']"
-      [disabled]="!accessMemberWrite()"
+      [disabled]="!hasScope('member:write', 'member:admin')()"
       >Invite Member</a
     >
   </ng-container>

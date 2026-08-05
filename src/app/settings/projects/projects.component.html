@@ -8,7 +8,7 @@
       [routerLink]="['new']"
       color="primary"
       i18n
-      [disabled]="!accessProjectWrite()"
+      [disabled]="!hasScope('project:write', 'project:admin')()"
       >Create New Project</a
     >
   </ng-container>

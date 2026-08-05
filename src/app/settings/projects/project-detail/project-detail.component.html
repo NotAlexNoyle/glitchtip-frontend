@@ -193,7 +193,7 @@
           buttonText="Delete Project"
           [loading]="deleteLoading()"
           (buttonClick)="deleteProject()"
-          [disabled]="!accessProjectWrite()"
+          [disabled]="!hasScope('project:write', 'project:admin')()"
           id="delete-project"
         >
         </gt-loading-button>

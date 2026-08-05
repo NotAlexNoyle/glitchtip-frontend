@@ -53,7 +53,7 @@ export class TeamsComponent {
   );
   errors = this.organizationDetailService.errors;
   loading = this.organizationDetailService.loading;
-  accessTeamWrite = this.organizationsService.accessTeamWrite;
+  hasScope = this.organizationsService.hasScope;
 
   memberCountPluralMapping: { [k: string]: string } = {
     "=1": "1 Member",

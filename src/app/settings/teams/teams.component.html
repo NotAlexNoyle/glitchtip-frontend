@@ -7,7 +7,7 @@
       mat-flat-button
       color="primary"
       (click)="openCreateTeamDialog()"
-      [disabled]="!accessTeamWrite()"
+      [disabled]="!hasScope('team:write', 'team:admin', 'org:write', 'org:admin')()"
       id="new-team"
       i18n
       >Create Team</button

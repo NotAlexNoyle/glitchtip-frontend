@@ -6,7 +6,7 @@
       id="create-new-alert"
       color="primary"
       (click)="openNewAlert()"
-      [disabled]="newAlertOpen() === true || !accessProjectWrite()"
+      [disabled]="newAlertOpen() === true || !hasScope('project:write', 'project:admin')()"
       i18n
       >Create New Alert</button
     >
@@ -181,7 +181,7 @@
                 [buttonText]="'Remove Alert ' + (i + 1)"
                 buttonStyle="stroked"
                 (buttonClick)="removeAlert(alert.id!)"
-                [disabled]="!accessProjectWrite()"
+                [disabled]="!hasScope('project:write', 'project:admin')()"
                 [loading]="removeAlertLoading() === alert.id"
               >
               </gt-loading-button>

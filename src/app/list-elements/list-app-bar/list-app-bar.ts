@@ -68,7 +68,7 @@ export class ListAppBar {
   );
   activeOrgProjects = this.organizationsService.activeOrganizationProjects;
   activeOrgSlug = this.organizationsService.activeOrganizationSlug;
-  accessProjectWrite = this.organizationsService.accessProjectWrite;
+  hasScope = this.organizationsService.hasScope;
   singleQueriedProjectSlug = computed(() => {
     const queriedProjects = this.queriedProjects();
     const activeOrgProjects = this.activeOrgProjects();

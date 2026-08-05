@@ -39,7 +39,7 @@
               'projects',
               'new',
             ]"
-            [disabled]="!accessProjectWrite()"
+            [disabled]="!hasScope('project:write', 'project:admin')()"
             class="new-project-button"
             i18n
             >Create new project in {{ organization.name }}

@@ -47,7 +47,7 @@ export class ProjectListComponent implements OnInit {
       ),
     })),
   );
-  accessProjectWrite = this.organizationsService.accessProjectWrite;
+  hasScope = this.organizationsService.hasScope;
 
   ngOnInit() {
     this.projectsService.retrieveProjects();

@@ -50,7 +50,7 @@
           data-test
           buttonText="Delete Organization"
           [loading]="loading().deleteOrganization"
-          [disabled]="!accessOrgAdmin()"
+          [disabled]="!hasScope('org:admin')()"
           (buttonClick)="removeOrganization(activeOrg.slug, activeOrg.name)"
           id="delete-org"
         >

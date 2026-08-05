@@ -78,7 +78,7 @@ export class ProjectAlertsComponent implements OnInit {
   recipientDialogOpen = this.#service.recipientDialogOpen;
   newAlertLoading = this.#service.newAlertLoading;
   newAlertError = this.#service.newAlertError;
-  accessProjectWrite = this.organizationsService.accessProjectWrite;
+  hasScope = this.organizationsService.hasScope;
   resolveRecipientIcon = resolveRecipientIcon;
 
   ngOnInit(): void {

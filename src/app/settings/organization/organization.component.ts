@@ -47,7 +47,7 @@ export class OrganizationComponent implements OnDestroy, OnInit {
   form = new FormGroup({
     name: new FormControl(""),
   });
-  accessOrgAdmin = () => this.organizationsService.accessOrgAdmin();
+  hasScope = this.organizationsService.hasScope
 
   ngOnInit() {
     // Ignore first load, on subsequent inits refresh org data
