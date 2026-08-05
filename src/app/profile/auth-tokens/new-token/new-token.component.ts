@@ -26,6 +26,7 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
 import { StatefulComponent } from "src/app/shared/stateful-service/signal-state.component";
 import { mapFormErrors } from "src/app/shared/forms/form.utils";
+import { SCOPES } from "src/app/constants";
 
 @Component({
   selector: "gt-new-token",
@@ -58,24 +59,7 @@ export class NewTokenComponent
   createErrorForm = this.service.createErrorForm;
 
   form: FormGroup;
-  scopeOptions: string[] = [
-    "project:read",
-    "project:write",
-    "project:admin",
-    "project:releases",
-    "team:read",
-    "team:write",
-    "team:admin",
-    "event:read",
-    "event:write",
-    "event:admin",
-    "org:read",
-    "org:write",
-    "org:admin",
-    "member:read",
-    "member:write",
-    "member:admin",
-  ];
+  scopeOptions = SCOPES;
 
   get scopes() {
     return this.form.controls.scopes as FormArray;

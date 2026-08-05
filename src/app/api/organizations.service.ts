@@ -2,6 +2,7 @@ import { computed, inject, Injectable, signal } from "@angular/core";
 import { client } from "../shared/api/api";
 import { AuthService } from "../auth.service";
 import { apiResource } from "../shared/api/api-resource-factory";
+import { Scope } from "../constants";
 
 @Injectable({
   providedIn: "root",
@@ -65,26 +66,38 @@ export class OrganizationsService {
    * loaded detail matches selectedOrganizationSlug: activeOrganization can
    * briefly hold the first-org fallback, gating buttons on the wrong org's role.
    */
-  access = computed(() => {
+  access = computed<ReadonlySet<Scope>>(() => {
     const selectedSlug = this.selectedOrganizationSlug();
     const organization = this.activeOrganization();
     if (!organization || organization.slug !== selectedSlug) {
-      return [];
+      return new Set();
     }
-    return organization.access || [];
+    return new Set(organization.access);
   });
-  accessProjectWrite = computed(() => this.access().includes("project:write"));
-  accessTeamWrite = computed(
-    () =>
-      this.access().includes("project:write") ||
-      this.access().includes("org:write"),
+
+  /**
+   * True when the user holds ANY of `required`, matching the any-of semantics of
+   * the backend's @has_permission decorator. Call once per gate and store the
+   * signal — calling it inside a template allocates a computed every check.
+   */
+  hasScope = (...required: Scope[]) =>
+    computed(() => required.some((scope) => this.access().has(scope)));
+
+  // Each list mirrors the @has_permission list on the endpoint the gated button
+  // calls; update them together when a decorator changes.
+  /** create_project, update_project, create/update/test_project_alert */
+  accessProjectWrite = this.hasScope("project:write", "project:admin");
+  /** create_team */
+  accessTeamWrite = this.hasScope(
+    "team:write",
+    "team:admin",
+    "org:write",
+    "org:admin",
   );
-  accessMemberWrite = computed(
-    () =>
-      this.access().includes("member:admin") ||
-      this.access().includes("member:write"),
-  );
-  accessOrgAdmin = computed(() => this.access().includes("org:admin"));
+  /** create_organization_member */
+  accessMemberWrite = this.hasScope("member:write", "member:admin");
+  /** delete_organization */
+  accessOrgAdmin = this.hasScope("org:admin");
 
   constructor() {
     setTimeout(() => this.refresh(), 30000);
