@@ -104,7 +104,7 @@
       </mat-card-header>
       <mat-divider></mat-divider>
       <mat-card-content>
-        @if (!member.isOwner) {
+        @if (!member.isOwner && hasScope("org:admin")()) {
           @if (transferOrgOwnershipError(); as error) {
             <mat-error>{{ error }}</mat-error>
           }
@@ -116,11 +116,12 @@
           <gt-loading-button
             buttonText="Transfer Ownership"
             [loading]="transferOrgOwnershipLoading() === true"
-            [disabled]="!hasScope('org:admin')()"
             (buttonClick)="transferOrgOwnership()"
           >
             Change Password
           </gt-loading-button>
+        } @else if (!member.isOwner) {
+          <p i18n> Only organization owners can transfer account ownership. </p>
         } @else {
           <p i18n>
             This member is the organization account owner and has access to the

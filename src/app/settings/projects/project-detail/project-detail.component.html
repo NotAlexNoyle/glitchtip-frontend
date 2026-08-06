@@ -182,27 +182,28 @@
         </div>
       </mat-card-content>
     </mat-card>
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title i18n>Delete Project</mat-card-title>
-      </mat-card-header>
-      <mat-divider></mat-divider>
-      <mat-card-content class="remove-content">
-        <div>
-          <p i18n
-            >By deleting your project, you will lose all associated data. This
-            cannot be undone.</p
+    @if (hasScope("project:admin")()) {
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title i18n>Delete Project</mat-card-title>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content class="remove-content">
+          <div>
+            <p i18n
+              >By deleting your project, you will lose all associated data. This
+              cannot be undone.</p
+            >
+          </div>
+          <gt-loading-button
+            buttonText="Delete Project"
+            [loading]="deleteLoading()"
+            (buttonClick)="deleteProject()"
+            id="delete-project"
           >
-        </div>
-        <gt-loading-button
-          buttonText="Delete Project"
-          [loading]="deleteLoading()"
-          (buttonClick)="deleteProject()"
-          [disabled]="!hasScope( 'project:admin')()"
-          id="delete-project"
-        >
-        </gt-loading-button>
-      </mat-card-content>
-    </mat-card>
+          </gt-loading-button>
+        </mat-card-content>
+      </mat-card>
+    }
   </section>
 }

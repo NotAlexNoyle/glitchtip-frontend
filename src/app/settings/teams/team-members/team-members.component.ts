@@ -47,7 +47,6 @@ export class TeamMembersComponent implements OnInit {
   teamMembers = this.teamsService.teamMembers;
   filteredAddTeamMembers =
     this.organizationsDetailService.filteredAddTeamMembers;
-  openMembership = this.organizationService.openMembership;
   hasScope = this.organizationService.hasScope;
   activeTeamMember = this.teamsService.activeTeamMember;
   userTeamRole = this.teamsService.userTeamRole;

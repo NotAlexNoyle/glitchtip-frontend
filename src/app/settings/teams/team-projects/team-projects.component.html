@@ -48,14 +48,15 @@
                 [queryParams]="{ project: project.id }"
                 >{{ project.name }}</a
               >
-              <gt-loading-button
-                buttonText="Remove"
-                buttonStyle="stroked"
-                [loading]="project.slug === loading().removeProjectFromTeam"
-                (buttonClick)="removeProject(project.slug!)"
-                [disabled]="!hasScope('project:write', 'project:admin')()"
-                id="remove-team-member"
-              ></gt-loading-button>
+              @if (hasScope("project:write", "project:admin")()) {
+                <gt-loading-button
+                  buttonText="Remove"
+                  buttonStyle="stroked"
+                  [loading]="project.slug === loading().removeProjectFromTeam"
+                  (buttonClick)="removeProject(project.slug!)"
+                  id="remove-team-member"
+                ></gt-loading-button>
+              }
             </li>
           }
         </ul>

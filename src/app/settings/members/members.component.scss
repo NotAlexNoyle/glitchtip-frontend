@@ -98,3 +98,10 @@ mat-chip {
 .remove-button ::ng-deep button {
   width: 90px;
 }
+
+// Replaces the remove button for the account owner, so the row stays aligned.
+.remove-note {
+  width: 90px;
+  margin: 0;
+  color: var(--mat-sys-on-surface-variant);
+}

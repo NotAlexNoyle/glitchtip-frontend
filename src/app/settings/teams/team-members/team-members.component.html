@@ -42,17 +42,21 @@
               [relativeTo]="$safeNavigationMigration(route.parent?.parent)"
               >{{ teamMember.email }}</a
             >
-            <gt-loading-button
-              buttonText="Remove"
-              buttonStyle="stroked"
-              [loading]="selectedTeamMember?.toString() === teamMember.id"
-              [disabled]="
-                !(openMembership() && activeTeamMember) ||
-                !hasScope('team:admin')()
-              "
-              (buttonClick)="removeTeamMember(teamMember.id, teamMember.email)"
-              id="remove-team-member"
-            ></gt-loading-button>
+            @if (
+              activeTeamMember()
+                ? hasScope("team:write", "team:admin")()
+                : hasScope("org:write", "org:admin")()
+            ) {
+              <gt-loading-button
+                buttonText="Remove"
+                buttonStyle="stroked"
+                [loading]="selectedTeamMember?.toString() === teamMember.id"
+                (buttonClick)="
+                  removeTeamMember(teamMember.id, teamMember.email)
+                "
+                id="remove-team-member"
+              ></gt-loading-button>
+            }
           </li>
         }
       </ul>

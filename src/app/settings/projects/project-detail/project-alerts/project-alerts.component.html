@@ -6,7 +6,9 @@
       id="create-new-alert"
       color="primary"
       (click)="openNewAlert()"
-      [disabled]="newAlertOpen() === true || !hasScope('project:write', 'project:admin')()"
+      [disabled]="
+        newAlertOpen() === true || !hasScope('project:write', 'project:admin')()
+      "
       i18n
       >Create New Alert</button
     >
@@ -177,14 +179,15 @@
               } @else {
                 <h3>Alert {{ i + 1 }}</h3>
               }
-              <gt-loading-button
-                [buttonText]="'Remove Alert ' + (i + 1)"
-                buttonStyle="stroked"
-                (buttonClick)="removeAlert(alert.id!)"
-                [disabled]="!hasScope( 'project:admin')()"
-                [loading]="removeAlertLoading() === alert.id"
-              >
-              </gt-loading-button>
+              @if (hasScope("project:admin")()) {
+                <gt-loading-button
+                  [buttonText]="'Remove Alert ' + (i + 1)"
+                  buttonStyle="stroked"
+                  (buttonClick)="removeAlert(alert.id!)"
+                  [loading]="removeAlertLoading() === alert.id"
+                >
+                </gt-loading-button>
+              }
             </div>
             @if (updatePropertiesError()?.id === alert.id) {
               <p class="error alert-form-error">

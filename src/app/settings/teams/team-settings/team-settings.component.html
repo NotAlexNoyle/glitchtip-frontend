@@ -34,25 +34,26 @@
     </mat-card-content>
   </mat-card>
 }
-<mat-card>
-  <mat-card-header>
-    <mat-card-title i18n>Delete Team</mat-card-title>
-  </mat-card-header>
-  <mat-divider></mat-divider>
-  <mat-card-content class="remove-content">
-    <div>
-      <p i18n
-        >By deleting your team, you will lose all associated data. This cannot
-        be undone.</p
+@if (hasScope("team:admin")()) {
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title i18n>Delete Team</mat-card-title>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content class="remove-content">
+      <div>
+        <p i18n
+          >By deleting your team, you will lose all associated data. This cannot
+          be undone.</p
+        >
+        <mat-error></mat-error>
+      </div>
+      <gt-loading-button
+        buttonText="Delete Team"
+        [loading]="loading().deleteTeam"
+        (buttonClick)="deleteTeam()"
       >
-      <mat-error></mat-error>
-    </div>
-    <gt-loading-button
-      buttonText="Delete Team"
-      [loading]="loading().deleteTeam"
-      [disabled]="!hasScope('team:admin')()"
-      (buttonClick)="deleteTeam()"
-    >
-    </gt-loading-button>
-  </mat-card-content>
-</mat-card>
+      </gt-loading-button>
+    </mat-card-content>
+  </mat-card>
+}

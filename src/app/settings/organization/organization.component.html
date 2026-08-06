@@ -34,31 +34,32 @@
         }
       </mat-card-content>
     </mat-card>
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Delete Organization</mat-card-title>
-      </mat-card-header>
-      <mat-divider></mat-divider>
-      <mat-card-content class="remove-content">
-        <div>
-          <p>
-            By deleting this organization, you will lose all data including
-            projects and their associated events.
-          </p>
-          @if (errors().deleteOrganization) {
-            <mat-error>{{ errors().deleteOrganization }}</mat-error>
-          }
-        </div>
-        <gt-loading-button
-          data-test
-          buttonText="Delete Organization"
-          [loading]="loading().deleteOrganization"
-          [disabled]="!hasScope('org:admin')()"
-          (buttonClick)="removeOrganization(activeOrg.slug, activeOrg.name)"
-          id="delete-org"
-        >
-        </gt-loading-button>
-      </mat-card-content>
-    </mat-card>
+    @if (hasScope("org:admin")()) {
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Delete Organization</mat-card-title>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content class="remove-content">
+          <div>
+            <p>
+              By deleting this organization, you will lose all data including
+              projects and their associated events.
+            </p>
+            @if (errors().deleteOrganization) {
+              <mat-error>{{ errors().deleteOrganization }}</mat-error>
+            }
+          </div>
+          <gt-loading-button
+            data-test
+            buttonText="Delete Organization"
+            [loading]="loading().deleteOrganization"
+            (buttonClick)="removeOrganization(activeOrg.slug, activeOrg.name)"
+            id="delete-org"
+          >
+          </gt-loading-button>
+        </mat-card-content>
+      </mat-card>
+    }
   }
 </section>
