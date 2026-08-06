@@ -1,17 +1,17 @@
 <mat-card>
   <mat-card-header class="flex-common">
     <mat-card-title i18n>Project Alerts</mat-card-title>
-    <button
-      mat-flat-button
-      id="create-new-alert"
-      color="primary"
-      (click)="openNewAlert()"
-      [disabled]="
-        newAlertOpen() === true || !hasScope('project:write', 'project:admin')()
-      "
-      i18n
-      >Create New Alert</button
-    >
+    @if (hasScope("project:write", "project:admin")()) {
+      <button
+        mat-flat-button
+        id="create-new-alert"
+        color="primary"
+        (click)="openNewAlert()"
+        [disabled]="newAlertOpen() === true"
+        i18n
+        >Create New Alert</button
+      >
+    }
   </mat-card-header>
   <mat-divider></mat-divider>
 

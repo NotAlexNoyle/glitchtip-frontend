@@ -5,32 +5,36 @@
     </mat-card-header>
     <mat-divider></mat-divider>
     <mat-card-content>
-      @if (errors().updateName) {
-        <mat-error class="server-error center-text">{{
-          errors().updateName
-        }}</mat-error>
+      @if (hasScope("team:write", "team:admin")()) {
+        @if (errors().updateName) {
+          <mat-error class="server-error center-text">{{
+            errors().updateName
+          }}</mat-error>
+        }
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+          <mat-form-field appearance="outline">
+            <mat-label>Slug</mat-label>
+            <input matInput formControlName="slug" [value]="team.slug" />
+            <mat-error>
+              @if (this.form.get("slug")?.errors?.required) {
+                <span i18n>Enter a team name</span>
+              }
+            </mat-error>
+          </mat-form-field>
+          <gt-loading-button
+            [disabled]="this.form.get('slug')?.value === team.slug"
+            [loading]="loading().updateName"
+            buttonText="Update Name"
+            id="update-project-name"
+          >
+          </gt-loading-button>
+        </form>
+      } @else {
+        <div class="readonly-field">
+          <div class="body-text-strong" i18n>Slug</div>
+          <div>{{ team.slug }}</div>
+        </div>
       }
-      <form [formGroup]="form" (ngSubmit)="onSubmit()">
-        <mat-form-field appearance="outline">
-          <mat-label>Slug</mat-label>
-          <input matInput formControlName="slug" [value]="team.slug" />
-          <mat-error>
-            @if (this.form.get("slug")?.errors?.required) {
-              <span i18n>Enter a team name</span>
-            }
-          </mat-error>
-        </mat-form-field>
-        <gt-loading-button
-          [disabled]="
-            this.form.get('slug')?.value === team.slug ||
-            !hasScope('team:write', 'team:admin')()
-          "
-          [loading]="loading().updateName"
-          buttonText="Update Name"
-          id="update-project-name"
-        >
-        </gt-loading-button>
-      </form>
     </mat-card-content>
   </mat-card>
 }

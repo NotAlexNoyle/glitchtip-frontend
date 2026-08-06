@@ -11,26 +11,30 @@
       </mat-card-header>
       <mat-divider></mat-divider>
       <mat-card-content>
-        <form [formGroup]="form" (ngSubmit)="updateOrganization()">
-          <mat-form-field appearance="outline">
-            <mat-label>Name</mat-label>
-            <input matInput formControlName="name" [value]="activeOrg.name" />
-          </mat-form-field>
-          <gt-loading-button
-            [disabled]="
-              name?.value === activeOrg.name ||
-              !hasScope('org:write', 'org:admin')()
-            "
-            [loading]="loading().updateOrganization"
-            mat-flat-button
-            color="primary"
-            buttonText="Update Name"
-            id="update-org"
-          >
-          </gt-loading-button>
-        </form>
-        @if (errors().updateOrganization) {
-          <mat-error>{{ errors().updateOrganization }}</mat-error>
+        @if (hasScope("org:write", "org:admin")()) {
+          <form [formGroup]="form" (ngSubmit)="updateOrganization()">
+            <mat-form-field appearance="outline">
+              <mat-label>Name</mat-label>
+              <input matInput formControlName="name" [value]="activeOrg.name" />
+            </mat-form-field>
+            <gt-loading-button
+              [disabled]="name?.value === activeOrg.name"
+              [loading]="loading().updateOrganization"
+              mat-flat-button
+              color="primary"
+              buttonText="Update Name"
+              id="update-org"
+            >
+            </gt-loading-button>
+          </form>
+          @if (errors().updateOrganization) {
+            <mat-error>{{ errors().updateOrganization }}</mat-error>
+          }
+        } @else {
+          <div class="readonly-field">
+            <div class="body-text-strong" i18n>Name</div>
+            <div>{{ activeOrg.name }}</div>
+          </div>
         }
       </mat-card-content>
     </mat-card>

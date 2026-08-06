@@ -224,6 +224,15 @@ mat-sidenav-container {
   width: 100%;
 }
 
+// Shows a settings value as text where the edit form is hidden for lack of
+// scope, so the card keeps its information without offering a control the
+// user can't use. See permission-gating.preview.ts.
+.readonly-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .tt-wrapping {
   overflow-wrap: break-word;
   height: auto;

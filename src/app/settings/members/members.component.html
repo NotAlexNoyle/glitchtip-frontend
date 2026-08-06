@@ -44,7 +44,10 @@
             <div class="reinvite-and-role">
               @if (member.pending) {
                 <div class="reinvite">
-                  @if (!member.loadingResendInvite) {
+                  @if (
+                    !member.loadingResendInvite &&
+                    hasScope("member:write", "member:admin")()
+                  ) {
                     <gt-loading-button
                       class="resend-invite"
                       [loading]="member.loadingResendInvite"
@@ -53,10 +56,7 @@
                           ? 'Invite Resent'
                           : 'Resend Invite'
                       "
-                      [disabled]="
-                        member.sentResendInvite ||
-                        !hasScope('member:write', 'member:admin')()
-                      "
+                      [disabled]="member.sentResendInvite"
                       (buttonClick)="resendInvite(member)"
                     >
                     </gt-loading-button>

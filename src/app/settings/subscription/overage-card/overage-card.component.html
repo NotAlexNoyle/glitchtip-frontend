@@ -11,16 +11,18 @@
           </p>
         </div>
         <div class="overage-top-control">
-          @if (loading()) {
-            <mat-spinner diameter="20" />
+          @if (canManage()) {
+            @if (loading()) {
+              <mat-spinner diameter="20" />
+            }
+            <mat-slide-toggle
+              [checked]="enabled()"
+              [disabled]="loading()"
+              (change)="onToggle($event)"
+              aria-label="Toggle overage billing"
+              i18n-aria-label
+            />
           }
-          <mat-slide-toggle
-            [checked]="enabled()"
-            [disabled]="loading() || !canManage()"
-            (change)="onToggle($event)"
-            aria-label="Toggle overage billing"
-            i18n-aria-label
-          />
         </div>
       </div>
 
