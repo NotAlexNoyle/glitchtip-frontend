@@ -15,6 +15,7 @@ import { MatOptionModule } from "@angular/material/core";
 import { MatSelectModule } from "@angular/material/select";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatCardModule } from "@angular/material/card";
+import { OrganizationsService } from "src/app/api/organizations.service";
 
 @Component({
   selector: "gt-team-projects",
@@ -35,6 +36,7 @@ import { MatCardModule } from "@angular/material/card";
 export class TeamProjectsComponent implements OnInit {
   private projectsService = inject(ProjectSettingsService);
   private teamsService = inject(TeamsService);
+  private organizationsService = inject(OrganizationsService);
   teamSlug = input.required<string>({ alias: "team-slug" });
   orgSlug = input.required<string>({ alias: "org-slug" });
 
@@ -44,6 +46,7 @@ export class TeamProjectsComponent implements OnInit {
   loading = this.projectsService.addRemoveLoading;
   errors = this.projectsService.errors;
   project = new FormControl();
+  hasScope = this.organizationsService.hasScope;
 
   ngOnInit(): void {
     this.projectsService.setParams(this.orgSlug(), this.teamSlug());

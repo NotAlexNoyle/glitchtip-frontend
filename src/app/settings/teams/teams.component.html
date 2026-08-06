@@ -7,7 +7,9 @@
       mat-flat-button
       color="primary"
       (click)="openCreateTeamDialog()"
-      [disabled]="!hasScope('team:write', 'team:admin', 'org:write', 'org:admin')()"
+      [disabled]="
+        !hasScope('team:write', 'team:admin', 'org:write', 'org:admin')()
+      "
       id="new-team"
       i18n
       >Create Team</button
@@ -50,6 +52,9 @@
                 buttonStyle="stroked"
                 [loading]="loading().removeTeamMember === yourTeam.slug"
                 (buttonClick)="leaveTeam(yourTeam.slug)"
+                [disabled]="
+                  !(openMembership() || hasScope('team:write', 'team:admin')())
+                "
                 id="leave-team"
               ></gt-loading-button>
             </li>
@@ -84,6 +89,7 @@
           @if (errors(); as error) {
             <mat-error class="center-text">{{ error.addTeamMember }}</mat-error>
           }
+          <!-- Joining a team you aren't in needs manager, not admin. -->
           @for (otherTeam of otherTeams(); track otherTeam) {
             <li class="team-list-item">
               <div class="team-list-item-text">
@@ -101,7 +107,10 @@
                 buttonStyle="stroked"
                 [loading]="loading().addTeamMember === otherTeam.slug"
                 (buttonClick)="joinTeam(otherTeam.slug)"
-                id="leave-team"
+                [disabled]="
+                  !(openMembership() || hasScope('org:write', 'org:admin')())
+                "
+                id="join-team"
               ></gt-loading-button>
             </li>
           }

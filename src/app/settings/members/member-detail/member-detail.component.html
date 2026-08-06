@@ -52,7 +52,10 @@
             </mat-radio-group>
             <div class="role-button-container">
               <gt-loading-button
-                [disabled]="member.role === formRole.value"
+                [disabled]="
+                  member.role === formRole.value ||
+                  !hasScope('member:write', 'member:admin')()
+                "
                 [loading]="updateMemberLoading() === true"
                 buttonText="Update Member"
               ></gt-loading-button>
@@ -113,6 +116,7 @@
           <gt-loading-button
             buttonText="Transfer Ownership"
             [loading]="transferOrgOwnershipLoading() === true"
+            [disabled]="!hasScope('org:admin')()"
             (buttonClick)="transferOrgOwnership()"
           >
             Change Password

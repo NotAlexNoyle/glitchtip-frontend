@@ -32,7 +32,9 @@
       } @else {
         <ul>
           @if (errors().removeProjectFromTeam) {
-            <mat-error class="center-text">{{ errors().removeProjectFromTeam }}</mat-error>
+            <mat-error class="center-text">{{
+              errors().removeProjectFromTeam
+            }}</mat-error>
           }
           @for (project of projectsOnTeam(); track project) {
             <li class="team-project-list-item">
@@ -47,6 +49,7 @@
                 buttonStyle="stroked"
                 [loading]="project.slug === loading().removeProjectFromTeam"
                 (buttonClick)="removeProject(project.slug!)"
+                [disabled]="!hasScope('project:write', 'project:admin')()"
                 id="remove-team-member"
               ></gt-loading-button>
             </li>

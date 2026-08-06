@@ -55,7 +55,10 @@
                           ? 'Invite Resent'
                           : 'Resend Invite'
                       "
-                      [disabled]="member.sentResendInvite"
+                      [disabled]="
+                        member.sentResendInvite ||
+                        !hasScope('member:write', 'member:admin')()
+                      "
                       (buttonClick)="resendInvite(member)"
                     >
                     </gt-loading-button>
@@ -68,7 +71,9 @@
               class="remove-button"
               matTooltip="Account ownership must be transferred."
               [matTooltipDisabled]="!member.isOwner"
-              [disabled]="member.isOwner"
+              [disabled]="
+                member.isOwner || (!member.isMe && !hasScope('member:admin')())
+              "
               (buttonClick)="removeMember(member)"
               [buttonText]="member.isMe ? 'Leave' : 'Remove'"
               buttonStyle="stroked"

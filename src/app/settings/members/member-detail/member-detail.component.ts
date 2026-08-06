@@ -26,6 +26,7 @@ import { LoadingButtonComponent } from "../../../shared/loading-button/loading-b
 import { DetailHeaderComponent } from "src/app/shared/detail/header/header.component";
 import { BackLinkComponent } from "src/app/shared/detail/back-link/back-link.component";
 import { TopAppBar } from "src/app/shared/top-app-bar/top-app-bar";
+import { OrganizationsService } from "src/app/api/organizations.service";
 
 @Component({
   templateUrl: "./member-detail.component.html",
@@ -51,6 +52,7 @@ import { TopAppBar } from "src/app/shared/top-app-bar/top-app-bar";
 })
 export class MemberDetailComponent implements OnInit, OnDestroy {
   route = inject(ActivatedRoute);
+  organizationsService = inject(OrganizationsService);
   private memberDetailService = inject(MemberDetailService);
 
   member = this.memberDetailService.member;
@@ -71,6 +73,7 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
     role: new FormControl<MemberRole | null>(null),
   });
   formRole = this.form.get("role") as FormControl<MemberRole | null>;
+  hasScope = this.organizationsService.hasScope;
 
   selectedRoleScopes = computed(() => {
     const availableRoles = this.availableRoles();

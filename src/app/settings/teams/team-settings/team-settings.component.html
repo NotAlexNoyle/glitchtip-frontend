@@ -21,7 +21,10 @@
           </mat-error>
         </mat-form-field>
         <gt-loading-button
-          [disabled]="this.form.get('slug')?.value === team.slug"
+          [disabled]="
+            this.form.get('slug')?.value === team.slug ||
+            !hasScope('team:write', 'team:admin')()
+          "
           [loading]="loading().updateName"
           buttonText="Update Name"
           id="update-project-name"
@@ -47,6 +50,7 @@
     <gt-loading-button
       buttonText="Delete Team"
       [loading]="loading().deleteTeam"
+      [disabled]="!hasScope('team:admin')()"
       (buttonClick)="deleteTeam()"
     >
     </gt-loading-button>

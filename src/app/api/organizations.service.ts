@@ -62,18 +62,26 @@ export class OrganizationsService {
     () => this.organizationsLoaded() && this.activeOrganizationLoaded(),
   );
   /**
-   * Scopes for the org actually being viewed. Fails closed to [] until the
-   * loaded detail matches selectedOrganizationSlug: activeOrganization can
-   * briefly hold the first-org fallback, gating buttons on the wrong org's role.
+   * The loaded detail, but only once it matches the org actually being viewed.
+   * activeOrganization can briefly hold the first-org fallback, so every
+   * permission input below derives from this and fails closed on mismatch.
    */
-  access = computed<ReadonlySet<Scope>>(() => {
-    const selectedSlug = this.selectedOrganizationSlug();
+  private selectedOrganization = computed(() => {
     const organization = this.activeOrganization();
-    if (!organization || organization.slug !== selectedSlug) {
-      return new Set();
-    }
-    return new Set(organization.access);
+    return organization?.slug === this.selectedOrganizationSlug()
+      ? organization
+      : null;
   });
+
+  /** Scopes for the org actually being viewed; [] until it resolves. */
+  access = computed<ReadonlySet<Scope>>(
+    () => new Set(this.selectedOrganization()?.access ?? []),
+  );
+
+  /** Whether any org member may join any team; false until it resolves. */
+  openMembership = computed(
+    () => this.selectedOrganization()?.openMembership ?? false,
+  );
 
   /**
    * True when the user holds ANY of `required`, matching the any-of semantics of

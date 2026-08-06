@@ -61,13 +61,14 @@ export class TeamsService extends StatefulService<TeamsState> {
   readonly teamMembers = computed(() => this.teamMembersResource.value() ?? []);
   readonly loading = computed(() => this.state().loading);
   readonly errors = computed(() => this.state().errors);
-  readonly userTeamRole = computed(() => {
+  /** The requesting user's own row in this team; undefined if not a member. */
+  readonly activeTeamMember = computed(() => {
     const userEmail = this.userService.activeUserEmail();
-    const activeTeamMember = this.teamMembers().find(
-      (teamMember) => teamMember.email === userEmail,
-    );
-    return activeTeamMember?.role;
+    return userEmail
+      ? this.teamMembers().find((teamMember) => teamMember.email === userEmail)
+      : undefined;
   });
+  readonly userTeamRole = computed(() => this.activeTeamMember()?.role);
 
   constructor() {
     super(initialState);
@@ -82,9 +83,7 @@ export class TeamsService extends StatefulService<TeamsState> {
   }
 
   setTeamMembersKey(orgSlug: string, teamSlug: string) {
-    this.teamMembersKey.set(
-      orgSlug && teamSlug ? { orgSlug, teamSlug } : null,
-    );
+    this.teamMembersKey.set(orgSlug && teamSlug ? { orgSlug, teamSlug } : null);
   }
 
   async updateTeamSlug(orgSlug: string, teamSlug: string, newTeamSlug: string) {

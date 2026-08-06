@@ -17,6 +17,7 @@ import { MatInputModule } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatDividerModule } from "@angular/material/divider";
 import { MatCardModule } from "@angular/material/card";
+import { OrganizationsService } from "src/app/api/organizations.service";
 
 @Component({
   selector: "gt-team-settings",
@@ -34,6 +35,7 @@ import { MatCardModule } from "@angular/material/card";
 })
 export class TeamSettingsComponent {
   private teamsService = inject(TeamsService);
+  private organizationService = inject(OrganizationsService);
 
   team = this.teamsService.team;
   loading = this.teamsService.loading;
@@ -43,6 +45,7 @@ export class TeamSettingsComponent {
   });
   orgSlug = input.required<string>({ alias: "org-slug" });
   teamSlug = input.required<string>({ alias: "team-slug" });
+  hasScope = this.organizationService.hasScope;
 
   constructor() {
     effect(() => {

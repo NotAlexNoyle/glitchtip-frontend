@@ -53,6 +53,7 @@ export class TeamsComponent {
   );
   errors = this.organizationDetailService.errors;
   loading = this.organizationDetailService.loading;
+  openMembership = this.organizationsService.openMembership;
   hasScope = this.organizationsService.hasScope;
 
   memberCountPluralMapping: { [k: string]: string } = {

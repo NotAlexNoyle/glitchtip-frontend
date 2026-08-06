@@ -51,7 +51,10 @@
             </mat-error>
           </mat-form-field>
           <gt-loading-button
-            [disabled]="name?.value === project.name"
+            [disabled]="
+              name?.value === project.name ||
+              !hasScope('project:write', 'project:admin')()
+            "
             buttonText="Update Name"
             id="update-project-name"
           >
@@ -113,7 +116,9 @@
             }
             <gt-loading-button
               [disabled]="
-                platformCtrl.value === project.platform || platformCtrl.invalid
+                platformCtrl.value === project.platform ||
+                platformCtrl.invalid ||
+                !hasScope('project:write', 'project:admin')()
               "
               buttonText="Update Platform"
               id="update-project-platform"

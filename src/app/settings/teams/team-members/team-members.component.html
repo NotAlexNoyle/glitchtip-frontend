@@ -42,6 +42,10 @@
               buttonText="Remove"
               buttonStyle="stroked"
               [loading]="selectedTeamMember?.toString() === teamMember.id"
+              [disabled]="
+                !(openMembership() && activeTeamMember) ||
+                !hasScope('team:admin')()
+              "
               (buttonClick)="removeTeamMember(teamMember.id, teamMember.email)"
               id="remove-team-member"
             ></gt-loading-button>
