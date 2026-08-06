@@ -1,4 +1,5 @@
 import { computed, inject, Injectable, signal } from "@angular/core";
+import type { Signal } from "@angular/core";
 import { client } from "../shared/api/api";
 import { AuthService } from "../auth.service";
 import { apiResource } from "../shared/api/api-resource-factory";
@@ -83,13 +84,16 @@ export class OrganizationsService {
     () => this.selectedOrganization()?.openMembership ?? false,
   );
 
-  /**
-   * True when the user holds ANY of `required`, matching the any-of semantics of
-   * the backend's @has_permission decorator. Call once per gate and store the
-   * signal — calling it inside a template allocates a computed every check.
-   */
-  hasScope = (...required: Scope[]) =>
-    computed(() => required.some((scope) => this.access().has(scope)));
+  #scopeGates = new Map<string, Signal<boolean>>();
+  hasScope = (...required: Scope[]) => {
+    const key = required.join(",");
+    let gate = this.#scopeGates.get(key);
+    if (!gate) {
+      gate = computed(() => required.some((scope) => this.access().has(scope)));
+      this.#scopeGates.set(key, gate);
+    }
+    return gate;
+  };
 
   constructor() {
     setTimeout(() => this.refresh(), 30000);
