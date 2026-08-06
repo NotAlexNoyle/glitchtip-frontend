@@ -198,7 +198,7 @@
           buttonText="Delete Project"
           [loading]="deleteLoading()"
           (buttonClick)="deleteProject()"
-          [disabled]="!hasScope('project:write', 'project:admin')()"
+          [disabled]="!hasScope( 'project:admin')()"
           id="delete-project"
         >
         </gt-loading-button>
