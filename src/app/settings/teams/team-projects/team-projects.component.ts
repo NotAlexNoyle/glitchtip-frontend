@@ -47,6 +47,7 @@ export class TeamProjectsComponent implements OnInit {
   errors = this.projectsService.errors;
   project = new FormControl();
   hasScope = this.organizationsService.hasScope;
+  activeTeamMember = this.teamsService.activeTeamMember;
 
   ngOnInit(): void {
     this.projectsService.setParams(this.orgSlug(), this.teamSlug());

@@ -7,6 +7,7 @@ import { client, handleError } from "../../shared/api/api";
 import { StatefulService } from "src/app/shared/stateful-service/signal-state.service";
 import { apiResource } from "src/app/shared/api/api-resource-factory";
 import { components } from "../api-schema";
+import { OrganizationsService } from "../organizations.service";
 type Team = components["schemas"]["TeamProjectSchema"];
 
 interface TeamsState {
@@ -31,6 +32,7 @@ export class TeamsService extends StatefulService<TeamsState> {
   private userService = inject(UserService);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
+  private organizationsService = inject(OrganizationsService);
 
   private teamsOrgSlug = signal<string>("");
   teamsResource = apiResource(this.teamsOrgSlug, (slug) => ({
