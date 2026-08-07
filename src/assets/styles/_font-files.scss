@@ -128,5 +128,24 @@
 
 .caption-text {
   font: var(--mat-sys-body-small);
-  letter-spacing: var(--mat-sys-body-large-small);
+  letter-spacing: var(--mat-sys-body-small-tracking);
+}
+
+// Section header within a detail view: an uppercase "eyebrow" label. Reads
+// unmistakably as structure at a squint without competing with the page title.
+.detail-section-header {
+  font: var(--mat-sys-label-large);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+// Sub-group label INSIDE a section (e.g. Body / Headers within Request). One
+// tier below the uppercase eyebrow: solid colour, title-case, no letter-spacing,
+// so a child group never out-ranks its parent section header.
+.detail-subsection-header {
+  font: var(--mat-sys-title-small);
+  font-weight: 600;
+  color: var(--mat-sys-on-surface);
 }

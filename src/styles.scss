@@ -28,6 +28,35 @@ html {
   }
 }
 
+// Spacing scale (8px grid). The single source of spacing rhythm; mirror of the
+// component-preview design system so product and style guide stay in step.
+:root {
+  --gt-space-0: 0;
+  --gt-space-1: 4px;
+  --gt-space-2: 8px;
+  --gt-space-3: 12px;
+  --gt-space-4: 16px;
+  --gt-space-5: 24px;
+  --gt-space-6: 32px;
+  --gt-space-7: 48px;
+}
+
+// Mono font token, for components styled inline (TS) that cannot @use the SCSS
+// $font-mono variable. Keep in step with $font-mono in _variables.scss so
+// identifiers/values render in IBM Plex Mono, not the browser default monospace.
+:root {
+  --gt-font-mono: "Plex Mono", monospace;
+}
+
+// Chart typography. The chart library (@glitchtip/ng-charts) renders axis and
+// legend labels as bare SVG <text>, which browsers default to serif / black.
+// Bring them onto the app sans and a semantic text colour so every chart reads
+// on-system in both light and dark. Applies app-wide via the library's wrapper.
+.ng-charts text {
+  font-family: vars.$font-sans-serif;
+  fill: var(--mat-sys-on-surface-variant);
+}
+
 // Extended color
 :root {
   --warning-color: #e9b949;
