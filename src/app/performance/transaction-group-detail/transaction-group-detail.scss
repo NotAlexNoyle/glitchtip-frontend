@@ -4,42 +4,13 @@
   text-align: left;
 }
 
-.page-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin-bottom: 24px;
+// Masthead (title + vitals) and the span-breakdown card as sibling modules.
+.masthead-card {
+  margin-bottom: var(--gt-space-5);
 }
 
-.stats-card {
-  flex-shrink: 1;
-  min-width: 0;
-}
-
-.stats-row {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
-.stat-item {
-  display: flex;
-  flex-direction: row;
-  align-items: baseline;
-  gap: 6px;
-}
-
-.stat-divider {
-  width: 1px;
-  height: 20px;
-  background-color: var(--mat-sys-outline-variant);
-}
-
-.span-breakdown-title {
-  margin: 0 0 20px;
+.detail-card .detail-section-header {
+  margin: 0 0 var(--gt-space-4);
 }
 
 .span-breakdown-empty {
@@ -66,12 +37,8 @@
   }
 }
 
-.section-label {
-  margin: 0 0 10px;
-  font: var(--mat-sys-label-medium);
-  letter-spacing: var(--mat-sys-label-medium-tracking);
-  text-transform: uppercase;
-  color: var(--mat-sys-on-surface-variant);
+.detail-subsection-header {
+  margin: 0 0 var(--gt-space-2);
 }
 
 .op-summary {
@@ -179,6 +146,7 @@
   .num {
     text-align: right;
     white-space: nowrap;
+    font-variant-numeric: tabular-nums;
   }
 
   .span-description {

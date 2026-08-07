@@ -8,12 +8,12 @@
   @if (organization(); as organization) {
   <mat-card class="auth-form transaction-group-404">
     <mat-card-content>
-      <h1 class="mat-headline-4">Transaction group not found</h1>
-      <p class="mat-body-1">
+      <h1 class="section-header-text">Transaction group not found</h1>
+      <p class="body-text">
         This may be because the URL is pointing to a transaction group that
         doesn't exist or was deleted.
       </p>
-      <p class="mat-body-1">
+      <p class="body-text">
         It's also possible that this transaction group was reported to a project
         that you are not able to access.
       </p>
@@ -31,50 +31,40 @@
 </section>
 } @if (transactionGroup(); as group) {
 <section class="l-body l-body--full-width">
-  <div class="page-header">
-    <gt-detail-header
-      [title]="[group.transaction, null]"
-    />
-    <mat-card class="stats-card">
-      <mat-card-content class="stats-row">
-        <div class="stat-item">
-          <span class="caption-text">Avg Duration</span>
-          <span class="body-text-strong">{{ group.avgDuration! | humanizeDuration }}</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <span class="caption-text">Transaction Count</span>
-          <span class="body-text-strong">{{ group.count }}</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <span class="caption-text">Operation</span>
-          <span class="body-text-strong">{{ group.op }}</span>
-        </div>
-        @if (group.method) {
-          <div class="stat-divider"></div>
-          <div class="stat-item">
-            <span class="caption-text">Method</span>
-            <span class="body-text-strong">{{ group.method }}</span>
-          </div>
-        }
-      </mat-card-content>
-    </mat-card>
-  </div>
-
-  <mat-card>
+  <mat-card appearance="outlined" class="masthead-card">
     <mat-card-content>
-      <h2 class="section-header-text span-breakdown-title">Span breakdown</h2>
+      <gt-detail-masthead [title]="[group.transaction, null]">
+        <ng-container slot="vitals">
+          <gt-stat
+            [value]="group.avgDuration! | humanizeDuration"
+            label="Avg duration"
+            [mono]="true"
+          />
+          <gt-stat [value]="group.count" label="Transaction count" />
+          <gt-stat [value]="group.op" label="Operation" [mono]="true" />
+          @if (group.method) {
+            <gt-stat [value]="group.method" label="Method" [mono]="true" />
+          }
+        </ng-container>
+      </gt-detail-masthead>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card appearance="outlined" class="detail-card">
+    <mat-card-content>
+      <h2 class="detail-section-header">Span breakdown</h2>
       @if (sortedSpans(); as spans) {
         @if (spans.length === 0) {
-          <div class="span-breakdown-empty">
-            <mat-icon class="span-breakdown-empty__icon">bar_chart_4_bars</mat-icon>
-            <p class="body-text">No span data available yet</p>
-            <p class="caption-text span-breakdown-empty__hint">Span data will appear here once child spans are recorded for this transaction group.</p>
-          </div>
+          <gt-empty-state
+            [dense]="true"
+            title="No span data yet"
+            i18n-title
+            message="Span data will appear here once child spans are recorded for this transaction group."
+            i18n-message
+          />
         } @else {
           <!-- By operation -->
-          <p class="section-label">By operation</p>
+          <p class="detail-subsection-header">By operation</p>
           <div class="op-summary">
             @for (seg of opSummary(); track seg.op) {
               <button
@@ -96,7 +86,7 @@
           </div>
 
           <!-- By span -->
-          <p class="section-label">By span</p>
+          <p class="detail-subsection-header">By span</p>
           <div class="table-scroll-container">
             <div class="table-scroll-wrapper">
               <table

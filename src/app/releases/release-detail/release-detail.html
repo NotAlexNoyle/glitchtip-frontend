@@ -4,13 +4,37 @@
   </ng-container>
 </gt-top-app-bar>
 
-<section class="l-body l-body--full-width mat-elevation-z0">
-  @if (releaseTitle(); as title) {
-    <gt-detail-header [title]="title" />
+<section class="l-body l-body--full-width">
+  @if (release(); as release) {
+    <mat-card appearance="outlined" class="masthead-card">
+      <mat-card-content>
+        <gt-detail-masthead [title]="release.version">
+          <ng-container slot="vitals">
+            @if (paginator()?.count; as count) {
+              <gt-stat [value]="count" label="Files" i18n-label />
+            }
+            <gt-stat [value]="release.commitCount ?? 0" label="Commits" i18n-label />
+            <gt-stat [value]="release.deployCount ?? 0" label="Deploys" i18n-label />
+            @if (release.dateReleased ?? release.dateCreated; as released) {
+              <gt-stat
+                [value]="released | date: 'mediumDate'"
+                label="Released"
+                i18n-label
+                [mono]="true"
+              />
+            }
+          </ng-container>
+        </gt-detail-masthead>
+      </mat-card-content>
+    </mat-card>
   }
-  <div class="table-container">
-    <gt-loading-overlay [loading]="loading()" label="Loading release files">
-      <table mat-table class="mat-elevation-z2" [dataSource]="releaseFiles()">
+
+  <!-- The files table is the page's raw list: no card, no redundant label, just
+       the table full-width in its own light outlined frame (matches monitor). -->
+  <section class="detail-section detail-section--table">
+    <div class="table-container">
+      <gt-loading-overlay [loading]="loading()" label="Loading release files">
+        <table mat-table [dataSource]="releaseFiles()">
         <ng-container matColumnDef="pagination">
           <th mat-header-cell *matHeaderCellDef class="table-header__actions">
             <div class="pagination-buttons-container">
@@ -64,15 +88,20 @@
                     }
                   </ul>
                 } @else {
-                  <div class="body-text-strong" i18n
-                    >There are no files associated with this release.</div
-                  >
+                  <gt-empty-state
+                    [dense]="true"
+                    title="No files"
+                    i18n-title
+                    message="There are no files associated with this release."
+                    i18n-message
+                  />
                 }
               }
             </div>
           </td>
         </tr>
-      </table>
-    </gt-loading-overlay>
-  </div>
+        </table>
+      </gt-loading-overlay>
+    </div>
+  </section>
 </section>

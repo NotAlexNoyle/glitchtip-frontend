@@ -6,16 +6,20 @@ import {
   inject,
   input,
 } from "@angular/core";
+import { DatePipe } from "@angular/common";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatTableModule } from "@angular/material/table";
+import { MatCardModule } from "@angular/material/card";
 import { ReleaseDetailService } from "./release-detail-state";
 import { checkForOverflow } from "src/app/shared/shared.utils";
-import { DetailHeaderComponent } from "src/app/shared/detail/header/header.component";
+import { DetailMastheadComponent } from "src/app/shared/detail/masthead/detail-masthead.component";
+import { StatComponent } from "src/app/shared/stat/stat.component";
 import { BackLinkComponent } from "src/app/shared/detail/back-link/back-link.component";
 import { PaginationButtons } from "src/app/list-elements/pagination-buttons/pagination-buttons";
 import { stringAttribute } from "src/app/shared/shared.utils";
 import { TopAppBar } from "src/app/shared/top-app-bar/top-app-bar";
 import { LoadingOverlayComponent } from "src/app/shared/loading-overlay/loading-overlay.component";
+import { EmptyStateComponent } from "src/app/shared/empty-state/empty-state.component";
 
 @Component({
   templateUrl: "./release-detail.html",
@@ -23,11 +27,15 @@ import { LoadingOverlayComponent } from "src/app/shared/loading-overlay/loading-
   imports: [
     MatTableModule,
     MatTooltipModule,
-    DetailHeaderComponent,
+    MatCardModule,
+    DatePipe,
+    DetailMastheadComponent,
+    StatComponent,
     BackLinkComponent,
     PaginationButtons,
     TopAppBar,
     LoadingOverlayComponent,
+    EmptyStateComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [ReleaseDetailService],

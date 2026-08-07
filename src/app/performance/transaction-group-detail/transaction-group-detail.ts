@@ -14,12 +14,14 @@ import { MatCardModule } from "@angular/material/card";
 import { MatTableModule } from "@angular/material/table";
 import { MatSortModule, Sort } from "@angular/material/sort";
 
-import { DetailHeaderComponent } from "src/app/shared/detail/header/header.component";
+import { DetailMastheadComponent } from "src/app/shared/detail/masthead/detail-masthead.component";
 import { TransactionGroupDetailService } from "./transaction-group-detail-state";
 import { HumanizeDurationPipe } from "../../shared/seconds-or-ms.pipe";
 import { OrganizationsService } from "src/app/api/organizations.service";
 import { BackLinkComponent } from "src/app/shared/detail/back-link/back-link.component";
 import { TopAppBar } from "src/app/shared/top-app-bar/top-app-bar";
+import { StatComponent } from "src/app/shared/stat/stat.component";
+import { EmptyStateComponent } from "src/app/shared/empty-state/empty-state.component";
 
 type SpanSortKey = "totalTime" | "avgDuration" | "p95Duration" | "count";
 
@@ -37,7 +39,9 @@ type SpanSortKey = "totalTime" | "avgDuration" | "p95Duration" | "count";
     TopAppBar,
     BackLinkComponent,
     HumanizeDurationPipe,
-    DetailHeaderComponent,
+    DetailMastheadComponent,
+    StatComponent,
+    EmptyStateComponent,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
   providers: [TransactionGroupDetailService],

@@ -1,6 +1,12 @@
+@use "variables" as vars;
+
+.masthead-card,
+.detail-section {
+  margin-bottom: var(--gt-space-5);
+}
+
 table {
   width: 100%;
-  margin-bottom: 40px;
 }
 
 .pagination-buttons-container {
@@ -9,15 +15,26 @@ table {
   justify-content: flex-end;
 }
 
+// Filenames are paths / identifiers: render them monospace.
 .name {
   width: 100%;
-  padding-top: 8px;
-  padding-bottom: 8px;
+  padding-top: var(--gt-space-2);
+  padding-bottom: var(--gt-space-2);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  font-family: vars.$font-mono;
 }
 
-.releases-list-link {
-  margin: 0 0 20px;
+// The files table stands on its own (no card): its container gets a light
+// outlined frame matching the cards, replacing the M2 elevation shadow.
+.detail-section--table .table-container {
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: vars.$shape-radius;
+  overflow: hidden;
+
+  table {
+    box-shadow: none;
+    background: none;
+  }
 }
