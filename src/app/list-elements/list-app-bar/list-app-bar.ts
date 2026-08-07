@@ -68,7 +68,13 @@ export class ListAppBar {
   );
   activeOrgProjects = this.organizationsService.activeOrganizationProjects;
   activeOrgSlug = this.organizationsService.activeOrganizationSlug;
-  accessProjectWrite = this.organizationsService.accessProjectWrite;
+  /** Empty-state CTA: only where the button would be the org's first project. */
+  showAddProject = computed(
+    () =>
+      this.displayAddProject() &&
+      this.activeOrgHasNoProjects() &&
+      this.organizationsService.canWriteProject(),
+  );
   singleQueriedProjectSlug = computed(() => {
     const queriedProjects = this.queriedProjects();
     const activeOrgProjects = this.activeOrgProjects();

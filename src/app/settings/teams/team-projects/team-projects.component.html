@@ -6,7 +6,7 @@
         <mat-error>{{ errors().addProjectToTeam }}</mat-error>
       }
       <div>
-        @if (userTeamRole() !== "member") {
+        @if (canModifyTeam()) {
           <mat-form-field appearance="outline">
             <mat-label i18n>Add Project</mat-label>
             <mat-select
@@ -32,7 +32,9 @@
       } @else {
         <ul>
           @if (errors().removeProjectFromTeam) {
-            <mat-error class="center-text">{{ errors().removeProjectFromTeam }}</mat-error>
+            <mat-error class="center-text">{{
+              errors().removeProjectFromTeam
+            }}</mat-error>
           }
           @for (project of projectsOnTeam(); track project) {
             <li class="team-project-list-item">
@@ -42,13 +44,15 @@
                 [queryParams]="{ project: project.id }"
                 >{{ project.name }}</a
               >
-              <gt-loading-button
-                buttonText="Remove"
-                buttonStyle="stroked"
-                [loading]="project.slug === loading().removeProjectFromTeam"
-                (buttonClick)="removeProject(project.slug!)"
-                id="remove-team-member"
-              ></gt-loading-button>
+              @if (canWriteProject()) {
+                <gt-loading-button
+                  buttonText="Remove"
+                  buttonStyle="stroked"
+                  [loading]="project.slug === loading().removeProjectFromTeam"
+                  (buttonClick)="removeProject(project.slug!)"
+                  id="remove-team-member"
+                ></gt-loading-button>
+              }
             </li>
           }
         </ul>

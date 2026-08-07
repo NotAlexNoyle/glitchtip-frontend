@@ -5,26 +5,28 @@
         <div class="overage-top-text">
           <span class="body-text-strong" i18n>Overage billing</span>
           <p class="overage-tagline body-text" i18n>
-            Keep ingesting past your plan quota and pay only for the overflow, up
-            to a monthly cap you set. At the cap, throttling resumes, so your
+            Keep ingesting past your plan quota and pay only for the overflow,
+            up to a monthly cap you set. At the cap, throttling resumes, so your
             bill never goes over the cap.
           </p>
         </div>
         <div class="overage-top-control">
-          @if (loading()) {
-            <mat-spinner diameter="20" />
+          @if (canAdminOrg()) {
+            @if (loading()) {
+              <mat-spinner diameter="20" />
+            }
+            <mat-slide-toggle
+              [checked]="enabled()"
+              [disabled]="loading()"
+              (change)="onToggle($event)"
+              aria-label="Toggle overage billing"
+              i18n-aria-label
+            />
           }
-          <mat-slide-toggle
-            [checked]="enabled()"
-            [disabled]="loading() || !canManage()"
-            (change)="onToggle($event)"
-            aria-label="Toggle overage billing"
-            i18n-aria-label
-          />
         </div>
       </div>
 
-      @if (!canManage()) {
+      @if (!canAdminOrg()) {
         <p class="overage-sub overage-owner-note" i18n>
           Only organization owners can change overage billing.
         </p>
@@ -56,8 +58,8 @@
 
         @if (capReached()) {
           <p class="overage-alert overage-alert--warn" i18n>
-            Spend cap reached. Events above your quota are being throttled again.
-            Raise the cap to keep ingesting.
+            Spend cap reached. Events above your quota are being throttled
+            again. Raise the cap to keep ingesting.
           </p>
         } @else if (willReachCap()) {
           <p class="overage-alert" i18n>
@@ -113,14 +115,11 @@
               }}</span>
               <span class="overage-sub" i18n>Monthly spend cap</span>
             </div>
-            <button
-              mat-stroked-button
-              [disabled]="!canManage()"
-              (click)="startEditCap()"
-              i18n
-            >
-              Adjust cap
-            </button>
+            @if (canAdminOrg()) {
+              <button mat-stroked-button (click)="startEditCap()" i18n>
+                Adjust cap
+              </button>
+            }
           }
         </div>
       }

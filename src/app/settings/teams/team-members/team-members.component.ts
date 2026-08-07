@@ -37,13 +37,15 @@ import { MatCardModule } from "@angular/material/card";
 })
 export class TeamMembersComponent implements OnInit {
   private teamsService = inject(TeamsService);
-  private organizationsService = inject(OrganizationDetailService);
+  private organizationsDetailService = inject(OrganizationDetailService);
   route = inject(ActivatedRoute);
   private snackBar = inject(MatSnackBar);
   private userService = inject(UserService);
 
   teamMembers = this.teamsService.teamMembers;
-  filteredAddTeamMembers = this.organizationsService.filteredAddTeamMembers;
+  filteredAddTeamMembers =
+    this.organizationsDetailService.filteredAddTeamMembers;
+  canModifyTeam = this.teamsService.canModifyTeam;
   userTeamRole = this.teamsService.userTeamRole;
 
   member = new FormControl();
@@ -68,7 +70,7 @@ export class TeamMembersComponent implements OnInit {
       .subscribe(({ orgSlug, teamSlug }) => {
         if (orgSlug && teamSlug) {
           this.teamsService.setTeamMembersKey(orgSlug, teamSlug);
-          this.organizationsService.setMembersOrgSlug(orgSlug);
+          this.organizationsDetailService.setMembersOrgSlug(orgSlug);
         }
       });
     this.userService.getUserDetails();
@@ -76,7 +78,7 @@ export class TeamMembersComponent implements OnInit {
 
   async addTeamMember() {
     this.loading = true;
-    const team = await this.organizationsService.addTeamMember(
+    const team = await this.organizationsDetailService.addTeamMember(
       this.member.value,
       this.orgSlug,
       this.teamSlug,
@@ -92,7 +94,7 @@ export class TeamMembersComponent implements OnInit {
 
   async removeTeamMember(memberId: string, memberEmail: string) {
     this.selectedTeamMember = parseInt(memberId);
-    const team = await this.organizationsService.removeTeamMember(
+    const team = await this.organizationsDetailService.removeTeamMember(
       parseInt(memberId),
       this.teamSlug,
     );

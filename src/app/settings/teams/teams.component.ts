@@ -53,7 +53,16 @@ export class TeamsComponent {
   );
   errors = this.organizationDetailService.errors;
   loading = this.organizationDetailService.loading;
-  accessTeamWrite = this.organizationsService.accessTeamWrite;
+  openMembership = this.organizationsService.openMembership;
+  canManageAnyTeam = this.organizationsService.canManageAnyTeam;
+  // Open membership lets any member join/leave on their own; otherwise joining
+  // needs org manager scope and leaving needs team manager scope.
+  canJoinTeam = computed(
+    () => this.openMembership() || this.organizationsService.canWriteOrg(),
+  );
+  canLeaveTeam = computed(
+    () => this.openMembership() || this.organizationsService.canWriteTeam(),
+  );
 
   memberCountPluralMapping: { [k: string]: string } = {
     "=1": "1 Member",
