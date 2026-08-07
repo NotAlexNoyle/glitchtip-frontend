@@ -1,6 +1,7 @@
 import { Injectable, computed, inject, signal } from "@angular/core";
 import { TeamErrors, TeamLoading } from "./teams.interfaces";
 import { UserService } from "../user/user.service";
+import { OrganizationsService } from "../organizations.service";
 import { Router } from "@angular/router";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { client, handleError } from "../../shared/api/api";
@@ -31,6 +32,7 @@ export class TeamsService extends StatefulService<TeamsState> {
   private userService = inject(UserService);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
+  private organizationsService = inject(OrganizationsService);
 
   private teamsOrgSlug = signal<string>("");
   teamsResource = apiResource(this.teamsOrgSlug, (slug) => ({
@@ -61,13 +63,24 @@ export class TeamsService extends StatefulService<TeamsState> {
   readonly teamMembers = computed(() => this.teamMembersResource.value() ?? []);
   readonly loading = computed(() => this.state().loading);
   readonly errors = computed(() => this.state().errors);
-  readonly userTeamRole = computed(() => {
+  /** The requesting user's own row in this team; undefined if not a member. */
+  readonly activeTeamMember = computed(() => {
     const userEmail = this.userService.activeUserEmail();
-    const activeTeamMember = this.teamMembers().find(
-      (teamMember) => teamMember.email === userEmail,
-    );
-    return activeTeamMember?.role;
+    return userEmail
+      ? this.teamMembers().find((teamMember) => teamMember.email === userEmail)
+      : undefined;
   });
+  readonly userTeamRole = computed(() => this.activeTeamMember()?.role);
+  /**
+   * Change this team's members/projects. Mirrors the backend's
+   * modify_member_for_team rule: team managers if you're in the team, org
+   * managers if you aren't. Fails closed to the org branch while members load.
+   */
+  readonly canModifyTeam = computed(() =>
+    this.activeTeamMember()
+      ? this.organizationsService.canWriteTeam()
+      : this.organizationsService.canWriteOrg(),
+  );
 
   constructor() {
     super(initialState);
@@ -82,9 +95,7 @@ export class TeamsService extends StatefulService<TeamsState> {
   }
 
   setTeamMembersKey(orgSlug: string, teamSlug: string) {
-    this.teamMembersKey.set(
-      orgSlug && teamSlug ? { orgSlug, teamSlug } : null,
-    );
+    this.teamMembersKey.set(orgSlug && teamSlug ? { orgSlug, teamSlug } : null);
   }
 
   async updateTeamSlug(orgSlug: string, teamSlug: string, newTeamSlug: string) {

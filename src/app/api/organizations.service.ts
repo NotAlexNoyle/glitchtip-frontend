@@ -1,7 +1,9 @@
 import { computed, inject, Injectable, signal } from "@angular/core";
+import type { Signal } from "@angular/core";
 import { client } from "../shared/api/api";
 import { AuthService } from "../auth.service";
 import { apiResource } from "../shared/api/api-resource-factory";
+import { Scope } from "../constants";
 
 @Injectable({
   providedIn: "root",
@@ -60,19 +62,57 @@ export class OrganizationsService {
   initialLoad = computed(
     () => this.organizationsLoaded() && this.activeOrganizationLoaded(),
   );
-  access = computed(() => this.activeOrganization()?.access || []);
-  accessProjectWrite = computed(() => this.access().includes("project:write"));
-  accessTeamWrite = computed(
-    () =>
-      this.access().includes("project:write") ||
-      this.access().includes("org:write"),
+  /**
+   * The loaded detail, but only once it matches the org actually being viewed.
+   * activeOrganization can briefly hold the first-org fallback, so every
+   * permission input below derives from this and fails closed on mismatch.
+   */
+  private selectedOrganization = computed(() => {
+    const organization = this.activeOrganization();
+    return organization?.slug === this.selectedOrganizationSlug()
+      ? organization
+      : null;
+  });
+
+  /** Scopes for the org actually being viewed; [] until it resolves. */
+  access = computed<ReadonlySet<Scope>>(
+    () => new Set(this.selectedOrganization()?.access ?? []),
   );
-  accessMemberWrite = computed(
-    () =>
-      this.access().includes("member:admin") ||
-      this.access().includes("member:write"),
+
+  /** Whether any org member may join any team; false until it resolves. */
+  openMembership = computed(
+    () => this.selectedOrganization()?.openMembership ?? false,
   );
-  accessOrgAdmin = computed(() => this.access().includes("org:admin"));
+
+  #scopeGates = new Map<string, Signal<boolean>>();
+  /**
+   * Any-of scope check, memoized per combination. Prefer the named gates below
+   * in templates; this stays public for ad-hoc combinations.
+   */
+  hasScope = (...required: Scope[]) => {
+    const key = required.join(",");
+    let gate = this.#scopeGates.get(key);
+    if (!gate) {
+      gate = computed(() => required.some((scope) => this.access().has(scope)));
+      this.#scopeGates.set(key, gate);
+    }
+    return gate;
+  };
+
+  // Named capability gates — the single source of truth for which scopes back
+  // which control. A scope rename is one edit here, and two controls gated
+  // differently read as two different names instead of two scope lists.
+  canWriteProject = this.hasScope("project:write", "project:admin");
+  canAdminProject = this.hasScope("project:admin");
+  canWriteTeam = this.hasScope("team:write", "team:admin");
+  canAdminTeam = this.hasScope("team:admin");
+  canWriteOrg = this.hasScope("org:write", "org:admin");
+  /** org:admin is granted only to the Owner role. */
+  canAdminOrg = this.hasScope("org:admin");
+  canWriteMember = this.hasScope("member:write", "member:admin");
+  canAdminMember = this.hasScope("member:admin");
+  /** Create/rename/delete any team: team managers or org managers. */
+  canManageAnyTeam = computed(() => this.canWriteTeam() || this.canWriteOrg());
 
   constructor() {
     setTimeout(() => this.refresh(), 30000);

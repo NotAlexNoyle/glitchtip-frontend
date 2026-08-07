@@ -1,15 +1,17 @@
 <mat-card>
   <mat-card-header class="flex-common">
     <mat-card-title i18n>Project Alerts</mat-card-title>
-    <button
-      mat-flat-button
-      id="create-new-alert"
-      color="primary"
-      (click)="openNewAlert()"
-      [disabled]="newAlertOpen() === true || !accessProjectWrite()"
-      i18n
-      >Create New Alert</button
-    >
+    @if (canWriteProject()) {
+      <button
+        mat-flat-button
+        id="create-new-alert"
+        color="primary"
+        (click)="openNewAlert()"
+        [disabled]="newAlertOpen() === true"
+        i18n
+        >Create New Alert</button
+      >
+    }
   </mat-card-header>
   <mat-divider></mat-divider>
 
@@ -177,14 +179,15 @@
               } @else {
                 <h3>Alert {{ i + 1 }}</h3>
               }
-              <gt-loading-button
-                [buttonText]="'Remove Alert ' + (i + 1)"
-                buttonStyle="stroked"
-                (buttonClick)="removeAlert(alert.id!)"
-                [disabled]="!accessProjectWrite()"
-                [loading]="removeAlertLoading() === alert.id"
-              >
-              </gt-loading-button>
+              @if (canAdminProject()) {
+                <gt-loading-button
+                  [buttonText]="'Remove Alert ' + (i + 1)"
+                  buttonStyle="stroked"
+                  (buttonClick)="removeAlert(alert.id!)"
+                  [loading]="removeAlertLoading() === alert.id"
+                >
+                </gt-loading-button>
+              }
             </div>
             @if (updatePropertiesError()?.id === alert.id) {
               <p class="error alert-form-error">

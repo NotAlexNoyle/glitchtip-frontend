@@ -8,7 +8,6 @@ import {
 import { RouterLink } from "@angular/router";
 import { OrganizationDetailService } from "src/app/api/organizations/organization-detail.service";
 import { MembersService } from "src/app/settings/members/members.service";
-import { MatTooltipModule } from "@angular/material/tooltip";
 import { LoadingButtonComponent } from "../../shared/loading-button/loading-button.component";
 import { MatChipsModule } from "@angular/material/chips";
 import { MatDividerModule } from "@angular/material/divider";
@@ -32,7 +31,6 @@ type Member = components["schemas"]["OrganizationUserSchema"];
     MatDividerModule,
     MatChipsModule,
     LoadingButtonComponent,
-    MatTooltipModule,
     TopAppBar,
   ],
   providers: [MembersService],
@@ -45,7 +43,8 @@ export class MembersComponent {
   orgSlug = input.required<string>({ alias: "org-slug" });
   activeOrganizationDetail = this.organizationsService.activeOrganization;
   members = this.membersService.members;
-  accessMemberWrite = this.organizationsService.accessMemberWrite;
+  canWriteMember = this.organizationsService.canWriteMember;
+  canAdminMember = this.organizationsService.canAdminMember;
 
   constructor() {
     effect(() => {
