@@ -1,11 +1,7 @@
 <mat-card>
   <mat-card-header class="card-header">
     <mat-card-title i18n>Members</mat-card-title>
-    @if (
-      this.activeTeamMember()
-        ? hasScope("team:write", "team:admin")()
-        : hasScope("org:write", "org:admin")()
-    ) {
+    @if (canModifyTeam()) {
       <mat-form-field appearance="outline" data-cy="team-member-select">
         <mat-label i18n>Add Member</mat-label>
         <mat-select (selectionChange)="addTeamMember()" [formControl]="member">
@@ -42,11 +38,7 @@
               [relativeTo]="$safeNavigationMigration(route.parent?.parent)"
               >{{ teamMember.email }}</a
             >
-            @if (
-              activeTeamMember()
-                ? hasScope("team:write", "team:admin")()
-                : hasScope("org:write", "org:admin")()
-            ) {
+            @if (canModifyTeam()) {
               <gt-loading-button
                 buttonText="Remove"
                 buttonStyle="stroked"

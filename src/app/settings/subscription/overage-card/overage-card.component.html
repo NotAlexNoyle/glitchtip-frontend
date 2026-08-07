@@ -11,7 +11,7 @@
           </p>
         </div>
         <div class="overage-top-control">
-          @if (canManage()) {
+          @if (canAdminOrg()) {
             @if (loading()) {
               <mat-spinner diameter="20" />
             }
@@ -26,7 +26,7 @@
         </div>
       </div>
 
-      @if (!canManage()) {
+      @if (!canAdminOrg()) {
         <p class="overage-sub overage-owner-note" i18n>
           Only organization owners can change overage billing.
         </p>
@@ -115,7 +115,7 @@
               }}</span>
               <span class="overage-sub" i18n>Monthly spend cap</span>
             </div>
-            @if (canManage()) {
+            @if (canAdminOrg()) {
               <button mat-stroked-button (click)="startEditCap()" i18n>
                 Adjust cap
               </button>

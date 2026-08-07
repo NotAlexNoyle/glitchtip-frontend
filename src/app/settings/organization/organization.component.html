@@ -11,7 +11,7 @@
       </mat-card-header>
       <mat-divider></mat-divider>
       <mat-card-content>
-        @if (hasScope("org:write", "org:admin")()) {
+        @if (canWriteOrg()) {
           <form [formGroup]="form" (ngSubmit)="updateOrganization()">
             <mat-form-field appearance="outline">
               <mat-label>Name</mat-label>
@@ -38,7 +38,7 @@
         }
       </mat-card-content>
     </mat-card>
-    @if (hasScope("org:admin")()) {
+    @if (canAdminOrg()) {
       <mat-card>
         <mat-card-header>
           <mat-card-title>Delete Organization</mat-card-title>

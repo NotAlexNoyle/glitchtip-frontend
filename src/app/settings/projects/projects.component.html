@@ -3,7 +3,7 @@
     <h1 class="section-header-text" i18n>Projects</h1>
   </ng-container>
   <ng-container slot="right">
-    @if (hasScope("project:write", "project:admin")()) {
+    @if (canWriteProject()) {
       <a mat-flat-button [routerLink]="['new']" color="primary" i18n
         >Create New Project</a
       >

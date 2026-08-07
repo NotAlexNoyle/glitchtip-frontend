@@ -73,7 +73,8 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
     role: new FormControl<MemberRole | null>(null),
   });
   formRole = this.form.get("role") as FormControl<MemberRole | null>;
-  hasScope = this.organizationsService.hasScope;
+  canWriteMember = this.organizationsService.canWriteMember;
+  canAdminOrg = this.organizationsService.canAdminOrg;
 
   selectedRoleScopes = computed(() => {
     const availableRoles = this.availableRoles();

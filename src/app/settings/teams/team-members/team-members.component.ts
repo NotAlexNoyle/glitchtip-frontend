@@ -18,7 +18,6 @@ import { MatOptionModule } from "@angular/material/core";
 import { MatSelectModule } from "@angular/material/select";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatCardModule } from "@angular/material/card";
-import { OrganizationsService } from "src/app/api/organizations.service";
 
 @Component({
   selector: "gt-team-members",
@@ -39,7 +38,6 @@ import { OrganizationsService } from "src/app/api/organizations.service";
 export class TeamMembersComponent implements OnInit {
   private teamsService = inject(TeamsService);
   private organizationsDetailService = inject(OrganizationDetailService);
-  private organizationService = inject(OrganizationsService);
   route = inject(ActivatedRoute);
   private snackBar = inject(MatSnackBar);
   private userService = inject(UserService);
@@ -47,8 +45,7 @@ export class TeamMembersComponent implements OnInit {
   teamMembers = this.teamsService.teamMembers;
   filteredAddTeamMembers =
     this.organizationsDetailService.filteredAddTeamMembers;
-  hasScope = this.organizationService.hasScope;
-  activeTeamMember = this.teamsService.activeTeamMember;
+  canModifyTeam = this.teamsService.canModifyTeam;
   userTeamRole = this.teamsService.userTeamRole;
 
   member = new FormControl();

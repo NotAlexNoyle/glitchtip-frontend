@@ -20,7 +20,7 @@
         ></mat-card
       >
     }
-    @if (hasScope("project:write", "project:admin")()) {
+    @if (canWriteProject()) {
       <mat-card>
         <mat-card-header>
           <mat-card-title i18n>Update Project</mat-card-title>
@@ -180,7 +180,7 @@
         </div>
       </mat-card-content>
     </mat-card>
-    @if (hasScope("project:admin")()) {
+    @if (canAdminProject()) {
       <mat-card>
         <mat-card-header>
           <mat-card-title i18n>Delete Project</mat-card-title>

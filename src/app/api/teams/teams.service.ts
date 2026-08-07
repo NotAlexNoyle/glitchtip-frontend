@@ -1,6 +1,7 @@
 import { Injectable, computed, inject, signal } from "@angular/core";
 import { TeamErrors, TeamLoading } from "./teams.interfaces";
 import { UserService } from "../user/user.service";
+import { OrganizationsService } from "../organizations.service";
 import { Router } from "@angular/router";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { client, handleError } from "../../shared/api/api";
@@ -31,6 +32,7 @@ export class TeamsService extends StatefulService<TeamsState> {
   private userService = inject(UserService);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
+  private organizationsService = inject(OrganizationsService);
 
   private teamsOrgSlug = signal<string>("");
   teamsResource = apiResource(this.teamsOrgSlug, (slug) => ({
@@ -69,6 +71,16 @@ export class TeamsService extends StatefulService<TeamsState> {
       : undefined;
   });
   readonly userTeamRole = computed(() => this.activeTeamMember()?.role);
+  /**
+   * Change this team's members/projects. Mirrors the backend's
+   * modify_member_for_team rule: team managers if you're in the team, org
+   * managers if you aren't. Fails closed to the org branch while members load.
+   */
+  readonly canModifyTeam = computed(() =>
+    this.activeTeamMember()
+      ? this.organizationsService.canWriteTeam()
+      : this.organizationsService.canWriteOrg(),
+  );
 
   constructor() {
     super(initialState);

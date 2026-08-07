@@ -1,7 +1,7 @@
 <mat-card>
   <mat-card-header class="flex-common">
     <mat-card-title i18n>Project Alerts</mat-card-title>
-    @if (hasScope("project:write", "project:admin")()) {
+    @if (canWriteProject()) {
       <button
         mat-flat-button
         id="create-new-alert"
@@ -179,7 +179,7 @@
               } @else {
                 <h3>Alert {{ i + 1 }}</h3>
               }
-              @if (hasScope("project:admin")()) {
+              @if (canAdminProject()) {
                 <gt-loading-button
                   [buttonText]="'Remove Alert ' + (i + 1)"
                   buttonStyle="stroked"

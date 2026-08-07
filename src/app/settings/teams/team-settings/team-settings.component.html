@@ -5,7 +5,7 @@
     </mat-card-header>
     <mat-divider></mat-divider>
     <mat-card-content>
-      @if (hasScope("team:write", "team:admin")()) {
+      @if (canWriteTeam()) {
         @if (errors().updateName) {
           <mat-error class="server-error center-text">{{
             errors().updateName
@@ -38,7 +38,7 @@
     </mat-card-content>
   </mat-card>
 }
-@if (hasScope("team:admin")()) {
+@if (canAdminTeam()) {
   <mat-card>
     <mat-card-header>
       <mat-card-title i18n>Delete Team</mat-card-title>

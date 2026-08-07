@@ -1,11 +1,7 @@
 <ng-template #filters>
   @if (queriedProjects(); as queriedProjects) {
     <div class="project-multiselect-container">
-      @if (
-        displayAddProject() &&
-        activeOrgHasNoProjects() &&
-        hasScope("project:write", "project:admin")()
-      ) {
+      @if (showAddProject()) {
         <a
           mat-flat-button
           color="primary"
@@ -54,11 +50,7 @@
     </div>
     @if (activeOrgLoaded()) {
       <div class="right-section">
-        @if (
-          displayAddProject() &&
-          activeOrgHasNoProjects() &&
-          hasScope("project:write", "project:admin")()
-        ) {
+        @if (showAddProject()) {
           <a
             mat-flat-button
             color="primary"

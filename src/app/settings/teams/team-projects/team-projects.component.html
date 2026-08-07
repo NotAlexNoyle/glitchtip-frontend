@@ -6,11 +6,7 @@
         <mat-error>{{ errors().addProjectToTeam }}</mat-error>
       }
       <div>
-        @if (
-          this.activeTeamMember()
-            ? hasScope("team:write", "team:admin")()
-            : hasScope("org:write", "org:admin")()
-        ) {
+        @if (canModifyTeam()) {
           <mat-form-field appearance="outline">
             <mat-label i18n>Add Project</mat-label>
             <mat-select
@@ -48,7 +44,7 @@
                 [queryParams]="{ project: project.id }"
                 >{{ project.name }}</a
               >
-              @if (hasScope("project:write", "project:admin")()) {
+              @if (canWriteProject()) {
                 <gt-loading-button
                   buttonText="Remove"
                   buttonStyle="stroked"

@@ -29,7 +29,7 @@
           <h2 class="section-header-text">
             {{ activeOrgOnly ? "Projects" : organization.name }}
           </h2>
-          @if (hasScope("project:write", "project:admin")()) {
+          @if (canWriteProject()) {
             <a
               mat-stroked-button
               color="primary"

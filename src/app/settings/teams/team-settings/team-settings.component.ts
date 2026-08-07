@@ -45,7 +45,8 @@ export class TeamSettingsComponent {
   });
   orgSlug = input.required<string>({ alias: "org-slug" });
   teamSlug = input.required<string>({ alias: "team-slug" });
-  hasScope = this.organizationService.hasScope;
+  canWriteTeam = this.organizationService.canWriteTeam;
+  canAdminTeam = this.organizationService.canAdminTeam;
 
   constructor() {
     effect(() => {

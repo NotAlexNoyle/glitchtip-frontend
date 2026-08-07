@@ -112,7 +112,8 @@ export class ProjectDetailComponent implements OnInit {
   updateNameError = this.#service.updateNameError;
   updatePlatformLoading = this.#service.updatePlatformLoading;
   updatePlatformError = this.#service.updatePlatformError;
-  hasScope = this.#orgService.hasScope;
+  canWriteProject = this.#orgService.canWriteProject;
+  canAdminProject = this.#orgService.canAdminProject;
 
   nameForm = new FormGroup({
     name: new FormControl("", [Validators.required, Validators.maxLength(64)]),

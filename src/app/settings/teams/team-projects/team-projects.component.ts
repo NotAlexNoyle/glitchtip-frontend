@@ -46,8 +46,10 @@ export class TeamProjectsComponent implements OnInit {
   loading = this.projectsService.addRemoveLoading;
   errors = this.projectsService.errors;
   project = new FormControl();
-  hasScope = this.organizationsService.hasScope;
-  activeTeamMember = this.teamsService.activeTeamMember;
+  // Adding follows the team rule; removing is gated on project scopes instead.
+  // That asymmetry is pre-existing (audit B4), not introduced here.
+  canModifyTeam = this.teamsService.canModifyTeam;
+  canWriteProject = this.organizationsService.canWriteProject;
 
   ngOnInit(): void {
     this.projectsService.setParams(this.orgSlug(), this.teamSlug());

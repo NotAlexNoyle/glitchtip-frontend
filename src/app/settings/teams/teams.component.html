@@ -3,7 +3,7 @@
     <h1 class="section-header-text" i18n>Teams</h1>
   </ng-container>
   <ng-container slot="right">
-    @if (hasScope("team:write", "team:admin", "org:write", "org:admin")()) {
+    @if (canManageAnyTeam()) {
       <button
         mat-flat-button
         color="primary"
@@ -46,7 +46,7 @@
                   }}
                 </div>
               </div>
-              @if (openMembership() || hasScope("team:write", "team:admin")()) {
+              @if (canLeaveTeam()) {
                 <gt-loading-button
                   buttonText="Leave Team"
                   buttonStyle="stroked"
@@ -60,9 +60,7 @@
         </ul>
       } @else {
         @if (otherTeams()?.length) {
-          @if (
-            hasScope("team:write", "team:admin", "org:write", "org:admin")()
-          ) {
+          @if (canManageAnyTeam()) {
             <p i18n
               >You aren't part of any teams. Join a team below or press the
               "Create Team" button in the upper right.</p
@@ -75,9 +73,7 @@
             >You don't have any teams set up. Teams determine which users have
             access to projects in your organization.</p
           >
-          @if (
-            hasScope("team:write", "team:admin", "org:write", "org:admin")()
-          ) {
+          @if (canManageAnyTeam()) {
             <p i18n
               >To create a new team, press the "Create Team" button in the upper
               right.</p
@@ -110,7 +106,7 @@
                   }}
                 </div>
               </div>
-              @if (openMembership() || hasScope("org:write", "org:admin")()) {
+              @if (canJoinTeam()) {
                 <gt-loading-button
                   buttonText="Join Team"
                   buttonStyle="stroked"

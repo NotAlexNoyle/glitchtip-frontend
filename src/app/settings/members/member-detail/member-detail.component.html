@@ -39,7 +39,7 @@
       </mat-card-header>
       <mat-divider></mat-divider>
       <mat-card-content>
-        @if (hasScope("member:write", "member:admin")()) {
+        @if (canWriteMember()) {
           <form [formGroup]="form" (ngSubmit)="onSubmit()">
             @if (updateMemberError(); as error) {
               <mat-error>{{ error }}</mat-error>
@@ -103,7 +103,7 @@
       </mat-card-header>
       <mat-divider></mat-divider>
       <mat-card-content>
-        @if (!member.isOwner && hasScope("org:admin")()) {
+        @if (!member.isOwner && canAdminOrg()) {
           @if (transferOrgOwnershipError(); as error) {
             <mat-error>{{ error }}</mat-error>
           }

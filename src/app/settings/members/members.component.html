@@ -3,7 +3,7 @@
     <h1 class="section-header-text">Organization Members</h1>
   </ng-container>
   <ng-container slot="right">
-    @if (hasScope("member:write", "member:admin")()) {
+    @if (canWriteMember()) {
       <a mat-flat-button color="primary" [routerLink]="['new']"
         >Invite Member</a
       >
@@ -44,10 +44,7 @@
             <div class="reinvite-and-role">
               @if (member.pending) {
                 <div class="reinvite">
-                  @if (
-                    !member.loadingResendInvite &&
-                    hasScope("member:write", "member:admin")()
-                  ) {
+                  @if (!member.loadingResendInvite && canWriteMember()) {
                     <gt-loading-button
                       class="resend-invite"
                       [loading]="member.loadingResendInvite"
@@ -65,9 +62,7 @@
               }
               <div class="role">{{ member.roleName }}</div>
             </div>
-            @if (
-              !member.isOwner && (member.isMe || hasScope("member:admin")())
-            ) {
+            @if (!member.isOwner && (member.isMe || canAdminMember())) {
               <gt-loading-button
                 class="remove-button"
                 (buttonClick)="removeMember(member)"
