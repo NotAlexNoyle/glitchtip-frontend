@@ -26,65 +26,107 @@
   </ng-container>
 </gt-top-app-bar>
 
-<section class="l-body">
+<section class="l-body l-body--full-width">
   @if (monitor(); as monitor) {
-    <gt-detail-header [title]="['Uptime details for ' + monitor.name, null]" />
-    <mat-card appearance="outlined">
-      <mat-card-header>
-        <mat-card-title>
-          @if (monitor.isUp) {
-            <span i18n="Uptime check reports up">Up</span>
-          }
-          @if (monitor.isUp === false) {
-            <span i18n="Uptime check reports down">Down</span>
-          }
-          @if (monitor.isUp === null) {
-            <span i18n>No data</span>
-          }
-          @if (monitor.lastChange) {
-            {{ monitor.lastChange | timeFor }}
-          }
-        </mat-card-title>
-      </mat-card-header>
-      <mat-card-content class="reduced-padding">
-        <gt-monitor-chart [data]="monitor.checks"></gt-monitor-chart>
-        <div class="caption-text interval" i18n>
-          Uptime check interval:
-          {{ monitor.interval | number }} seconds
-        </div>
-        <div>
-          <div class="url-display">
-            <a href="{{ monitor.url }}" target="_blank">{{ monitor.url }}</a>
+    <!-- Masthead module: identity + vitals + status pulse, carded like the issue
+         detail page so the two detail pages read as one system. -->
+    <mat-card appearance="outlined" class="masthead-card">
+      <mat-card-content>
+        <gt-detail-masthead [title]="monitor.name">
+          <div
+            slot="status"
+            class="status-indicator"
+            [class]="
+              'status--' +
+              (monitor.isUp === true
+                ? 'up'
+                : monitor.isUp === false
+                  ? 'down'
+                  : 'none')
+            "
+          >
+            <mat-icon>{{
+              monitor.isUp === true
+                ? "check_circle"
+                : monitor.isUp === false
+                  ? "error"
+                  : "help"
+            }}</mat-icon>
           </div>
-        </div>
+
+          <!-- URL + current-status duration on one metadata line to keep the
+               identity compact (two lines, not three). -->
+          <p slot="identity" class="masthead__meta caption-text">
+            @if (monitor.url) {
+              <span class="masthead__url" [title]="monitor.url">{{
+                monitor.url
+              }}</span>
+            }
+            @if (monitor.url && monitor.lastChange) {
+              <span class="masthead__sep" aria-hidden="true">·</span>
+            }
+            @if (monitor.lastChange) {
+              <span>{{ statusLabel() }} {{ monitor.lastChange | timeFor }}</span>
+            }
+          </p>
+
+          <ng-container slot="vitals">
+            @if (uptimePercent() !== null) {
+              <gt-stat
+                [value]="(uptimePercent()! | number: '1.0-1') + '%'"
+                label="Uptime"
+                i18n-label
+              />
+            }
+            @if (
+              monitor.monitorType !== "Heartbeat" && avgResponseTime() !== null
+            ) {
+              <gt-stat
+                [value]="avgResponseTime()! | humanizeDuration"
+                label="Avg response"
+                i18n-label
+                [mono]="true"
+              />
+            }
+            <gt-stat
+              [value]="monitor.interval + 's'"
+              label="Interval"
+              i18n-label
+            />
+          </ng-container>
+
+          @if (monitor.monitorType !== "Heartbeat") {
+            <gt-monitor-chart
+              slot="pulse"
+              [data]="monitor.checks"
+            ></gt-monitor-chart>
+          }
+        </gt-detail-masthead>
       </mat-card-content>
     </mat-card>
+
+    <!-- One outlined card per concern (chart, alerts, checks), each with an
+         eyebrow header — distinct concerns read as separate modules, matching how
+         the issue page cards its content vs. its metadata rail separately. -->
     @if (monitor.monitorType !== "Heartbeat") {
       @if (activeMonitorRecentChecksSeries(); as data) {
         @if (responseChartScale(); as scale) {
-          <mat-card appearance="outlined">
-            <mat-card-header>
-              <mat-card-title i18n>Response Time</mat-card-title>
-            </mat-card-header>
-            <mat-divider></mat-divider>
+          <mat-card appearance="outlined" class="detail-card">
             <mat-card-content>
-              <div>
-                <gt-monitor-response-chart
-                  [data]="data"
-                  [scale]="scale"
-                ></gt-monitor-response-chart>
-              </div>
+              <h2 class="detail-section-header" i18n>Response time</h2>
+              <gt-monitor-response-chart
+                [data]="data"
+                [scale]="scale"
+              ></gt-monitor-response-chart>
             </mat-card-content>
           </mat-card>
         }
       }
     }
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title i18n>Alerts</mat-card-title>
-      </mat-card-header>
-      <mat-divider></mat-divider>
+
+    <mat-card appearance="outlined" class="detail-card">
       <mat-card-content>
+        <h2 class="detail-section-header" i18n>Alerts</h2>
         @if (monitor.projectName) {
           @if (alertCountLoading()) {
             <mat-progress-spinner
@@ -93,69 +135,72 @@
               mode="indeterminate"
             ></mat-progress-spinner>
           } @else {
-            @if (uptimeAlertCount() === 0) {
-              @if (associatedProjectSlug(); as associatedProjectSlug) {
-                <p>
-                  This monitor is associated with the
-                  <b>{{ monitor.projectName }}</b> project. This project has no
-                  uptime alerts configured, so no notifications will be sent for
-                  monitor events. Visit the
-                  <a
-                    [routerLink]="[
-                      '../../settings/projects/',
-                      associatedProjectSlug,
-                    ]"
-                    >project settings</a
-                  >
-                  page to configure alerts.
+            <div class="alert-status">
+              <mat-icon
+                class="alert-status__icon"
+                [class.alert-status__icon--warn]="uptimeAlertCount() === 0"
+                >{{
+                  uptimeAlertCount() > 0 ? "notifications" : "notifications_off"
+                }}</mat-icon
+              >
+              @if (uptimeAlertCount() > 0) {
+                <p class="body-text alert-status__text">
+                  <b>{{ uptimeAlertCount() }}</b> uptime
+                  {{ uptimeAlertCount() === 1 ? "alert" : "alerts" }} on the
+                  <b>{{ monitor.projectName }}</b> project.
+                </p>
+              } @else {
+                <p class="body-text alert-status__text">
+                  No uptime alerts on <b>{{ monitor.projectName }}</b
+                  >. You will not be notified when this monitor goes down.
                 </p>
               }
-            } @else {
-              @if (associatedProjectSlug(); as associatedProjectSlug) {
-                <p>
-                  This monitor is associated with the
-                  <b>{{ monitor.projectName }}</b> project. There
-                  {{ uptimeAlertCount() | i18nPlural: alertCountPluralMapping }}
-                  set up for this project. Visit the
-                  <a
-                    [routerLink]="[
-                      '../../settings/projects/',
-                      associatedProjectSlug,
-                    ]"
-                    >project settings</a
-                  >
-                  page to change your alerts.
-                </p>
+              @if (associatedProjectSlug(); as slug) {
+                <a
+                  class="alert-status__action"
+                  [routerLink]="['../../settings/projects/', slug]"
+                  >{{
+                    uptimeAlertCount() > 0 ? "Manage alerts" : "Configure alerts"
+                  }}</a
+                >
               }
-            }
+            </div>
           }
         } @else {
-          <p>
-            There is no project associated with this monitor, so no
-            notifications will be sent for monitor events. Visit the
-            <a [routerLink]="['./update']">monitor settings</a> page to
-            associate this monitor with a project.
-          </p>
+          <div class="alert-status">
+            <mat-icon class="alert-status__icon alert-status__icon--warn"
+              >notifications_off</mat-icon
+            >
+            <p class="body-text alert-status__text">
+              No project is associated with this monitor, so no notifications
+              will be sent.
+            </p>
+            <a class="alert-status__action" [routerLink]="['./update']"
+              >Associate a project</a
+            >
+          </div>
         }
       </mat-card-content>
     </mat-card>
 
-    <gt-monitor-checks
-      [monitor]="monitor"
-      [orgSlug]="orgSlug()"
-      [monitorID]="monitorID()"
-      [isChange]="isChange()"
-      [cursor]="cursor()"
-    ></gt-monitor-checks>
+    <!-- The checks table is the raw log at the foot of the page: no card, no
+         redundant label (its All checks / Incidents toggle names it), just the
+         table full-width in its own light outlined frame so it stays anchored. -->
+    <section class="detail-section detail-section--table">
+      <gt-monitor-checks
+        [monitor]="monitor"
+        [orgSlug]="orgSlug()"
+        [monitorID]="monitorID()"
+        [isChange]="isChange()"
+        [cursor]="cursor()"
+      ></gt-monitor-checks>
+    </section>
 
     @if (monitor.monitorType === "Heartbeat" && monitor.heartbeatEndpoint) {
-      <mat-card id="heartbeat-endpoint" class="heartbeat-card">
-        <mat-card-header>
-          <mat-card-title>Heartbeat URL endpoint</mat-card-title>
-        </mat-card-header>
-        <mat-divider></mat-divider>
+      <mat-card appearance="outlined" class="detail-card" id="heartbeat-endpoint">
         <mat-card-content>
-          <p>
+          <h2 class="detail-section-header" i18n>Heartbeat URL endpoint</h2>
+          <p class="body-text">
             Configure your project to send a POST request with no content to the
             following URL at your specified interval. If GlitchTip does not
             receive this request within the interval, your site status will be

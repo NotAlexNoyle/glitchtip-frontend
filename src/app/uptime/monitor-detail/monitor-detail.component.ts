@@ -21,9 +21,11 @@ import { MonitorChartComponent } from "../monitor-chart/monitor-chart.component"
 import { TimeForPipe } from "src/app/shared/days-ago.pipe";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
-import { DetailHeaderComponent } from "src/app/shared/detail/header/header.component";
+import { DetailMastheadComponent } from "src/app/shared/detail/masthead/detail-masthead.component";
+import { StatComponent } from "src/app/shared/stat/stat.component";
+import { HumanizeDurationPipe } from "src/app/shared/seconds-or-ms.pipe";
 import { StatefulComponent } from "src/app/shared/stateful-service/signal-state.component";
-import { DecimalPipe, I18nPluralPipe } from "@angular/common";
+import { DecimalPipe } from "@angular/common";
 import { TopAppBar } from "src/app/shared/top-app-bar/top-app-bar";
 import { BackLinkComponent } from "src/app/shared/detail/back-link/back-link.component";
 import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
@@ -43,7 +45,6 @@ function booleanDefaultTrueAttribute(value: unknown): boolean {
     MonitorChecks,
     CopyInputComponent,
     MonitorResponseChart,
-    I18nPluralPipe,
     TimeForPipe,
     DecimalPipe,
     MatButtonModule,
@@ -52,7 +53,9 @@ function booleanDefaultTrueAttribute(value: unknown): boolean {
     MatDividerModule,
     MatProgressSpinnerModule,
     MatIconModule,
-    DetailHeaderComponent,
+    DetailMastheadComponent,
+    StatComponent,
+    HumanizeDurationPipe,
     TopAppBar,
     BackLinkComponent,
   ],
@@ -105,10 +108,32 @@ export class MonitorDetailComponent
     };
   });
 
-  alertCountPluralMapping: { [k: string]: string } = {
-    "=1": "is 1 uptime alert",
-    other: "are # uptime alerts",
-  };
+  // Vitals derived from the recent checks, shown as gt-stat in the masthead so
+  // the monitor detail reads with the same identity+vitals+pulse hierarchy as
+  // the issue detail page.
+  uptimePercent = computed<number | null>(() => {
+    const checks = this.monitor()?.checks ?? [];
+    if (!checks.length) return null;
+    const ups = checks.filter((c) => c.isUp).length;
+    return (100 * ups) / checks.length;
+  });
+
+  avgResponseTime = computed<number | null>(() => {
+    const checks = (this.monitor()?.checks ?? []) as {
+      isUp: boolean;
+      responseTime?: number;
+    }[];
+    const timed = checks.filter((c) => c.isUp && c.responseTime);
+    if (!timed.length) return null;
+    return Math.round(
+      timed.reduce((sum, c) => sum + (c.responseTime ?? 0), 0) / timed.length,
+    );
+  });
+
+  statusLabel = computed<string>(() => {
+    const up = this.monitor()?.isUp;
+    return up ? $localize`Up` : up === false ? $localize`Down` : $localize`No data`;
+  });
 
   constructor() {
     const service = inject(MonitorService);

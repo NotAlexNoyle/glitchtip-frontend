@@ -1,46 +1,127 @@
-mat-card {
-  margin-top: 20px;
-  margin-bottom: 20px;
+@use "variables" as vars;
 
-  mat-card-content {
-    padding-top: 16px;
+// Masthead layout (identity + vitals + pulse) lives in gt-detail-masthead. This
+// file styles the monitor-specific bits projected into it (status indicator,
+// "since" line) and the flat modules below.
 
-    div {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
+// Cap content on ultra-wide screens and center it so the masthead, the content
+// cards, and the checks table below all share one edge, matching the issue page.
+.masthead-card,
+.detail-card,
+.detail-section {
+  max-width: 1720px;
+  margin-inline: auto;
+}
 
-      button {
-        margin-top: 10px;
-        width: fit-content;
-      }
-    }
+// Even spacing down the page between every module.
+.masthead-card,
+.detail-card,
+.detail-section {
+  margin-bottom: var(--gt-space-5);
+}
+
+// One compact metadata line under the name: the URL (mono identifier) and the
+// current-status duration, separated by a middot. Supporting context, so muted.
+// Kept to a single line: the URL truncates first (least important), the status
+// duration is never dropped.
+.masthead__meta {
+  margin: var(--gt-space-1) 0 0;
+  display: flex;
+  align-items: baseline;
+  gap: 0 var(--gt-space-2);
+  min-width: 0;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+// The URL is the only part that may be long: shrink and ellipsis it (full value
+// in the title tooltip) so a long URL never wraps the header onto extra lines.
+.masthead__url {
+  font-family: vars.$font-mono;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.masthead__sep,
+.masthead__meta > span:last-child {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.masthead__sep {
+  color: var(--mat-sys-outline);
+}
+
+// State icon: colour only, matching the semantic uptime roles.
+.status-indicator {
+  flex-shrink: 0;
+
+  mat-icon {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+  }
+
+  &.status--up mat-icon {
+    color: var(--success-color);
+  }
+  &.status--down mat-icon {
+    color: var(--mat-sys-error);
+  }
+  &.status--none mat-icon {
+    color: var(--mat-sys-outline);
   }
 }
 
-.interval {
-  margin: 5px 0;
+.detail-card .detail-section-header {
+  margin: 0 0 var(--gt-space-3);
 }
 
-.reduced-padding {
-  padding-top: 4px !important;
-}
+// The checks table stands on its own (no card): give its container a light
+// outlined frame matching the cards, and swap the M2 elevation shadow for that
+// border so it reads on-system and stays anchored, not floating.
+.detail-section--table ::ng-deep .table-container {
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: vars.$shape-radius;
+  overflow: hidden;
 
-mat-progress-spinner {
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.url-display {
-  a {
-    display: inline-block;
-    text-overflow: wrap;
-    overflow-wrap: break-word;
+  table {
+    box-shadow: none;
+    background: none;
   }
+}
+
+// Alerts as one compact status line: state icon + facts + an inline action.
+// Colour is spent only on the "not covered" warning; the covered state is quiet
+// (having alerts is the baseline, not a success to celebrate).
+.alert-status {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--gt-space-1) var(--gt-space-2);
+}
+
+.alert-status__icon {
+  flex-shrink: 0;
+  color: var(--mat-sys-on-surface-variant);
+
+  &--warn {
+    color: var(--warning-color);
+  }
+}
+
+.alert-status__text {
+  margin: 0;
+}
+
+.alert-status__action {
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .top-bar-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--gt-space-2);
 }

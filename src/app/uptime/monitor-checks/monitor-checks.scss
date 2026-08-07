@@ -4,6 +4,13 @@ table {
   width: 100%;
 }
 
+// Machine values (response time, timestamp): monospace with tabular figures so
+// they align down the column, matching the identifier treatment used elsewhere.
+.num-cell {
+  font-family: vars.$font-mono;
+  font-variant-numeric: tabular-nums;
+}
+
 .mat-button-toggle-group {
   height: 30px;
   align-items: center;
