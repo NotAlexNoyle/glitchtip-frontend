@@ -25,27 +25,29 @@
   </a>
   <mat-card-actions>
     @if (primaryButton && primaryButton.text && primaryButton.link) {
-      <a
-        class="action-button"
-        mat-stroked-button
-        [disabled]="!isMember()"
-        [matTooltip]="
-          isMember()
-            ? ''
-            : 'To view issues for this project, add yourself to the corresponding team.'
-        "
-        matTooltipPosition="right"
-        color="primary"
-        [routerLink]="isMember() ? cardLink() : undefined"
-        [queryParams]="isMember() ? primaryButton.query || {} : {}"
-      >
-        @if (primaryButton.icon) {
-          <mat-icon class="icon__warning" aria-hidden="true">{{
-            primaryButton.icon
-          }}</mat-icon>
-        }
-        <span>{{ primaryButton.text }}</span>
-      </a>
+      @if (isMember()) {
+        <a
+          class="action-button"
+          mat-stroked-button
+          color="primary"
+          [routerLink]="cardLink()"
+          [queryParams]="primaryButton.query || {}"
+        >
+          @if (primaryButton.icon) {
+            <mat-icon class="icon__warning" aria-hidden="true">{{
+              primaryButton.icon
+            }}</mat-icon>
+          }
+          <span>{{ primaryButton.text }}</span>
+        </a>
+      } @else {
+        <!-- Replaces the button rather than disabling it: team membership isn't
+        transient state the user can change from here. Carries the copy the
+        tooltip used to hold, which is the only hint at what to do next. -->
+        <p class="caption-text not-member-note" i18n>
+          Add yourself to this project's team to view its issues.
+        </p>
+      }
     }
     @if (secondaryButton && secondaryButton.text && secondaryButton.link) {
       <a
