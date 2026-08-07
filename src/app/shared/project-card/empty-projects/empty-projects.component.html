@@ -6,10 +6,16 @@
       </mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <p i18n
-        >To add a project to this organization, press the "Create New
-        Project"&nbsp;button.</p
-      >
+      @if (canCreateProject()) {
+        <p i18n
+          >To add a project to this organization, press the "Create New
+          Project"&nbsp;button.</p
+        >
+      } @else {
+        <p class="caption-text" i18n
+          >Ask an organization owner or manager to create a project.</p
+        >
+      }
     </mat-card-content>
   </mat-card>
   <gt-project-card

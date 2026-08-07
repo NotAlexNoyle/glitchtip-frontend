@@ -11,4 +11,6 @@ import { ProjectCardComponent } from "../project-card.component";
 })
 export class EmptyProjectsComponent {
   readonly activeOrgOnly = input(false);
+  /** Keeps the "press Create New Project" copy in step with that button's gate. */
+  readonly canCreateProject = input(true);
 }
