@@ -2,9 +2,9 @@ import {
   Component,
   OnInit,
   ChangeDetectionStrategy,
-  Input,
   computed,
   inject,
+  input,
 } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { MatButtonModule } from "@angular/material/button";
@@ -33,7 +33,7 @@ export class ProjectListComponent implements OnInit {
   private organizationsService = inject(OrganizationsService);
   private projectsService = inject(ProjectsService);
 
-  @Input() activeOrgOnly = false;
+  readonly activeOrgOnly = input(false);
 
   activeOrganization = this.organizationsService.activeOrganization;
   projects = computed(() => this.projectsService.projects() || []);
@@ -48,6 +48,14 @@ export class ProjectListComponent implements OnInit {
     })),
   );
   canWriteProject = this.organizationsService.canWriteProject;
+  /**
+   * Scopes come from the one selected org, but the multi-org view lists every
+   * org and no org is selected on "/", so gating there hides the button from
+   * everyone. Gate only the single-org view until the org list carries `access`.
+   */
+  showCreateProject = computed(
+    () => !this.activeOrgOnly() || this.canWriteProject(),
+  );
 
   ngOnInit() {
     this.projectsService.retrieveProjects();

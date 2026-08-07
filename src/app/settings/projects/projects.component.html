@@ -13,7 +13,10 @@
 <section class="l-body">
   <div>
     @if (projects()?.length === 0) {
-      <gt-empty-projects [activeOrgOnly]="true"></gt-empty-projects>
+      <gt-empty-projects
+        [activeOrgOnly]="true"
+        [canCreateProject]="canWriteProject()"
+      ></gt-empty-projects>
     }
   </div>
   <div class="project-card-wrapper">

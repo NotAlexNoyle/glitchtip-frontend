@@ -21,15 +21,15 @@
   }
   @for (organization of orgsAndProjects(); track organization.id) {
     @if (
-      !activeOrgOnly ||
-      (activeOrgOnly && organization.id === activeOrganization()?.id)
+      !activeOrgOnly() ||
+      (activeOrgOnly() && organization.id === activeOrganization()?.id)
     ) {
       <section class="org-projects-section">
         <header class="projects-section-header">
           <h2 class="section-header-text">
-            {{ activeOrgOnly ? "Projects" : organization.name }}
+            {{ activeOrgOnly() ? "Projects" : organization.name }}
           </h2>
-          @if (canWriteProject()) {
+          @if (showCreateProject()) {
             <a
               mat-stroked-button
               color="primary"
@@ -48,7 +48,8 @@
         </header>
         @if (organization.projects.length === 0) {
           <gt-empty-projects
-            [activeOrgOnly]="activeOrgOnly"
+            [activeOrgOnly]="activeOrgOnly()"
+            [canCreateProject]="showCreateProject()"
           ></gt-empty-projects>
         }
         <div>
