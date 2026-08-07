@@ -1,32 +1,31 @@
 @if (socialApps().length || user().identities.length) {
   @if (user(); as user) {
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Social Auth Accounts</mat-card-title>
-        @if (socialApps().length) {
-          @if (socialApps(); as socialApps) {
-            <mat-form-field appearance="outline">
-              <mat-label>Add Account</mat-label>
-              <mat-select
-                (selectionChange)="addAccount()"
-                [formControl]="account"
-              >
-                @for (socialApp of socialApps; track socialApp) {
-                  <mat-option [value]="socialApp">
-                    <gt-auth-svg
-                      source="dropdown"
-                      [provider]="socialApp.provider"
-                      [text]="socialApp.name"
-                    ></gt-auth-svg>
-                  </mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
-          }
-        }
-      </mat-card-header>
-      <mat-divider></mat-divider>
+    <mat-card appearance="outlined">
       <mat-card-content>
+        <div class="social-header">
+          <h2 class="detail-section-header" i18n>Social auth accounts</h2>
+          @if (socialApps().length) {
+            @if (socialApps(); as socialApps) {
+              <mat-form-field appearance="outline">
+                <mat-label>Add Account</mat-label>
+                <mat-select
+                  (selectionChange)="addAccount()"
+                  [formControl]="account"
+                >
+                  @for (socialApp of socialApps; track socialApp) {
+                    <mat-option [value]="socialApp">
+                      <gt-auth-svg
+                        source="dropdown"
+                        [provider]="socialApp.provider"
+                        [text]="socialApp.name"
+                      ></gt-auth-svg>
+                    </mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            }
+          }
+        </div>
         @if (user.identities!.length === 0) {
           <gt-empty-state
             icon="account_circle"

@@ -1,9 +1,6 @@
-<mat-card>
-  <mat-card-header>
-    <mat-card-title i18n>Authenticator app</mat-card-title>
-  </mat-card-header>
-  <mat-divider></mat-divider>
+<mat-card appearance="outlined">
   <mat-card-content>
+    <h2 class="detail-section-header" i18n>Authenticator app</h2>
     @if (TOTPAuthenticator()) {
       <p i18n>An authenticator app is protecting your account.</p>
       <button mat-stroked-button color="warn" (click)="deactivateTOTP()" i18n>

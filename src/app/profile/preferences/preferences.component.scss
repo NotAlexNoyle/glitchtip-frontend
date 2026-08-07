@@ -8,12 +8,17 @@ mat-card {
   flex: 1;
   display: flex;
   flex-direction: column;
+  margin-bottom: var(--gt-space-5);
 }
 
 mat-card-content {
   flex: 1;
   display: flex;
   flex-direction: column;
+}
+
+.detail-section-header {
+  margin: 0 0 var(--gt-space-3);
 }
 
 form {

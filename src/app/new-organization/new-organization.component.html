@@ -4,7 +4,7 @@
       <mat-card-content>
         <ng-container>
           @if (canCreateOrg()) {
-            <mat-card-title i18n>Create a New Organization</mat-card-title>
+            <h1 class="section-header-text" i18n>Create a New Organization</h1>
             @if (organizationCount() === 0) {
               <p i18n>This is the first step to get started with GlitchTip.</p>
             }

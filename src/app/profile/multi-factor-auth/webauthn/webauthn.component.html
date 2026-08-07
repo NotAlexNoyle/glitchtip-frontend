@@ -1,9 +1,6 @@
-<mat-card>
-  <mat-card-header>
-    <mat-card-title>Register Security Key</mat-card-title>
-  </mat-card-header>
-  <mat-divider></mat-divider>
+<mat-card appearance="outlined">
   <mat-card-content>
+    <h2 class="detail-section-header" i18n>Register security key</h2>
     <p>Set up a hardware device as a second factor to sign in.</p>
     @if (stage() === 1) {
       @if (hasTOTP()) {
@@ -63,7 +60,7 @@
       </form>
     }
     @if (authenticators().length > 0) {
-      <p class="body-text-strong">Security keys</p>
+      <h3 class="detail-subsection-header">Security keys</h3>
       <div class="negative-margin">
         <div class="body-text-strong">
           <div class="key_headings">

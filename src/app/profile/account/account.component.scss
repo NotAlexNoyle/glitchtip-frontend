@@ -14,13 +14,25 @@
   grid-column: 1 / -1;
 }
 
+mat-card {
+  margin-bottom: var(--gt-space-5);
+}
+
+.detail-section-header {
+  margin: 0 0 var(--gt-space-3);
+}
+
 .remove-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+
+  .detail-section-header {
+    width: 100%;
+  }
 
   @media (max-width: (vars.$large - 1)) {
-    flex-wrap: wrap;
     align-items: flex-start;
   }
 

@@ -3,12 +3,9 @@
 <gt-social-auth class="full-span"></gt-social-auth>
 <gt-manage-emails class="full-span"></gt-manage-emails>
 
-<mat-card class="full-span">
-  <mat-card-header>
-    <mat-card-title i18n>Delete User Account</mat-card-title>
-  </mat-card-header>
-  <mat-divider></mat-divider>
+<mat-card appearance="outlined" class="full-span">
   <mat-card-content class="remove-content">
+    <h2 class="detail-section-header" i18n>Delete user account</h2>
     <div>
       <p i18n
         >By deleting your user account, you will permanently lose all data,
@@ -27,6 +24,7 @@
     <gt-loading-button
       data-test
       buttonText="Delete User Account"
+      buttonStyle="stroked"
       buttonStyle="stroked"
       color="warn"
       [loading]="userDeleteLoading() === true"

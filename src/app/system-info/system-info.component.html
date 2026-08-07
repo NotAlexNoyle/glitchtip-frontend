@@ -2,12 +2,9 @@
   <header class="page-header">
     <h2 class="section-header-text" i18n>System Info</h2>
   </header>
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title i18n>Backend configuration</mat-card-title>
-    </mat-card-header>
-    <mat-divider></mat-divider>
+  <mat-card appearance="outlined">
     <mat-card-content>
+      <h2 class="detail-section-header" i18n>Backend configuration</h2>
       <dl>
         <dt class="body-text-strong">Server timezone</dt>
         <dd>{{ serverTimeZone() }}</dd>
@@ -27,11 +24,9 @@
     </mat-card-content>
   </mat-card>
 
-  <mat-card class="documentation-card">
-    <mat-card-header>
-      <mat-card-title i18n>Documentation</mat-card-title>
-    </mat-card-header>
+  <mat-card appearance="outlined">
     <mat-card-content>
+      <h2 class="detail-section-header" i18n>Documentation</h2>
       <mat-hint
         >See
         <a href="https://glitchtip.com/documentation/install" target="_blank"

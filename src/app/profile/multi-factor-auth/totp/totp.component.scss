@@ -1,14 +1,9 @@
 mat-card {
-  margin-top: 20px;
-  margin-bottom: 20px;
-
-  mat-card-content {
-    padding-top: 16px;
-  }
+  margin-bottom: var(--gt-space-5);
 }
 
-mat-card-title {
-  margin-bottom: 8px;
+.detail-section-header {
+  margin: 0 0 var(--gt-space-3);
 }
 
 button {
@@ -42,7 +37,7 @@ button {
 }
 
 .totp-string {
-  font-family: monospace;
+  font-family: var(--gt-font-mono);
   word-break: break-word;
 }
 

@@ -1,5 +1,13 @@
 @use "variables" as vars;
 
+mat-card {
+  margin-bottom: var(--gt-space-5);
+}
+
+.detail-section-header {
+  margin: 0 0 var(--gt-space-3);
+}
+
 .email-list-item {
   height: auto;
   display: flex;
@@ -15,8 +23,10 @@
   padding-top: 8px;
   margin-bottom: 4px;
 
-  span {
+  // Email addresses are identifiers: render them monospace.
+  > span {
     margin-right: 16px;
+    font-family: var(--gt-font-mono);
   }
 }
 

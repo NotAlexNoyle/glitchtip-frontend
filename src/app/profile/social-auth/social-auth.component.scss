@@ -1,13 +1,17 @@
 @use "variables" as vars;
 
-mat-card-header {
+mat-card {
+  margin-bottom: var(--gt-space-5);
+}
+
+.social-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
 
-  &::ng-deep .mat-card-header-text {
-    margin-left: 0;
+  .detail-section-header {
+    margin: 0 0 var(--gt-space-3);
   }
 
   mat-form-field {
@@ -17,6 +21,11 @@ mat-card-header {
       width: 100%;
     }
   }
+}
+
+// Account emails are identifiers: render them monospace.
+.email {
+  font-family: var(--gt-font-mono);
 }
 
 .socialaccount-list-wrapper {

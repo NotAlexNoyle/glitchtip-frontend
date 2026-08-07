@@ -1,5 +1,9 @@
-.documentation-card {
-  margin-top: 20px;
+mat-card {
+  margin-bottom: var(--gt-space-5);
+}
+
+.detail-section-header {
+  margin: 0 0 var(--gt-space-3);
 }
 
 dd {

@@ -1,11 +1,7 @@
 <div class="auth-form-wrapper">
   <mat-card class="auth-form">
-    <mat-card-header>
-      <mat-card-title>
-        <h3 i18n>Register</h3>
-      </mat-card-title>
-    </mat-card-header>
     <mat-card-content>
+      <h1 class="section-header-text" i18n>Register</h1>
       @if (enableUserRegistration()) {
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
           <gt-form-error [errors]="formErrors()"></gt-form-error>

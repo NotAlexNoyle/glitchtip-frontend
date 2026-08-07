@@ -1,25 +1,33 @@
 mat-card {
-  margin-bottom: 32px;
+  margin-bottom: var(--gt-space-5);
 }
 
-mat-card-header {
+.detail-section-header {
+  margin: 0 0 var(--gt-space-3);
+}
+
+.intro-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 12px;
+  flex-wrap: wrap;
+  // Row + column gaps so the action never touches the description when it wraps.
+  gap: var(--gt-space-3) var(--gt-space-5);
 
-  &::ng-deep .mat-card-header-text {
-    margin-left: 0;
+  .detail-section-header {
+    width: 100%;
+    margin: 0;
   }
 
-  mat-card-title {
-    margin-bottom: 0;
+  p {
+    margin: 0;
+    flex: 1 1 auto;
+    min-width: 0;
   }
-}
 
-.content {
-  padding-top: 32px;
-  padding-bottom: 16px;
+  a {
+    flex-shrink: 0;
+  }
 }
 
 .content-wrapper {

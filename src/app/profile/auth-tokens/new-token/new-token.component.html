@@ -1,25 +1,24 @@
 <section class="l-body">
-  <mat-card>
-    <mat-card-header class="flex-space-between">
-      <mat-card-title i18n>Create New Token</mat-card-title>
-      <a
-        mat-flat-button
-        [routerLink]="['/profile', 'auth-tokens']"
-        aria-label="Back to auth tokens"
-      >
-        <mat-icon>keyboard_arrow_left</mat-icon>
-        Auth Tokens
-      </a>
-    </mat-card-header>
-    <mat-divider></mat-divider>
+  <mat-card appearance="outlined">
     <mat-card-content>
+      <div class="new-token-header">
+        <h2 class="detail-section-header" i18n>Create new token</h2>
+        <a
+          mat-flat-button
+          [routerLink]="['/profile', 'auth-tokens']"
+          aria-label="Back to auth tokens"
+        >
+          <mat-icon>keyboard_arrow_left</mat-icon>
+          Auth Tokens
+        </a>
+      </div>
       <mat-error class="server-error">
         @if (createErrorForm()) {
           <span>{{ createErrorForm() }}</span>
         }
       </mat-error>
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
-        <h2>Label</h2>
+        <h3 class="detail-subsection-header">Label</h3>
         <p>Give your token a name, so you can easily identify it.</p>
         <mat-form-field appearance="outline">
           <mat-label>Label</mat-label>
@@ -36,7 +35,7 @@
             }
           </mat-error>
         </mat-form-field>
-        <h2>Scopes</h2>
+        <h3 class="detail-subsection-header">Scopes</h3>
         <p>Set the kind of access you want this token to have to your app.</p>
         <mat-checkbox
           class="select-all"

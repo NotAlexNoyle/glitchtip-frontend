@@ -1,17 +1,21 @@
-mat-card-header {
+mat-card {
+  margin-bottom: var(--gt-space-5);
+}
+
+.new-token-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
 
-  &::ng-deep .mat-card-header-text {
-    margin-left: 0;
+  .detail-section-header {
+    margin: 0;
   }
+}
 
-  mat-card-title {
-    margin-bottom: 0;
-    margin-right: 8px;
-  }
+.detail-subsection-header {
+  margin: var(--gt-space-4) 0 var(--gt-space-2);
 }
 
 .server-error {

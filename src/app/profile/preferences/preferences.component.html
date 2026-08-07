@@ -1,9 +1,6 @@
-<mat-card>
-  <mat-card-header>
-    <mat-card-title i18n>Preferences</mat-card-title>
-  </mat-card-header>
-  <mat-divider></mat-divider>
+<mat-card appearance="outlined">
   <mat-card-content>
+    <h2 class="detail-section-header" i18n>Preferences</h2>
     @if (userDetails()) {
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
         <mat-form-field class="full-width first-field" appearance="outline">

@@ -1,9 +1,6 @@
-<mat-card>
-  <mat-card-header>
-    <mat-card-title>Email Addresses</mat-card-title>
-  </mat-card-header>
-  <mat-divider></mat-divider>
+<mat-card appearance="outlined">
   <mat-card-content>
+    <h2 class="detail-section-header" i18n>Email addresses</h2>
     <ul>
       @for (email of emailAddresses(); track email) {
         <li class="email-list-item">
