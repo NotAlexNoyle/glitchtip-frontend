@@ -13,6 +13,9 @@ import { MatButtonModule } from "@angular/material/button";
 export class DetailHeaderComponent {
   readonly title = input<string | [string, string | null]>("");
   readonly subtitle = input<string | null>();
+  // When true, render the title at full heading weight so it clearly outranks
+  // the section headers beneath it (used on the issue detail page).
+  readonly emphasis = input(false);
 
   getTitle() {
     const title = this.title();

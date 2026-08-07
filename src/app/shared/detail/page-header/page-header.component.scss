@@ -1,0 +1,39 @@
+@use "variables" as vars;
+
+// Entity title over a hairline rule (same weight as the outlined-card border, so
+// the header reads as sibling to the content below, not floating above it).
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--gt-space-4);
+  padding-bottom: var(--gt-space-4);
+  margin-bottom: var(--gt-space-5);
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+.page-header__text {
+  min-width: 0;
+}
+
+.page-header__kicker {
+  margin: 0 0 var(--gt-space-1);
+}
+
+.page-header__title {
+  margin: 0;
+}
+
+// Identifier titles (e.g. a member email) render monospace.
+.page-header__title--mono {
+  font-family: vars.$font-mono;
+}
+
+.page-header__meta {
+  margin: var(--gt-space-1) 0 0;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.page-header__actions {
+  flex-shrink: 0;
+}

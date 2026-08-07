@@ -1,0 +1,90 @@
+@use "variables" as vars;
+
+// Identity (left) + vitals cluster (right), closed by a hairline.
+.masthead__top {
+  display: flex;
+  justify-content: space-between;
+  // Center the shorter vitals cluster against the taller identity so both sit
+  // balanced above the rule that closes the band.
+  align-items: center;
+  gap: var(--gt-space-4) var(--gt-space-6);
+  flex-wrap: wrap;
+  // Tight band: just enough air to separate the identity/vitals row from the
+  // pulse without the masthead reading as loose.
+  padding-bottom: var(--gt-space-3);
+  margin-bottom: var(--gt-space-3);
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+.masthead__id {
+  flex: 1 1 340px;
+  display: flex;
+  gap: var(--gt-space-2);
+  // Center the status icon against the whole identity block (title + subtitle),
+  // so the icon reads as anchored to the pair of lines, not just the title.
+  align-items: center;
+}
+
+.masthead__identity {
+  min-width: 0;
+}
+
+// Supporting line under the title (the hero): quieter and a step smaller so the
+// title leads and a long value does not dominate. Mono variant for machine
+// identifiers (e.g. a monitored URL).
+.masthead__subtitle {
+  margin: var(--gt-space-1) 0 0;
+  font: var(--mat-sys-body-medium);
+  color: var(--mat-sys-on-surface-variant);
+  overflow-wrap: break-word;
+}
+
+.masthead__subtitle--mono {
+  font-family: vars.$font-mono;
+}
+
+// Metric cluster: gt-stat rows separated by whitespace, set apart from the
+// identity by a single hairline (dropped when it wraps below on small screens).
+.masthead__vitals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gt-space-2) var(--gt-space-5);
+  align-items: baseline;
+  padding-left: var(--gt-space-5);
+  border-left: 1px solid var(--mat-sys-outline-variant);
+
+  @media screen and (max-width: vars.$medium - 1) {
+    // Wrapped below the identity: align with the title text and drop the rule.
+    padding-left: 40px;
+    border-left: none;
+  }
+
+  // On phones a single wrapping row of vitals gets cramped and wraps unevenly;
+  // lay them out as a tidy 2-column grid instead.
+  @media screen and (max-width: vars.$small - 1) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, max-content));
+    gap: var(--gt-space-4) var(--gt-space-6);
+    padding-left: 0;
+  }
+
+  // No vitals projected (e.g. settings-style pages that use the masthead only
+  // for a clean title + subtitle): drop the divider rule so it isn't a stray line.
+  &:not(:has(*)) {
+    border-left: none;
+    padding-left: 0;
+  }
+}
+
+.masthead__pulse {
+  display: block;
+}
+
+// When no pulse is projected below, drop the divider + its spacing so the band
+// doesn't leave a trailing rule under the identity/vitals row. Lets vitals-only
+// detail pages (e.g. transaction, release) reuse this masthead cleanly.
+.masthead__top:not(:has(+ .masthead__pulse *)) {
+  padding-bottom: 0;
+  margin-bottom: 0;
+  border-bottom: none;
+}

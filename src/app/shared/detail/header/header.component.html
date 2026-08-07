@@ -1,7 +1,10 @@
 <header>
   <div class="header-group">
     <h1>
-      <span class="section-header-text-light">{{ getTitle() }}</span>
+      <span
+        [class]="emphasis() ? 'section-header-text' : 'section-header-text-light'"
+        >{{ getTitle() }}</span
+      >
       @if (getTitleSuffix(); as suffix) {
         <span class="body-text-strong">{{ suffix }}</span>
       }

@@ -1,0 +1,19 @@
+<header class="page-header">
+  <div class="page-header__text">
+    @if (kicker()) {
+      <p class="page-header__kicker detail-section-header">{{ kicker() }}</p>
+    }
+    <h1
+      class="page-header__title section-header-text"
+      [class.page-header__title--mono]="titleMono()"
+    >
+      {{ title() }}
+    </h1>
+    @if (meta()) {
+      <p class="page-header__meta caption-text">{{ meta() }}</p>
+    }
+  </div>
+  <div class="page-header__actions">
+    <ng-content />
+  </div>
+</header>

@@ -1,0 +1,23 @@
+<div class="masthead__top">
+  <div class="masthead__id">
+    <ng-content select="[slot=status]" />
+    <div class="masthead__identity">
+      <gt-detail-header [title]="title()" [emphasis]="true" />
+      @if (subtitle()) {
+        <p
+          class="masthead__subtitle"
+          [class.masthead__subtitle--mono]="subtitleMono()"
+        >
+          {{ subtitle() }}
+        </p>
+      }
+      <ng-content select="[slot=identity]" />
+    </div>
+  </div>
+  <div class="masthead__vitals">
+    <ng-content select="[slot=vitals]" />
+  </div>
+</div>
+<div class="masthead__pulse">
+  <ng-content select="[slot=pulse]" />
+</div>

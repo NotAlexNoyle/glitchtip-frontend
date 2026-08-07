@@ -1,2 +1,8 @@
-<dt class="body-text-strong">{{ key() }}</dt>
-<dd>{{ displayValue }}</dd>
+<dt [class]="dense() ? 'caption-text' : 'body-text-strong'">{{ key() }}</dt>
+<dd [class.mono]="isMono">
+  @if (hasValue) {
+    {{ displayValue }}
+  } @else {
+    <ng-content />
+  }
+</dd>

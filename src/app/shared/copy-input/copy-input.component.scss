@@ -1,3 +1,10 @@
 .dsn-copied {
   color: var(--mat-sys-primary);
 }
+
+// The copied value is always a machine identifier (DSN, API token, endpoint,
+// heartbeat URL): render it monospace so it reads on-system everywhere the
+// component is used.
+.background {
+  font-family: var(--gt-font-mono);
+}

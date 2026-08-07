@@ -13,7 +13,7 @@ import { MatIconModule } from "@angular/material/icon";
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatIconModule],
   template: `
-    <div class="empty-state">
+    <div class="empty-state" [class.empty-state--dense]="dense()">
       @if (icon()) {
         <mat-icon class="empty-state__icon" aria-hidden="true">{{
           icon()
@@ -41,6 +41,20 @@ import { MatIconModule } from "@angular/material/icon";
       gap: var(--gt-space-2, 8px);
       padding: var(--gt-space-7, 48px) var(--gt-space-4, 16px);
       color: var(--mat-sys-on-surface-variant);
+    }
+    /* Compact variant for inline places (detail-page tables/panels) that should
+       not read as a full-page empty state. */
+    .empty-state--dense {
+      padding: var(--gt-space-5, 24px) var(--gt-space-4, 16px);
+      gap: var(--gt-space-1, 4px);
+    }
+    .empty-state--dense .empty-state__icon {
+      width: 32px;
+      height: 32px;
+      font-size: 32px;
+    }
+    .empty-state--dense .empty-state__title {
+      font: var(--mat-sys-title-small);
     }
     .empty-state__icon {
       width: 48px;
@@ -71,4 +85,5 @@ export class EmptyStateComponent {
   readonly title = input.required<string>();
   readonly message = input<string>("");
   readonly headingLevel = input<number>(3);
+  readonly dense = input(false);
 }
