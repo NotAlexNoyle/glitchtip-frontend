@@ -1,0 +1,34 @@
+<gt-detail-masthead [title]="issueTitle()" [subtitle]="issueSubtitle()">
+  <div
+    slot="status"
+    class="status-indicator"
+    [class]="'level--' + issue().level"
+  >
+    <mat-icon>{{ statusIcon() }}</mat-icon>
+  </div>
+
+  <ng-container slot="vitals">
+    <gt-stat [value]="issue().count" label="Events" />
+    <gt-stat [value]="issue().userCount" label="Users" />
+    <gt-stat label="Level">
+      <!-- Colour only genuinely exceptional states; "error" is near-constant, so
+           painting it red spends an accent on no signal. -->
+      <span [class.level--fatal]="issue().level === 'fatal'">{{
+        issue().level | titlecase
+      }}</span>
+    </gt-stat>
+    @if (issue().firstRelease?.shortVersion; as release) {
+      <gt-stat [value]="release" label="First release" [mono]="true" />
+    }
+  </ng-container>
+
+  @if (pulseHasSignal()) {
+    <gt-issue-pulse slot="pulse" />
+  } @else {
+    <p slot="pulse" class="masthead__sparse caption-text">
+      Too infrequent to chart — {{ issue().count }}
+      {{ +issue().count === 1 ? "event" : "events" }} since first seen
+      {{ issue().firstSeen | daysAgo }}.
+    </p>
+  }
+</gt-detail-masthead>

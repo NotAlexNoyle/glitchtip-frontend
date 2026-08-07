@@ -1,9 +1,10 @@
 @if (eventEntryException(); as exception) {
   <section class="mat-typography">
     <section class="exception">
+      <mat-divider></mat-divider>
       <div class="header-wrapper">
         <div class="text-wrapper">
-          <h3>Exception</h3>
+          <h3 class="detail-section-header">Exception</h3>
           @if (group.value === "full-data") {
             <div class="spacer">
               <button mat-button (click)="getFlippedFrames()">
@@ -33,27 +34,36 @@
         </mat-button-toggle-group>
       </div>
       @if (group.value === "full-data" && exception.values) {
-        <div class="full">
-          @for (value of exception.values; track value) {
-            <div>
-              <h2>{{ value.type }}</h2>
-              <p class="subtitle">{{ value.value }}</p>
-              @if (value.mechanism) {
-                <mat-chip-set role="list">
-                  <mat-chip disabled role="listitem"
-                    >mechanism: {{ value.mechanism.type }}</mat-chip
-                  >
-                  <mat-chip color="accent" highlighted disabled role="listitem"
-                    >handled:
-                    {{ value.mechanism.handled ? "yes" : "no" }}</mat-chip
-                  >
-                  @if (value.mechanism.data) {
-                    <mat-chip disabled role="listitem"
-                      >function: {{ value.mechanism.data.function }}</mat-chip
-                    >
+        <div
+          class="full exc-chain"
+          [class.exc-chain--linked]="exception.values.length > 1"
+        >
+          @for (
+            value of exception.values;
+            track value;
+            let i = $index;
+            let count = $count;
+            let last = $last
+          ) {
+            <div class="exc-item">
+              @if (count > 1 || value.mechanism?.handled === false) {
+                <p class="exc-role">
+                  @if (count > 1) {
+                    @if (i === 0) {
+                      <span class="exc-role__tag exc-role__tag--root">Root cause</span>
+                    } @else if (last) {
+                      <span class="exc-role__tag exc-role__tag--thrown">Thrown</span>
+                    } @else {
+                      <span class="exc-role__tag">Cause</span>
+                    }
                   }
-                </mat-chip-set>
+                  @if (value.mechanism?.handled === false) {
+                    <span class="exc-role__flag">Unhandled</span>
+                  }
+                </p>
               }
+              <h3 class="body-text-strong exc-type">{{ value.type }}</h3>
+              <p class="subtitle">{{ value.value }}</p>
               @if (checkStacktraceInterface(value.stacktrace)) {
                 <mat-accordion [multi]="true" displayMode="flat">
                   <!-- TODO:  Add additional conditions for non expandable frames
@@ -67,7 +77,11 @@
                       [disabled]="
                         (!frame.context || !frame.context.length) && !frame.vars
                       "
-                      [expanded]="frame.context?.length ? i === 0 : undefined"
+                      [expanded]="
+                        frame.context?.length
+                          ? frame.inApp || i === 0
+                          : undefined
+                      "
                       class="mat-elevation-z0"
                     >
                       <mat-expansion-panel-header

@@ -20,6 +20,7 @@ import { EntryExceptionComponent } from "./entry-exception/entry-exception.compo
 import { EntryMessageComponent } from "./entry-message/entry-message.component";
 import { ContextsComponent } from "./context/contexts.component";
 import { MatDividerModule } from "@angular/material/divider";
+import { MatExpansionModule } from "@angular/material/expansion";
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 import { DatePipe, KeyValuePipe } from "@angular/common";
@@ -38,6 +39,7 @@ const MCP_COPY_HINT_SEEN_KEY = "mcpCopyHintSeen";
     ClipboardModule,
     MatIconModule,
     MatDividerModule,
+    MatExpansionModule,
     ContextsComponent,
     EntryMessageComponent,
     EntryExceptionComponent,

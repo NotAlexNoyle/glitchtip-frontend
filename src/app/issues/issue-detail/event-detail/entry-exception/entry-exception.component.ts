@@ -10,7 +10,7 @@ import { RawStacktraceComponent } from "./raw-stacktrace/raw-stacktrace.componen
 import { FrameExpandedComponent } from "./frame-expanded/frame-expanded.component";
 import { FrameTitleComponent } from "./frame-title/frame-title.component";
 import { MatExpansionModule } from "@angular/material/expansion";
-import { MatChipsModule } from "@angular/material/chips";
+import { MatDividerModule } from "@angular/material/divider";
 import { MatButtonToggleModule } from "@angular/material/button-toggle";
 import { MatButtonModule } from "@angular/material/button";
 
@@ -22,7 +22,7 @@ import { MatButtonModule } from "@angular/material/button";
   imports: [
     MatButtonModule,
     MatButtonToggleModule,
-    MatChipsModule,
+    MatDividerModule,
     MatExpansionModule,
     FrameTitleComponent,
     FrameExpandedComponent,

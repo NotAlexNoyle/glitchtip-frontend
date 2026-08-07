@@ -42,7 +42,7 @@ ul {
   width: 100%;
   position: absolute;
   bottom: 0;
-  background: white;
+  background: var(--mat-sys-surface-container);
   border-top: 1px solid var(--mat-sys-outline-variant);
   box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.12);
   z-index: 1;
@@ -83,17 +83,17 @@ table {
     width: 24px;
     padding-right: 8px;
 
-    // TODO: Use theme colors
+    // Theme tokens so breadcrumb category icons render correctly in dark mode.
     .error {
-      color: red;
+      color: var(--mat-sys-error);
     }
 
     .ui {
-      color: rebeccapurple;
+      color: var(--mat-sys-primary);
     }
 
     .xhr {
-      color: green;
+      color: var(--mat-sys-on-surface-variant);
     }
   }
 

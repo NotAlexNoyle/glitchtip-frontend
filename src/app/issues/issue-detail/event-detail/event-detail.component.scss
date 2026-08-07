@@ -9,42 +9,73 @@ section {
   }
 }
 
-.header {
+// Quiet one-line event selector (replaces the former large "Event" heading).
+.event-selector {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  gap: 8px 16px;
 
   @media screen and (max-width: vars.$small - 1) {
     flex-direction: column-reverse;
+    align-items: flex-start;
   }
 
-  .space {
-    margin-right: 16px;
+  .event-selector__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 8px;
+    color: var(--mat-sys-on-surface-variant);
   }
 
-  p,
-  h2 {
-    margin-top: 0;
-    margin-bottom: 0;
+  .event-selector__label {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    // A metadata label, not a section header — recede so it doesn't outrank the
+    // real eyebrows below it.
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  // Event id is a machine identifier: render it monospace.
+  .event-selector__id {
+    font-family: vars.$font-mono;
+    color: var(--mat-sys-on-surface);
+  }
+
+  // The absolute timestamp is a machine value too: keep it monospace so it
+  // aligns with the event id it sits beside.
+  .event-selector__date {
+    font-family: vars.$font-mono;
   }
 
   .navigation-buttons {
+    flex-shrink: 0;
+
     @media screen and (max-width: vars.$small - 1) {
       margin: 0 auto 8px;
     }
   }
 }
 
-// "copy for AI" rendered as a sibling that visually matches the "raw JSON"
-// anchor next to it (bold, on-surface colour, no underline).
-.link-button {
+// The selector-line actions ("raw JSON" anchor + "copy for AI" button) are
+// quiet utilities, not accents — muted, matching each other, underline on hover.
+// Brand red is reserved for meaning (severity, frequency), not utility links.
+.link-button,
+.event-selector__meta a {
   padding: 0;
   border: none;
   background: none;
   font: inherit;
-  font-weight: 700;
   cursor: pointer;
-  color: var(--mat-sys-on-surface);
+  color: var(--mat-sys-on-surface-variant);
   text-decoration: none;
+
+  &:hover {
+    color: var(--mat-sys-on-surface);
+    text-decoration: underline;
+  }
 }
 
 .action-separator {
@@ -52,12 +83,67 @@ section {
   color: var(--mat-sys-on-surface-variant);
 }
 
-.tags {
-  margin-top: 16px;
+// Pagination is not the reddest thing on the line: neutral text, hover to solid.
+.navigation-buttons button:not([disabled]) {
+  color: var(--mat-sys-on-surface-variant);
+
+  &:hover {
+    color: var(--mat-sys-on-surface);
+  }
 }
 
-.tags .spacer {
-  margin-left: 8px;
+.dimensions {
+  h3 {
+    margin-bottom: 8px;
+  }
+}
+
+// Collapsed secondary detail (raw contexts, additional data, SDK).
+.secondary-panel {
+  margin-bottom: 8px;
+  border: 1px solid var(--mat-sys-outline-variant);
+
+  dl {
+    margin: 0;
+  }
+}
+
+// Raw event data: the contained reference tail. One eyebrow, and the panels drop
+// their individual boxes for hairline separators so the group reads as one region
+// (fixes the borderless-top / bordered-bottom inconsistency of the flat card).
+.raw-data {
+  margin-top: var(--gt-space-4);
+
+  // Flatten the Material expansion panels: no rounded "card" shape, no fill, no
+  // shadow — so the raw tail reads as clean flat rows separated by hairlines,
+  // on-system with the borders-only / flat design rather than floating dropdowns.
+  --mat-expansion-container-shape: 0;
+  --mat-expansion-container-background-color: transparent;
+
+  > .detail-section-header {
+    margin: var(--gt-space-3) 0 var(--gt-space-2);
+  }
+
+  .secondary-panel {
+    margin-bottom: 0;
+    border: none;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+    border-radius: 0;
+    box-shadow: none;
+
+    &:last-of-type {
+      border-bottom: none;
+    }
+  }
+
+  // Flush the header with the region eyebrow; keep room for the chevron. Floor
+  // the row height (auto collapses to the text) so each dropdown is a comfortable,
+  // tappable target on the 8px rhythm rather than a cramped line.
+  mat-expansion-panel-header {
+    padding-left: 0;
+    padding-right: var(--gt-space-2);
+    min-height: var(--gt-space-7);
+  }
 }
 
 gt-entry-request {
@@ -65,7 +151,7 @@ gt-entry-request {
 }
 
 .pseudo-chip-list {
-  margin: 4px 0 20px;
+  margin: var(--gt-space-1) 0 var(--gt-space-4);
   padding: 0;
   overflow: hidden;
 
@@ -85,16 +171,15 @@ gt-entry-request {
   float: left;
   list-style: none;
   transition: 0.3s;
-  border: 1px solid var(--mat-sys-outline);
+  border: 1px solid var(--mat-sys-outline-variant);
   background-color: var(--mat-sys-surface);
   color: var(--mat-sys-on-surface);
-  box-shadow: var(--mat-sys-shadow-1);
   display: flex;
   align-items: center;
 
   &:hover {
     background-color: var(--mat-sys-surface-container-highest);
-    box-shadow: var(--mat-sys-shadow-2);
+    border-color: var(--mat-sys-outline);
   }
 }
 

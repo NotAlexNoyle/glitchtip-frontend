@@ -10,29 +10,53 @@
   }
 }
 
-dl {
+// Right-rail metadata renders through gt-entry-data (dense). The wider rail on
+// large screens becomes two columns so it reads dense rather than a tall strip;
+// each cell stays narrow enough that the primitive's container query stacks it.
+.rail-section-header {
+  margin: 0 0 var(--gt-space-3);
+}
+
+// Drop the "Details" heading's default (browser) top margin so the rail starts
+// with the card's standard padding, not an extra ~14px gap. Padding itself is
+// left at the shared card default so the rail matches every other card rather
+// than being special-cased to pixel-align with the tabs.
+.rail-card .detail-section-header {
   margin-top: 0;
+}
 
-  > div {
-    margin-bottom: 15px;
-  }
+// One vertical ledger of key→value rows (see gt-entry-data dense), matching the
+// tag rows below so the whole rail reads as a single system.
+.rail-metadata {
+  margin: 0;
+}
 
-  // this was done to mimic a table I removed, design preferences
-  // aren't set in stone here
-  dt {
-    font-weight: 500;
-    opacity: 0.54;
-    margin: 2px 0;
-  }
+// An absence, not a value: recede so a real assignee reads as the content.
+.rail-empty {
+  color: var(--mat-sys-on-surface-variant);
+}
 
-  dd {
-    margin: 0;
-  }
+.rail-abs-date {
+  display: block;
+  // Absolute timestamp is a machine value: render it monospace (the relative
+  // "days ago" line above it stays sans, since it reads as prose).
+  font-family: vars.$font-mono;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+// Cap the content on ultra-wide screens so it stops stretching; centered. The
+// masthead card and the content/rail row share the cap so their edges align.
+.masthead-card,
+.row {
+  max-width: 1720px;
+  margin-inline: auto;
+}
+
+.masthead-card {
+  margin-bottom: var(--gt-space-5);
 }
 
 .event-detail-card {
-  margin-right: 16px;
-
   .tab-nav-container {
     margin-bottom: 16px;
     border-bottom: 1px solid var(--mat-sys-outline-variant);
@@ -56,30 +80,27 @@ mat-grid-list {
   justify-content: space-between;
 }
 
+// Wide screens: give the diagnostic column ~62% and the metadata rail ~38%,
+// with the rail dense enough to earn its width (rather than a thin 25% strip).
 .row {
-  display: flex;
-  align-items: flex-start;
-  margin-bottom: 30px;
+  display: grid;
+  grid-template-columns: 62fr 38fr;
+  gap: var(--gt-space-5);
+  align-items: start;
+  margin-bottom: var(--gt-space-6);
 
   @media screen and (max-width: vars.$medium - 1) {
-    flex-direction: column-reverse;
+    // Single column, trace first (the impact strip already summarizes above).
+    grid-template-columns: 1fr;
   }
 
   .left {
-    flex: 75%;
     overflow: hidden;
-
-    @media screen and (max-width: vars.$medium - 1) {
-      width: 100%;
-    }
   }
 
   .right {
-    flex: 25%;
-
     @media screen and (max-width: vars.$medium - 1) {
-      width: 100%;
-      margin-bottom: 30px;
+      margin-bottom: 24px;
     }
   }
 }
@@ -92,58 +113,8 @@ table.mat-table {
   text-overflow: initial;
 }
 
-.issue-header-wrapper {
-  display: flex;
-
-  gap: 8px;
-  margin-bottom: 8px;
-}
-
 .top-bar-actions {
   display: flex;
   align-items: center;
   gap: 8px;
-}
-
-.status-indicator {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative; 
-
-  mat-icon {
-    color: var(--mat-sys-outline);
-    font-size: 32px;
-    width: 32px;
-    height: 32px;
-    margin: 8px;
-  }
-
-
-  &::after {
-    content: "";
-    position: absolute;
-    top: 4px;
-    bottom: 4px;
-    right: 0;
-    width: 4px;
-    border-radius: 4px; 
-  }
-
-  &.level--sample::after   { background-color: var(--mat-sys-outline); }
-  &.level--debug::after    { background-color: var(--mat-sys-outline-variant); }
-  &.level--info::after     { background-color: var(--info-color); }
-  &.level--warning::after  { background-color: var(--warning-color); }
-  &.level--error::after    { background-color: var(--mat-sys-error); }
-
-
-  &.level--fatal::after {
-    background: repeating-linear-gradient(
-      -60deg,
-      var(--mat-sys-error),
-      var(--mat-sys-error) 5px,
-      var(--mat-sys-surface) 5px,
-      var(--mat-sys-surface) 10px
-    );
-  }
 }

@@ -216,7 +216,7 @@ export interface UpdateStatusResponse {
 
 export type StatsPeriod = "24h" | "14d";
 
-type Stats = { [StatPeriod in StatsPeriod]?: number[][] };
+export type Stats = { [StatPeriod in StatsPeriod]?: number[][] };
 
 export interface IssueMetadata {
   directive?: string;

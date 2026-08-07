@@ -56,16 +56,16 @@
     </ng-container>
   </gt-top-app-bar>
   <section class="l-body l-body--full-width">
-    <div class="issue-header-wrapper">
-      <div class="status-indicator" [class]="'level--' + issue.level">
-        <mat-icon>{{ statusIcon() }}</mat-icon>
-      </div>
-
-      <gt-detail-header [title]="issueTitle()!" [subtitle]="issueSubtitle()" />
-    </div>
+    <!-- Masthead module: identity + vitals + pulse, carded like the sections
+         below so the page reads as three aligned modules. -->
+    <mat-card appearance="outlined" class="masthead-card">
+      <mat-card-content>
+        <gt-issue-masthead [issue]="issue" />
+      </mat-card-content>
+    </mat-card>
 
     <div class="row">
-      <mat-card class="event-detail-card left">
+      <mat-card appearance="outlined" class="event-detail-card left">
         <div class="tab-nav-container">
           <nav
             mat-tab-nav-bar
@@ -146,47 +146,69 @@
         </mat-card-content>
       </mat-card>
       <aside class="right">
-        <mat-card appearance="outlined">
+        <mat-card appearance="outlined" class="rail-card">
           <mat-card-content>
-            <dl>
-              <div>
-                <dt class="caption-text">Issue #</dt>
-                <dd class="body-text">{{ issue?.shortId }}</dd>
-              </div>
-              <div>
-                <dt class="caption-text">Events</dt>
-                <dd class="body-text">{{ issue?.count }}</dd>
-              </div>
-              <div>
-                <dt class="caption-text">Level</dt>
-                <dd class="body-text">{{ issue.level | titlecase }}</dd>
-              </div>
-              @if (resolvedInRelease(); as release) {
-                <div>
-                  <dt class="caption-text" i18n>Resolved in</dt>
-                  <dd class="body-text">{{ release }}</dd>
-                </div>
+            <h3 class="detail-section-header">Details</h3>
+            <dl class="rail-metadata">
+              <gt-entry-data key="Assignee" [dense]="true">
+                @if (issue.assignedTo) {
+                  {{ issue.assignedTo }}
+                } @else {
+                  <span class="rail-empty">Unassigned</span>
+                }
+              </gt-entry-data>
+              @if (issue.firstRelease?.shortVersion; as release) {
+                <gt-entry-data
+                  key="First release"
+                  [value]="release"
+                  [dense]="true"
+                  [mono]="true"
+                />
               }
-              <div>
-                <dt class="caption-text">First Seen</dt>
-                <dd class="body-text">{{ issue.firstSeen | daysAgo }}</dd>
-                <dd class="caption-text">
-                  {{
-                    $safeNavigationMigration(issue?.firstSeen) | date: "long"
-                  }}
-                </dd>
-              </div>
-              <div>
-                <dt class="caption-text">Last Seen</dt>
-                <dd class="body-text">{{ issue.lastSeen | daysAgo }}</dd>
-                <dd class="caption-text">
-                  {{ $safeNavigationMigration(issue?.lastSeen) | date: "long" }}
-                </dd>
-              </div>
+              @if (resolvedInRelease(); as release) {
+                <gt-entry-data
+                  key="Resolved in"
+                  [value]="release"
+                  [dense]="true"
+                  [mono]="true"
+                />
+              }
+              @if (issue.firstSeen === issue.lastSeen) {
+                <!-- One event (or all at once): collapse the identical First/Last
+                     seen pair into a single line instead of duplicating it. -->
+                <gt-entry-data key="Seen" [dense]="true">
+                  <span class="body-text">{{ issue.firstSeen | daysAgo }}</span>
+                  <span class="caption-text rail-abs-date">{{
+                    $safeNavigationMigration(issue?.firstSeen)
+                      | gtLocalDate: "MMM d, y, h:mm a"
+                  }}</span>
+                </gt-entry-data>
+              } @else {
+                <gt-entry-data key="First seen" [dense]="true">
+                  <span class="body-text">{{ issue.firstSeen | daysAgo }}</span>
+                  <span class="caption-text rail-abs-date">{{
+                    $safeNavigationMigration(issue?.firstSeen)
+                      | gtLocalDate: "MMM d, y, h:mm a"
+                  }}</span>
+                </gt-entry-data>
+                <gt-entry-data key="Last seen" [dense]="true">
+                  <span class="body-text">{{ issue.lastSeen | daysAgo }}</span>
+                  <span class="caption-text rail-abs-date">{{
+                    $safeNavigationMigration(issue?.lastSeen)
+                      | gtLocalDate: "MMM d, y, h:mm a"
+                  }}</span>
+                </gt-entry-data>
+              }
+              <gt-entry-data
+                key="Short ID"
+                [value]="issue?.shortId"
+                [dense]="true"
+                [mono]="true"
+              />
             </dl>
+            <gt-issue-detail-tags [issueID]="issueID()"></gt-issue-detail-tags>
           </mat-card-content>
         </mat-card>
-        <gt-issue-detail-tags [issueID]="issueID()"></gt-issue-detail-tags>
       </aside>
     </div>
   </section>

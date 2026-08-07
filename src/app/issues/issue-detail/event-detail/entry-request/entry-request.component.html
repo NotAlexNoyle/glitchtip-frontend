@@ -1,6 +1,7 @@
 @if (eventEntryRequest(); as request) {
   <section class="mat-typography">
     <mat-divider></mat-divider>
+    <h3 class="detail-section-header">Request</h3>
     <section class="location">
       <span class="method mat-body-strong">{{
         request?.method ? request?.method : "GET"
@@ -20,7 +21,7 @@
         <div>
           <mat-divider></mat-divider>
           <div class="title-bar">
-            <h3>Body</h3>
+            <h3 class="detail-subsection-header">Body</h3>
             <mat-button-toggle-group
               #group="matButtonToggleGroup"
               [value]="viewMode()"
@@ -66,7 +67,7 @@
       }
       @if (request?.query) {
         <section>
-          <h3>Query String</h3>
+          <h3 class="detail-subsection-header">Query String</h3>
           <dl>
             @for (query of request?.query; track query) {
               <gt-entry-data
@@ -79,7 +80,7 @@
       }
       @if (request?.headers) {
         <section>
-          <h3>Headers</h3>
+          <h3 class="detail-subsection-header">Headers</h3>
           <dl>
             @for (header of request?.headers; track header) {
               <gt-entry-data
@@ -93,7 +94,7 @@
       @if (request?.env) {
         <section>
           <mat-divider></mat-divider>
-          <h3>Environment</h3>
+          <h3 class="detail-subsection-header">Environment</h3>
           <dl>
             @for (env of request.env | keyvalue; track env) {
               <gt-entry-data

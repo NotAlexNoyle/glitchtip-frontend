@@ -1,49 +1,88 @@
-mat-card {
-  margin-top: 24px;
-  padding-bottom: 32px;
+@use "variables" as vars;
+
+// Tags render inline within the shared rail card (no own card).
+.rail-tags {
+  margin-top: var(--gt-space-5);
 }
 
-.key {
-  font-weight: 700;
+.rail-tags__divider {
+  margin-bottom: var(--gt-space-4);
 }
 
-.bars {
-  height: 16px;
-  display: flex;
-  justify-content: flex-start;
-}
-
-.top-value {
-  display: flex;
-  justify-content: space-between;
-
-  &:not(:first-child) {
-    margin-top: 24px;
-  }
-
-  &:not(:last-child) {
-    margin-bottom: 8px;
-  }
-
-  span:last-child {
-    max-width: 190px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-align: right;
-  }
-}
-
-.bar {
-  background: var(--mat-sys-outline-variant);
-  box-shadow: none;
-  transition: all 0.5s;
-
-  &:not(:last-child) {
-    border-right: 1px solid var(--mat-sys-surface);
-  }
+// Each tag is a filter pivot: click narrows the issue stream to that value.
+.tag-row {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  padding: var(--gt-space-2) var(--gt-space-2);
+  margin-inline: calc(-1 * var(--gt-space-2));
+  border-radius: vars.$shape-radius;
+  transition: background 0.12s ease;
 
   &:hover {
-    background: var(--mat-sys-primary);
-    box-shadow: var(--mat-sys-shadow-2);
+    background: var(--mat-sys-surface-container-high);
+
+    .tag-row__val {
+      color: var(--mat-sys-primary);
+    }
+
+    .tag-row__fill {
+      opacity: 0.85;
+    }
   }
+}
+
+.tag-row__head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--gt-space-2);
+}
+
+.tag-row__key {
+  flex: 0 0 auto;
+  font-weight: 600;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.tag-row__val {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: right;
+  color: var(--mat-sys-on-surface);
+}
+
+.tag-row__pct {
+  flex: 0 0 auto;
+  color: var(--mat-sys-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+// One honest bar: width == top value's share of events.
+.tag-row__track {
+  display: block;
+  height: 3px;
+  margin-top: var(--gt-space-1, 4px);
+  border-radius: 2px;
+  background: var(--mat-sys-outline-variant);
+  overflow: hidden;
+}
+
+.tag-row__fill {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--mat-sys-primary);
+  opacity: 0.55;
+  transition:
+    width 0.4s ease,
+    opacity 0.12s ease;
+}
+
+// Constants (single value across all events) are context, not concentration:
+// no bar, no percent, and quietened so the concentrated leads read first.
+.tag-row--constant .tag-row__val {
+  color: var(--mat-sys-on-surface-variant);
 }

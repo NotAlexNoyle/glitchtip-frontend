@@ -1,8 +1,8 @@
 .grid-wrapper {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax((334px), 1fr));
-  grid-gap: 24px;
-  padding: 16px 0;
+  grid-gap: var(--gt-space-5);
+  padding: var(--gt-space-4) 0;
 }
 
 .wrapper {
@@ -23,12 +23,15 @@ p {
   margin-bottom: 0;
 }
 
+// The context key is a label, not a headline: recede by colour, not bold weight,
+// so the read-only card stops outranking the interactive dimension pills above.
 .bold {
-  font-weight: 700;
+  color: var(--mat-sys-on-surface-variant);
+  font-weight: 400;
 }
 
 .image {
-  width: 40px;
-  height: 40px;
-  font-size: 40px;
+  width: 28px;
+  height: 28px;
+  font-size: 28px;
 }

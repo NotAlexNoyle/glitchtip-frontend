@@ -1,3 +1,23 @@
+@use "variables" as vars;
+
 .help-button {
   margin-right: 4px;
+}
+
+// Internal frame hierarchy: the filename is the anchor, the function is code
+// (mono), and the grammatical glue (in / at line / :col / within) recedes.
+// File and function inherit their colour from the row (see entry-exception:
+// in-app rows are on-surface, library rows dim to on-surface-variant), so a
+// developer's own code pops out of the trace.
+.frame__file {
+  font-weight: 600;
+}
+
+.frame__fn {
+  font-family: vars.$font-mono;
+}
+
+.frame__meta {
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-on-surface-variant);
 }

@@ -15,26 +15,20 @@ import { MatTabsModule } from "@angular/material/tabs";
 import { MatCardModule } from "@angular/material/card";
 import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
 import { toSignal } from "@angular/core/rxjs-interop";
-import { DetailHeaderComponent } from "src/app/shared/detail/header/header.component";
 import { IssueDetailService } from "./issue-detail.service";
 import { DaysAgoPipe } from "../../shared/days-ago.pipe";
 import { IssueDetailTagsComponent } from "./issue-detail-tags/issue-detail-tags.component";
+import { EntryDataComponent } from "src/app/shared/entry-data/entry-data.component";
+import { MatDividerModule } from "@angular/material/divider";
+import { IssueMasthead } from "./issue-masthead/issue-masthead";
+import { LocalDatePipe } from "src/app/shared/date/local-date.pipe";
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 import { OrganizationsService } from "src/app/api/organizations.service";
-import { DatePipe, TitleCasePipe } from "@angular/common";
 import { BackLinkComponent } from "src/app/shared/detail/back-link/back-link.component";
 import { TopAppBar } from "src/app/shared/top-app-bar/top-app-bar";
 import { IssueStatusUpdateDropdownComponent } from "src/app/shared/issue-status-update-dropdown/issue-status-update-dropdown";
 import { IssueStatus } from "../interfaces";
-
-const STATUS_CONFIG = {
-  resolved: { label: "Resolved", icon: "done" },
-  unresolved: { label: "Unresolved", icon: "priority_high" },
-  ignored: { label: "Ignored", icon: "notifications_off" },
-} as const;
-
-type IssueStatusType = keyof typeof STATUS_CONFIG;
 
 @Component({
   selector: "gt-issue-detail",
@@ -49,10 +43,11 @@ type IssueStatusType = keyof typeof STATUS_CONFIG;
     MatIconModule,
     MatButtonModule,
     IssueDetailTagsComponent,
-    TitleCasePipe,
-    DatePipe,
+    EntryDataComponent,
+    IssueMasthead,
+    MatDividerModule,
+    LocalDatePipe,
     DaysAgoPipe,
-    DetailHeaderComponent,
     BackLinkComponent,
     TopAppBar,
     IssueStatusUpdateDropdownComponent,
@@ -65,63 +60,6 @@ export class IssueDetailComponent implements OnInit {
   protected breakPointObserver = inject(BreakpointObserver);
 
   issue = this.issueService.issue;
-  issueTitle = computed(() => {
-    const issue = this.issue();
-    if (!issue) {
-      return ["", null] as [string, string | null];
-    }
-    const metadata = issue.metadata ?? {};
-    const culprit = issue.culprit;
-    const fallback = issue.title || "";
-
-    switch (issue.type) {
-      case "error":
-        if (metadata.type) {
-          return [metadata.type, culprit] as [string, string | null];
-        }
-        return [metadata.function || fallback, culprit] as [
-          string,
-          string | null,
-        ];
-      case "csp":
-        return [metadata.directive || fallback, metadata.uri || null] as [
-          string,
-          string | null,
-        ];
-      case "default":
-        return [metadata.message || fallback, metadata.origin || null] as [
-          string,
-          string | null,
-        ];
-      default:
-        return [metadata.title || fallback, null] as [string, string | null];
-    }
-  });
-  issueSubtitle = computed<string>(() => {
-    const issue = this.issue();
-    if (!issue || issue.metadata === null) {
-      return "";
-    }
-    const metadata = issue.metadata;
-    switch (issue.type) {
-      case "error":
-        return metadata.value as string;
-      case "csp":
-        return metadata.message as string;
-      case "default":
-        return "";
-      default:
-        return issue.culprit as string;
-    }
-  });
-
-  statusIcon = computed(() => {
-    const issue = this.issue();
-    if (!issue) return "error";
-
-    const config = STATUS_CONFIG[issue.status as IssueStatusType];
-    return config?.icon ?? "error";
-  });
 
   resolvedInRelease = computed(() => {
     const issue = this.issue();

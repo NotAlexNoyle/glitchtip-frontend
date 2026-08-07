@@ -2,7 +2,14 @@
 @use "variables" as vars;
 
 .exception {
+  // Clear the divider above so the Full/Raw toggle doesn't touch the hairline.
+  margin-top: var(--gt-space-4);
   margin-bottom: 16px;
+
+  // Leading hairline that opens the region, matching Message/Breadcrumbs rhythm.
+  > mat-divider {
+    margin-bottom: var(--gt-space-3);
+  }
 
   .header-wrapper {
     display: flex;
@@ -34,7 +41,9 @@
   }
 
   .subtitle {
-    margin-bottom: 24px;
+    margin-bottom: var(--gt-space-4);
+    // Secondary to the error type: readable but clearly not the anchor.
+    color: var(--mat-sys-on-surface-variant);
   }
 
   .yes {
@@ -57,9 +66,81 @@
     }
   }
 
-  mat-chip-set {
-    display: block;
-    margin-bottom: 24px;
+  // A chained exception is one causal unit: a left bracket groups the whole
+  // chain, and a node dot marks each exception's identity. Cause-first order
+  // (root at top, thrown at bottom) matches how a traceback reads.
+  .exc-chain--linked {
+    border-left: 2px solid var(--mat-sys-outline-variant);
+    padding-left: var(--gt-space-5);
+    margin-left: 4px;
+  }
+
+  .exc-chain--linked .exc-item {
+    position: relative;
+  }
+
+  .exc-chain--linked .exc-item:not(:last-child) {
+    margin-bottom: var(--gt-space-5);
+  }
+
+  .exc-chain--linked .exc-item::before {
+    content: "";
+    position: absolute;
+    // Center the 10px dot on the 2px bracket. The bracket's center sits 1px in
+    // from the chain's left edge; the item content starts 26px in (2px border +
+    // 24px pad), so the dot's left must be -30px to land its center on the line.
+    left: calc(-1 * var(--gt-space-5) - 6px);
+    top: 3px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--mat-sys-surface);
+    border: 2px solid var(--mat-sys-outline);
+  }
+
+  // Root cause is the fix target: fill its node to give it presence.
+  .exc-chain--linked .exc-item:first-child::before {
+    background: var(--mat-sys-primary);
+    border-color: var(--mat-sys-primary);
+  }
+
+  // Role eyebrow: uppercase label that also carries the handled state.
+  .exc-role {
+    display: flex;
+    align-items: center;
+    gap: var(--gt-space-2);
+    margin: 0 0 var(--gt-space-1, 4px);
+    font: var(--mat-sys-label-small);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .exc-role__tag {
+    color: var(--mat-sys-on-surface-variant);
+    font-weight: 600;
+  }
+
+  .exc-role__tag--root {
+    color: var(--mat-sys-primary);
+  }
+
+  // Distinct FORM (outlined badge) so the error-red severity flag doesn't smear
+  // into the primary-red ROOT CAUSE word beside it — two meanings, two looks.
+  .exc-role__flag {
+    color: var(--mat-sys-error);
+    font-weight: 600;
+    border: 1px solid var(--mat-sys-outline-variant);
+    border-radius: vars.$shape-radius;
+    padding: 0 var(--gt-space-1, 4px);
+    letter-spacing: 0.04em;
+  }
+
+  // The error identity is the local hero of the event card — outrank its own
+  // uppercase eyebrow and the surrounding body text.
+  .exc-type {
+    margin-bottom: 0;
+    font: var(--mat-sys-title-medium);
+    font-weight: 700;
   }
 
   mat-accordion::ng-deep .mat-expansion-panel-body {
@@ -73,11 +154,20 @@
   mat-expansion-panel-header {
     padding-top: 8px;
     padding-bottom: 8px;
-    border: 1px solid mat.m2-get-color-from-palette(mat.$m2-gray-palette, 300);
+    // Theme hairline (the old m2 gray-300 was a fixed light hex, wrong in dark).
+    border: 1px solid var(--mat-sys-outline-variant);
 
     gt-frame-title {
       padding-right: 16px;
     }
+  }
+
+  // Dim library frames so the developer's own (in-app) code pops out of the
+  // trace. Uses opacity, not the on-surface-variant colour token: that token is
+  // nearly identical to on-surface in DARK mode (#e3e2e4 vs #e2e2e4), so a
+  // colour-based dim is invisible there. Opacity dims reliably in both themes.
+  mat-expansion-panel-header:not(.highlighted) {
+    opacity: 0.6;
   }
 
   .disabled-panel {

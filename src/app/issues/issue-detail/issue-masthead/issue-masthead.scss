@@ -1,0 +1,58 @@
+// Layout (identity + vitals + pulse) lives in gt-detail-masthead. This file
+// styles only the issue-specific status indicator projected into it, plus the
+// sparse fallback line shown when the pulse has too little data to chart.
+
+.masthead__sparse {
+  margin: var(--gt-space-2) 0 0;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  mat-icon {
+    color: var(--mat-sys-outline);
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    margin: 8px;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    right: 0;
+    width: 4px;
+    border-radius: 4px;
+  }
+
+  &.level--sample::after {
+    background-color: var(--mat-sys-outline);
+  }
+  &.level--debug::after {
+    background-color: var(--mat-sys-outline-variant);
+  }
+  &.level--info::after {
+    background-color: var(--info-color);
+  }
+  &.level--warning::after {
+    background-color: var(--warning-color);
+  }
+  &.level--error::after {
+    background-color: var(--mat-sys-error);
+  }
+  &.level--fatal::after {
+    background: repeating-linear-gradient(
+      -60deg,
+      var(--mat-sys-error),
+      var(--mat-sys-error) 5px,
+      var(--mat-sys-surface) 5px,
+      var(--mat-sys-surface) 10px
+    );
+  }
+}

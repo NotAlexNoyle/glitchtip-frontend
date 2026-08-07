@@ -1,40 +1,34 @@
-@if (tags()?.length) {
-  <mat-card appearance="outlined">
-    <mat-card-content>
-      <h3 class="body-text-strong">Tags</h3>
-      @for (tag of tags(); track tag.key) {
-        <p class="top-value caption-text">
-          <span class="key">{{ tag.key }}</span>
-          <span>
-            {{ tag.topValues[0].value }}: {{ tag.topValues[0].percentRounded }}%
-          </span>
-        </p>
-        <div>
-          <div class="bars">
-            @for (topValue of tag.topValues; track topValue.name) {
-              <span
-                class="bar"
-                [ngStyle]="{
-                  'width.%': topValue.percentRounded,
-                }"
-                matTooltip="
-            {{ topValue.value }} - {{ topValue.percentRounded }}%
-          "
-                matTooltipPosition="left"
-              ></span>
-            }
+@if (rankedTags()?.length) {
+  <div class="rail-tags">
+    <mat-divider class="rail-tags__divider"></mat-divider>
+    <h3 class="detail-section-header">Tags</h3>
+    @for (tag of rankedTags(); track tag.key) {
+      <a
+        class="tag-row"
+        [class.tag-row--constant]="tag.uniqueValues <= 1"
+        [routerLink]="['/', orgSlug(), 'issues']"
+        [queryParams]="tagQuery(tag.key, tag.topValues[0].value)"
+        queryParamsHandling="merge"
+        [matTooltip]="'Filter by ' + tag.topValues[0].value"
+        matTooltipPosition="left"
+      >
+        <span class="tag-row__head caption-text">
+          <span class="tag-row__key">{{ tag.key }}</span>
+          <span class="tag-row__val">{{ tag.topValues[0].value }}</span>
+          @if (tag.uniqueValues > 1) {
+            <span class="tag-row__pct">{{ tag.topValues[0].percentRounded }}%</span>
+          }
+        </span>
+        @if (tag.uniqueValues > 1) {
+          <!-- One honest track: the fill IS the top value's share, not decoration. -->
+          <span class="tag-row__track">
             <span
-              class="bar"
-              [ngStyle]="{
-                'width.%': tag.other,
-              }"
-              matTooltip="
-          Other - {{ tag.other }}%
-        "
-              matTooltipPosition="left"
-            ></span> </div
-        ></div>
-      }
-    </mat-card-content>
-  </mat-card>
+              class="tag-row__fill"
+              [style.width.%]="tag.topValues[0].percentRounded"
+            ></span>
+          </span>
+        }
+      </a>
+    }
+  </div>
 }

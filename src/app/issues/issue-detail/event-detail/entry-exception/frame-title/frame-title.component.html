@@ -5,6 +5,7 @@
   <section class="mat-typography">
     @if (frame.filename || frame.module) {
       <span
+        class="frame__file"
         [matTooltip]="
           frame.absPath
             ? showToolTip(frame.absPath, frame.filename, frame.module)
@@ -31,23 +32,25 @@
         >
       }
       @if (frame.function && !mangled) {
-        in
+        <span class="frame__meta">in</span>
       }
     }
     <!-- TODO: Add rawFunction conditions-->
     @if (
       frame.function && (!mangled || (!frame.filename && !frame.module))
     ) {
-      {{ frame.function }}
+      <span class="frame__fn">{{ frame.function }}</span>
     }
     @if (frame.lineNo && frame.lineNo > 0) {
-      at line {{ frame.lineNo }}
+      <span class="frame__meta">at line {{ frame.lineNo }}</span>
       @if (frame.colNo && frame.colNo > 0) {
-        :{{ frame.colNo }}
+        <span class="frame__meta">:{{ frame.colNo }}</span>
       }
     }
     @if (frame.package) {
-      within {{ cleanPackagePath(frame.package, frame.platform) }}
+      <span class="frame__meta"
+        >within {{ cleanPackagePath(frame.package, frame.platform) }}</span
+      >
     }
     <!--origAbsPath not in frame docs
     code: https://gitlab.com/glitchtip/sentry-open-source/sentry/-/blob/master/src/sentry/static/sentry/app/components/events/interfaces/frame.jsx#L245

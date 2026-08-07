@@ -7,6 +7,10 @@ import { getPaginationHeaders, getPaginator } from "../shared/pagination.utils";
 import { keepPreviousValue } from "../shared/signal.utils";
 import { IssueStatus, IssueStatusUpdate, StatsPeriod } from "./interfaces";
 import { apiResource } from "../shared/api/api-resource-factory";
+import {
+  buildStatsChartDataFrame,
+  formatIssueStats,
+} from "./stats-frame.util";
 
 export interface DataParams {
   orgSlug: string;
@@ -148,41 +152,11 @@ export class IssuesService extends StatefulService<IssuesState> {
       },
     };
   });
-  // Array of timestamps across selected period
-  // counting back from present. Used for empty chart state
-  // and as basis for formatted chart data
-  statsChartDataFrame = computed(() => {
-    const period = this.statsPeriod();
-    const count = this.statsPeriod() === "14d" ? 14 : 24;
-    return Array.from({ length: count }, (_, i) => {
-      const baseTimeRef = new Date();
-      const interval = i + 1 - count;
-      let utcTimestamp: number;
-      if (period === "14d") {
-        utcTimestamp = Date.UTC(
-          baseTimeRef.getUTCFullYear(),
-          baseTimeRef.getUTCMonth(),
-          baseTimeRef.getUTCDate() + interval,
-          0,
-          0,
-          0,
-        );
-      } else {
-        utcTimestamp = Date.UTC(
-          baseTimeRef.getUTCFullYear(),
-          baseTimeRef.getUTCMonth(),
-          baseTimeRef.getUTCDate(),
-          baseTimeRef.getUTCHours() + interval,
-          0,
-          0,
-        );
-      }
-      return {
-        name: utcTimestamp.toString(),
-        timestamp: utcTimestamp,
-      };
-    });
-  });
+  // Array of timestamps across selected period counting back from present.
+  // Framing logic lives in stats-frame.util (shared with the issue detail trend).
+  statsChartDataFrame = computed(() =>
+    buildStatsChartDataFrame(this.statsPeriod()),
+  );
   formattedStatsChartData = computed(() => {
     const statsResource = this.issueStatsResource.value();
     const frameArray = this.statsChartDataFrame();
@@ -190,19 +164,10 @@ export class IssuesService extends StatefulService<IssuesState> {
     if (!statsResource) {
       return [];
     }
-    return statsResource.map((issue) => {
-      const stats = period in issue.stats ? issue.stats[period] : null;
-      const mappedStats = new Map<number, number>(
-        stats?.map(([ts, val]) => [ts, val]),
-      );
-      const formattedStats = frameArray.map((datapoint) => {
-        return {
-          ...datapoint,
-          value: mappedStats.get(datapoint.timestamp / 1000) ?? 0,
-        };
-      });
-      return { ...issue, formattedStats };
-    });
+    return statsResource.map((issue) => ({
+      ...issue,
+      formattedStats: formatIssueStats(issue.stats, period, frameArray),
+    }));
   });
 
   pagination = keepPreviousValue(() => this.issuesResource.value()?.pagination);

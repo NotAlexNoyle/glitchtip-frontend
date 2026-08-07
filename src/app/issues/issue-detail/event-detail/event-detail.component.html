@@ -10,42 +10,41 @@
 
 @if (event(); as event) {
   <section class="mat-typography">
-    <section class="header">
-      <div>
-        <h2>Event</h2>
-        <p>
-          <a>{{ event?.id }}</a>
-        </p>
-        <p>
-          @if (event?.dateCreated) {
-            <span class="space">{{
-              $safeNavigationMigration(event?.dateCreated) | date: "long"
-            }}</span>
-          }
-          <a
-            target="_blank"
-            [href]="
-              '/organizations/' +
-              orgSlug() +
-              '/issues/' +
-              event.groupID +
-              '/events/' +
-              $safeNavigationMigration(event?.id) +
-              '/json/'
-            "
-            >raw JSON</a
-          >
-          <span class="action-separator" aria-hidden="true">·</span>
-          <button
-            type="button"
-            class="link-button"
-            [cdkCopyToClipboard]="aiPayload()"
-            (cdkCopyToClipboardCopied)="onCopiedForAI()"
-            i18n
-          >
-            copy for AI
-          </button>
-        </p>
+    <section class="event-selector">
+      <div class="event-selector__meta caption-text">
+        <span class="event-selector__label">{{
+          nextEvent() === false ? "Latest event" : "Event"
+        }}</span>
+        <span class="event-selector__id">{{ event?.id }}</span>
+        @if (event?.dateCreated) {
+          <span class="event-selector__date">{{
+            $safeNavigationMigration(event?.dateCreated) | date: "medium"
+          }}</span>
+        }
+        <span class="action-separator" aria-hidden="true">·</span>
+        <a
+          target="_blank"
+          [href]="
+            '/organizations/' +
+            orgSlug() +
+            '/issues/' +
+            event.groupID +
+            '/events/' +
+            $safeNavigationMigration(event?.id) +
+            '/json/'
+          "
+          >raw JSON</a
+        >
+        <span class="action-separator" aria-hidden="true">·</span>
+        <button
+          type="button"
+          class="link-button"
+          [cdkCopyToClipboard]="aiPayload()"
+          (cdkCopyToClipboardCopied)="onCopiedForAI()"
+          i18n
+        >
+          copy for AI
+        </button>
       </div>
       <nav class="navigation-buttons">
         <button
@@ -64,63 +63,82 @@
         </button>
       </nav>
     </section>
-    @if (event?.contexts || event?.user) {
-      <mat-divider></mat-divider>
-    }
-    <gt-contexts></gt-contexts>
-    <mat-divider></mat-divider>
-    @if (event?.tags && event.tags.length > 0) {
-      <section class="tags">
-        <h2>Tags</h2>
-        <ul class="pseudo-chip-list">
-          @for (tag of event.tags; track tag.key) {
-            <li class="pseudo-chip">
-              <a
-                [routerLink]="['/', orgSlug(), 'issues']"
-                [queryParams]="generateQuery(tag)"
-                queryParamsHandling="merge"
-                class="pseudo-chip-link"
-              >
-                <span class="pseudo-chip-key">{{ tag.key }}</span>
-                <span class="pseudo-chip-value">
-                  {{ tag.value }}
-                </span>
-              </a>
-              @if (isValidUrl(tag.value)) {
-                <span class="pseudo-chip-divider"></span>
-                <a
-                  [href]="tag.value"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="pseudo-chip-external-link"
-                >
-                  <mat-icon color="primary">open_in_new</mat-icon>
-                </a>
-              }
-            </li>
-          }
-        </ul>
-      </section>
-    }
     <gt-entry-message></gt-entry-message>
     <gt-entry-exception
       [eventTitle]="$safeNavigationMigration(event?.title)"
       [eventPlatform]="$safeNavigationMigration(event?.platform)!"
     ></gt-entry-exception>
     <gt-entry-csp></gt-entry-csp>
+
+    <!-- How did we get here: breadcrumbs are primary triage context. -->
     <gt-entry-breadcrumbs></gt-entry-breadcrumbs>
-    <gt-entry-request></gt-entry-request>
-    @for (context of contexts() | keyvalue; track context) {
-      <section>
+
+    <!-- Dimensions: filterable tag pills (click to filter the issue stream) plus
+         a static context-summary readout. Form encodes function: pills are
+         interactive, context cards are read-only. -->
+    @if (
+      (event?.tags && event.tags.length > 0) || event?.contexts || event?.user
+    ) {
+      <section class="dimensions">
         <mat-divider></mat-divider>
-        <h3>
-          {{ context.value!.type! }}
-          @if (context.value!.type!) {
-            ({{ context.key }})
-          } @else {
-            {{ context.key }}
-          }
-        </h3>
+        <h3 class="detail-section-header">Dimensions</h3>
+        @if (event?.tags && event.tags.length > 0) {
+          <ul class="pseudo-chip-list">
+            @for (tag of event.tags; track tag.key) {
+              <li class="pseudo-chip">
+                <a
+                  [routerLink]="['/', orgSlug(), 'issues']"
+                  [queryParams]="generateQuery(tag)"
+                  queryParamsHandling="merge"
+                  class="pseudo-chip-link"
+                >
+                  <span class="pseudo-chip-key">{{ tag.key }}</span>
+                  <span class="pseudo-chip-value">
+                    {{ tag.value }}
+                  </span>
+                </a>
+                @if (isValidUrl(tag.value)) {
+                  <span class="pseudo-chip-divider"></span>
+                  <a
+                    [href]="tag.value"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="pseudo-chip-external-link"
+                  >
+                    <mat-icon color="primary">open_in_new</mat-icon>
+                  </a>
+                }
+              </li>
+            }
+          </ul>
+        }
+        <gt-contexts></gt-contexts>
+      </section>
+    }
+
+    <!-- Request (self-contained; hides itself when the event has none). -->
+    <gt-entry-request></gt-entry-request>
+
+    <!-- Raw event data: the verbose reference tail, contained under one eyebrow
+         so it reads as a single bounded region rather than loose trailing panels. -->
+    @if ((contexts() | keyvalue)?.length || event.context || event?.sdk) {
+      <section class="raw-data">
+        <mat-divider></mat-divider>
+        <h3 class="detail-section-header">Raw event data</h3>
+        @for (context of contexts() | keyvalue; track context) {
+      <mat-expansion-panel class="mat-elevation-z0 secondary-panel">
+        <mat-expansion-panel-header
+          collapsedHeight="auto"
+          expandedHeight="auto"
+        >
+          <mat-panel-title class="detail-subsection-header">
+            @if (context.value!.type! && context.value!.type! !== context.key) {
+              {{ context.value!.type! }} ({{ context.key }})
+            } @else {
+              {{ context.key }}
+            }
+          </mat-panel-title>
+        </mat-expansion-panel-header>
         <dl>
           @for (
             context_entry of context.value | keyvalue;
@@ -134,24 +152,32 @@
             }
           }
         </dl>
-      </section>
+      </mat-expansion-panel>
     }
     @if (event.context) {
-      <section>
-        <mat-divider></mat-divider>
-        <h3>Additional Data</h3>
+      <mat-expansion-panel class="mat-elevation-z0 secondary-panel">
+        <mat-expansion-panel-header
+          collapsedHeight="auto"
+          expandedHeight="auto"
+        >
+          <mat-panel-title class="detail-subsection-header">Additional data</mat-panel-title>
+        </mat-expansion-panel-header>
         <dl>
           @for (context of event.context | keyvalue; track context) {
             <gt-entry-data [key]="context.key" [value]="context.value">
             </gt-entry-data>
           }
         </dl>
-      </section>
+      </mat-expansion-panel>
     }
     @if (event?.sdk) {
-      <section>
-        <mat-divider></mat-divider>
-        <h3>SDK</h3>
+      <mat-expansion-panel class="mat-elevation-z0 secondary-panel">
+        <mat-expansion-panel-header
+          collapsedHeight="auto"
+          expandedHeight="auto"
+        >
+          <mat-panel-title class="detail-subsection-header">SDK</mat-panel-title>
+        </mat-expansion-panel-header>
         <dl>
           <gt-entry-data
             key="name"
@@ -162,6 +188,8 @@
             [value]="$safeNavigationMigration(event?.sdk?.version)"
           ></gt-entry-data>
         </dl>
+      </mat-expansion-panel>
+        }
       </section>
     }
   </section>
