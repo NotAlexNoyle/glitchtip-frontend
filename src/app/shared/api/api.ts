@@ -45,6 +45,18 @@ export function handleError(
       }
       break;
     case 403:
+      // django-ninja's HttpError serializes to {"detail": "<message>"}. The
+      // backend puts the actionable reason there (which scope a token lacks, or
+      // which role the operation needs), so surface it and fall back to the
+      // generic message only when the body carries nothing useful.
+      if (
+        error &&
+        typeof error === "object" &&
+        typeof error.detail === "string" &&
+        error.detail
+      ) {
+        return { detail: [{ msg: error.detail }] };
+      }
       return { detail: [{ msg: AUTH_ERROR }] };
     case 404:
       return { detail: [{ msg: response.statusText }] };
