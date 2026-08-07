@@ -13,14 +13,9 @@
   </ng-container>
 </gt-top-app-bar>
 <section class="l-body">
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>
-        {{ activeOrganizationDetail()?.name }}
-      </mat-card-title>
-    </mat-card-header>
-    <mat-divider></mat-divider>
+  <mat-card appearance="outlined">
     <mat-card-content>
+      <h2 class="detail-section-header">{{ activeOrganizationDetail()?.name }}</h2>
       <div class="list">
         @for (member of members(); track member) {
           <div class="list--item">
@@ -43,36 +38,38 @@
                 </mat-chip>
               }
             </div>
-            <div class="reinvite-and-role">
-              @if (member.pending) {
-                <div class="reinvite">
-                  @if (!member.loadingResendInvite) {
-                    <gt-loading-button
-                      class="resend-invite"
-                      [loading]="member.loadingResendInvite"
-                      [buttonText]="
-                        member.sentResendInvite
-                          ? 'Invite Resent'
-                          : 'Resend Invite'
-                      "
-                      [disabled]="member.sentResendInvite"
-                      (buttonClick)="resendInvite(member)"
-                    >
-                    </gt-loading-button>
-                  }
-                </div>
-              }
-              <div class="role">{{ member.roleName }}</div>
+            <div class="row-actions">
+              <div class="reinvite-and-role">
+                @if (member.pending) {
+                  <div class="reinvite">
+                    @if (!member.loadingResendInvite) {
+                      <gt-loading-button
+                        class="resend-invite"
+                        [loading]="member.loadingResendInvite"
+                        [buttonText]="
+                          member.sentResendInvite
+                            ? 'Invite Resent'
+                            : 'Resend Invite'
+                        "
+                        [disabled]="member.sentResendInvite"
+                        (buttonClick)="resendInvite(member)"
+                      >
+                      </gt-loading-button>
+                    }
+                  </div>
+                }
+                <div class="role">{{ member.roleName }}</div>
+              </div>
+              <gt-loading-button
+                class="remove-button"
+                matTooltip="Account ownership must be transferred."
+                [matTooltipDisabled]="!member.isOwner"
+                [disabled]="member.isOwner"
+                (buttonClick)="removeMember(member)"
+                [buttonText]="member.isMe ? 'Leave' : 'Remove'"
+                buttonStyle="stroked"
+              ></gt-loading-button>
             </div>
-            <gt-loading-button
-              class="remove-button"
-              matTooltip="Account ownership must be transferred."
-              [matTooltipDisabled]="!member.isOwner"
-              [disabled]="member.isOwner"
-              (buttonClick)="removeMember(member)"
-              [buttonText]="member.isMe ? 'Leave' : 'Remove'"
-              buttonStyle="stroked"
-            ></gt-loading-button>
           </div>
         }
       </div>

@@ -15,17 +15,14 @@
   </ng-container>
 </gt-top-app-bar>
 <section class="l-body">
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title i18n>Your Teams</mat-card-title>
+  <mat-card appearance="outlined">
+    <mat-card-content>
+      <h2 class="detail-section-header" i18n>Your teams</h2>
       <p class="description body-text" i18n
         >Teams are for managing issue notifications and workflow. View
         permissions are handled through
         <a routerLink="../members"> organization membership.</a>
       </p>
-    </mat-card-header>
-    <mat-divider></mat-divider>
-    <mat-card-content>
       @if (yourTeams()?.length) {
         <ul>
           @if (errors(); as error) {
@@ -36,7 +33,7 @@
           @for (yourTeam of yourTeams(); track yourTeam) {
             <li class="team-list-item">
               <div class="team-list-item-text">
-                <a [routerLink]="[yourTeam.slug, 'members']">
+                <a class="team-slug" [routerLink]="[yourTeam.slug, 'members']">
                   #{{ yourTeam.slug }}
                 </a>
                 <div>
@@ -76,10 +73,9 @@
   </mat-card>
 
   @if (otherTeams()?.length) {
-    <mat-card>
-      <mat-card-title i18n>Other Teams</mat-card-title>
-      <mat-divider></mat-divider>
+    <mat-card appearance="outlined">
       <mat-card-content>
+        <h2 class="detail-section-header" i18n>Other teams</h2>
         <ul>
           @if (errors(); as error) {
             <mat-error class="center-text">{{ error.addTeamMember }}</mat-error>
@@ -87,7 +83,7 @@
           @for (otherTeam of otherTeams(); track otherTeam) {
             <li class="team-list-item">
               <div class="team-list-item-text">
-                <a [routerLink]="[otherTeam.slug, 'members']">
+                <a class="team-slug" [routerLink]="[otherTeam.slug, 'members']">
                   #{{ otherTeam.slug }}
                 </a>
                 <div>

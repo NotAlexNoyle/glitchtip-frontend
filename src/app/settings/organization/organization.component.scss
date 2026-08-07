@@ -1,12 +1,7 @@
 @use "variables" as vars;
 
 mat-card {
-  margin-bottom: 36px;
-  margin-top: 36px;
-
-  mat-card-content {
-    padding-top: 16px;
-  }
+  margin-bottom: var(--gt-space-5);
 
   form {
     display: flex;
@@ -25,10 +20,21 @@ mat-card {
   }
 }
 
+.detail-section-header {
+  margin: 0 0 var(--gt-space-3);
+}
+
 .remove-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: var(--gt-space-3) var(--gt-space-5);
+
+  .detail-section-header {
+    width: 100%;
+    margin: 0;
+  }
 
   @media (max-width: vars.$tablet - 1) {
     flex-direction: column;

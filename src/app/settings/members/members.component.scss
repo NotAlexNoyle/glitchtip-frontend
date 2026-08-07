@@ -15,6 +15,15 @@
   margin: 0;
 }
 
+.detail-section-header {
+  margin: 0 0 var(--gt-space-3);
+}
+
+// Member emails are identifiers: render them monospace.
+.email {
+  font-family: vars.$font-mono;
+}
+
 .caption-text {
   font-weight: 500;
 }
@@ -27,71 +36,71 @@ mat-chip {
 .list {
   width: 100%;
 
+  // One tidy line at desktop width:
+  //   [ identity (mono email + badges) ] ···· [ role/meta ] [ action ]
+  // Only collapse to a stacked block on genuinely small screens.
   &--item {
     width: 100%;
-    padding: 16px 0;
+    padding: var(--gt-space-3) 0;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
+    gap: var(--gt-space-4);
 
-    @media (max-width: vars.$large - 1) {
-      flex-direction: column;
-      align-items: flex-start;
-    }
     &:nth-last-child(n + 2) {
       border-bottom: 1px solid var(--mat-sys-outline-variant);
     }
+
+    @media (max-width: vars.$tablet - 1) {
+      flex-wrap: wrap;
+    }
   }
 
-  .email-and-badge,
+  .email-and-badge {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--gt-space-2);
+    // Identity grows and truncates so the row stays a single line.
+    flex: 1 1 auto;
+    min-width: 0;
+
+    @media (max-width: vars.$tablet - 1) {
+      flex-basis: 100%;
+    }
+  }
+
+  .email {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  // Role/meta + action stay grouped on the right, and drop together to a
+  // second line on small screens.
+  .row-actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--gt-space-3);
+    flex-shrink: 0;
+
+    @media (max-width: vars.$tablet - 1) {
+      flex-basis: 100%;
+      flex-wrap: wrap;
+    }
+  }
+
   .reinvite-and-role {
     display: flex;
     flex-direction: row;
     align-items: center;
-  }
-
-  .email-and-badge {
-    align-items: center;
-    flex: 1 1 0%;
-    flex-wrap: wrap;
-
-    * {
-      margin: 0 16px 0 0;
-    }
-
-    a {
-      margin-right: 16px;
-    }
-  }
-
-  .reinvite-and-role {
-    mat-chip {
-      margin: 0 0 0 16px;
-    }
-
-    @media (max-width: vars.$large - 1) {
-      flex-direction: column-reverse;
-      align-items: flex-start;
-
-      mat-chip {
-        margin: 0;
-      }
-
-      .reinvite {
-        margin-bottom: 10px;
-      }
-    }
+    gap: var(--gt-space-3);
   }
 
   .role {
-    width: 140px;
-    padding-left: 16px;
-    padding-right: 16px;
-
-    @media (max-width: vars.$large - 1) {
-      padding: 0;
-    }
+    color: var(--mat-sys-on-surface-variant);
   }
 }
 

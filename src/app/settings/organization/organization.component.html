@@ -5,12 +5,9 @@
 </gt-top-app-bar>
 <section class="l-body">
   @if (activeOrganizationDetail(); as activeOrg) {
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>General</mat-card-title>
-      </mat-card-header>
-      <mat-divider></mat-divider>
+    <mat-card appearance="outlined">
       <mat-card-content>
+        <h2 class="detail-section-header" i18n>General</h2>
         <form [formGroup]="form" (ngSubmit)="updateOrganization()">
           <mat-form-field appearance="outline">
             <mat-label>Name</mat-label>
@@ -31,12 +28,9 @@
         }
       </mat-card-content>
     </mat-card>
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Delete Organization</mat-card-title>
-      </mat-card-header>
-      <mat-divider></mat-divider>
+    <mat-card appearance="outlined">
       <mat-card-content class="remove-content">
+        <h2 class="detail-section-header" i18n>Delete organization</h2>
         <div>
           <p>
             By deleting this organization, you will lose all data including
@@ -49,6 +43,7 @@
         <gt-loading-button
           data-test
           buttonText="Delete Organization"
+          buttonStyle="stroked"
           [loading]="loading().deleteOrganization"
           [disabled]="!accessOrgAdmin()"
           (buttonClick)="removeOrganization(activeOrg.slug, activeOrg.name)"

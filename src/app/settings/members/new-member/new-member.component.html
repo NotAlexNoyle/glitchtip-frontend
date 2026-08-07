@@ -1,16 +1,13 @@
 <section class="l-body">
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title> Add Member to Organization </mat-card-title>
-    </mat-card-header>
-    <mat-divider></mat-divider>
+  <mat-card appearance="outlined">
     <mat-card-content>
+      <h2 class="detail-section-header" i18n>Add member to organization</h2>
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
         @if (errors().addOrganizationMembers; as error) {
           <mat-error class="server-error">{{ error }}</mat-error>
         }
         <div>
-          <h2>Email(s)</h2>
+          <h3 class="detail-subsection-header">Email(s)</h3>
           <p class="email-paragraph">
             Invite a member to join this organization via their email address.
             @if (enableUserRegistration()) {
@@ -39,7 +36,7 @@
           </mat-form-field>
         </div>
         <div>
-          <h2>Role</h2>
+          <h3 class="detail-subsection-header">Role</h3>
           <mat-radio-group formControlName="role">
             <mat-radio-button value="member">Member</mat-radio-button>
             <mat-radio-button value="admin">Admin</mat-radio-button>
@@ -77,7 +74,7 @@
           </div>
         </div>
         <div>
-          <h2>Team</h2>
+          <h3 class="detail-subsection-header">Team</h3>
           <mat-form-field appearance="outline">
             <mat-label>Add Team</mat-label>
             <mat-select multiple formControlName="teams" disableOptionCentering>

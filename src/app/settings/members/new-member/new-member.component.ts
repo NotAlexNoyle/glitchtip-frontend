@@ -23,7 +23,6 @@ import { MatSelectModule } from "@angular/material/select";
 import { MatRadioModule } from "@angular/material/radio";
 import { MatInputModule } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatDividerModule } from "@angular/material/divider";
 import { MatCardModule } from "@angular/material/card";
 
 /** Custom validator to vaildate emails separated by commas */
@@ -54,7 +53,6 @@ function emailsValidator(control: AbstractControl): ValidationErrors | null {
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatCardModule,
-    MatDividerModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,

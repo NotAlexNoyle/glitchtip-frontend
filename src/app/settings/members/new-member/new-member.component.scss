@@ -1,10 +1,9 @@
 mat-card {
-  margin-top: 24px;
-  margin-bottom: 24px;
+  margin-bottom: var(--gt-space-5);
+}
 
-  mat-card-content {
-    padding-top: 16px;
-  }
+.detail-section-header {
+  margin: 0 0 var(--gt-space-3);
 }
 
 .email-paragraph {
