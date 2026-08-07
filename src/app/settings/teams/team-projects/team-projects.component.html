@@ -6,7 +6,7 @@
         <mat-error>{{ errors().addProjectToTeam }}</mat-error>
       }
       <div>
-        @if (canModifyTeam()) {
+        @if (canWriteProject()) {
           <mat-form-field appearance="outline">
             <mat-label i18n>Add Project</mat-label>
             <mat-select

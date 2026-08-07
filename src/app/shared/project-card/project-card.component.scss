@@ -35,6 +35,13 @@ mat-card-actions {
   display: flex;
   justify-content: space-between;
 
+  // Replaces the Issues button for non-members, so the row stays balanced
+  // against the Settings button on the right.
+  .not-member-note {
+    margin: 0 8px 0 0;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
   .action-button {
     mat-icon {
       font-size: 16px;

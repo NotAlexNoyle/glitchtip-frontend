@@ -12,7 +12,6 @@ import type {
 import { MatCardModule } from "@angular/material/card";
 import { MatIconModule } from "@angular/material/icon";
 import { RouterModule } from "@angular/router";
-import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatButtonModule } from "@angular/material/button";
 import { MatDividerModule } from "@angular/material/divider";
 import { UpperCasePipe } from "@angular/common";
@@ -24,7 +23,6 @@ import { UpperCasePipe } from "@angular/common";
     MatCardModule,
     MatIconModule,
     RouterModule,
-    MatTooltipModule,
     MatButtonModule,
     MatDividerModule,
   ],

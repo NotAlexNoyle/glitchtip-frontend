@@ -71,7 +71,7 @@ import { ApiRow, PreviewDocComponent } from "../docs/preview-doc.component";
             [checked]="canWrite()"
             (change)="canWrite.set($event.checked)"
           >
-            Simulate accessProjectWrite()
+            Simulate canWriteProject()
           </mat-slide-toggle>
         </div>
         <mat-card appearance="outlined" class="pg-card">
@@ -109,21 +109,77 @@ export class PermissionGatingPreview {
     "Bulk actions on lists (resolve, delete, merge)",
   ];
   readonly dos = [
-    "Gate with @if on the org-level access signal (accessProjectWrite, accessTeamWrite, ...)",
-    "Use accessTeamWrite even inside teams; team writes are org-scoped",
+    "Gate with @if on a named capability gate from OrganizationsService (canWriteProject, canAdminOrg, ...)",
+    "Add a new named gate rather than writing a scope list at the call site",
+    "For team member changes use TeamsService.canModifyTeam — the rule depends on whether you are in the team",
     "Hide the whole card if hiding a lone action would leave it empty",
     "Use [disabled] only for transient state, with the reason evident (spinner, pristine form)",
+    "Re-home copy that points at a control you just hid — it dangles otherwise",
+    "Check whether a hidden control was also displaying a value; if so, leave a read-only readout",
+    "Drop imports the removed control leaves orphaned (MatTooltipModule and friends)",
   ];
   readonly donts = [
     "Disable a control the user will never be allowed to use",
     "Rely on gating for security instead of the backend",
+    "Call hasScope(...) inline in a template — the ()() form makes !hasScope('x') silently always false",
   ];
   readonly api: ApiRow[] = [
-    { name: "accessProjectWrite()", type: "signal<boolean>", default: "", description: "OrganizationsService; gates project write controls" },
-    { name: "accessTeamWrite()", type: "signal<boolean>", default: "", description: "Gates team writes (org-scoped, also inside teams)" },
-    { name: "accessOrgWrite()", type: "signal<boolean>", default: "", description: "Gates organization-level writes" },
+    {
+      name: "canWriteProject()",
+      type: "Signal<boolean>",
+      default: "",
+      description:
+        "project:write | project:admin — new/rename project, alerts, add or remove a project from a team",
+    },
+    {
+      name: "canAdminProject()",
+      type: "Signal<boolean>",
+      default: "",
+      description: "project:admin — delete a project or an alert",
+    },
+    {
+      name: "canWriteTeam() / canAdminTeam()",
+      type: "Signal<boolean>",
+      default: "",
+      description: "team:write|admin — rename a team; team:admin — delete one",
+    },
+    {
+      name: "canWriteOrg() / canAdminOrg()",
+      type: "Signal<boolean>",
+      default: "",
+      description:
+        "org:write|admin — rename the org; org:admin (Owner only) — delete it, transfer ownership, billing",
+    },
+    {
+      name: "canWriteMember() / canAdminMember()",
+      type: "Signal<boolean>",
+      default: "",
+      description:
+        "member:write|admin — invite, resend, change role; member:admin — remove a member",
+    },
+    {
+      name: "canManageAnyTeam()",
+      type: "Signal<boolean>",
+      default: "",
+      description:
+        "Composite: canWriteTeam() || canWriteOrg() — create, rename or delete any team",
+    },
+    {
+      name: "TeamsService.canModifyTeam()",
+      type: "Signal<boolean>",
+      default: "",
+      description:
+        "Team member changes: team managers if you are in the team, org managers if not. Only valid where teamMembersKey is set for the team on screen",
+    },
+    {
+      name: "hasScope(...scopes)",
+      type: "(...scopes: Scope[]) => Signal<boolean>",
+      default: "",
+      description:
+        "The any-of primitive behind the gates above, memoized per combination. Public for ad-hoc use; prefer a named gate",
+    },
   ];
-  readonly code = `@if (accessProjectWrite()) {
+  readonly code = `@if (canAdminProject()) {
   <button mat-stroked-button color="warn" (click)="delete()">
     Delete project
   </button>

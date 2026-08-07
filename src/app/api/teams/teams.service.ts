@@ -70,11 +70,14 @@ export class TeamsService extends StatefulService<TeamsState> {
       ? this.teamMembers().find((teamMember) => teamMember.email === userEmail)
       : undefined;
   });
-  readonly userTeamRole = computed(() => this.activeTeamMember()?.role);
   /**
-   * Change this team's members/projects. Mirrors the backend's
-   * modify_member_for_team rule: team managers if you're in the team, org
-   * managers if you aren't. Fails closed to the org branch while members load.
+   * Change this team's members. Mirrors the backend's modify_member_for_team
+   * rule: team managers if you're in the team, org managers if you aren't.
+   * Fails closed to the org branch while members load.
+   *
+   * Only valid where teamMembersKey is set for the team on screen — currently
+   * just TeamMembersComponent. Anywhere else activeTeamMember() reads whatever
+   * roster was last fetched.
    */
   readonly canModifyTeam = computed(() =>
     this.activeTeamMember()

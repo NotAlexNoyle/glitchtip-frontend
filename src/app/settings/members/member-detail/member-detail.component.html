@@ -116,9 +116,7 @@
             buttonText="Transfer Ownership"
             [loading]="transferOrgOwnershipLoading() === true"
             (buttonClick)="transferOrgOwnership()"
-          >
-            Change Password
-          </gt-loading-button>
+          ></gt-loading-button>
         } @else if (!member.isOwner) {
           <p i18n> Only organization owners can transfer account ownership. </p>
         } @else {
@@ -127,12 +125,6 @@
             organization's GlitchTip subscription settings.
           </p>
         }
-        <ng-template #isOwner>
-          <p i18n>
-            This member is the organization account owner and has access to the
-            organization's GlitchTip subscription settings.
-          </p>
-        </ng-template>
       </mat-card-content>
     </mat-card>
     @if (memberTeams(); as memberTeams) {
