@@ -73,6 +73,11 @@ export class AlertFormComponent implements OnInit {
     uptime: boolean;
   }>();
   readonly newAlert = input<boolean | undefined>(false);
+  /**
+   * Editable when true, a read-only summary when false. Defaults closed, so
+   * every call site must pass it or the form silently renders read-only.
+   */
+  readonly canWrite = input<boolean>(false);
 
   timesI18nMapping = {
     "=1": $localize`time`,

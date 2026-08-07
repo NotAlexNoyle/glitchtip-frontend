@@ -31,6 +31,7 @@
           <gt-alert-form
             #newAlert
             [newAlert]="true"
+            [canWrite]="canWriteProject()"
             (alertSubmit)="newAlertProperties($event)"
           ></gt-alert-form>
           <h4 class="body-text-strong">Recipients:</h4>
@@ -201,6 +202,7 @@
               [quantity]="alert.quantity!"
               [uptime]="alert.uptime"
               [errorAlert]="alert.errorAlert"
+              [canWrite]="canWriteProject()"
               (alertSubmit)="updateProperties($event, alert)"
             ></gt-alert-form>
             <h4 class="body-text-strong">Recipients:</h4>
@@ -280,64 +282,70 @@
                         </span>
                       </div>
                     }
-                    <div class="recipient-actions">
-                      @if (deleteRecipientLoading() === recipient.id) {
-                        <mat-progress-spinner
-                          [diameter]="20"
-                          color="primary"
-                          mode="indeterminate"
-                        ></mat-progress-spinner>
-                      } @else {
-                        @if (recipient.recipientType !== "email") {
+                    @if (canWriteProject()) {
+                      <div class="recipient-actions">
+                        @if (deleteRecipientLoading() === recipient.id) {
+                          <mat-progress-spinner
+                            [diameter]="20"
+                            color="primary"
+                            mode="indeterminate"
+                          ></mat-progress-spinner>
+                        } @else {
+                          @if (recipient.recipientType !== "email") {
+                            <button
+                              class="recipient-action small-icon-button"
+                              mat-icon-button
+                              color="primary"
+                              attr.aria-label="Test recipient"
+                              matTooltip="Send test notification"
+                              [disabled]="testAlertLoading() === recipient.id"
+                              (click)="testRecipient(alert.id!, recipient.id!)"
+                            >
+                              @if (testAlertLoading() === recipient.id) {
+                                <mat-spinner diameter="16" />
+                              } @else {
+                                <mat-icon>send</mat-icon>
+                              }
+                            </button>
+                            <button
+                              class="recipient-action small-icon-button"
+                              mat-icon-button
+                              color="primary"
+                              attr.aria-label="Edit recipient"
+                              (click)="
+                                openEditRecipientDialog(recipient, alert)
+                              "
+                            >
+                              <mat-icon>edit</mat-icon>
+                            </button>
+                          }
                           <button
                             class="recipient-action small-icon-button"
+                            id="delete-recipient"
                             mat-icon-button
                             color="primary"
-                            attr.aria-label="Test recipient"
-                            matTooltip="Send test notification"
-                            [disabled]="testAlertLoading() === recipient.id"
-                            (click)="testRecipient(alert.id!, recipient.id!)"
+                            attr.aria-label="Delete Alert {{ i + 0 }}"
+                            (click)="removeAlertRecipient(recipient, alert)"
                           >
-                            @if (testAlertLoading() === recipient.id) {
-                              <mat-spinner diameter="16" />
-                            } @else {
-                              <mat-icon>send</mat-icon>
-                            }
-                          </button>
-                          <button
-                            class="recipient-action small-icon-button"
-                            mat-icon-button
-                            color="primary"
-                            attr.aria-label="Edit recipient"
-                            (click)="openEditRecipientDialog(recipient, alert)"
-                          >
-                            <mat-icon>edit</mat-icon>
+                            <mat-icon>delete</mat-icon>
                           </button>
                         }
-                        <button
-                          class="recipient-action small-icon-button"
-                          id="delete-recipient"
-                          mat-icon-button
-                          color="primary"
-                          attr.aria-label="Delete Alert {{ i + 0 }}"
-                          (click)="removeAlertRecipient(recipient, alert)"
-                        >
-                          <mat-icon>delete</mat-icon>
-                        </button>
-                      }
-                    </div>
+                      </div>
+                    }
                   </div>
                 </li>
               }
             </ul>
-            <button
-              mat-stroked-button
-              color="primary"
-              (click)="openUpdateRecipientDialog(alert)"
-            >
-              <mat-icon>add</mat-icon>
-              Add An Alert Recipient
-            </button>
+            @if (canWriteProject()) {
+              <button
+                mat-stroked-button
+                color="primary"
+                (click)="openUpdateRecipientDialog(alert)"
+              >
+                <mat-icon>add</mat-icon>
+                Add An Alert Recipient
+              </button>
+            }
           </div>
         }
       }
