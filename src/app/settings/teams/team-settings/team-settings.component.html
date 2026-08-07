@@ -1,10 +1,7 @@
 @if (team(); as team) {
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title i18n>Settings</mat-card-title>
-    </mat-card-header>
-    <mat-divider></mat-divider>
+  <mat-card appearance="outlined">
     <mat-card-content>
+      <h2 class="detail-section-header" i18n>Settings</h2>
       @if (errors().updateName) {
         <mat-error class="server-error center-text">{{
           errors().updateName
@@ -31,12 +28,9 @@
     </mat-card-content>
   </mat-card>
 }
-<mat-card>
-  <mat-card-header>
-    <mat-card-title i18n>Delete Team</mat-card-title>
-  </mat-card-header>
-  <mat-divider></mat-divider>
+<mat-card appearance="outlined">
   <mat-card-content class="remove-content">
+    <h2 class="detail-section-header" i18n>Delete team</h2>
     <div>
       <p i18n
         >By deleting your team, you will lose all associated data. This cannot
@@ -46,6 +40,7 @@
     </div>
     <gt-loading-button
       buttonText="Delete Team"
+      buttonStyle="stroked"
       [loading]="loading().deleteTeam"
       (buttonClick)="deleteTeam()"
     >

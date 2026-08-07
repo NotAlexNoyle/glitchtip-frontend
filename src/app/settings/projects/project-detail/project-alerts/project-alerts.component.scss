@@ -1,20 +1,20 @@
 @use "@angular/material" as mat;
 @use "variables" as vars;
 
-mat-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-bottom: 12px;
-
-  mat-card-title {
-    padding-bottom: 0;
-  }
+mat-card {
+  margin-bottom: var(--gt-space-5);
 }
 
-.mat-card-title {
-  margin-bottom: 0;
+.detail-section-header {
+  margin: 0 0 var(--gt-space-3);
+}
+
+.alerts-header {
+  margin-bottom: var(--gt-space-3);
+
+  .detail-section-header {
+    margin: 0;
+  }
 }
 
 .error {

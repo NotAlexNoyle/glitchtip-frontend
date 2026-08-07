@@ -3,7 +3,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from "@angular/router";
 import { MatTabsModule } from "@angular/material/tabs";
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
-import { DetailHeaderComponent } from "src/app/shared/detail/header/header.component";
+import { PageHeaderComponent } from "src/app/shared/detail/page-header/page-header.component";
 import { BackLinkComponent } from "src/app/shared/detail/back-link/back-link.component";
 import { TopAppBar } from "src/app/shared/top-app-bar/top-app-bar";
 
@@ -18,7 +18,7 @@ import { TopAppBar } from "src/app/shared/top-app-bar/top-app-bar";
     MatTabsModule,
     RouterLinkActive,
     RouterOutlet,
-    DetailHeaderComponent,
+    PageHeaderComponent,
     BackLinkComponent,
     TopAppBar,
   ],

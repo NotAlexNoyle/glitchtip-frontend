@@ -1,7 +1,8 @@
-<mat-card>
-  <mat-card-header class="card-header">
-    <mat-card-title i18n>Members</mat-card-title>
-    @if (userTeamRole() !== "member") {
+<mat-card appearance="outlined">
+  <mat-card-content>
+    <div class="card-header">
+      <h2 class="detail-section-header" i18n>Members</h2>
+      @if (userTeamRole() !== "member") {
       <mat-form-field appearance="outline" data-cy="team-member-select">
         <mat-label i18n>Add Member</mat-label>
         <mat-select (selectionChange)="addTeamMember()" [formControl]="member">
@@ -20,9 +21,7 @@
         }
       </mat-form-field>
     }
-  </mat-card-header>
-  <mat-divider></mat-divider>
-  <mat-card-content>
+    </div>
     @if (teamMembers().length === 0) {
       <p class="center-text" i18n>This team doesn't have any members</p>
     } @else {
@@ -36,6 +35,7 @@
               mat-line
               [routerLink]="['../', 'members', teamMember.id]"
               [relativeTo]="$safeNavigationMigration(route.parent?.parent)"
+              class="team-member-email"
               >{{ teamMember.email }}</a
             >
             <gt-loading-button

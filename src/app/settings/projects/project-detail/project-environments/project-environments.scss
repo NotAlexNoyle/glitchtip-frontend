@@ -1,16 +1,17 @@
 mat-card {
-  margin-bottom: 20px;
+  margin-bottom: var(--gt-space-5);
 }
 
-h1 {
-  margin-bottom: 0;
+.detail-section-header {
+  margin: 0 0 var(--gt-space-3);
 }
 
-h2 {
-  margin: 0;
-  padding-top: 18px;
-  font-size: 1.2em;
-  font-weight: 500;
+.detail-subsection-header {
+  margin: var(--gt-space-4) 0 0;
+}
+
+.environment-name {
+  font-family: var(--gt-font-mono);
 }
 
 .loading {

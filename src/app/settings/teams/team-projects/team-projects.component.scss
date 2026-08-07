@@ -14,18 +14,29 @@ mat-card {
 
 mat-card-content {
   margin-top: 16px;
+  // One tidy line: [ project name (grows, truncates) ] ···· [ Remove ]
   .team-project-list-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px 0;
+    gap: var(--gt-space-4);
+    padding: var(--gt-space-3) 0;
 
     &:nth-last-child(n + 2) {
       border-bottom: 1px solid var(--mat-sys-outline-variant);
     }
 
     .team-name {
-      margin-right: 10px;
+      // Identity grows and truncates so the row stays a single line.
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    gt-loading-button {
+      flex-shrink: 0;
     }
   }
 }

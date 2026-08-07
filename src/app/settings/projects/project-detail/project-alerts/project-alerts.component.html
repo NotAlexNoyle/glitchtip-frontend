@@ -1,25 +1,23 @@
-<mat-card>
-  <mat-card-header class="flex-common">
-    <mat-card-title i18n>Project Alerts</mat-card-title>
-    <button
-      mat-flat-button
-      id="create-new-alert"
-      color="primary"
-      (click)="openNewAlert()"
-      [disabled]="newAlertOpen() === true || !accessProjectWrite()"
-      i18n
-      >Create New Alert</button
-    >
-  </mat-card-header>
-  <mat-divider></mat-divider>
-
+<mat-card appearance="outlined">
   <mat-card-content>
+    <div class="alerts-header flex-common">
+      <h2 class="detail-section-header" i18n>Project alerts</h2>
+      <button
+        mat-flat-button
+        id="create-new-alert"
+        color="primary"
+        (click)="openNewAlert()"
+        [disabled]="newAlertOpen() === true || !accessProjectWrite()"
+        i18n
+        >Create New Alert</button
+      >
+    </div>
     @if (initialLoad() === true) {
       <!-- New Alert -->
       @if (newAlertOpen() === true) {
         <div class="new-alert">
           <div class="alert-header">
-            <h3 i18n>New Alert</h3>
+            <h3 class="detail-subsection-header" i18n>New alert</h3>
           </div>
           @if (newAlertError(); as error) {
             <p class="error new-alert-error">
@@ -173,9 +171,9 @@
             }
             <div class="flex-common alert-header">
               @if (alert.name) {
-                <h3>{{ alert.name }}</h3>
+                <h3 class="detail-subsection-header">{{ alert.name }}</h3>
               } @else {
-                <h3>Alert {{ i + 1 }}</h3>
+                <h3 class="detail-subsection-header">Alert {{ i + 1 }}</h3>
               }
               <gt-loading-button
                 [buttonText]="'Remove Alert ' + (i + 1)"

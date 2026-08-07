@@ -4,6 +4,17 @@
   align-items: center;
 }
 
+// Member emails are identifiers: render them monospace.
+.team-member-email {
+  font-family: var(--gt-font-mono);
+  // Identity grows and truncates so the row stays a single line.
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 mat-card {
   margin: 24px 8px 8px 8px;
 }
@@ -15,14 +26,20 @@ mat-card {
 mat-card-content {
   margin-top: 16px;
 
+  // One tidy line: [ mono email (grows, truncates) ] ···· [ Remove ]
   .member-list-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px 0;
+    gap: var(--gt-space-4);
+    padding: var(--gt-space-3) 0;
 
     &:nth-last-child(n + 2) {
       border-bottom: 1px solid var(--mat-sys-outline-variant);
+    }
+
+    gt-loading-button {
+      flex-shrink: 0;
     }
   }
 }

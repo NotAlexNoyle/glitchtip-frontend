@@ -1,34 +1,19 @@
 @use "variables" as vars;
 
 mat-card {
-  margin-top: 24px;
-  margin-bottom: 24px;
-
-  mat-card-content {
-    padding-top: 16px;
-  }
+  margin-bottom: var(--gt-space-5);
 }
 
-.basics-content {
-  display: flex;
-  justify-content: space-between;
+.masthead-card {
+  margin-bottom: var(--gt-space-5);
+}
 
-  .column {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
+.detail-section-header {
+  margin: 0 0 var(--gt-space-3);
+}
 
-  @media (max-width: vars.$large - 1) {
-    flex-direction: column;
-    justify-content: center;
-
-    .column {
-      display: block;
-      margin-top: 8px;
-      margin-bottom: 8px;
-    }
-  }
+.role-scopes__value {
+  font-family: vars.$font-mono;
 }
 
 form {

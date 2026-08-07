@@ -1,10 +1,7 @@
 <section>
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>Environments</mat-card-title>
-    </mat-card-header>
-    <mat-divider></mat-divider>
+  <mat-card appearance="outlined">
     <mat-card-content>
+      <h2 class="detail-section-header" i18n>Environments</h2>
       @if (initialLoad() === false) {
         <div class="loading"></div>
       } @else {
@@ -13,7 +10,9 @@
             sortedEnvironment of sortedEnvironments;
             track sortedEnvironment.heading
           ) {
-            <h2>{{ sortedEnvironment.heading }}</h2>
+            <h3 class="detail-subsection-header">
+              {{ sortedEnvironment.heading }}
+            </h3>
             <mat-list>
               @for (
                 environment of sortedEnvironment.environments;
@@ -21,7 +20,7 @@
               ) {
                 <mat-list-item>
                   <div class="environment-list-item">
-                    <span class="body-text">
+                    <span class="body-text environment-name">
                       {{ environment.name }}
                     </span>
                     <gt-loading-button

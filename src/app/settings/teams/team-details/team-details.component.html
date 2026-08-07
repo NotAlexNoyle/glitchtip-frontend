@@ -4,7 +4,7 @@
   </ng-container>
 </gt-top-app-bar>
 <section class="l-body">
-  <gt-detail-header [title]="'#' + teamSlug()!" />
+  <gt-page-header [title]="'#' + teamSlug()!" />
   <nav mat-tab-nav-bar mat-stretch-tabs="false" [tabPanel]="tabPanel">
     @for (link of navLinks; track link) {
       <a

@@ -1,8 +1,9 @@
 @if (orgSlug(); as orgSlug) {
-  <mat-card>
-    <mat-card-header class="card-header">
-      <mat-card-title i18n>Projects</mat-card-title>
-      @if (errors().addProjectToTeam) {
+  <mat-card appearance="outlined">
+    <mat-card-content>
+      <div class="card-header">
+        <h2 class="detail-section-header" i18n>Projects</h2>
+        @if (errors().addProjectToTeam) {
         <mat-error>{{ errors().addProjectToTeam }}</mat-error>
       }
       <div>
@@ -24,9 +25,7 @@
           </mat-form-field>
         }
       </div>
-    </mat-card-header>
-    <mat-divider></mat-divider>
-    <mat-card-content>
+      </div>
       @if (projectsOnTeam().length === 0) {
         <p class="center-text" i18n>This team doesn't have any projects</p>
       } @else {

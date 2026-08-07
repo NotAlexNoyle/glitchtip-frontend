@@ -6,9 +6,9 @@
 
 @if (activeProject(); as project) {
   <section class="l-body">
-    <gt-detail-header [title]="'Settings for ' + project.name" />
+    <gt-page-header [title]="project.name" />
     @if (project.isMember === false) {
-      <mat-card
+      <mat-card appearance="outlined"
         ><mat-card-content class="note-padding">
           <p class="body-text-strong" i18n>Note</p>
           <p i18n>
@@ -20,12 +20,9 @@
         ></mat-card
       >
     }
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title i18n>Update Project</mat-card-title>
-      </mat-card-header>
-      <mat-divider></mat-divider>
+    <mat-card appearance="outlined">
       <mat-card-content>
+        <h2 class="detail-section-header" i18n>Update project</h2>
         @if (updateNameError()) {
           <mat-error class="server-error">{{ updateNameError() }}</mat-error>
         }
@@ -124,22 +121,21 @@
       </mat-card-content>
     </mat-card>
     @for (projectKey of projectKeys() || []; track projectKey) {
-      <mat-card>
-        <mat-card-header class="vertical-card-header">
-          <mat-card-title i18n>Client Keys (DSN)</mat-card-title>
-          <p class="caption-text" i18n>
+      <mat-card appearance="outlined">
+        <mat-card-content>
+          <h2 class="detail-section-header" i18n>Client keys (DSN)</h2>
+          <p class="caption-text project-dsn-desc" i18n>
             Data Source Name: The code that connects your project to GlitchTip.
             Install a library into your project, then configure it with the DSN
             so that it knows how to send errors to your GlitchTip account.
           </p>
-        </mat-card-header>
-        <mat-divider></mat-divider>
-        <mat-card-content>
           <gt-copy-input
+            class="project-dsn"
             [value]="projectKey.dsn.public"
             placeholder="DSN"
           ></gt-copy-input>
           <gt-copy-input
+            class="project-dsn"
             [value]="projectKey.dsn.security"
             placeholder="Security Endpoint"
           ></gt-copy-input>
@@ -154,12 +150,9 @@
       [orgSlug]="orgSlug()"
       [projectSlug]="projectSlug()"
     ></gt-project-alerts>
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title i18n>Personal Project Notifications</mat-card-title>
-      </mat-card-header>
-      <mat-divider></mat-divider>
+    <mat-card appearance="outlined">
       <mat-card-content class="remove-content">
+        <h2 class="detail-section-header" i18n>Personal project notifications</h2>
         <div>
           <p i18n
             >Edit whether or not you want to receive notifications for this
@@ -177,12 +170,9 @@
         </div>
       </mat-card-content>
     </mat-card>
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title i18n>Delete Project</mat-card-title>
-      </mat-card-header>
-      <mat-divider></mat-divider>
+    <mat-card appearance="outlined">
       <mat-card-content class="remove-content">
+        <h2 class="detail-section-header" i18n>Delete project</h2>
         <div>
           <p i18n
             >By deleting your project, you will lose all associated data. This
@@ -191,6 +181,7 @@
         </div>
         <gt-loading-button
           buttonText="Delete Project"
+          buttonStyle="stroked"
           [loading]="deleteLoading()"
           (buttonClick)="deleteProject()"
           [disabled]="!accessProjectWrite()"

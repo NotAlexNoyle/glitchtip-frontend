@@ -8,7 +8,6 @@ import {
 import { ProjectEnvironmentsService } from "./project-environments.service";
 import { LoadingButtonComponent } from "../../../../shared/loading-button/loading-button.component";
 import { MatListModule } from "@angular/material/list";
-import { MatDividerModule } from "@angular/material/divider";
 import { MatCardModule } from "@angular/material/card";
 
 @Component({
@@ -16,12 +15,7 @@ import { MatCardModule } from "@angular/material/card";
   templateUrl: "./project-environments.html",
   styleUrls: ["./project-environments.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    MatCardModule,
-    MatDividerModule,
-    MatListModule,
-    LoadingButtonComponent,
-  ],
+  imports: [MatCardModule, MatListModule, LoadingButtonComponent],
   providers: [ProjectEnvironmentsService],
 })
 export class ProjectEnvironments implements OnInit {

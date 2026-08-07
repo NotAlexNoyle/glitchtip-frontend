@@ -1,6 +1,7 @@
-@use "@angular/material" as mat;
+.masthead-card {
+  margin-bottom: var(--gt-space-4);
+}
 
 nav {
-  border-bottom: 1px solid
-    mat.m2-get-color-from-palette(mat.$m2-gray-palette, 300);
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
 }

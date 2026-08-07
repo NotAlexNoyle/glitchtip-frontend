@@ -5,40 +5,15 @@
 </gt-top-app-bar>
 @if (member(); as member) {
   <section class="l-body">
-    <gt-detail-header [title]="member.email" />
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title il8n>Basics</mat-card-title>
-      </mat-card-header>
-      <mat-divider></mat-divider>
-      <mat-card-content class="basics-content">
-        <div class="column">
-          <div class="body-text-strong" i18n>Email</div>
-          <div>{{ member.email }}</div>
-        </div>
-        <div class="column">
-          <div class="body-text-strong" i18n>Role</div>
-          <div>{{ member.roleName }}</div>
-        </div>
-        <div class="column">
-          <div class="body-text-strong" i18n>Added</div>
-          <div>{{ member.dateCreated | date }}</div>
-        </div>
-        @if (member.isOwner) {
-          <div class="column">
-            <mat-chip color="primary" highlighted="true" i18n
-              >Account Owner</mat-chip
-            >
-          </div>
-        }
-      </mat-card-content>
-    </mat-card>
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title i18n>Role</mat-card-title>
-      </mat-card-header>
-      <mat-divider></mat-divider>
+    <gt-page-header
+      [kicker]="member.roleName"
+      [title]="member.email"
+      [titleMono]="true"
+      [meta]="'Joined ' + (member.dateCreated | date: 'mediumDate')"
+    />
+    <mat-card appearance="outlined">
       <mat-card-content>
+        <h2 class="detail-section-header" i18n>Role</h2>
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
           @if (updateMemberError(); as error) {
             <mat-error>{{ error }}</mat-error>
@@ -90,17 +65,14 @@
         <div class="role-scopes">
           @if (selectedRoleScopes(); as scopes) {
             <div class="body-text-strong" i18n>Scopes:</div>
-            <div>{{ scopes }}</div>
+            <div class="role-scopes__value">{{ scopes }}</div>
           }
         </div>
       </mat-card-content>
     </mat-card>
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title i18n>Organization Account Ownership</mat-card-title>
-      </mat-card-header>
-      <mat-divider></mat-divider>
+    <mat-card appearance="outlined">
       <mat-card-content>
+        <h2 class="detail-section-header" i18n>Organization account ownership</h2>
         @if (!member.isOwner) {
           @if (transferOrgOwnershipError(); as error) {
             <mat-error>{{ error }}</mat-error>
@@ -132,12 +104,9 @@
       </mat-card-content>
     </mat-card>
     @if (memberTeams(); as memberTeams) {
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title i18n>Team(s)</mat-card-title>
-        </mat-card-header>
-        <mat-divider></mat-divider>
+      <mat-card appearance="outlined">
         <mat-card-content>
+          <h2 class="detail-section-header" i18n>Teams</h2>
           @if (memberTeams.length === 0) {
             <p class="center-text" i18n>This user isn't on any teams.</p>
           } @else {

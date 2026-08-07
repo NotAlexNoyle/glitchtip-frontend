@@ -29,10 +29,21 @@ form {
   }
 }
 
+.detail-section-header {
+  margin: 0 0 var(--gt-space-3);
+}
+
 .remove-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: var(--gt-space-3) var(--gt-space-5);
+
+  .detail-section-header {
+    width: 100%;
+    margin: 0;
+  }
 
   @media (max-width: vars.$tablet - 1) {
     flex-direction: column;

@@ -1,16 +1,24 @@
 @use "variables" as vars;
 
 mat-card {
-  margin-top: 20px;
-  margin-bottom: 20px;
-
-  mat-card-content {
-    padding-top: 16px;
-  }
+  margin-bottom: var(--gt-space-5);
 
   .note-padding {
     padding-top: 0;
   }
+}
+
+.detail-section-header {
+  margin: 0 0 var(--gt-space-3);
+}
+
+// DSN strings are machine identifiers: render the copy-input value monospace.
+.project-dsn ::ng-deep input {
+  font-family: vars.$font-mono;
+}
+
+.project-dsn-desc {
+  margin: 0 0 var(--gt-space-4);
 }
 
 .project-form {
@@ -65,6 +73,14 @@ mat-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: var(--gt-space-3) var(--gt-space-5);
+
+  // Eyebrow sits on its own row above the description + action.
+  .detail-section-header {
+    width: 100%;
+    margin: 0;
+  }
 
   @media (max-width: vars.$tablet - 1) {
     flex-direction: column;
