@@ -4,6 +4,16 @@
 ## Version Control
 - **Commits:** Use conventional commits (e.g., `fix:`, `feat:`, `refactor:`).
 
+## UI Conventions
+
+- **Permission gating:** Gate every write/delete control on a named capability gate from `OrganizationsService` (`canWriteProject`, `canAdminOrg`, …) rather than an inline scope list. `hasScope(...)` is the any-of primitive behind those gates, public only for ad-hoc combinations. The backend enforces access regardless; gating is a UX affordance so users do not click actions that will 403. Gate by _reason_:
+  - **Permission/role → hide** with `@if (canXxx())`, e.g. `@if (canAdminProject()) { <button>Delete</button> }`. If hiding a lone action would leave an empty card, hide the whole card, or render its data read-only. Hiding keeps the control out of screen-reader focus, unlike `[disabled]`.
+  - **Transient state → `[disabled]`** (pristine form, in-flight request, missing prerequisite), paired with a reason the user can act on. Never `[disabled]` for permission.
+  - **Write and admin are different scopes.** `project:admin` deletes projects and alerts, `team:admin` deletes teams, `org:admin` is Owner-only. Do not gate a delete on the write gate.
+  - **Team writes are team-scoped**, not org-scoped: use the team gates, and `TeamsService.canModifyTeam` where the backend's in-team/not-in-team distinction applies.
+  - **Re-home copy that points at a control you hid.** An empty state reading "press Create New Project" must not render when that button is gated away — pass the button's own condition down instead.
+  - **Multi-org views cannot use these gates.** Every gate derives from the one selected organization, so a view listing several orgs (the home project list) must gate per-org or not at all. `GET /api/0/organizations/` does not yet return `access`.
+
 ## Local Development
 
 - **Backend:** sibling repo `glitchtip-backend`. Start with `docker compose up -d` from that repo; API is served on `http://localhost:8000`.
