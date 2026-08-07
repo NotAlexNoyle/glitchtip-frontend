@@ -55,22 +55,10 @@
         <target>Dine tokens</target>
       </segment>
     </unit>
-    <unit id="5612078901304454283">
-      <segment state="translated">
-        <source>Once you create a token, it will show up here.</source>
-        <target>Når du har laget et token vil det vises her.</target>
-      </segment>
-    </unit>
     <unit id="4587452935087847438">
       <segment state="translated">
         <source>Releases</source>
         <target>Utgivelser</target>
-      </segment>
-    </unit>
-    <unit id="2251615247560743164">
-      <segment state="translated">
-        <source>There are no releases for this organization.</source>
-        <target>Det er ingen utgivelser for denne organisasjonen.</target>
       </segment>
     </unit>
     <unit id="6326759550347037576">
@@ -451,12 +439,6 @@
         <target>Avbryt</target>
       </segment>
     </unit>
-    <unit id="1339421090554377874">
-      <segment state="initial">
-        <source>You don&apos;t have any alerts set up. Click &quot;Create New Alert&quot; on the top right of this card to get started.</source>
-        <target>Du har ikke konfigurert noen varsler. Klikk &quot;Opprett nytt varsel&quot; øverst til høyre for å komme i gang.</target>
-      </segment>
-    </unit>
     <unit id="7091571651222742304">
       <segment state="translated">
         <source>Projects</source>
@@ -529,24 +511,6 @@
         <target>This organization has no projects.</target>
       </segment>
     </unit>
-    <unit id="79938863716203390">
-      <segment state="initial">
-        <source>To add a project to this organization, press the &quot;Add Project&quot; button.</source>
-        <target>To add a project to this organization, press the &quot;Add Project&quot; button.</target>
-      </segment>
-    </unit>
-    <unit id="8267592046747299006">
-      <segment state="initial">
-        <source>You can&apos;t see issues for this project because you&apos;re not on the team.</source>
-        <target>You can&apos;t see issues for this project because you&apos;re not on the team.</target>
-      </segment>
-    </unit>
-    <unit id="5183247000083361116">
-      <segment state="initial">
-        <source>Out of the projects you have selected, you are not a part of that project&apos;s team for at least one of them.</source>
-        <target>Out of the projects you have selected, you are not a part of that project&apos;s team for at least one of them.</target>
-      </segment>
-    </unit>
     <unit id="100331146953492785">
       <segment state="initial">
         <source>Connect your <ph id="0" equiv="INTERPOLATION" disp="{{ activeProjectPlatformName() }}"/> project to GlitchTip</source>
@@ -561,20 +525,8 @@
     </unit>
     <unit id="177080935354192505">
       <segment state="initial">
-        <source>If you go to this project&apos;s <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a data-cy=&quot;platform-settings-link&quot; [routerLink]=&quot;[ &apos;/&apos;, activeOrganizationSlug(), &apos;settings&apos;, &apos;projects&apos;, activeProjectSlug(), ]&quot; &gt;" dispEnd="&lt;/a &gt;"> settings page</pc>, you can pick a platform. If you do, you&apos;ll get more specific instructions about how to get started. </source>
-        <target>If you go to this project&apos;s <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a data-cy=&quot;platform-settings-link&quot; [routerLink]=&quot;[ &apos;/&apos;, activeOrganizationSlug(), &apos;settings&apos;, &apos;projects&apos;, activeProjectSlug(), ]&quot; &gt;" dispEnd="&lt;/a &gt;"> settings page</pc>, you can pick a platform. If you do, you&apos;ll get more specific instructions about how to get started. </target>
-      </segment>
-    </unit>
-    <unit id="5448343062628656309">
-      <segment state="initial">
-        <source>No events match your filters.</source>
-        <target>No events match your filters.</target>
-      </segment>
-    </unit>
-    <unit id="8251107285080064288">
-      <segment state="initial">
-        <source>Try changing your search parameters to get something to show here.</source>
-        <target>Try changing your search parameters to get something to show here.</target>
+        <source>If you go to this project&apos;s <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a data-cy=&quot;platform-settings-link&quot; [routerLink]=&quot;[ &apos;/&apos;, activeOrganizationSlug(), &apos;settings&apos;, &apos;projects&apos;, projectSlug, ]&quot; &gt;" dispEnd="&lt;/a &gt;"> settings page</pc>, you can pick a platform. If you do, you&apos;ll get more specific instructions about how to get started. </source>
+        <target>If you go to this project&apos;s <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a data-cy=&quot;platform-settings-link&quot; [routerLink]=&quot;[ &apos;/&apos;, activeOrganizationSlug(), &apos;settings&apos;, &apos;projects&apos;, projectSlug, ]&quot; &gt;" dispEnd="&lt;/a &gt;"> settings page</pc>, you can pick a platform. If you do, you&apos;ll get more specific instructions about how to get started. </target>
       </segment>
     </unit>
     <unit id="4388879716045736175">
@@ -1841,46 +1793,34 @@
         <target>Initialize the SDK early in your application&apos;s startup.</target>
       </segment>
     </unit>
-    <unit id="198471031488977990">
-      <segment state="initial">
-        <source>General Configuration</source>
-        <target>General Configuration</target>
-      </segment>
-    </unit>
     <unit id="3318523364772817208">
       <segment state="initial">
         <source>Most SDKs support these options:</source>
         <target>Most SDKs support these options:</target>
       </segment>
     </unit>
-    <unit id="8048591278687742899">
+    <unit id="6487820965681624268">
       <segment state="initial">
-        <source><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">dsn</pc> — Where to send event data. Found in GlitchTip under project settings.</source>
-        <target><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">dsn</pc> — Where to send event data. Found in GlitchTip under project settings.</target>
+        <source><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">release</pc>: your application version (e.g., <pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">&quot;1.0.0&quot;</pc>). Helps track which releases introduce errors.</source>
+        <target><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">release</pc>: your application version (e.g., <pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">&quot;1.0.0&quot;</pc>). Helps track which releases introduce errors.</target>
       </segment>
     </unit>
-    <unit id="1985492201537719447">
+    <unit id="6796632791086515660">
       <segment state="initial">
-        <source><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">release</pc> — Your application version (e.g., <pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">&quot;1.0.0&quot;</pc>). Helps track which releases introduce errors.</source>
-        <target><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">release</pc> — Your application version (e.g., <pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">&quot;1.0.0&quot;</pc>). Helps track which releases introduce errors.</target>
+        <source><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">environment</pc>: the running environment name (e.g., <pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">&quot;production&quot;</pc>, <pc id="2" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">&quot;staging&quot;</pc>).</source>
+        <target><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">environment</pc>: the running environment name (e.g., <pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">&quot;production&quot;</pc>, <pc id="2" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">&quot;staging&quot;</pc>).</target>
       </segment>
     </unit>
-    <unit id="5409298298706299891">
+    <unit id="82086681255948735">
       <segment state="initial">
-        <source><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">environment</pc> — The running environment name (e.g., <pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">&quot;production&quot;</pc>, <pc id="2" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">&quot;staging&quot;</pc>).</source>
-        <target><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">environment</pc> — The running environment name (e.g., <pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">&quot;production&quot;</pc>, <pc id="2" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">&quot;staging&quot;</pc>).</target>
+        <source><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">traces_sample_rate</pc>: sample rate for performance transactions (<pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">0.0</pc> to <pc id="2" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">1.0</pc>). Use a low value like <pc id="3" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">0.01</pc> (1%) in production to save disk space.</source>
+        <target><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">traces_sample_rate</pc>: sample rate for performance transactions (<pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">0.0</pc> to <pc id="2" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">1.0</pc>). Use a low value like <pc id="3" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">0.01</pc> (1%) in production to save disk space.</target>
       </segment>
     </unit>
-    <unit id="6607541293183686120">
+    <unit id="3756990424428532451">
       <segment state="initial">
-        <source><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">traces_sample_rate</pc> — Sample rate for performance transactions (<pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">0.0</pc> to <pc id="2" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">1.0</pc>). Use a low value like <pc id="3" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">0.01</pc> (1%) in production to save disk space.</source>
-        <target><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">traces_sample_rate</pc> — Sample rate for performance transactions (<pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">0.0</pc> to <pc id="2" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">1.0</pc>). Use a low value like <pc id="3" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">0.01</pc> (1%) in production to save disk space.</target>
-      </segment>
-    </unit>
-    <unit id="8246537847392930078">
-      <segment state="initial">
-        <source><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">auto_session_tracking</pc> — Set to <pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">false</pc>. GlitchTip does not support session tracking.</source>
-        <target><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">auto_session_tracking</pc> — Set to <pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">false</pc>. GlitchTip does not support session tracking.</target>
+        <source><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">auto_session_tracking</pc>: set to <pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">false</pc>. GlitchTip does not support session tracking.</source>
+        <target><pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">auto_session_tracking</pc>: set to <pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">false</pc>. GlitchTip does not support session tracking.</target>
       </segment>
     </unit>
     <unit id="883341321910713030">
@@ -2141,22 +2081,10 @@
         <target>Clear filters</target>
       </segment>
     </unit>
-    <unit id="8643937855400353832">
+    <unit id="8043281408144413530">
       <segment state="initial">
-        <source>No logs found.</source>
-        <target>No logs found.</target>
-      </segment>
-    </unit>
-    <unit id="6349168611124992157">
-      <segment state="initial">
-        <source> Try adjusting your filters.</source>
-        <target> Try adjusting your filters.</target>
-      </segment>
-    </unit>
-    <unit id="3071389344573298592">
-      <segment state="initial">
-        <source> Configure your SDK to start capturing logs.</source>
-        <target> Configure your SDK to start capturing logs.</target>
+        <source>Configure your SDK to start capturing logs.</source>
+        <target>Configure your SDK to start capturing logs.</target>
       </segment>
     </unit>
     <unit id="33149636091572968">
@@ -2225,28 +2153,10 @@
         <target>Get Priority Support</target>
       </segment>
     </unit>
-    <unit id="1760380914125168379">
+    <unit id="9008002243574450871">
       <segment state="initial">
-        <source> You&apos;ve reached the maximum number of events that your plan allows for this billing period. </source>
-        <target> You&apos;ve reached the maximum number of events that your plan allows for this billing period. </target>
-      </segment>
-    </unit>
-    <unit id="3561866231707911512">
-      <segment state="initial">
-        <source> Change your subscription </source>
-        <target> Change your subscription </target>
-      </segment>
-    </unit>
-    <unit id="5485930912805976052">
-      <segment state="initial">
-        <source> if you&apos;d like to get things moving again.</source>
-        <target> if you&apos;d like to get things moving again.</target>
-      </segment>
-    </unit>
-    <unit id="9144349604807767226">
-      <segment state="initial">
-        <source>No transaction groups were found.</source>
-        <target>No transaction groups were found.</target>
+        <source> Manage your subscription </source>
+        <target> Manage your subscription </target>
       </segment>
     </unit>
     <unit id="2973061628865967914">
@@ -2861,10 +2771,268 @@
         <target>Add</target>
       </segment>
     </unit>
-    <unit id="2693599899411110236">
+    <unit id="7370230567811224225">
       <segment state="initial">
-        <source> No monitors were found. </source>
-        <target> No monitors were found. </target>
+        <source>Optional setup</source>
+        <target>Optional setup</target>
+      </segment>
+    </unit>
+    <unit id="21722028680342187">
+      <segment state="initial">
+        <source>Configuration options</source>
+        <target>Configuration options</target>
+      </segment>
+    </unit>
+    <unit id="217694042940919672">
+      <segment state="initial">
+        <source>No projects yet</source>
+        <target>No projects yet</target>
+      </segment>
+    </unit>
+    <unit id="1002685503248432712">
+      <segment state="initial">
+        <source>Add a project to start capturing errors.</source>
+        <target>Add a project to start capturing errors.</target>
+      </segment>
+    </unit>
+    <unit id="5376287016044032856">
+      <segment state="initial">
+        <source>No access</source>
+        <target>No access</target>
+      </segment>
+    </unit>
+    <unit id="4166065492158510722">
+      <segment state="initial">
+        <source>No matching issues</source>
+        <target>No matching issues</target>
+      </segment>
+    </unit>
+    <unit id="2559496713819894682">
+      <segment state="initial">
+        <source>Try adjusting your search, or clear your filters to see everything.</source>
+        <target>Try adjusting your search, or clear your filters to see everything.</target>
+      </segment>
+    </unit>
+    <unit id="7610964918163314775">
+      <segment state="initial">
+        <source>You&apos;re not on this project&apos;s team. Ask an organization admin to add you.</source>
+        <target>You&apos;re not on this project&apos;s team. Ask an organization admin to add you.</target>
+      </segment>
+    </unit>
+    <unit id="4167058869457255799">
+      <segment state="initial">
+        <source>You&apos;re not on the team for at least one of the selected projects. Ask an organization admin to add you.</source>
+        <target>You&apos;re not on the team for at least one of the selected projects. Ask an organization admin to add you.</target>
+      </segment>
+    </unit>
+    <unit id="4802437878460003316">
+      <segment state="initial">
+        <source>No matching logs</source>
+        <target>No matching logs</target>
+      </segment>
+    </unit>
+    <unit id="3208062810604819243">
+      <segment state="initial">
+        <source>Try adjusting or clearing your filters.</source>
+        <target>Try adjusting or clearing your filters.</target>
+      </segment>
+    </unit>
+    <unit id="2387128922474445063">
+      <segment state="initial">
+        <source>No logs yet</source>
+        <target>No logs yet</target>
+      </segment>
+    </unit>
+    <unit id="2970839613887488633">
+      <segment state="initial">
+        <source> You&apos;ve hit your plan&apos;s event limit for this billing period, so new events are being throttled. </source>
+        <target> You&apos;ve hit your plan&apos;s event limit for this billing period, so new events are being throttled. </target>
+      </segment>
+    </unit>
+    <unit id="7107557213954037999">
+      <segment state="initial">
+        <source> to upgrade or raise your overage spend cap and keep ingesting.</source>
+        <target> to upgrade or raise your overage spend cap and keep ingesting.</target>
+      </segment>
+    </unit>
+    <unit id="8374275089919878151">
+      <segment state="initial">
+        <source> to upgrade or turn on overage billing and keep ingesting.</source>
+        <target> to upgrade or turn on overage billing and keep ingesting.</target>
+      </segment>
+    </unit>
+    <unit id="5589145458945303023">
+      <segment state="initial">
+        <source>No transactions</source>
+        <target>No transactions</target>
+      </segment>
+    </unit>
+    <unit id="953535088200530364">
+      <segment state="initial">
+        <source>Performance data appears here once your app sends transactions.</source>
+        <target>Performance data appears here once your app sends transactions.</target>
+      </segment>
+    </unit>
+    <unit id="858351361293679688">
+      <segment state="initial">
+        <source>No tokens</source>
+        <target>No tokens</target>
+      </segment>
+    </unit>
+    <unit id="7175145836216322796">
+      <segment state="initial">
+        <source>Create a token to use the GlitchTip API.</source>
+        <target>Create a token to use the GlitchTip API.</target>
+      </segment>
+    </unit>
+    <unit id="6794398718047270044">
+      <segment state="initial">
+        <source>No connected accounts</source>
+        <target>No connected accounts</target>
+      </segment>
+    </unit>
+    <unit id="4417619564210882782">
+      <segment state="initial">
+        <source>Connect a social login to sign in with it.</source>
+        <target>Connect a social login to sign in with it.</target>
+      </segment>
+    </unit>
+    <unit id="8033508513197634301">
+      <segment state="initial">
+        <source>No releases</source>
+        <target>No releases</target>
+      </segment>
+    </unit>
+    <unit id="3154215924252206494">
+      <segment state="initial">
+        <source>Releases appear here once you send release data with your events.</source>
+        <target>Releases appear here once you send release data with your events.</target>
+      </segment>
+    </unit>
+    <unit id="734906184673613487">
+      <segment state="initial">
+        <source>No alerts</source>
+        <target>No alerts</target>
+      </segment>
+    </unit>
+    <unit id="5633083782376260608">
+      <segment state="initial">
+        <source>Create an alert to get notified when this project has new issues.</source>
+        <target>Create an alert to get notified when this project has new issues.</target>
+      </segment>
+    </unit>
+    <unit id="8556850632312081218">
+      <segment state="initial">
+        <source>Overage billing</source>
+        <target>Overage billing</target>
+      </segment>
+    </unit>
+    <unit id="1037055124677738449">
+      <segment state="initial">
+        <source> Keep ingesting past your plan quota and pay only for the overflow, up to a monthly cap you set. At the cap, throttling resumes, so your bill never goes over the cap. </source>
+        <target> Keep ingesting past your plan quota and pay only for the overflow, up to a monthly cap you set. At the cap, throttling resumes, so your bill never goes over the cap. </target>
+      </segment>
+    </unit>
+    <unit id="3902887131210150867">
+      <segment state="initial">
+        <source>Toggle overage billing</source>
+        <target>Toggle overage billing</target>
+      </segment>
+    </unit>
+    <unit id="6952837916620686302">
+      <segment state="initial">
+        <source> Only organization owners can change overage billing. </source>
+        <target> Only organization owners can change overage billing. </target>
+      </segment>
+    </unit>
+    <unit id="655046618668721877">
+      <segment state="initial">
+        <source>this cycle (estimate)</source>
+        <target>this cycle (estimate)</target>
+      </segment>
+    </unit>
+    <unit id="4097479593197024186">
+      <segment state="initial">
+        <source>Resets <ph id="0" equiv="INTERPOLATION" disp="{{ reset | date }}"/></source>
+        <target>Resets <ph id="0" equiv="INTERPOLATION" disp="{{ reset | date }}"/></target>
+      </segment>
+    </unit>
+    <unit id="8029994383060138640">
+      <segment state="initial">
+        <source>of cap</source>
+        <target>of cap</target>
+      </segment>
+    </unit>
+    <unit id="9136609981998301917">
+      <segment state="initial">
+        <source> Spend cap reached. Events above your quota are being throttled again. Raise the cap to keep ingesting. </source>
+        <target> Spend cap reached. Events above your quota are being throttled again. Raise the cap to keep ingesting. </target>
+      </segment>
+    </unit>
+    <unit id="1866402162869099992">
+      <segment state="initial">
+        <source> On track to reach your cap before the cycle ends. </source>
+        <target> On track to reach your cap before the cycle ends. </target>
+      </segment>
+    </unit>
+    <unit id="6739776056259621342">
+      <segment state="initial">
+        <source>Monthly spend cap</source>
+        <target>Monthly spend cap</target>
+      </segment>
+    </unit>
+    <unit id="3385004691905994600">
+      <segment state="initial">
+        <source>Enter a cap between <ph id="0" equiv="INTERPOLATION" disp="{{ minCapDollars | currency }}"/> and <ph id="1" equiv="INTERPOLATION_1" disp="{{ maxCapDollars | currency }}"/>.</source>
+        <target>Enter a cap between <ph id="0" equiv="INTERPOLATION" disp="{{ minCapDollars | currency }}"/> and <ph id="1" equiv="INTERPOLATION_1" disp="{{ maxCapDollars | currency }}"/>.</target>
+      </segment>
+    </unit>
+    <unit id="3620188369327429839">
+      <segment state="initial">
+        <source> Save </source>
+        <target> Save </target>
+      </segment>
+    </unit>
+    <unit id="2330577642930707695">
+      <segment state="initial">
+        <source> Cancel </source>
+        <target> Cancel </target>
+      </segment>
+    </unit>
+    <unit id="4260801227613473914">
+      <segment state="initial">
+        <source> Adjust cap </source>
+        <target> Adjust cap </target>
+      </segment>
+    </unit>
+    <unit id="8129643199361482403">
+      <segment state="initial">
+        <source>Turn on overage billing?</source>
+        <target>Turn on overage billing?</target>
+      </segment>
+    </unit>
+    <unit id="6029936206086253599">
+      <segment state="initial">
+        <source> You&apos;re only charged for events above your plan quota, up to a <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ capInputDollars() | currency }}"/> monthly cap</pc> you can change anytime. Your bill never goes over the cap. </source>
+        <target> You&apos;re only charged for events above your plan quota, up to a <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ capInputDollars() | currency }}"/> monthly cap</pc> you can change anytime. Your bill never goes over the cap. </target>
+      </segment>
+    </unit>
+    <unit id="863858405231648348">
+      <segment state="initial">
+        <source> Turn on overage billing </source>
+        <target> Turn on overage billing </target>
+      </segment>
+    </unit>
+    <unit id="4545186191685636796">
+      <segment state="initial">
+        <source>No uptime monitors</source>
+        <target>No uptime monitors</target>
+      </segment>
+    </unit>
+    <unit id="1190219267773780159">
+      <segment state="initial">
+        <source>Add a monitor to get alerted when a site or service goes down.</source>
+        <target>Add a monitor to get alerted when a site or service goes down.</target>
       </segment>
     </unit>
   </file>
