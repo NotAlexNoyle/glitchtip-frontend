@@ -4,12 +4,10 @@ import {
   computed,
   inject,
   effect,
-  signal,
   ChangeDetectionStrategy,
 } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { map } from "rxjs/operators";
-import { Router } from "@angular/router";
 import {
   Validators,
   ReactiveFormsModule,
@@ -66,7 +64,6 @@ export class LoginComponent
   private settings = inject(SettingsService);
   private activatedRoute = inject(ActivatedRoute);
   private snackBar = inject(MatSnackBar);
-  private router = inject(Router);
 
   formErrors = this.service.formErrors;
   loading = this.service.loading;
@@ -99,10 +96,6 @@ export class LoginComponent
   orgLoginSettingsLoaded = computed(() =>
     this.orgLoginSettingsResource.hasValue(),
   );
-
-  /** Discovery affordance for private (organization-only) SSO providers */
-  showOrgSsoField = signal(false);
-  orgSlugControl = new FormControl("");
 
   enableUserRegistration = this.settings.enableUserRegistration;
   enableSocialAppsUserRegistration =
@@ -140,14 +133,6 @@ export class LoginComponent
 
   onSocialApp(socialApp: SocialApp) {
     this.service.socialLogin(socialApp.provider);
-  }
-
-  goToOrgLogin() {
-    const slug = this.orgSlugControl.value?.trim();
-    if (slug) {
-      this.router.navigate(["/login", slug]);
-      this.showOrgSsoField.set(false);
-    }
   }
 
   onSubmit() {

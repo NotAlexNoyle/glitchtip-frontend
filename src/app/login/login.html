@@ -74,66 +74,36 @@
           >
           </gt-loading-button>
         </form>
-        @if (socialApps(); as socialApps) {
-          @if (socialApps.length) {
-            <div class="or">
-              <span class="body-text-strong" i18n>or</span>
-            </div>
+        @if (socialApps().length || !orgSlug()) {
+          <div class="or">
+            <span class="body-text-strong" i18n>or</span>
+          </div>
+        }
+        <div class="o-auth">
+          @for (socialApp of socialApps(); track socialApp.provider) {
+            <button
+              mat-stroked-button
+              class="full-width margin"
+              (click)="onSocialApp(socialApp)"
+            >
+              <gt-auth-svg
+                source="auth"
+                text="Log in with {{ socialApp.name }}"
+                i18n-text
+                [provider]="socialApp.brand"
+              ></gt-auth-svg>
+            </button>
           }
-          <div class="o-auth">
-            @for (socialApp of socialApps; track socialApp) {
-              <button
-                mat-stroked-button
-                class="full-width margin"
-                (click)="onSocialApp(socialApp)"
-              >
-                <gt-auth-svg
-                  source="auth"
-                  text="Log in with {{ socialApp.name }}"
-                  i18n-text
-                  [provider]="socialApp.brand"
-                ></gt-auth-svg>
-              </button>
-            }
-          </div>
-        }
-        @if (!orgSlug()) {
-          <div class="org-sso">
-            @if (!showOrgSsoField()) {
-              <p class="body-text">
-                <button
-                  type="button"
-                  class="auth-link link-button"
-                  (click)="showOrgSsoField.set(true)"
-                  i18n
-                >
-                  Use your organization's single sign-on
-                </button>
-              </p>
-            } @else {
-              <!-- Plain form (no formGroup), so Angular's ngSubmit never
-                   attaches; handle the native submit event instead. -->
-              <form (submit)="$event.preventDefault(); goToOrgLogin()">
-                <mat-form-field class="full-width" appearance="outline">
-                  <mat-label i18n>Organization identifier</mat-label>
-                  <input matInput [formControl]="orgSlugControl" />
-                  <mat-hint i18n
-                    >The organization name in your GlitchTip URLs — or ask your
-                    admin for the sign-in link</mat-hint
-                  >
-                </mat-form-field>
-                <button
-                  mat-stroked-button
-                  class="full-width"
-                  type="submit"
-                  i18n
-                >
-                  Continue
-                </button>
-              </form>
-            }
-          </div>
-        }
+          @if (!orgSlug()) {
+            <a
+              mat-stroked-button
+              class="full-width margin"
+              routerLink="/sso-login"
+              i18n
+              >Use your organization's single sign-on</a
+            >
+          }
+        </div>
         <div class="sign-up">
           @if (enableUserRegistration() || enableSocialAppsUserRegistration()) {
             <p class="body-text">

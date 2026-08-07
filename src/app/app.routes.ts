@@ -19,6 +19,13 @@ export const routes: Routes = [
     title: "Log In",
   },
   {
+    // Asks for an organization slug, then forwards to that org's login page
+    path: "sso-login",
+    loadComponent: () => import("./login/sso-login").then((m) => m.SsoLogin),
+    canActivate: [alreadyLoggedInGuard],
+    title: "Organization Single Sign-On",
+  },
+  {
     // Per-organization login page listing the org's own SSO providers
     path: "login/:org-slug",
     loadComponent: () => import("./login/login").then((m) => m.LoginComponent),

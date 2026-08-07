@@ -1,0 +1,47 @@
+<div class="auth-form-wrapper">
+  <mat-card class="auth-form">
+    <mat-card-header>
+      <mat-card-title>
+        <h3 i18n>Organization Single Sign-On</h3>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p class="body-text" i18n>
+        Enter your organization's identifier to continue to its sign-in page.
+      </p>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <mat-form-field
+          class="full-width"
+          appearance="outline"
+          subscriptSizing="dynamic"
+        >
+          <mat-label i18n>Organization identifier</mat-label>
+          <input matInput gtAutofocus formControlName="orgSlug" />
+          <mat-hint i18n
+            >The organization name in your GlitchTip URLs — or ask your admin
+            for the sign-in link</mat-hint
+          >
+          @if (orgSlug?.errors?.["required"]) {
+            <mat-error i18n>Enter your organization identifier</mat-error>
+          }
+        </mat-form-field>
+        <button
+          mat-flat-button
+          color="primary"
+          class="full-width"
+          type="submit"
+          id="submit"
+          i18n
+        >
+          Continue
+        </button>
+      </form>
+      <div class="sign-up">
+        <a mat-stroked-button routerLink="/login">
+          <mat-icon>keyboard_arrow_left</mat-icon>
+          <span i18n>Back to login</span>
+        </a>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
