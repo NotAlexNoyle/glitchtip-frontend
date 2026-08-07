@@ -111,7 +111,7 @@
                         class="recipient-action small-icon-button"
                         mat-icon-button
                         color="primary"
-                        attr.aria-label="Edit recipient"
+                        aria-label="Edit recipient"
                         (click)="
                           openEditNewRecipientDialog(recipient, recipientIndex)
                         "
@@ -123,7 +123,7 @@
                       class="recipient-action small-icon-button"
                       mat-icon-button
                       color="primary"
-                      attr.aria-label="Delete Alert For {{ recipient.url }}"
+                      aria-label="Delete Alert For {{ recipient.url }}"
                       (click)="removeNewAlertRecipient(recipient.url)"
                     >
                       <mat-icon>delete</mat-icon>
@@ -296,7 +296,7 @@
                               class="recipient-action small-icon-button"
                               mat-icon-button
                               color="primary"
-                              attr.aria-label="Test recipient"
+                              aria-label="Test recipient"
                               matTooltip="Send test notification"
                               [disabled]="testAlertLoading() === recipient.id"
                               (click)="testRecipient(alert.id!, recipient.id!)"
@@ -311,7 +311,7 @@
                               class="recipient-action small-icon-button"
                               mat-icon-button
                               color="primary"
-                              attr.aria-label="Edit recipient"
+                              aria-label="Edit recipient"
                               (click)="
                                 openEditRecipientDialog(recipient, alert)
                               "
@@ -324,7 +324,7 @@
                             id="delete-recipient"
                             mat-icon-button
                             color="primary"
-                            attr.aria-label="Delete Alert {{ i + 0 }}"
+                            aria-label="Delete recipient"
                             (click)="removeAlertRecipient(recipient, alert)"
                           >
                             <mat-icon>delete</mat-icon>
