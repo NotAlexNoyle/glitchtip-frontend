@@ -162,7 +162,7 @@ export class PermissionGatingPreview {
       type: "Signal<boolean>",
       default: "",
       description:
-        "Composite: canWriteTeam() || canWriteOrg() — create, rename or delete any team",
+        "Composite: canWriteTeam() || canWriteOrg() — create a team",
     },
     {
       name: "TeamsService.canModifyTeam()",
