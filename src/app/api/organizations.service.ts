@@ -84,19 +84,13 @@ export class OrganizationsService {
     () => this.selectedOrganization()?.openMembership ?? false,
   );
 
-  #scopeGates = new Map<string, Signal<boolean>>();
+  
   /**
    * Any-of scope check, memoized per combination. Prefer the named gates below
    * in templates; this stays public for ad-hoc combinations.
    */
   hasScope = (...required: Scope[]) => {
-    const key = required.join(",");
-    let gate = this.#scopeGates.get(key);
-    if (!gate) {
-      gate = computed(() => required.some((scope) => this.access().has(scope)));
-      this.#scopeGates.set(key, gate);
-    }
-    return gate;
+    return computed(() => required.some((scope) => this.access().has(scope)));
   };
 
   // Named capability gates — the single source of truth for which scopes back
