@@ -42,14 +42,14 @@ export class TeamMembersComponent implements OnInit {
   route = inject(ActivatedRoute);
   private snackBar = inject(MatSnackBar);
   private userService = inject(UserService);
-  private organizationsService = inject(OrganizationsService)
+  private organizationsService = inject(OrganizationsService);
 
   teamMembers = this.teamsService.teamMembers;
   filteredAddTeamMembers =
     this.organizationsDetailService.filteredAddTeamMembers;
   canModifyTeam = this.teamsService.canModifyTeam;
   openMembership = this.organizationsService.openMembership;
-  canWriteTeam = this.organizationsService.canWriteTeam
+  activeUserEmail = this.userService.activeUserEmail;
 
   member = new FormControl();
   orgSlug = "";

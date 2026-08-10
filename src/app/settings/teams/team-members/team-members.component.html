@@ -38,7 +38,11 @@
               [relativeTo]="$safeNavigationMigration(route.parent?.parent)"
               >{{ teamMember.email }}</a
             >
-            @if (openMembership() || canWriteTeam()) {
+            <!-- Open membership lets you remove yourself, but nobody else. -->
+            @if (
+              canModifyTeam() ||
+              (openMembership() && teamMember.email === activeUserEmail())
+            ) {
               <gt-loading-button
                 buttonText="Remove"
                 buttonStyle="stroked"

@@ -1,5 +1,4 @@
 import { computed, inject, Injectable, signal } from "@angular/core";
-import type { Signal } from "@angular/core";
 import { client } from "../shared/api/api";
 import { AuthService } from "../auth.service";
 import { apiResource } from "../shared/api/api-resource-factory";
@@ -85,8 +84,8 @@ export class OrganizationsService {
   );
 
   /**
-   * Any-of scope check, memoized per combination. Prefer the named gates below
-   * in templates; this stays public for ad-hoc combinations.
+   * Any-of scope check. Prefer the named gates below in templates; this stays
+   * public for ad-hoc combinations.
    */
   hasScope = (...required: Scope[]) => {
     return computed(() => required.some((scope) => this.access().has(scope)));

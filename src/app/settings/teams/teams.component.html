@@ -60,13 +60,22 @@
         </ul>
       } @else {
         @if (otherTeams()?.length) {
-          @if (canJoinTeam()) {
+          <!-- Each half of this copy points at a control gated separately:
+               "join" at canJoinTeam, "Create Team" at canManageAnyTeam. -->
+          @if (canJoinTeam() && canManageAnyTeam()) {
             <p i18n
               >You aren't part of any teams. Join a team below or press the
               "Create Team" button in the upper right.</p
             >
-          } @else {
+          } @else if (canJoinTeam()) {
             <p i18n>You aren't part of any teams. Join a team below.</p>
+          } @else if (canManageAnyTeam()) {
+            <p i18n
+              >You aren't part of any teams. Press the "Create Team" button in
+              the upper right to create one.</p
+            >
+          } @else {
+            <p i18n>You aren't part of any teams.</p>
           }
         } @else {
           <p i18n
