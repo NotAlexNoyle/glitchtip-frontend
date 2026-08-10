@@ -84,7 +84,6 @@ export class OrganizationsService {
     () => this.selectedOrganization()?.openMembership ?? false,
   );
 
-  
   /**
    * Any-of scope check, memoized per combination. Prefer the named gates below
    * in templates; this stays public for ad-hoc combinations.
