@@ -11,10 +11,10 @@
           </p>
         </div>
         <div class="overage-top-control">
+          @if (loading()) {
+            <mat-spinner diameter="20" />
+          }
           @if (canAdminOrg()) {
-            @if (loading()) {
-              <mat-spinner diameter="20" />
-            }
             <mat-slide-toggle
               [checked]="enabled()"
               [disabled]="loading()"
