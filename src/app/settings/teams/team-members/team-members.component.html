@@ -38,7 +38,7 @@
               [relativeTo]="$safeNavigationMigration(route.parent?.parent)"
               >{{ teamMember.email }}</a
             >
-            @if (canModifyTeam()) {
+            @if (openMembership() || canWriteTeam()) {
               <gt-loading-button
                 buttonText="Remove"
                 buttonStyle="stroked"
