@@ -130,9 +130,7 @@ describe("Add and edit alerts", () => {
   it("should add an alert for uptime notifications, then update it to work for error notifications", () => {
     cy.get("#create-new-alert").click();
     cy.get("[data-cy=error-check]").click();
-    cy.contains(
-      "Please select events or uptime monitor triggers for your alert.",
-    );
+    cy.contains("Select at least one condition: event frequency or uptime.");
     cy.get("[data-cy=uptime-check]").click();
     cy.get("button").contains("submit").click();
     cy.contains("Success! Your new alert has been added.");
