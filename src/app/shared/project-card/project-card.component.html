@@ -43,7 +43,7 @@
         }
         <span>{{ primary.text }}</span>
       </a>
-    } @else {
+    } @if (!isMember()) {
         <!-- Replaces the button rather than disabling it: team membership isn't
         transient state the user can change from here. Carries the copy the
         tooltip used to hold, which is the only hint at what to do next. -->
