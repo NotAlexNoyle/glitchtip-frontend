@@ -219,4 +219,11 @@
 .main-promo-section {
   // Top spacing comes from the shared .divider rhythm.
   padding-bottom: 40px;
+
+  // Cap the body measure so the paragraphs don't stretch with the widened
+  // home column. ~65ch keeps the line length ~70-75 characters at every
+  // container width; the text column just gains breathing room, it doesn't move.
+  .marketing-body {
+    max-width: 65ch;
+  }
 }
