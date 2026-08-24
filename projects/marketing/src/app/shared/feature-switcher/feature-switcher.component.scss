@@ -128,11 +128,15 @@
 .panel-body {
   grid-area: body;
   align-self: start;
-  max-width: 46ch;
+  max-width: 50ch;
 
   .marketing-body {
     margin: 0;
     color: var(--mat-sys-on-surface-variant);
+    // Scale up to better fill the card beside the large screenshot; the 50ch
+    // cap keeps the measure readable as the type grows on wide screens.
+    font-size: clamp(1.05rem, 0.85rem + 0.7vw, 1.35rem);
+    line-height: 1.6;
   }
 }
 
