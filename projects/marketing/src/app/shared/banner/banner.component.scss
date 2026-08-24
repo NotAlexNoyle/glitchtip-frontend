@@ -1,4 +1,3 @@
-@use "sass:list";
 @use "../../styles/grid-texture" as *;
 
 :host {
@@ -77,63 +76,33 @@
   @include card-clip;
 }
 
-// Solid surface; the filled cells live on the .banner__cells layer above it.
+// Solid surface (no top/bottom fade) with filled cells painted under the
+// ::after grid lines, so each reads as a framed cell of the live grid.
 :host(.hero-banner) .banner::before {
+  // (col row tone) cell clusters.
+  $cells:
+    // top-left corner
+    (1 1 $cell-red) (2 2 $cell-red-soft) (3 1 $cell-grey) (2 0 $cell-grey-soft)
+    // left edge, mid-height
+    (0 8 $cell-grey) (1 9 $cell-red-soft) (0 10 $cell-red) (1 11 $cell-grey-soft)
+    // bottom-left corner
+    (2 17 $cell-red-soft) (1 18 $cell-grey-soft) (3 18 $cell-grey)
+    (2 19 $cell-red) (3 20 $cell-grey-soft)
+    // top strip accents
+    (9 1 $cell-grey-soft) (10 0 $cell-red-soft) (20 0 $cell-red-soft)
+    (21 1 $cell-grey-soft)
+    // top-right corner
+    (32 1 $cell-grey) (33 0 $cell-grey-soft) (34 1 $cell-red) (35 0 $cell-red-soft)
+    // bottom-right corner
+    (32 19 $cell-grey-soft) (33 20 $cell-red-soft) (34 19 $cell-grey)
+    (35 20 $cell-red)
+    // bottom-centre accent
+    (14 20 $cell-grey-soft) (15 19 $cell-red-soft);
+
   background-color: var(--mat-sys-surface-container-lowest);
+  @include grid-cells($cells);
   -webkit-mask-image: none;
   mask-image: none;
-}
-
-// Filled cells on their own layers, framed by the ::after grid lines. They fade
-// up in four waves on load, then hold static; reduced motion shows them at rest.
-.banner__cells {
-  display: none;
-}
-
-:host(.hero-banner) .banner__cells {
-  display: block;
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-}
-
-// Cells per wave, in reveal order (one .banner__cells--N layer each).
-$cell-waves:
-  // Wave 1 — top-left corner + left-edge run.
-  ((1 1 $cell-red) (2 2 $cell-red-soft) (3 1 $cell-grey) (2 0 $cell-grey-soft)
-      (0 8 $cell-grey) (1 9 $cell-red-soft) (0 10 $cell-red) (1 11 $cell-grey-soft)),
-  // Wave 2 — top strip into the top-right corner.
-  ((9 1 $cell-grey-soft) (10 0 $cell-red-soft) (20 0 $cell-red-soft)
-      (21 1 $cell-grey-soft) (32 1 $cell-grey) (33 0 $cell-grey-soft)
-      (34 1 $cell-red) (35 0 $cell-red-soft)),
-  // Wave 3 — bottom-right corner + bottom-centre accent.
-  ((32 19 $cell-grey-soft) (33 20 $cell-red-soft) (34 19 $cell-grey)
-      (35 20 $cell-red) (14 20 $cell-grey-soft) (15 19 $cell-red-soft)),
-  // Wave 4 — bottom-left corner.
-  ((2 17 $cell-red-soft) (1 18 $cell-grey-soft) (3 18 $cell-grey)
-      (2 19 $cell-red) (3 20 $cell-grey-soft));
-
-@for $i from 1 through list.length($cell-waves) {
-  :host(.hero-banner) .banner__cells--#{$i} {
-    @include grid-cells(list.nth($cell-waves, $i));
-
-    @media (prefers-reduced-motion: no-preference) {
-      opacity: 0;
-      animation: cell-reveal 0.55s ease-out (0.05s + ($i - 1) * 0.15s) both;
-    }
-  }
-}
-
-@keyframes cell-reveal {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 // The card itself caps the width, so drop the inner's own full-bleed cap.

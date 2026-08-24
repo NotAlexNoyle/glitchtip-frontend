@@ -11,10 +11,6 @@ import {
 @Component({
   selector: "mkt-banner",
   template: `<div class="banner">
-    <span class="banner__cells banner__cells--1" aria-hidden="true"></span>
-    <span class="banner__cells banner__cells--2" aria-hidden="true"></span>
-    <span class="banner__cells banner__cells--3" aria-hidden="true"></span>
-    <span class="banner__cells banner__cells--4" aria-hidden="true"></span>
     <div class="banner__inner"><ng-content /></div>
   </div>`,
   styleUrl: "./banner.component.scss",
