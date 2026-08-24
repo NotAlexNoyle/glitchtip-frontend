@@ -494,6 +494,13 @@ a {
   }
 }
 
+// Opt-in: the container itself does not fade; a component instead staggers its
+// own children in sequence (see the main-promo copy in home.component.scss).
+.is-reveal.reveal-stagger {
+  opacity: 1;
+  transform: none;
+}
+
 // Shared hairline section separator on the --mkt-section rhythm.
 .divider {
   border-top: 1px solid var(--mat-sys-outline-variant);

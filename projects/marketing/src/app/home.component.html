@@ -52,6 +52,8 @@
             /assets/home/bots-assembled@3x.png 3x
           "
           alt=""
+          width="900"
+          height="361"
           loading="eager"
         />
       </picture>
@@ -60,11 +62,20 @@
       <picture>
         <source
           type="image/webp"
-          srcset="/assets/home/dashboard-hero@1x.webp"
+          srcset="
+            /assets/home/dashboard-hero@1x.webp,
+            /assets/home/dashboard-hero@2x.webp 2x
+          "
         />
         <img
           src="/assets/home/dashboard-hero@1x.png"
+          srcset="
+            /assets/home/dashboard-hero@1x.png,
+            /assets/home/dashboard-hero@2x.png 2x
+          "
           alt="GlitchTip Dashboard"
+          width="1200"
+          height="675"
         />
       </picture>
     </div>
@@ -74,7 +85,7 @@
 <div class="home-sections">
   <mkt-feature-section
     mktReveal
-    class="main-promo-section divider flush-media"
+    class="main-promo-section reveal-stagger divider flush-media"
     imageSrc="assets/home/main-promo@1x.png"
     imageAlt="Illustration that shows errors from various sites/apps reporting to GlitchTip"
     direction="right"
