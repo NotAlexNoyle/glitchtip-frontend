@@ -133,8 +133,7 @@
   .marketing-body {
     margin: 0;
     color: var(--mat-sys-on-surface-variant);
-    // Scale up to better fill the card beside the large screenshot; the 50ch
-    // cap keeps the measure readable as the type grows on wide screens.
+    // Scale up to fill the card beside the screenshot; 50ch keeps it readable.
     font-size: clamp(1.05rem, 0.85rem + 0.7vw, 1.35rem);
     line-height: 1.6;
   }

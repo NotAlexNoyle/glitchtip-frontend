@@ -220,21 +220,15 @@
   // Top spacing comes from the shared .divider rhythm.
   padding-bottom: 40px;
 
-  // Cap the body measure so the paragraphs don't stretch with the widened
-  // home column. ~65ch keeps the line length ~70-75 characters at every
-  // container width; the text column just gains breathing room, it doesn't move.
+  // Cap the measure so the paragraphs don't stretch with the widened home column.
   .marketing-body {
     max-width: 65ch;
   }
 }
 
-// Stagger the promo copy up as the section scrolls into view: the heading and
-// each paragraph arrive in sequence rather than the block appearing at once.
-// Below the fold (never touches LCP), composited (opacity/transform only, no
-// layout shift), and disabled for reduced motion. Selectors reference only the
-// home-owned projected copy so view encapsulation matches. Pairs with
-// `reveal-stagger` on the section, which opts the block out of the whole-card
-// fade in styles.scss.
+// Stagger the promo copy in as the section reveals. Targets only the home-owned
+// projected copy so view encapsulation matches; pairs with `reveal-stagger`
+// (styles.scss).
 .main-promo-section.is-reveal.reveal-stagger {
   .marketing-heading,
   .marketing-body {

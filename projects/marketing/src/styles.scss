@@ -49,10 +49,8 @@ html {
   // Layout containers: every page/band picks ONE of these max-widths.
   --mkt-container-wide: 1800px; // heroes, full-width bands, page chrome
   --mkt-container-docs: 1500px; // wide structured layouts: docs shell
-  // Home column: holds 1400 on laptops (up to ~1830px viewport), then grows to
-  // 1600 on large monitors so the content fills the width instead of leaving
-  // wide empty margins. Hero card + body sections both read this, so they grow
-  // together and stay aligned.
+  // Home column: holds 1400 on laptops, growing to 1600 on large monitors. Hero
+  // card + body sections share it, so they stay aligned.
   --mkt-container-home: min(1600px, max(1400px, 100vw - 430px));
   --mkt-container-table: 1280px; // pricing plan table
   --mkt-container-content: 1040px; // standard content pages (support, etc.)
@@ -494,8 +492,7 @@ a {
   }
 }
 
-// Opt-in: the container itself does not fade; a component instead staggers its
-// own children in sequence (see the main-promo copy in home.component.scss).
+// Opt-in: the container doesn't fade; a component staggers its own children.
 .is-reveal.reveal-stagger {
   opacity: 1;
   transform: none;

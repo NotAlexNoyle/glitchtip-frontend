@@ -77,21 +77,15 @@
   @include card-clip;
 }
 
-// Solid surface (no top/bottom fade); the filled cells live on the .banner__cells
-// layer above it, framed by the ::after grid lines.
+// Solid surface; the filled cells live on the .banner__cells layer above it.
 :host(.hero-banner) .banner::before {
   background-color: var(--mat-sys-surface-container-lowest);
   -webkit-mask-image: none;
   mask-image: none;
 }
 
-// Filled cells, on their own layers between the surface (::before) and the grid
-// lines (::after) so they read as framed cells of the live grid. Split into four
-// spatial waves that fade up in sequence, assembling clockwise around the frame
-// (top-left, top edge into top-right, bottom-right, bottom-left) when the hero
-// first paints, then hold static. Resting state is fully opaque (identical to the
-// original grid); only opacity/transform animate, once, and reduced-motion users
-// get the static grid with no reveal.
+// Filled cells on their own layers, framed by the ::after grid lines. They fade
+// up in four waves on load, then hold static; reduced motion shows them at rest.
 .banner__cells {
   display: none;
 }
@@ -104,9 +98,7 @@
   pointer-events: none;
 }
 
-// Cells per wave, in reveal order. Each wave paints on its own .banner__cells--N
-// layer and fades up 0.15s after the previous one, so the grid assembles
-// clockwise. Only opacity/transform animate (once), and reduced-motion skips it.
+// Cells per wave, in reveal order (one .banner__cells--N layer each).
 $cell-waves:
   // Wave 1 — top-left corner + left-edge run.
   ((1 1 $cell-red) (2 2 $cell-red-soft) (3 1 $cell-grey) (2 0 $cell-grey-soft)
