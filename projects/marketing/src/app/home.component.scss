@@ -36,8 +36,6 @@
   z-index: 1;
   position: relative;
 
-  // Subtle scrim in the card's own surface tone, so the grid fades gently
-  // behind the headline and copy and the text lifts off the texture.
   &::before {
     content: "";
     position: absolute;
@@ -96,8 +94,6 @@
   }
 
   @media screen and (min-width: vars.$large) {
-    // Pull the bots right so they spill a little over the screenshot rather than
-    // staying cramped in the text column.
     margin-right: -32%;
   }
 
@@ -105,8 +101,6 @@
     position: relative;
     display: block;
     width: 100%;
-    // height: auto keeps the natural aspect ratio (the width/height attrs and the
-    // narrower mobile crop would otherwise stretch it).
     height: auto;
     max-width: 1000px;
     margin: 0 auto;
