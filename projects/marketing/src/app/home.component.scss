@@ -36,6 +36,22 @@
   z-index: 1;
   position: relative;
 
+  // Subtle scrim in the card's own surface tone, so the grid fades gently
+  // behind the headline and copy and the text lifts off the texture.
+  &::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: -6% -8% -10% -8%;
+    background: radial-gradient(
+      ellipse 82% 88% at 34% 42%,
+      var(--mat-sys-surface-container-lowest) 0%,
+      color-mix(in srgb, var(--mat-sys-surface-container-lowest) 45%, transparent) 52%,
+      transparent 76%
+    );
+    pointer-events: none;
+  }
+
   @media screen and (max-width: vars.$small) {
     padding: 0;
     font-size: 0.9em;
@@ -80,14 +96,19 @@
   }
 
   @media screen and (min-width: vars.$large) {
-    margin-right: -20%;
+    // Pull the bots right so they spill a little over the screenshot rather than
+    // staying cramped in the text column.
+    margin-right: -32%;
   }
 
   img {
     position: relative;
     display: block;
     width: 100%;
-    max-width: 900px;
+    // height: auto keeps the natural aspect ratio (the width/height attrs and the
+    // narrower mobile crop would otherwise stretch it).
+    height: auto;
+    max-width: 1000px;
     margin: 0 auto;
   }
 }
