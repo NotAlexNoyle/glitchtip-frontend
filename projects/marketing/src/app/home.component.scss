@@ -217,8 +217,19 @@
 }
 
 .main-promo-section {
-  // Top spacing comes from the shared .divider rhythm.
-  padding-bottom: 40px;
+  // Extra vertical room so the section reads as a taller band, plus a little
+  // horizontal padding so the content isn't flush to the column edges.
+  padding-top: clamp(32px, 5vw, 72px);
+  padding-bottom: clamp(56px, 7vw, 104px);
+  padding-inline: clamp(16px, 3vw, 48px);
+
+  // On desktop, hold a taller band and centre the content within it.
+  @media screen and (min-width: vars.$large) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: clamp(520px, 60vh, 760px);
+  }
 
   // Cap the measure so the paragraphs don't stretch with the widened home column.
   .marketing-body {
