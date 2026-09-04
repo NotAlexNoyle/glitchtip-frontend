@@ -211,6 +211,9 @@ export class SubscriptionService extends StatefulService<SubscriptionState> {
   overageEnabled = computed(() => this.overageStatus()?.enabled ?? false);
   overageEligible = computed(() => this.overageStatus()?.eligible ?? false);
   overageConfigured = computed(() => this.overageStatus()?.configured ?? false);
+  // Server-enforced ceiling; env-configurable, so the client reads it rather
+  // than keeping a copy. Falls back to the server default before status loads.
+  maxCapCents = computed(() => this.overageStatus()?.maxCapCents ?? 1_000_000);
   canConfigureOverage = computed(
     () => this.overageEligible() && this.overageConfigured(),
   );

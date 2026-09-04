@@ -4873,6 +4873,8 @@ export interface components {
             active: boolean;
             /** Capcents */
             capCents: number;
+            /** Maxcapcents */
+            maxCapCents: number;
             /** Capunits */
             capUnits: number;
             /** Quota */
