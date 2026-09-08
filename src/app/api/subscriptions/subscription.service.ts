@@ -9,6 +9,7 @@ import { apiResource } from "src/app/shared/api/api-resource-factory";
 import {
   capReached as overageCapReached,
   isOverageInactive,
+  overageInactiveCause,
   overageThrottleState,
 } from "./overage-throttle-state";
 import { showSubscriptionRefreshTimeout } from "./subscription-refresh-state";
@@ -221,6 +222,7 @@ export class SubscriptionService extends StatefulService<SubscriptionState> {
   // Percent of new events being dropped (0 = none, 100 = all).
   throttleRate = computed(() => this.overageStatus()?.throttleRate ?? 0);
   overageInactive = computed(() => isOverageInactive(this.overageStatus()));
+  inactiveCause = computed(() => overageInactiveCause(this.overageStatus()));
   throttleState = computed(() => overageThrottleState(this.overageStatus()));
 
   // Progress by units, not cost (floored capUnits keep cost just under the cap).

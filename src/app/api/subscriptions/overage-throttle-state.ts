@@ -35,6 +35,20 @@ export function isOverageInactive(status: OverageStatus | null): boolean {
   return status.enabled && !status.active;
 }
 
+/**
+ * Whose problem an inactive overage is: an ineligible plan is a consequence of
+ * the customer's own change, an eligible one means the metered item has gone
+ * from Stripe, which they cannot fix and are not being billed for. Separate
+ * from `overageThrottleState` because the cause is known before throttling
+ * starts, and that only answers what remedy to offer an already-throttled org.
+ */
+export function overageInactiveCause(
+  status: OverageStatus | null,
+): "plan" | "broken" | null {
+  if (!status || !isOverageInactive(status)) return null;
+  return status.eligible ? "broken" : "plan";
+}
+
 /** Usage has consumed the spend cap. Only meaningful with overage enabled. */
 export function capReached(status: OverageStatus | null): boolean {
   if (!status || !status.enabled) return false;
@@ -58,14 +72,9 @@ export function overageThrottleState(
   if (!status.enabled) {
     return status.eligible && status.configured ? "no-overage" : "unavailable";
   }
-  if (isOverageInactive(status)) {
-    // Both mean "no headroom", but they are the customer's problem and ours
-    // respectively, so they get different remedies. An ineligible plan is a
-    // consequence of their own change; an eligible plan that is still not
-    // active means the metered item has gone from Stripe, which they cannot
-    // fix and are not being billed for.
-    return status.eligible ? "stalled-broken" : "stalled-plan";
-  }
+  // Both mean "no headroom", but they get different remedies.
+  const cause = overageInactiveCause(status);
+  if (cause) return cause === "broken" ? "stalled-broken" : "stalled-plan";
   // "cap" is a remedy claim. With the overage price archived (configured
   // false) the cap endpoint rejects changes, so never point anyone at the cap.
   return capReached(status) && status.configured ? "cap" : "throttled";
