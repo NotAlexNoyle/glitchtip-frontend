@@ -7,7 +7,9 @@
     "types": ["node"]
   },
   "files": ["src/main.ts"],
-  "include": ["src/**/*.d.ts"],
+  // ../../src/types.d.ts: previews pull in real app services, which rely on the
+  // main app's ambient Window augmentation.
+  "include": ["src/**/*.d.ts", "../../src/types.d.ts"],
   "angularCompilerOptions": {
     "extendedDiagnostics": {
       "checks": {

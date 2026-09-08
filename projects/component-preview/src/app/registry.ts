@@ -44,6 +44,7 @@ import { ToastsPreview } from "./previews/toasts.preview";
 import { DialogsPreview } from "./previews/dialogs.preview";
 import { LoadingOverlayPreview } from "./previews/loading-overlay.preview";
 import { EmptyStatePreview } from "./previews/empty-state.preview";
+import { OverageCardPreview } from "./previews/overage-card.preview";
 
 /**
  * Component lifecycle status, following the practice of published design
@@ -206,6 +207,13 @@ export const PREVIEWS: PreviewEntry[] = [
     label: "Empty state",
     group: "Components",
     component: EmptyStatePreview,
+    status: "stable",
+  },
+  {
+    id: "overage-card",
+    label: "Overage card",
+    group: "Components",
+    component: OverageCardPreview,
     status: "stable",
   },
   {
