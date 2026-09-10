@@ -56,7 +56,11 @@
   </gt-top-app-bar>
   <section class="l-body l-body--full-width">
     <div class="issue-header-wrapper">
-      <div class="status-indicator" [class]="'level--' + issue.level">
+      <div
+        class="status-indicator"
+        [class.is-striped]="levelStriped()"
+        [style.--gt-level-accent]="levelAccent()"
+      >
         <mat-icon>{{ statusIcon() }}</mat-icon>
       </div>
 

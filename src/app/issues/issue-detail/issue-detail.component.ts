@@ -29,14 +29,10 @@ import { IssueStatusUpdateDropdownComponent } from "src/app/shared/issue-status-
 import { IssueStatus } from "../interfaces";
 import { ConfirmDialogComponent } from "src/app/shared/confirm-dialog/confirm-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
-
-const STATUS_CONFIG = {
-  resolved: { label: "Resolved", icon: "done" },
-  unresolved: { label: "Unresolved", icon: "priority_high" },
-  ignored: { label: "Ignored", icon: "notifications_off" },
-} as const;
-
-type IssueStatusType = keyof typeof STATUS_CONFIG;
+import {
+  issueLevelToken,
+  issueStatusToken,
+} from "src/app/shared/object-identity/object-identity";
 
 @Component({
   selector: "gt-issue-detail",
@@ -122,9 +118,12 @@ export class IssueDetailComponent implements OnInit {
     const issue = this.issue();
     if (!issue) return "error";
 
-    const config = STATUS_CONFIG[issue.status as IssueStatusType];
-    return config?.icon ?? "error";
+    return issueStatusToken(issue.status).icon;
   });
+
+  /** Level accent colour + striped flag, from the shared identity tokens. */
+  levelAccent = computed(() => issueLevelToken(this.issue()?.level).color);
+  levelStriped = computed(() => issueLevelToken(this.issue()?.level).striped);
 
   resolvedInRelease = computed(() => {
     const issue = this.issue();

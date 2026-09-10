@@ -42,6 +42,7 @@ import { PaginationButtons } from "src/app/list-elements/pagination-buttons/pagi
 import { toSignal } from "@angular/core/rxjs-interop";
 import { MatMenuModule } from "@angular/material/menu";
 import { SearchHelpConfig } from "../../list-elements/data-filter-bar/data-filter-bar.component";
+import { issueLevelToken } from "src/app/shared/object-identity/object-identity";
 
 @Component({
   templateUrl: "./issues-page.html",
@@ -70,6 +71,10 @@ import { SearchHelpConfig } from "../../list-elements/data-filter-bar/data-filte
   providers: [IssuesService],
 })
 export class IssuesPage implements OnInit, OnDestroy {
+  // Level identity comes from the shared object-identity tokens, so a row's
+  // accent matches the detail page's for the same issue.
+  protected readonly levelToken = issueLevelToken;
+
   dialog = inject(MatDialog);
   protected service = inject(IssuesService);
   protected router = inject(Router);

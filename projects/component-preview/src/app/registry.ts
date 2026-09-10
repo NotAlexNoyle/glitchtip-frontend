@@ -44,6 +44,7 @@ import { ToastsPreview } from "./previews/toasts.preview";
 import { DialogsPreview } from "./previews/dialogs.preview";
 import { LoadingOverlayPreview } from "./previews/loading-overlay.preview";
 import { EmptyStatePreview } from "./previews/empty-state.preview";
+import { ObjectIdentityPreview } from "./previews/object-identity.preview";
 
 /**
  * Component lifecycle status, following the practice of published design
@@ -93,6 +94,13 @@ export const PREVIEWS: PreviewEntry[] = [
     label: "Colors",
     group: "Foundations",
     component: FoundationsColorsPreview,
+  },
+  {
+    id: "object-identity",
+    label: "Object identity",
+    group: "Foundations",
+    component: ObjectIdentityPreview,
+    status: "stable",
   },
   {
     id: "foundations-typography",

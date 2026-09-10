@@ -52,7 +52,9 @@
               *matCellDef="let row"
               [class.resolved]="row.status === 'resolved'"
               [class.ignored]="row.status === 'ignored'"
-              class="checkbox-cell level level--{{ row.level }}"
+              class="checkbox-cell level"
+              [class.is-striped]="levelToken(row.level).striped"
+              [style.--gt-level-accent]="levelToken(row.level).color"
             >
               <mat-checkbox
                 (click)="toggleCheck($event, row.id)"

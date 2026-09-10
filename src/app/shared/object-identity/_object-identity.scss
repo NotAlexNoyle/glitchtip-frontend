@@ -1,0 +1,21 @@
+// Paints an Issue's level accent. The host element keeps its own bar geometry
+// and passes the colour in through --gt-level-accent (bound from the TS token);
+// only the striped fatal gradient lives here. Geometry stays with the surface
+// because the list bar (left, 3px, full height) and the detail bar (right, 4px,
+// inset) are different shapes.
+@mixin level-accent {
+  &::after {
+    background-color: var(--gt-level-accent, var(--mat-sys-outline));
+  }
+
+  &.is-striped::after {
+    background-color: transparent;
+    background-image: repeating-linear-gradient(
+      -60deg,
+      var(--mat-sys-error),
+      var(--mat-sys-error) 5px,
+      var(--mat-sys-surface) 5px,
+      var(--mat-sys-surface) 10px
+    );
+  }
+}
