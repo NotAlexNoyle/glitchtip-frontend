@@ -8,8 +8,10 @@
   </a>
   @if (overageEnabled) {
     <span i18n> to upgrade or raise your overage spend cap and keep ingesting.</span>
-  } @else {
+  } @else if (overageAvailable) {
     <span i18n> to upgrade or turn on overage billing and keep ingesting.</span>
+  } @else {
+    <span i18n> to upgrade and keep ingesting.</span>
   }
 </span>
 <span matSnackBarActions>

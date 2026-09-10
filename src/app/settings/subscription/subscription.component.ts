@@ -84,10 +84,7 @@ export class SubscriptionComponent extends StatefulComponent<
   readonly subscriptionLoading = this.service.subscriptionLoading;
   readonly subscriptionRefreshTimeout = this.service.subscriptionRefreshTimeout;
   readonly totalEventsAllowed = this.service.totalEventsAllowed;
-  // Overage card renders only for paid (eligible), server-provisioned orgs.
-  readonly showOverageCard = computed(
-    () => this.service.overageEligible() && this.service.overageConfigured(),
-  );
+  readonly showOverageCard = this.service.overageAvailable;
   readonly activeOrganization = this.orgService.activeOrganization;
   readonly activeOrganizationSlug = this.orgService.activeOrganizationSlug;
   readonly billingPortalLoading = this.service.billingPortalLoading;

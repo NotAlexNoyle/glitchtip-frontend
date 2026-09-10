@@ -37,6 +37,8 @@ export class OrganizationFrameComponent implements OnDestroy, OnInit {
   private childRoutePath: string[] = [];
   private subscriptions: Subscription[] = [];
   private isNavigationFromBackButton = false;
+  // Orgs whose throttle warning has already been opened this session. 
+  private throttleWarningShownFor = new Set<string>();
   organizationService = inject(OrganizationsService);
   orgSlug = input.required<string>({ alias: "org-slug" });
 
@@ -90,22 +92,41 @@ export class OrganizationFrameComponent implements OnDestroy, OnInit {
         .includes(activeOrgSlug);
       const snackbarDurationSeconds = 60;
 
-      if (billingEnabled && activeOrg?.eventThrottleRate && !warningDismissed) {
-        const snackBarRef = this.snackBar.openFromComponent(OverLimitSnackbar, {
-          // Already-enrolled orgs are throttled because they hit their cap, so
-          // offer "raise your cap"; overageEnabled is false until status loads.
-          data: {
-            activeOrgSlug,
-            overageEnabled: this.subscription.overageEnabled(),
-          },
-          verticalPosition: "top",
-          duration: snackbarDurationSeconds * 1000,
-        });
-
-        snackBarRef
-          .afterDismissed()
-          .subscribe(() => this.user.dismissThrottleWarning(activeOrgSlug));
+      if (
+        !billingEnabled ||
+        !activeOrgSlug ||
+        !activeOrg?.eventThrottleRate ||
+        warningDismissed
+      ) {
+        return;
       }
+      
+      if (!this.subscription.overageStatusSettled()) {
+        return;
+      }
+      if (this.throttleWarningShownFor.has(activeOrgSlug)) {
+        return;
+      }
+      this.throttleWarningShownFor.add(activeOrgSlug);
+
+      const snackBarRef = this.snackBar.openFromComponent(OverLimitSnackbar, {
+        // Already enrolled: they are throttled because they hit their spend
+        // cap, so offer "raise the cap". 
+        // Not enrolled but able to be: offer the toggle. 
+        // Neither: say nothing about overage, because the subscription page 
+        // hides that card on the same two flags and the POST would reject.
+        data: {
+          activeOrgSlug,
+          overageEnabled: this.subscription.overageEnabled(),
+          overageAvailable: this.subscription.overageAvailable(),
+        },
+        verticalPosition: "top",
+        duration: snackbarDurationSeconds * 1000,
+      });
+
+      snackBarRef
+        .afterDismissed()
+        .subscribe(() => this.user.dismissThrottleWarning(activeOrgSlug));
     });
   }
 

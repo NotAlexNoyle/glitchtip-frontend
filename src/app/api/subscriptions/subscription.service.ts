@@ -76,6 +76,22 @@ export class SubscriptionService extends StatefulService<SubscriptionState> {
     () => this.state().subscriptionRefreshTimeout,
   );
 
+  overageStatusResource = apiResource(this.organizationSlug, (orgSlug) => ({
+    url: "/api/0/stripe/subscriptions/{organization_slug}/overage/",
+    options: {
+      params: {
+        path: { organization_slug: orgSlug },
+      },
+    },
+  }));
+  overageStatus = computed(() => {
+    if (this.overageStatusResource.error()) return null;
+    return this.overageStatusResource.value() ?? null;
+  });
+  overageStatusSettled = computed(
+    () => this.overageStatus() !== null || !!this.overageStatusResource.error(),
+  );
+
   // Gates the detail-page resources below; component owns the on/off lifecycle.
   // Keyed on selectedSlug, not the billing-gated organizationSlug, so the
   // self-hosted usage charts load too.
@@ -86,6 +102,13 @@ export class SubscriptionService extends StatefulService<SubscriptionState> {
 
   setDetailActive(active: boolean) {
     this.detailActive.set(active);
+    // Overage status is no longer keyed on detailSlug, so entering the
+    // subscription page no longer re-triggers its fetch the way it does for the
+    // usage resources. Reload explicitly, or the card would render whatever was
+    // cached for the snackbar
+    if (active) {
+      this.overageStatusResource.reload();
+    }
   }
 
   eventsCountCurrentPeriodResource = apiResource(
@@ -139,20 +162,6 @@ export class SubscriptionService extends StatefulService<SubscriptionState> {
     return this.dailyEventsResource.value()?.data ?? [];
   });
 
-  // Overage status. Gated on detailSlug like the usage resources; fails soft.
-  overageStatusResource = apiResource(this.detailSlug, (orgSlug) => ({
-    url: "/api/0/stripe/subscriptions/{organization_slug}/overage/",
-    options: {
-      params: {
-        path: { organization_slug: orgSlug },
-      },
-    },
-  }));
-  overageStatus = computed(() => {
-    if (this.overageStatusResource.error()) return null;
-    return this.overageStatusResource.value() ?? null;
-  });
-
   predictedEndOfMonth = computed(() => {
     const subscription = this.subscription();
     const eventsCountCurrentPeriod = this.eventsCountCurrentPeriod();
@@ -182,6 +191,9 @@ export class SubscriptionService extends StatefulService<SubscriptionState> {
   overageEnabled = computed(() => this.overageStatus()?.enabled ?? false);
   overageEligible = computed(() => this.overageStatus()?.eligible ?? false);
   overageConfigured = computed(() => this.overageStatus()?.configured ?? false);
+  overageAvailable = computed(
+    () => this.overageEligible() && this.overageConfigured(),
+  );
 
   // Progress by units, not cost (floored capUnits keep cost just under the cap).
   capProgressPercent = computed(() => {
@@ -397,7 +409,11 @@ export class SubscriptionService extends StatefulService<SubscriptionState> {
     this.eventsCountCurrentPeriodResource.set(undefined);
     this.dailyEventsResource.set(undefined);
     this.eventsCountPreviousPeriodResource.set(undefined);
-    this.overageStatusResource.set(undefined);
+    // overageStatusResource is deliberately absent: like subscriptionResource
+    // it is keyed on the org slug rather than detailSlug, so nothing re-flips a
+    // trigger to refetch it on re-entry. Clearing it here would blank the
+    // snackbar's CTA state for the rest of the session once the user visits the
+    // subscription page and leaves.
     clearInterval(this.refreshTimerRef);
     this.refreshTimerRef = undefined;
   }

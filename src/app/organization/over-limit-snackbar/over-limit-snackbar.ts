@@ -13,6 +13,7 @@ import { MatButtonModule } from "@angular/material/button";
 interface OverLimitSnackbarData {
   activeOrgSlug: string;
   overageEnabled: boolean;
+  overageAvailable: boolean;
 }
 
 @Component({
@@ -25,6 +26,7 @@ interface OverLimitSnackbarData {
 export class OverLimitSnackbar {
   readonly activeOrgSlug: string;
   readonly overageEnabled: boolean;
+  readonly overageAvailable: boolean;
 
   constructor(
     public snackBarRef: MatSnackBarRef<OverLimitSnackbar>,
@@ -32,5 +34,6 @@ export class OverLimitSnackbar {
   ) {
     this.activeOrgSlug = data.activeOrgSlug;
     this.overageEnabled = data.overageEnabled;
+    this.overageAvailable = data.overageAvailable;
   }
 }
