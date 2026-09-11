@@ -6,7 +6,8 @@
         <p class="top-value caption-text">
           <span class="key">{{ tag.key }}</span>
           <span>
-            {{ tag.topValues[0].value }}: {{ tag.topValues[0].percentRounded }}%
+            {{ tag.topValues[0].value }}:
+            <gt-percent [value]="tag.topValues[0].percentRounded" [decimals]="0" />
           </span>
         </p>
         <div>

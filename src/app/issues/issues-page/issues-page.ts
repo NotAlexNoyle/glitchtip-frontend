@@ -43,12 +43,14 @@ import { toSignal } from "@angular/core/rxjs-interop";
 import { MatMenuModule } from "@angular/material/menu";
 import { SearchHelpConfig } from "../../list-elements/data-filter-bar/data-filter-bar.component";
 import { issueLevelToken } from "src/app/shared/object-identity/object-identity";
+import { CountComponent } from "src/app/shared/object-attributes/count.component";
 
 @Component({
   templateUrl: "./issues-page.html",
   styleUrls: ["./issues-page.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    CountComponent,
     MatTableModule,
     DataFilterBarComponent,
     MatCheckboxModule,

@@ -131,6 +131,13 @@ table {
   @include object-identity.level-accent;
 }
 
+// Numerals right-align so the ones column lines up down the table, matching
+// the transaction tables' .num columns.
+.event-cell,
+.events-header-cell {
+  text-align: right;
+}
+
 .stats-cell-content {
   display: flex;
   justify-content: center;

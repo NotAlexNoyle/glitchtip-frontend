@@ -274,7 +274,7 @@
               mat-header-cell
               *matHeaderCellDef
               mat-sort-header
-              class="status-header-cell"
+              class="status-header-cell events-header-cell"
             >
               Events
             </th>
@@ -285,7 +285,7 @@
               [class.ignored]="element.status === 'ignored'"
               class="event-cell body-text"
             >
-              <p>{{ element.count }}</p>
+              <p><gt-count [value]="element.count" /></p>
             </td>
           </ng-container>
           <ng-container matColumnDef="trend">

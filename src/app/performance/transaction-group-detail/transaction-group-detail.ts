@@ -20,6 +20,7 @@ import { HumanizeDurationPipe } from "../../shared/seconds-or-ms.pipe";
 import { OrganizationsService } from "src/app/api/organizations.service";
 import { BackLinkComponent } from "src/app/shared/detail/back-link/back-link.component";
 import { TopAppBar } from "src/app/shared/top-app-bar/top-app-bar";
+import { CountComponent } from "src/app/shared/object-attributes/count.component";
 
 type SpanSortKey = "totalTime" | "avgDuration" | "p95Duration" | "count";
 
@@ -28,6 +29,7 @@ type SpanSortKey = "totalTime" | "avgDuration" | "p95Duration" | "count";
   templateUrl: "./transaction-group-detail.html",
   styleUrls: ["./transaction-group-detail.scss"],
   imports: [
+    CountComponent,
     MatCardModule,
     MatTableModule,
     MatSortModule,

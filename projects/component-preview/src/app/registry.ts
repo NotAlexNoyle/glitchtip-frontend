@@ -45,6 +45,7 @@ import { DialogsPreview } from "./previews/dialogs.preview";
 import { LoadingOverlayPreview } from "./previews/loading-overlay.preview";
 import { EmptyStatePreview } from "./previews/empty-state.preview";
 import { ObjectIdentityPreview } from "./previews/object-identity.preview";
+import { ObjectAttributesPreview } from "./previews/object-attributes.preview";
 
 /**
  * Component lifecycle status, following the practice of published design
@@ -100,6 +101,13 @@ export const PREVIEWS: PreviewEntry[] = [
     label: "Object identity",
     group: "Foundations",
     component: ObjectIdentityPreview,
+    status: "stable",
+  },
+  {
+    id: "object-attributes",
+    label: "Object attributes",
+    group: "Foundations",
+    component: ObjectAttributesPreview,
     status: "stable",
   },
   {
