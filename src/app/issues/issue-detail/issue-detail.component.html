@@ -151,52 +151,47 @@
             <h3 class="detail-section-header">Details</h3>
             <dl class="rail-metadata">
               <gt-entry-data key="Assignee" [dense]="true">
-                @if (issue.assignedTo) {
-                  {{ issue.assignedTo }}
+                @if (issue.assignedTo; as assignee) {
+                  <gt-object-ref
+                    [type]="assignee.type === 'team' ? 'team' : 'member'"
+                    [label]="assignee.name || assignee.email || 'Assigned'"
+                  />
                 } @else {
                   <span class="rail-empty">Unassigned</span>
                 }
               </gt-entry-data>
-              @if (issue.firstRelease?.shortVersion; as release) {
-                <gt-entry-data
-                  key="First release"
-                  [value]="release"
-                  [dense]="true"
-                  [mono]="true"
-                />
+              @if (issue.firstRelease; as release) {
+                <gt-entry-data key="First release" [dense]="true">
+                  <gt-object-ref
+                    type="release"
+                    [label]="release.shortVersion"
+                    [link]="['/', activeOrgSlug(), 'releases', release.version]"
+                    [mono]="true"
+                  />
+                </gt-entry-data>
               }
               @if (resolvedInRelease(); as release) {
-                <gt-entry-data
-                  key="Resolved in"
-                  [value]="release"
-                  [dense]="true"
-                  [mono]="true"
-                />
+                <gt-entry-data key="Resolved in" [dense]="true">
+                  <gt-object-ref
+                    type="release"
+                    [label]="release"
+                    [link]="['/', activeOrgSlug(), 'releases', release]"
+                    [mono]="true"
+                  />
+                </gt-entry-data>
               }
               @if (issue.firstSeen === issue.lastSeen) {
                 <!-- One event (or all at once): collapse the identical First/Last
                      seen pair into a single line instead of duplicating it. -->
                 <gt-entry-data key="Seen" [dense]="true">
-                  <span class="body-text">{{ issue.firstSeen | daysAgo }}</span>
-                  <span class="caption-text rail-abs-date">{{
-                    $safeNavigationMigration(issue?.firstSeen)
-                      | gtLocalDate: "MMM d, y, h:mm a"
-                  }}</span>
+                  <gt-timestamp [value]="issue.firstSeen" />
                 </gt-entry-data>
               } @else {
                 <gt-entry-data key="First seen" [dense]="true">
-                  <span class="body-text">{{ issue.firstSeen | daysAgo }}</span>
-                  <span class="caption-text rail-abs-date">{{
-                    $safeNavigationMigration(issue?.firstSeen)
-                      | gtLocalDate: "MMM d, y, h:mm a"
-                  }}</span>
+                  <gt-timestamp [value]="issue.firstSeen" mode="old" />
                 </gt-entry-data>
                 <gt-entry-data key="Last seen" [dense]="true">
-                  <span class="body-text">{{ issue.lastSeen | daysAgo }}</span>
-                  <span class="caption-text rail-abs-date">{{
-                    $safeNavigationMigration(issue?.lastSeen)
-                      | gtLocalDate: "MMM d, y, h:mm a"
-                  }}</span>
+                  <gt-timestamp [value]="issue.lastSeen" />
                 </gt-entry-data>
               }
               <gt-entry-data

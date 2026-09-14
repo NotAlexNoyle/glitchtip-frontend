@@ -3,14 +3,24 @@
     @if (datapoint) {
       @if (datapoint.isUp) {
         <div
-          class="up-check"
+          class="check-dot check-dot--up"
+          role="img"
+          [style.background-color]="statusToken(true).color"
+          [attr.aria-label]="'Up at ' + (datapoint.startCheck | date: 'short')"
           matTooltip="Up at {{ datapoint.startCheck | date: 'short' }}"
           matTooltipPosition="above"
         ></div>
       }
       @if (datapoint.isUp === false) {
         <div
-          class="down-check"
+          class="check-dot check-dot--down"
+          role="img"
+          [style.background-color]="statusToken(false).color"
+          [attr.aria-label]="
+            (datapoint.reason ? convertReasonText(datapoint.reason) : 'Down') +
+            ' at ' +
+            (datapoint.startCheck | date: 'short')
+          "
           matTooltip="{{
             datapoint.reason ? convertReasonText(datapoint.reason) : 'Down'
           }} at {{ datapoint.startCheck | date: 'short' }}"

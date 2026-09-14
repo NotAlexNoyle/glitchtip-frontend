@@ -53,7 +53,8 @@
   color: var(--mat-sys-outline);
 }
 
-// State icon: colour only, matching the semantic uptime roles.
+// State icon: colour comes from the shared monitor-status token via
+// --gt-status-accent (semantic up/down/no-data roles live in object-identity.ts).
 .status-indicator {
   flex-shrink: 0;
 
@@ -61,17 +62,12 @@
     font-size: 32px;
     width: 32px;
     height: 32px;
+    color: var(--gt-status-accent, var(--mat-sys-outline));
   }
+}
 
-  &.status--up mat-icon {
-    color: var(--success-color);
-  }
-  &.status--down mat-icon {
-    color: var(--mat-sys-error);
-  }
-  &.status--none mat-icon {
-    color: var(--mat-sys-outline);
-  }
+.masthead__project {
+  margin-top: var(--gt-space-1);
 }
 
 .detail-card .detail-section-header {

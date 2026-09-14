@@ -16,12 +16,10 @@ import { MatCardModule } from "@angular/material/card";
 import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { IssueDetailService } from "./issue-detail.service";
-import { DaysAgoPipe } from "../../shared/days-ago.pipe";
 import { IssueDetailTagsComponent } from "./issue-detail-tags/issue-detail-tags.component";
 import { EntryDataComponent } from "src/app/shared/entry-data/entry-data.component";
 import { MatDividerModule } from "@angular/material/divider";
 import { IssueMasthead } from "./issue-masthead/issue-masthead";
-import { LocalDatePipe } from "src/app/shared/date/local-date.pipe";
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 import { OrganizationsService } from "src/app/api/organizations.service";
@@ -29,6 +27,8 @@ import { BackLinkComponent } from "src/app/shared/detail/back-link/back-link.com
 import { TopAppBar } from "src/app/shared/top-app-bar/top-app-bar";
 import { IssueStatusUpdateDropdownComponent } from "src/app/shared/issue-status-update-dropdown/issue-status-update-dropdown";
 import { IssueStatus } from "../interfaces";
+import { ObjectRefComponent } from "src/app/shared/object-identity/object-ref.component";
+import { TimestampComponent } from "src/app/shared/object-attributes/timestamp.component";
 
 @Component({
   selector: "gt-issue-detail",
@@ -46,11 +46,11 @@ import { IssueStatus } from "../interfaces";
     EntryDataComponent,
     IssueMasthead,
     MatDividerModule,
-    LocalDatePipe,
-    DaysAgoPipe,
     BackLinkComponent,
     TopAppBar,
     IssueStatusUpdateDropdownComponent,
+    ObjectRefComponent,
+    TimestampComponent,
   ],
 })
 export class IssueDetailComponent implements OnInit {
@@ -73,6 +73,7 @@ export class IssueDetailComponent implements OnInit {
   });
   issueID = input.required<string>({ alias: "issue-id" });
   organization = this.organizationsService.activeOrganization;
+  activeOrgSlug = this.organizationsService.activeOrganizationSlug;
   participantCountPluralMapping: { [k: string]: string } = {
     "=0": "No Participants",
     "=1": "1 Participant",

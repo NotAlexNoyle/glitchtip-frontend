@@ -2,9 +2,12 @@
   <div
     slot="status"
     class="status-indicator"
-    [class]="'level--' + issue().level"
+    role="img"
+    [attr.aria-label]="statusAriaLabel()"
+    [class.is-striped]="levelToken().striped"
+    [style.--gt-level-accent]="levelToken().color"
   >
-    <mat-icon>{{ statusIcon() }}</mat-icon>
+    <mat-icon aria-hidden="true">{{ statusIcon() }}</mat-icon>
   </div>
 
   <ng-container slot="vitals">
@@ -13,7 +16,7 @@
     <gt-stat label="Level">
       <!-- Colour only genuinely exceptional states; "error" is near-constant, so
            painting it red spends an accent on no signal. -->
-      <span [class.level--fatal]="issue().level === 'fatal'">{{
+      <span [style.color]="levelToken().striped ? levelToken().color : null">{{
         issue().level | titlecase
       }}</span>
     </gt-stat>
@@ -28,7 +31,7 @@
     <p slot="pulse" class="masthead__sparse caption-text">
       Too infrequent to chart — {{ issue().count }}
       {{ +issue().count === 1 ? "event" : "events" }} since first seen
-      {{ issue().firstSeen | daysAgo }}.
+      <gt-timestamp [value]="issue().firstSeen" />.
     </p>
   }
 </gt-detail-masthead>

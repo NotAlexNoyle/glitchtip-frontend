@@ -1,0 +1,269 @@
+<gt-top-app-bar>
+  <ng-container slot="left">
+    <h1 class="section-header-text" i18n>Dashboard</h1>
+  </ng-container>
+  <ng-container slot="right">
+    <div class="org-select-container">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-select
+          [value]="activeOrgSlug()"
+          (selectionChange)="onOrgChange($event)"
+          hideSingleSelectionIndicator
+        >
+          @for (org of organizations(); track org.id) {
+            <mat-option [value]="org.slug">{{ org.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+    @if (activeOrgSlug(); as slug) {
+      <a
+        mat-button
+        [routerLink]="['/', slug, 'settings', 'projects', 'new']"
+        [disabled]="!accessProjectWrite()"
+        i18n
+      >
+        <mat-icon>add</mat-icon>
+        New Project
+      </a>
+    }
+  </ng-container>
+</gt-top-app-bar>
+<section class="l-body dashboard-body">
+  @if (
+    activeOrgProjects().length === 0 &&
+    activeOrganization() === undefined &&
+    orgServiceInitialLoad()
+  ) {
+    <mat-card appearance="outlined">
+      <mat-card-content>
+        <p class="body-text" i18n
+          >In order to use GlitchTip, you'll need to create an organization.</p
+        >
+        <a
+          mat-flat-button
+          color="primary"
+          [routerLink]="['/organizations', 'new']"
+          i18n
+          >Create New Organization</a
+        >
+      </mat-card-content>
+    </mat-card>
+  }
+  @if (
+    activeOrganization() !== undefined &&
+    activeOrgProjects().length === 0 &&
+    orgServiceInitialLoad() &&
+    projectsLoaded()
+  ) {
+    <gt-empty-state
+      [icon]="projectIcon"
+      title="No projects yet"
+      i18n-title
+      message="Create your first project to start capturing errors and monitoring uptime and performance."
+      i18n-message
+      [headingLevel]="2"
+    >
+      @if (activeOrgSlug(); as slug) {
+        <a
+          mat-flat-button
+          color="primary"
+          [routerLink]="['/', slug, 'settings', 'projects', 'new']"
+          [disabled]="!accessProjectWrite()"
+          i18n
+        >
+          <mat-icon>add</mat-icon>
+          New Project
+        </a>
+      }
+    </gt-empty-state>
+  }
+  @if (activeOrgProjects().length > 0) {
+    <div class="bento-stat-row">
+      <gt-object-card
+        title="Unresolved Issues"
+        i18n-title
+        [link]="['/', activeOrgSlug(), 'issues']"
+        [linkQuery]="{ query: 'is:unresolved' }"
+      >
+        <div class="bento-big-number warn-text">
+          @if (issuesLoading()) {
+            <mat-spinner diameter="28"></mat-spinner>
+          } @else {
+            {{ unresolvedIssuesCount() | number }}
+          }
+        </div>
+        <div class="bento-subtitle caption-text">
+          <span class="new-issues" i18n>{{ newIssuesCount() }} new</span>
+          &middot;
+          <span i18n>{{ recurringIssuesCount() }} recurring</span>
+        </div>
+        <div class="bento-trend" [class]="'trend-' + issuesTrend()">
+          @if (issuesTrend() === 'up') {
+            <mat-icon class="trend-icon">keyboard_arrow_up</mat-icon>
+            <span i18n>{{ issuesTrendPercent() }}% vs prev 24h</span>
+          } @else if (issuesTrend() === 'down') {
+            <mat-icon class="trend-icon">keyboard_arrow_down</mat-icon>
+            <span i18n>{{ issuesTrendPercent() }}% vs prev 24h</span>
+          } @else {
+            <mat-icon class="trend-icon">keyboard_arrow_right</mat-icon>
+            <span i18n>No change vs prev 24h</span>
+          }
+        </div>
+      </gt-object-card>
+      @if (monitorsTotal() > 0) {
+        <gt-object-card
+          title="Uptime"
+          i18n-title
+          [link]="['/', activeOrgSlug(), 'uptime-monitors']"
+        >
+          <div
+            class="bento-big-number"
+            [class.success-text]="uptimePercent() === 100"
+            [class.warn-text]="
+              uptimePercent() !== null && uptimePercent()! < 100
+            "
+          >
+            @if (monitorsLoading()) {
+              <mat-spinner diameter="28"></mat-spinner>
+            } @else {
+              <gt-percent [value]="uptimePercent()" [decimals]="0" />
+            }
+          </div>
+          <div class="bento-subtitle caption-text">
+            <gt-count [value]="monitorsUp()" />/<gt-count [value]="monitorsTotal()" />
+            <span i18n>monitors up</span>
+          </div>
+        </gt-object-card>
+      }
+      @if (p50ResponseTime() !== null) {
+        <gt-object-card
+          title="Response Time (p50)"
+          i18n-title
+          [link]="['/', activeOrgSlug(), 'performance']"
+        >
+          <div class="bento-big-number">
+            @if (transactionsLoading()) {
+              <mat-spinner diameter="28"></mat-spinner>
+            } @else {
+              {{ p50ResponseTime() | number }}ms
+            }
+          </div>
+          <div class="bento-perf-detail">
+            @if (p95ResponseTime() !== null) {
+              <span class="bento-subtitle caption-text">
+                p95: {{ p95ResponseTime() | number }}ms
+              </span>
+            }
+            @if (avgResponseTime() !== null) {
+              <span class="bento-subtitle caption-text">
+                avg: {{ avgResponseTime() | number }}ms
+              </span>
+            }
+          </div>
+        </gt-object-card>
+      }
+      @if (errorRate() !== null) {
+        <gt-object-card
+          title="Error Rate"
+          i18n-title
+          [link]="['/', activeOrgSlug(), 'performance']"
+        >
+          <div
+            class="bento-big-number"
+            [class.success-text]="errorRate()! < 0.01"
+            [class.warning-text]="
+              errorRate()! >= 0.01 && errorRate()! < 0.05
+            "
+            [class.warn-text]="errorRate()! >= 0.05"
+          >
+            @if (transactionsLoading()) {
+              <mat-spinner diameter="28"></mat-spinner>
+            } @else {
+              {{ errorRatePercent() }}%
+            }
+          </div>
+          <div class="bento-subtitle caption-text">
+            {{ totalErrorCount() | number }}
+            <span i18n>errors /</span>
+            {{ totalTransactions() | number }}
+            <span i18n>transactions</span>
+          </div>
+        </gt-object-card>
+      }
+    </div>
+    <mat-card class="bento-card bento-events" appearance="outlined">
+      <mat-card-content>
+        <div class="bento-header">
+          <h2 class="detail-section-header bento-title" i18n>Events</h2>
+          <mat-button-toggle-group
+            [value]="eventsTimePeriod()"
+            (change)="eventsTimePeriod.set($event.value)"
+          >
+            <mat-button-toggle value="1h" i18n>1h</mat-button-toggle>
+            <mat-button-toggle value="6h" i18n>6h</mat-button-toggle>
+            <mat-button-toggle value="24h" i18n>24h</mat-button-toggle>
+            <mat-button-toggle value="7d" i18n>7d</mat-button-toggle>
+          </mat-button-toggle-group>
+          <div class="bento-header-right">
+            <span class="bento-legend caption-text">
+              <span class="legend-dot recurring"></span>
+              <span i18n>Recurring</span>
+              <span class="legend-dot new"></span>
+              <span i18n>New</span>
+            </span>
+            <span class="bento-header-value">{{
+              filteredOrgErrorTotal() | number
+            }}</span>
+          </div>
+        </div>
+        <div class="bento-chart-area">
+          <gt-sparkline
+            [multiSeries]="filteredOrgErrorStacked()"
+            [colors]="orgErrorColors"
+            [height]="150"
+          />
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <div class="projects-section-header">
+      <h2 class="detail-section-header projects-section-title">
+        <span i18n>Projects</span>
+        <span class="projects-section-count"
+          >({{ sortedActiveOrgProjects().length }})</span
+        >
+      </h2>
+    </div>
+    <div class="project-card-wrapper">
+      @for (project of sortedActiveOrgProjects(); track project.id) {
+        <gt-project-card
+          [cardLink]="['/', project.organization.slug, 'issues']"
+          [cardLinkQueryParams]="{ project: project.id }"
+          [title]="project.name"
+          [platform]="project.platform"
+          [errorStats]="getErrorStatsForProject(project.id)"
+          [responseTime]="getResponseTimeForProject(project.id)"
+          [issueCount]="getIssueCountForProject(project.id)"
+          [isMember]="project.isMember"
+          [primaryButton]="{
+            text: 'Issues',
+            icon: 'warning',
+            query: { project: project.id },
+            link: [project.organization.slug, 'issues'],
+          }"
+          [secondaryButton]="{
+            text: 'Settings',
+            icon: 'settings',
+            link: [
+              '/',
+              project.organization.slug,
+              'settings',
+              'projects',
+              project.slug,
+            ],
+          }"
+        ></gt-project-card>
+      }
+    </div>
+  }
+</section>

@@ -23,6 +23,7 @@ import { TopAppBar } from "src/app/shared/top-app-bar/top-app-bar";
 import { PaginationButtons } from "src/app/list-elements/pagination-buttons/pagination-buttons";
 import { LoadingOverlayComponent } from "src/app/shared/loading-overlay/loading-overlay.component";
 import { EmptyStateComponent } from "src/app/shared/empty-state/empty-state.component";
+import { monitorStatusToken } from "src/app/shared/object-identity/object-identity";
 
 @Component({
   selector: "gt-monitor-list",
@@ -51,6 +52,10 @@ export class MonitorListComponent {
   protected breakPointObserver = inject(BreakpointObserver);
   service = inject(MonitorListService);
   cursor = input(undefined, { transform: stringAttribute });
+
+  // Exposed to the template so each row's status bar reads its colour from the
+  // shared monitor-status token, same source as the detail masthead.
+  protected readonly statusToken = monitorStatusToken;
 
   tooltipDisabled = false;
   monitors = this.service.monitors;

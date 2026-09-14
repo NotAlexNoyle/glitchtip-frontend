@@ -41,7 +41,8 @@
           <ng-container matColumnDef="name">
             <td
               mat-cell
-              class="status-color--{{ monitor.isUp }}"
+              class="status-color"
+              [style.--gt-status-accent]="statusToken(monitor.isUp).color"
               *matCellDef="let monitor"
             >
               <div class="name-and-url-container">

@@ -2,7 +2,9 @@
   <h1 class="section-header-text" data-cy="list-title">
     {{ title }}
     @if (searchHits) {
-      ({{ searchHits }})
+      <!-- Count is metadata about the title, not a peer of it: quieter weight
+           and colour so the heading stays the hero. -->
+      <span class="list-title__count">{{ searchHits }}</span>
     }
   </h1>
 }

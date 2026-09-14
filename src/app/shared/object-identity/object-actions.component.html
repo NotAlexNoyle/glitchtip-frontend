@@ -1,0 +1,35 @@
+<div class="object-actions">
+  @if (primary(); as p) {
+    <button
+      mat-flat-button
+      class="object-actions__primary"
+      (click)="action.emit(p.id)"
+    >
+      <mat-icon>{{ p.icon }}</mat-icon>
+      {{ p.label }}
+    </button>
+  }
+  @if (more().length) {
+    <button
+      mat-icon-button
+      class="object-actions__more"
+      [matMenuTriggerFor]="menu"
+      aria-label="More actions"
+      i18n-aria-label
+    >
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      @for (item of more(); track item.id) {
+        <button
+          mat-menu-item
+          [class.object-actions__destructive]="item.kind === 'destructive'"
+          (click)="action.emit(item.id)"
+        >
+          <mat-icon>{{ item.icon }}</mat-icon>
+          <span>{{ item.label }}</span>
+        </button>
+      }
+    </mat-menu>
+  }
+</div>

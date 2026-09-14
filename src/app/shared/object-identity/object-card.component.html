@@ -1,0 +1,12 @@
+<a
+  class="object-card"
+  [routerLink]="link()"
+  [queryParams]="linkQuery()"
+>
+  <mat-card appearance="outlined">
+    <mat-card-content>
+      <h2 class="detail-section-header object-card__title">{{ title() }}</h2>
+      <ng-content />
+    </mat-card-content>
+  </mat-card>
+</a>

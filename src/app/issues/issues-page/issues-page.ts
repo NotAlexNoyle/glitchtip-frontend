@@ -11,7 +11,7 @@ import {
   signal,
   ViewChild,
 } from "@angular/core";
-import { DatePipe, I18nPluralPipe } from "@angular/common";
+import { I18nPluralPipe } from "@angular/common";
 import { FormControl, FormGroup } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCheckboxModule } from "@angular/material/checkbox";
@@ -23,7 +23,6 @@ import { Router, ActivatedRoute, RouterLink } from "@angular/router";
 import { IssuesService } from "../issues.service";
 import { SettingsService } from "src/app/api/settings.service";
 import { IssueStatus } from "../interfaces";
-import { DaysAgoPipe, DaysOldPipe } from "../../shared/days-ago.pipe";
 import { IssueZeroStatesComponent } from "../issue-zero-states/issue-zero-states.component";
 import { DataFilterBarComponent } from "../../list-elements/data-filter-bar/data-filter-bar.component";
 import { OrganizationsService } from "src/app/api/organizations.service";
@@ -42,6 +41,13 @@ import { PaginationButtons } from "src/app/list-elements/pagination-buttons/pagi
 import { toSignal } from "@angular/core/rxjs-interop";
 import { MatMenuModule } from "@angular/material/menu";
 import { SearchHelpConfig } from "../../list-elements/data-filter-bar/data-filter-bar.component";
+import {
+  issueLevelToken,
+  issueName,
+  issueStatusToken,
+} from "src/app/shared/object-identity/object-identity";
+import { TimestampComponent } from "src/app/shared/object-attributes/timestamp.component";
+import { CountComponent } from "src/app/shared/object-attributes/count.component";
 
 @Component({
   templateUrl: "./issues-page.html",
@@ -58,9 +64,8 @@ import { SearchHelpConfig } from "../../list-elements/data-filter-bar/data-filte
     LoadingOverlayComponent,
     RouterLink,
     IssueZeroStatesComponent,
-    DatePipe,
-    DaysAgoPipe,
-    DaysOldPipe,
+    TimestampComponent,
+    CountComponent,
     I18nPluralPipe,
     ListAppBar,
     IssueChart,
@@ -79,6 +84,12 @@ export class IssuesPage implements OnInit, OnDestroy {
   private settingsService = inject(SettingsService);
   #environmentsService = inject(EnvironmentsService);
   @ViewChild(MatTable) table?: MatTable<any>;
+
+  // Shared object-identity helpers, exposed to the template so each row names,
+  // colours, and badges its issue the same way the detail masthead does.
+  protected readonly levelToken = issueLevelToken;
+  protected readonly statusToken = issueStatusToken;
+  protected readonly issueName = issueName;
 
   orgSlug = input.required<string>({ alias: "org-slug" });
   cursor = input(undefined, { transform: stringAttribute });

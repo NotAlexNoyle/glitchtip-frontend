@@ -1,0 +1,52 @@
+:host {
+  display: inline-flex;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.object-ref {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gt-space-2);
+  min-width: 0;
+  max-width: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.object-ref__icon {
+  flex: none;
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  // Match the line-box to the glyph and keep overflow visible so mat-icon's
+  // default 20px line-height doesn't clip the symbol.
+  line-height: 18px;
+  overflow: visible;
+  color: var(--gt-object-accent, var(--mat-sys-on-surface-variant));
+}
+
+.object-ref__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.object-ref--mono .object-ref__label {
+  font-family: var(--gt-font-mono);
+}
+
+// A navigable reference reads as a link: subtle by default, underlined on hover
+// so the relationship is discoverable without shouting.
+.object-ref--link {
+  cursor: pointer;
+
+  &:hover .object-ref__label,
+  &:focus-visible .object-ref__label {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
+}

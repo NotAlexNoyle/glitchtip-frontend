@@ -1,6 +1,7 @@
 // Layout (identity + vitals + pulse) lives in gt-detail-masthead. This file
 // styles only the issue-specific status indicator projected into it, plus the
 // sparse fallback line shown when the pulse has too little data to chart.
+@use "src/app/shared/object-identity/object-identity" as identity;
 
 .masthead__sparse {
   margin: var(--gt-space-2) 0 0;
@@ -21,6 +22,7 @@
     margin: 8px;
   }
 
+  // Accent bar geometry; colour comes from the shared level token.
   &::after {
     content: "";
     position: absolute;
@@ -31,28 +33,5 @@
     border-radius: 4px;
   }
 
-  &.level--sample::after {
-    background-color: var(--mat-sys-outline);
-  }
-  &.level--debug::after {
-    background-color: var(--mat-sys-outline-variant);
-  }
-  &.level--info::after {
-    background-color: var(--info-color);
-  }
-  &.level--warning::after {
-    background-color: var(--warning-color);
-  }
-  &.level--error::after {
-    background-color: var(--mat-sys-error);
-  }
-  &.level--fatal::after {
-    background: repeating-linear-gradient(
-      -60deg,
-      var(--mat-sys-error),
-      var(--mat-sys-error) 5px,
-      var(--mat-sys-surface) 5px,
-      var(--mat-sys-surface) 10px
-    );
-  }
+  @include identity.level-accent;
 }

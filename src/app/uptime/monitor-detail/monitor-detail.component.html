@@ -36,22 +36,11 @@
           <div
             slot="status"
             class="status-indicator"
-            [class]="
-              'status--' +
-              (monitor.isUp === true
-                ? 'up'
-                : monitor.isUp === false
-                  ? 'down'
-                  : 'none')
-            "
+            role="img"
+            [attr.aria-label]="statusToken().label"
+            [style.--gt-status-accent]="statusToken().color"
           >
-            <mat-icon>{{
-              monitor.isUp === true
-                ? "check_circle"
-                : monitor.isUp === false
-                  ? "error"
-                  : "help"
-            }}</mat-icon>
+            <mat-icon aria-hidden="true">{{ statusToken().icon }}</mat-icon>
           </div>
 
           <!-- URL + current-status duration on one metadata line to keep the
@@ -69,6 +58,18 @@
               <span>{{ statusLabel() }} {{ monitor.lastChange | timeFor }}</span>
             }
           </p>
+
+          <!-- The Project this monitor belongs to, as a navigable relationship
+               (OOUX F2). Shown once the project slug resolves so it can link. -->
+          @if (monitor.projectName && associatedProjectSlug(); as slug) {
+            <gt-object-ref
+              slot="identity"
+              class="masthead__project"
+              type="project"
+              [label]="monitor.projectName"
+              [link]="['/', orgSlug(), 'settings', 'projects', slug]"
+            />
+          }
 
           <ng-container slot="vitals">
             @if (uptimePercent() !== null) {

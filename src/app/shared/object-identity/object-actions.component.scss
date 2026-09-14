@@ -1,0 +1,22 @@
+.object-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gt-space-1);
+}
+
+.object-actions__primary {
+  // Pull the leading icon tight to the label.
+  mat-icon {
+    margin-right: var(--gt-space-1);
+  }
+}
+
+// Destructive menu items read in the error colour, matching the rest of the
+// system's destructive treatment.
+.object-actions__destructive {
+  color: var(--mat-sys-error);
+
+  mat-icon {
+    color: var(--mat-sys-error);
+  }
+}

@@ -1,67 +1,132 @@
-<mat-card>
+<mat-card appearance="outlined" [class.card--flat]="flat()">
   <a
-    [routerLink]="
-      isMember() ? cardLink() : $safeNavigationMigration(secondaryButton?.link)
-    "
+    [routerLink]="isMember() ? cardLink() : secondaryButton?.link"
     [queryParams]="isMember() ? cardLinkQueryParams() || {} : {}"
     [tabIndex]="sampleCard() && -1"
   >
-    <mat-card-header>
-      <mat-card-title>
-        <span>{{ title() }}</span>
-      </mat-card-title>
-    </mat-card-header>
+    @if (badge()) {
+      <div class="card-header">
+        <span class="detail-subsection-header card-title">{{ title() }}</span>
+        <span class="card-badge">
+          <mat-icon>{{ projectIcon }}</mat-icon>
+          {{ badge() }}
+        </span>
+      </div>
+    } @else {
+      <mat-card-header>
+        <mat-card-title class="card-title-row">
+          @if (platformIcon(); as icon) {
+            <img
+              class="platform-logo"
+              [src]="icon"
+              [alt]="platform()"
+              [title]="platform()"
+            />
+          } @else {
+            <!-- No (or unmapped) platform: the Project identity glyph, so the
+                 slot never reads as a broken/missing icon. -->
+            <mat-icon
+              class="platform-logo platform-logo--fallback"
+              [title]="platform() || 'No platform set'"
+              i18n-title
+              aria-hidden="true"
+              >{{ projectIcon }}</mat-icon
+            >
+          }
+          <span class="detail-subsection-header">{{ title() }}</span>
+        </mat-card-title>
+      </mat-card-header>
+    }
     <mat-divider></mat-divider>
     <mat-card-content>
       @for (description of descriptionList(); track description) {
         <p class="caption-text key">
           <span>{{ description.key | uppercase }}</span>
         </p>
-        <p>
+        <p class="description-value">
           <span>{{ description.value }}</span>
         </p>
+      }
+      @if (errorStats()?.length) {
+        <div class="sparkline-section">
+          <div class="sparkline-header">
+            <span class="caption-text" i18n>Events (24h)</span>
+            <span class="sparkline-total metric-value">{{ errorTotal() }}</span>
+          </div>
+          <gt-sparkline [data]="errorStats()!" />
+        </div>
+      }
+      @if (responseTime() !== null && responseTime() !== undefined) {
+        <div class="response-time-section">
+          <span class="caption-text" i18n>Avg Response Time</span>
+          <span class="response-time-value metric-value"
+            >{{ responseTime() }}ms</span
+          >
+        </div>
       }
     </mat-card-content>
   </a>
   <mat-card-actions>
-    @if (primaryButton && primaryButton.text && primaryButton.link) {
+    @if (issueCount() !== undefined || compact()) {
       <a
-        class="action-button"
-        mat-stroked-button
-        [disabled]="!isMember()"
-        [matTooltip]="
-          isMember()
-            ? ''
-            : 'To view issues for this project, add yourself to the corresponding team.'
-        "
-        matTooltipPosition="right"
-        color="primary"
+        class="issue-count-link"
         [routerLink]="isMember() ? cardLink() : undefined"
-        [queryParams]="isMember() ? primaryButton.query || {} : {}"
+        [queryParams]="primaryButton?.query || {}"
       >
-        @if (primaryButton.icon) {
-          <mat-icon class="icon__warning" aria-hidden="true">{{
-            primaryButton.icon
-          }}</mat-icon>
+        <span i18n>Issues</span>
+        @if (issueCount() !== undefined) {
+          <span class="issue-count metric-value">{{ issueCount() }}</span>
         }
-        <span>{{ primaryButton.text }}</span>
       </a>
-    }
-    @if (secondaryButton && secondaryButton.text && secondaryButton.link) {
-      <a
-        class="action-button"
-        mat-button
-        color="primary"
-        [routerLink]="secondaryButton.link"
-        [disabled]="sampleCard()"
-      >
-        @if (secondaryButton.icon) {
-          <mat-icon class="icon__settings" aria-hidden="true">{{
-            secondaryButton.icon
-          }}</mat-icon>
-        }
-        <span>{{ secondaryButton.text }}</span>
-      </a>
+      @if (secondaryButton && secondaryButton.link) {
+        <a
+          mat-icon-button
+          [routerLink]="secondaryButton.link"
+          [disabled]="sampleCard()"
+        >
+          <mat-icon>settings</mat-icon>
+        </a>
+      }
+    } @else {
+      @if (primaryButton && primaryButton.text && primaryButton.link) {
+        <a
+          class="action-button"
+          mat-stroked-button
+          [disabled]="!isMember()"
+          [matTooltip]="
+            isMember()
+              ? ''
+              : 'To view issues for this project, add yourself to the corresponding team.'
+          "
+          matTooltipPosition="right"
+          color="primary"
+          [routerLink]="isMember() ? cardLink() : undefined"
+          [queryParams]="isMember() ? primaryButton.query || {} : {}"
+        >
+          @if (primaryButton.icon) {
+            <mat-icon class="icon__warning" aria-hidden="true">{{
+              primaryButton.icon
+            }}</mat-icon>
+          }
+          <span>{{ primaryButton.text }}</span>
+        </a>
+      }
+      @if (secondaryButton && secondaryButton.text && secondaryButton.link) {
+        <a
+          class="action-button"
+          mat-button
+          color="primary"
+          [routerLink]="secondaryButton.link"
+          [disabled]="sampleCard()"
+        >
+          @if (secondaryButton.icon) {
+            <mat-icon class="icon__settings" aria-hidden="true">{{
+              secondaryButton.icon
+            }}</mat-icon>
+          }
+          <span>{{ secondaryButton.text }}</span>
+        </a>
+      }
     }
   </mat-card-actions>
 </mat-card>

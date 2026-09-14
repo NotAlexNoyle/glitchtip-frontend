@@ -45,6 +45,7 @@ table {
   justify-content: space-between;
 }
 
+// Accent bar colour comes from the shared monitor-status token.
 .status-color {
   position: relative;
 
@@ -55,13 +56,6 @@ table {
     top: 0;
     bottom: 0;
     width: 3px;
-  }
-
-  &--true:after {
-    background-color: var(--success-color);
-  }
-
-  &--false:after {
-    background-color: var(--mat-sys-error);
+    background-color: var(--gt-status-accent, transparent);
   }
 }

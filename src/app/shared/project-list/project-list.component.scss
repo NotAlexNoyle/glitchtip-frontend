@@ -1,11 +1,56 @@
 @use "variables" as vars;
 
-.org-projects-section {
-  margin-bottom: 70px;
+// Scope selector in the top bar — compact, so it reads as a control, not a form.
+.scope-field {
+  width: 180px;
 }
 
-.projects-section-header {
+// --- Collection controls (search / filter / sort) ---
+.project-controls {
+  display: flex;
+  align-items: center;
   flex-wrap: wrap;
+  gap: var(--gt-space-3);
+  margin-bottom: var(--gt-space-4);
+}
+
+.search-field {
+  flex: 1 1 240px;
+  max-width: 420px;
+}
+
+.filter-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--gt-space-3);
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+.filter-field {
+  width: 160px;
+}
+
+// --- Org container card ---
+.org-card {
+  margin-bottom: var(--gt-space-5);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+// Org header = an Organization object-summary: identity (glyph + name + vitals)
+// on the left, org actions on the right, closed off by a hairline.
+.projects-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--gt-space-3);
+  padding-bottom: var(--gt-space-3);
+  margin-bottom: var(--gt-space-4);
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
 
   @media screen and (max-width: vars.$small - 1) {
     flex-direction: column;
@@ -13,13 +58,47 @@
   }
 
   h2 {
-    margin-right: 16px;
-    margin-bottom: 10px;
+    margin: 0;
   }
+}
+
+.org-identity {
+  display: flex;
+  align-items: center;
+  gap: var(--gt-space-3);
+  min-width: 0;
+}
+
+.org-glyph {
+  flex: none;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.org-vitals {
+  display: flex;
+  align-items: center;
+  gap: var(--gt-space-1);
+  margin: var(--gt-space-1) 0 0;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.org-vitals__sep {
+  margin: 0 var(--gt-space-1);
+}
+
+.org-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--gt-space-2);
 }
 
 .new-project-button {
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.org-empty-note {
+  margin: 0;
+  color: var(--mat-sys-on-surface-variant);
 }

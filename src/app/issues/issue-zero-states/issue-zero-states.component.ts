@@ -19,6 +19,7 @@ import { CopyInputComponent } from "../../shared/copy-input/copy-input.component
 import { EmptyStateComponent } from "src/app/shared/empty-state/empty-state.component";
 import { OrganizationsService } from "src/app/api/organizations.service";
 import { client } from "src/app/shared/api/api";
+import { OBJECT_ICON } from "src/app/shared/object-identity/object-identity";
 
 @Component({
   selector: "gt-issue-zero-states",
@@ -37,6 +38,7 @@ import { client } from "src/app/shared/api/api";
   providers: [provideMarkdown()],
 })
 export class IssueZeroStatesComponent implements OnInit {
+  protected readonly projectIcon = OBJECT_ICON.project;
   projects = input<string[]>();
   private issuesService = inject(IssuesService);
   private organizationsService = inject(OrganizationsService);

@@ -90,16 +90,7 @@ table {
   }
 }
 
+// Colour comes from the shared monitor-status token via --gt-status-accent.
 .status-color {
-  &--true {
-    border-left: 3px solid var(--success-color);
-  }
-
-  &--false {
-    border-left: 3px solid var(--mat-sys-error);
-  }
-
-  &-- {
-    border-left: 3px solid var(--mat-sys-surface-variant);
-  }
+  border-left: 3px solid var(--gt-status-accent, var(--mat-sys-surface-variant));
 }

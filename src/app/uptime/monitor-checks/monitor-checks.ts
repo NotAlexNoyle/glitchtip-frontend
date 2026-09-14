@@ -17,6 +17,7 @@ import { reasonTextConversions } from "../uptime.utils";
 import { MonitorChecksService } from "./monitor-checks-state";
 import { components } from "src/app/api/api-schema";
 import { DatePipe } from "@angular/common";
+import { monitorStatusToken } from "src/app/shared/object-identity/object-identity";
 type MonitorDetail = components["schemas"]["MonitorDetailSchema"];
 
 @Component({
@@ -39,6 +40,10 @@ type MonitorDetail = components["schemas"]["MonitorDetailSchema"];
 export class MonitorChecks {
   protected service = inject(MonitorChecksService);
   protected router = inject(Router);
+
+  // Each check's status bar reads its colour from the shared monitor-status
+  // token, same source as the list row and the detail masthead.
+  protected readonly statusToken = monitorStatusToken;
 
   orgSlug = input.required<string>();
   monitorID = input.required<number>();

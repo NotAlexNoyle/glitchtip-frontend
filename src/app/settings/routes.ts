@@ -1,5 +1,7 @@
 import { Route } from "@angular/router";
-import { ProjectsComponent } from "./projects/projects.component";
+// The Projects *list* uses the same redesigned page as /org/projects, so the
+// two entry points are consistent. (The old settings list is superseded.)
+import { ProjectsComponent } from "src/app/projects/projects.component";
 import { NewProject } from "./projects/new-project/new-project";
 import { ProjectDetailComponent } from "./projects/project-detail/project-detail.component";
 import { OrganizationComponent } from "./organization/organization.component";

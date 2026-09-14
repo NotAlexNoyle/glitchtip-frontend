@@ -55,8 +55,11 @@
       <h2 class="detail-section-header">Span breakdown</h2>
       @if (sortedSpans(); as spans) {
         @if (spans.length === 0) {
+          <!-- The span section is the card's main content when empty, so a full
+               (not dense) empty state fills it purposefully rather than reading
+               as a hollow box. -->
           <gt-empty-state
-            [dense]="true"
+            icon="avg_pace"
             title="No span data yet"
             i18n-title
             message="Span data will appear here once child spans are recorded for this transaction group."

@@ -3,17 +3,16 @@ import { TitleCasePipe } from "@angular/common";
 import { MatIconModule } from "@angular/material/icon";
 import { DetailMastheadComponent } from "src/app/shared/detail/masthead/detail-masthead.component";
 import { StatComponent } from "src/app/shared/stat/stat.component";
-import { DaysAgoPipe } from "src/app/shared/days-ago.pipe";
+import { TimestampComponent } from "src/app/shared/object-attributes/timestamp.component";
 import { IssuePulse } from "../issue-pulse/issue-pulse";
 import { components } from "src/app/api/api-schema";
+import {
+  issueLevelToken,
+  issueName,
+  issueStatusToken,
+} from "src/app/shared/object-identity/object-identity";
 
 type IssueDetail = components["schemas"]["IssueDetailSchema"];
-
-const STATUS_ICON = {
-  resolved: "done",
-  unresolved: "priority_high",
-  ignored: "notifications_off",
-} as const;
 
 /**
  * gt-issue-masthead — the issue detail header module: identity (title + message),
@@ -29,7 +28,7 @@ const STATUS_ICON = {
     DetailMastheadComponent,
     StatComponent,
     IssuePulse,
-    DaysAgoPipe,
+    TimestampComponent,
     TitleCasePipe,
     MatIconModule,
   ],
@@ -39,46 +38,24 @@ const STATUS_ICON = {
 export class IssueMasthead {
   readonly issue = input.required<IssueDetail>();
 
-  statusIcon = computed(() => {
-    const status = this.issue().status as keyof typeof STATUS_ICON;
-    return STATUS_ICON[status] ?? "error";
-  });
+  // Identity now comes from the shared object-identity tokens, so the masthead
+  // names, colours, and badges an issue exactly as the list row and any nested
+  // reference do.
+  levelToken = computed(() => issueLevelToken(this.issue().level));
+  statusIcon = computed(() => issueStatusToken(this.issue().status).icon);
+  // Accessible name for the status indicator: the glyph + level are otherwise
+  // colour-only. e.g. "Unresolved, Error level".
+  statusAriaLabel = computed(
+    () =>
+      `${issueStatusToken(this.issue().status).label}, ${this.levelToken().label} level`,
+  );
 
+  #name = computed(() => issueName(this.issue()));
   issueTitle = computed<[string, string | null]>(() => {
-    const issue = this.issue();
-    const metadata = (issue.metadata ?? {}) as Record<string, string | undefined>;
-    const culprit = issue.culprit ?? null;
-    const fallback = issue.title || "";
-    switch (issue.type) {
-      case "error":
-        if (metadata.type) return [metadata.type, culprit];
-        return [metadata.function || fallback, culprit];
-      case "csp":
-        return [metadata.directive || fallback, metadata.uri || null];
-      case "default":
-        return [metadata.message || fallback, metadata.origin || null];
-      default:
-        return [metadata.title || fallback, null];
-    }
+    const name = this.#name();
+    return [name.title, name.suffix];
   });
-
-  issueSubtitle = computed<string>(() => {
-    const issue = this.issue();
-    if (issue.metadata === null) return "";
-    const metadata = issue.metadata as Record<string, string | undefined>;
-    switch (issue.type) {
-      case "error":
-        // Headline "what happened". The exception block below still shows the
-        // full chain (incl. root cause), so this isn't the only place it lives.
-        return metadata.value ?? "";
-      case "csp":
-        return metadata.message ?? "";
-      case "default":
-        return "";
-      default:
-        return issue.culprit ?? "";
-    }
-  });
+  issueSubtitle = computed(() => this.#name().subtitle);
 
   // The pulse only earns its space when there's a trend to read; below this we
   // show an honest one-liner. PROTOTYPE threshold on event count (a real version

@@ -6,6 +6,7 @@ import {
   signal,
 } from "@angular/core";
 import { Router } from "@angular/router";
+import { OBJECT_ICON } from "src/app/shared/object-identity/object-identity";
 import { MainNavService } from "../main-nav.service";
 import { SettingsService } from "src/app/api/settings.service";
 import { UserService } from "src/app/api/user/user.service";
@@ -92,7 +93,7 @@ export class MainNavComponent {
     },
     {
       name: $localize`Projects`,
-      icon: "team_dashboard",
+      icon: OBJECT_ICON.project,
       route: ["org_slug", "projects"],
     },
     {
@@ -121,12 +122,12 @@ export class MainNavComponent {
     },
     {
       name: $localize`Teams`,
-      icon: "groups",
+      icon: OBJECT_ICON.team,
       route: ["org_slug", "settings", "teams"],
     },
     {
       name: $localize`Members`,
-      icon: "people",
+      icon: OBJECT_ICON.member,
       route: ["org_slug", "settings", "members"],
     },
   ];

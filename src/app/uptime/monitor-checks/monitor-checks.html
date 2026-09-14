@@ -26,7 +26,8 @@
         <td
           mat-cell
           *matCellDef="let monitorCheck"
-          class="status-color status-color--{{ monitorCheck.isUp }} mat-body-1"
+          class="status-color mat-body-1"
+          [style.--gt-status-accent]="statusToken(monitorCheck.isUp).color"
         >
           @if (monitorCheck.isUp) {
             <span i18n="Uptime check reports up">Up</span>
@@ -88,9 +89,9 @@
             @if (initialLoadComplete() === true && loading() === false) {
               <gt-empty-state
                 [dense]="true"
-                title="No checks"
+                title="No checks yet"
                 i18n-title
-                message="No monitor checks were found."
+                message="Each time this monitor runs, its result will appear here."
                 i18n-message
               />
             }

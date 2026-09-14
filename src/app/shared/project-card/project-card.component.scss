@@ -7,14 +7,118 @@ mat-card {
   justify-content: space-between;
 }
 
+// Flat tile: no outline, filled with a container tone so it reads as a tile
+// inside a containing card (avoids double borders). This Material version paints
+// the outlined border/background directly (not via the MDC tokens), so override
+// the properties themselves.
+.card--flat.card--flat {
+  border-color: transparent;
+  background-color: var(--mat-sys-surface-container);
+}
+
+// Platform logo beside the project title.
+.card-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--gt-space-2);
+  min-width: 0;
+}
+
+.platform-logo {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+// Fallback glyph (platform unset) — muted, sized to match a real logo.
+.platform-logo--fallback {
+  font-size: 20px;
+  line-height: 20px;
+  overflow: visible;
+  color: var(--mat-sys-on-surface-variant);
+}
+
 a {
   text-decoration: none;
   color: var(--mat-expansion-container-text-color);
   font-weight: 400;
 }
 
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--gt-space-4);
+}
+
+.card-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--gt-space-1);
+  padding-left: var(--gt-space-3);
+  border-left: 1px solid var(--mat-sys-outline-variant);
+  white-space: nowrap;
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-on-surface-variant);
+
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+// Machine-readable metrics (issue count, response time, event total): tabular
+// figures so numerals line up column-to-column across cards.
+.metric-value {
+  font-family: var(--gt-font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.sparkline-section {
+  margin-top: var(--gt-space-3);
+}
+
+.sparkline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--gt-space-1);
+}
+
+.sparkline-total {
+  font: var(--mat-sys-title-small);
+  color: var(--mat-sys-on-surface);
+}
+
+.response-time-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--gt-space-3);
+}
+
+.response-time-value {
+  font: var(--mat-sys-title-small);
+  color: var(--mat-sys-on-surface);
+}
+
+.issue-count-link {
+  display: flex;
+  align-items: center;
+  gap: var(--gt-space-1);
+  text-decoration: none;
+  font: var(--mat-sys-title-medium);
+  color: var(--mat-sys-on-surface);
+
+  .issue-count {
+    color: var(--mat-sys-on-surface-variant);
+  }
+}
+
 .mat-card-content {
-  padding-top: 24px;
+  padding-top: var(--gt-space-5);
   padding-bottom: 2px;
 
   p {
@@ -23,7 +127,7 @@ a {
   }
 
   .key {
-    margin-top: 24px;
+    margin-top: var(--gt-space-5);
 
     &:first-child {
       margin-top: 0;
@@ -34,6 +138,7 @@ a {
 mat-card-actions {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 
   .action-button {
     mat-icon {
@@ -44,7 +149,7 @@ mat-card-actions {
 
     .icon {
       &__warning {
-        margin-right: 8px;
+        margin-right: var(--gt-space-2);
       }
 
       &__settings {

@@ -30,6 +30,8 @@ import { TopAppBar } from "src/app/shared/top-app-bar/top-app-bar";
 import { BackLinkComponent } from "src/app/shared/detail/back-link/back-link.component";
 import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
 import { toSignal } from "@angular/core/rxjs-interop";
+import { monitorStatusToken } from "src/app/shared/object-identity/object-identity";
+import { ObjectRefComponent } from "src/app/shared/object-identity/object-ref.component";
 
 function booleanDefaultTrueAttribute(value: unknown): boolean {
   return value === undefined ? true : booleanAttribute(value);
@@ -58,6 +60,7 @@ function booleanDefaultTrueAttribute(value: unknown): boolean {
     HumanizeDurationPipe,
     TopAppBar,
     BackLinkComponent,
+    ObjectRefComponent,
   ],
 })
 export class MonitorDetailComponent
@@ -130,10 +133,11 @@ export class MonitorDetailComponent
     );
   });
 
-  statusLabel = computed<string>(() => {
-    const up = this.monitor()?.isUp;
-    return up ? $localize`Up` : up === false ? $localize`Down` : $localize`No data`;
-  });
+  // Monitor identity now comes from the shared object-identity token, so the
+  // masthead, list row, checks table, and mini-chart all colour, icon, and
+  // label a monitor's up/down/no-data state from one source.
+  statusToken = computed(() => monitorStatusToken(this.monitor()?.isUp));
+  statusLabel = computed<string>(() => this.statusToken().label);
 
   constructor() {
     const service = inject(MonitorService);

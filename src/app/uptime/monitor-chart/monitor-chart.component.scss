@@ -13,14 +13,10 @@ div {
     margin-right: 7px;
   }
 
-  .up-check {
-    background-color: var(--success-color);
-  }
-
-  .down-check {
-    background-color: var(--mat-sys-error);
-  }
-
+  // .check-dot colour is bound inline from the shared monitor-status token.
+  // up/down are also disambiguated non-visually via each dot's aria-label and,
+  // authoritatively, by the text "Up"/"Down" in the checks table below — so the
+  // strip itself stays clean rather than carrying a fussy per-dot shape cue.
   .no-check {
     background-color: var(--mat-sys-surface-variant);
     opacity: 0.6;

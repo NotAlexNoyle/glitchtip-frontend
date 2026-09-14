@@ -52,13 +52,19 @@
               *matCellDef="let row"
               [class.resolved]="row.status === 'resolved'"
               [class.ignored]="row.status === 'ignored'"
-              class="checkbox-cell level level--{{ row.level }}"
+              [class.is-striped]="levelToken(row.level).striped"
+              [style.--gt-level-accent]="levelToken(row.level).color"
+              class="checkbox-cell level"
             >
               <mat-checkbox
                 (click)="toggleCheck($event, row.id)"
                 [checked]="row.isSelected"
               >
               </mat-checkbox>
+              <!-- The level is otherwise a colour-only bar; name it for AT. -->
+              <span class="gt-visually-hidden"
+                >{{ levelToken(row.level).label }} level</span
+              >
             </td>
           </ng-container>
           <ng-container matColumnDef="actionButtons">
@@ -180,20 +186,22 @@
               [class.ignored]="element.status === 'ignored'"
               class="title-cell"
             >
+              @let name = issueName(element);
               <div class="table-group-label">
-                @if (element.status === "resolved") {
-                  <mat-icon inline="true" class="resolved-icon">
-                    done
+                @if (element.status !== "unresolved") {
+                  <mat-icon inline="true" class="status-icon" aria-hidden="true">
+                    {{ statusToken(element.status).icon }}
                   </mat-icon>
+                  <span class="gt-visually-hidden"
+                    >{{ statusToken(element.status).label }}</span
+                  >
                 }
-                @if (element.status === "ignored") {
-                  <mat-icon inline="true" class="mute-icon">
-                    notifications_off
-                  </mat-icon>
-                }
-                <a [routerLink]="element.id" queryParamsHandling="merge">{{
-                  element.title
-                }}</a>
+                <a [routerLink]="element.id" queryParamsHandling="merge">
+                  <span class="issue-name">{{ name.title }}</span>
+                  @if (name.suffix) {
+                    <span class="issue-name__suffix">{{ name.suffix }}</span>
+                  }
+                </a>
               </div>
               <div class="small-screen-event-count caption-text">
                 {{ element.count | i18nPlural: eventCountPluralMapping }}
@@ -206,20 +214,9 @@
                   @if (appliedProjectCount() !== 1) {
                     &mdash;
                   }
-                  <time
-                    [dateTime]="element.firstSeen"
-                    [title]="element.firstSeen | date: 'medium'"
-                  >
-                    {{ element.firstSeen | daysOld }}</time
-                  >
+                  <gt-timestamp [value]="element.firstSeen" mode="old" />
                   @if (element.firstSeen !== element.lastSeen) {
-                    , seen
-                    <time
-                      [dateTime]="element.lastSeen"
-                      [title]="element.lastSeen | date: 'medium'"
-                    >
-                      {{ element.lastSeen | daysAgo }}
-                    </time>
+                    , seen <gt-timestamp [value]="element.lastSeen" />
                   }
                 </span>
                 @if (element.type && element.type === "csp") {
@@ -288,7 +285,7 @@
               [class.ignored]="element.status === 'ignored'"
               class="event-cell body-text"
             >
-              <p>{{ element.count }}</p>
+              <p><gt-count [value]="element.count" /></p>
             </td>
           </ng-container>
           <ng-container matColumnDef="trend">

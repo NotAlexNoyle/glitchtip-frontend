@@ -1,0 +1,24 @@
+// The one place an Issue's level accent is painted. Apply to the element that
+// owns a `::after` accent bar; the element sets its own bar geometry (position
+// / size) and provides the colour through the `--gt-level-accent` custom
+// property bound from the TS identity token (object-identity.ts). Only the
+// striped fatal treatment — a gradient, not a single colour, toggled by an
+// `.is-striped` class on the same element — lives here, once.
+//
+// Was duplicated in issues-page.scss and issue-masthead.scss.
+@mixin level-accent {
+  &::after {
+    background-color: var(--gt-level-accent, var(--mat-sys-outline));
+  }
+
+  &.is-striped::after {
+    background-color: transparent;
+    background-image: repeating-linear-gradient(
+      -60deg,
+      var(--mat-sys-error),
+      var(--mat-sys-error) 5px,
+      var(--mat-sys-surface) 5px,
+      var(--mat-sys-surface) 10px
+    );
+  }
+}
