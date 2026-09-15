@@ -21,6 +21,29 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/settings/{organization_slug}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Organization Login Settings
+         * @description Sign-in options for one organization's own login page, including social
+         *     apps hidden from the instance-wide login page. Responds
+         *     200 with an empty list for unknown slugs so anonymous requests cannot
+         *     enumerate which organizations exist.
+         */
+        get: operations["glitchtip_api_api_get_organization_login_settings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/0/instance-license/": {
         parameters: {
             query?: never;
@@ -327,7 +350,7 @@ export interface paths {
         put?: never;
         /**
          * Chunk Upload
-         * @description Upload one more more gzipped files to save
+         * @description Upload one or more gzipped files to save
          */
         post: operations["apps_files_api_chunk_upload"];
         delete?: never;
@@ -378,11 +401,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Organizations List Comments */
-        get: operations["apps_issue_events_api_comments_organizations_list_comments"];
+        /** List Organization Comments */
+        get: operations["apps_issue_events_api_comments_list_organization_comments"];
         put?: never;
-        /** Organization Add Comment */
-        post: operations["apps_issue_events_api_comments_organization_add_comment"];
+        /** Add Organization Comment */
+        post: operations["apps_issue_events_api_comments_add_organization_comment"];
         delete?: never;
         options?: never;
         head?: never;
@@ -415,11 +438,11 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        /** Organization Update Comment */
-        put: operations["apps_issue_events_api_comments_organization_update_comment"];
+        /** Update Organization Comment */
+        put: operations["apps_issue_events_api_comments_update_organization_comment"];
         post?: never;
-        /** Organization Delete Comment */
-        delete: operations["apps_issue_events_api_comments_organization_delete_comment"];
+        /** Delete Organization Comment */
+        delete: operations["apps_issue_events_api_comments_delete_organization_comment"];
         options?: never;
         head?: never;
         patch?: never;
@@ -604,8 +627,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get Org Issues */
-        get: operations["apps_issue_events_api_issues_get_org_issues"];
+        /** Get Organization Issue */
+        get: operations["apps_issue_events_api_issues_get_organization_issue"];
         /** Update Organization Issue */
         put: operations["apps_issue_events_api_issues_update_organization_issue"];
         post?: never;
@@ -643,8 +666,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List Org Issue Commits */
-        get: operations["apps_issue_events_api_issues_list_org_issue_commits"];
+        /** List Organization Issue Commits */
+        get: operations["apps_issue_events_api_issues_list_organization_issue_commits"];
         put?: never;
         post?: never;
         delete?: never;
@@ -917,7 +940,7 @@ export interface paths {
          * Create Organization
          * @description Create new organization
          *     The first organization on a server is always allowed to be created.
-         *     Afterwards, ENABLE_OPEN_USER_REGISTRATION is checked.
+         *     Afterwards, ENABLE_ORGANIZATION_CREATION is checked.
          *     Superusers are always allowed to create organizations.
          */
         post: operations["apps_organizations_ext_api_create_organization"];
@@ -1053,6 +1076,42 @@ export interface paths {
          */
         post: operations["apps_organizations_ext_api_accept_invite"];
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/0/organizations/{organization_slug}/social-apps/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Organization Social Apps */
+        get: operations["apps_organizations_ext_social_app_api_list_organization_social_apps"];
+        put?: never;
+        /** Create Organization Social App */
+        post: operations["apps_organizations_ext_social_app_api_create_organization_social_app"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/0/organizations/{organization_slug}/social-apps/{social_app_id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update Organization Social App */
+        put: operations["apps_organizations_ext_social_app_api_update_organization_social_app"];
+        post?: never;
+        /** Delete Organization Social App */
+        delete: operations["apps_organizations_ext_social_app_api_delete_organization_social_app"];
         options?: never;
         head?: never;
         patch?: never;
@@ -2192,8 +2251,8 @@ export interface components {
         SocialAppSchema: {
             /** Scopes */
             scopes: string[];
-            /** Authorize Url */
-            authorize_url: string | null;
+            /** Brand */
+            brand: string;
             /** Name */
             name: string;
             /**
@@ -2203,6 +2262,11 @@ export interface components {
             client_id: string;
             /** Provider */
             provider: string;
+        };
+        /** LoginSettingsOut */
+        LoginSettingsOut: {
+            /** Socialapps */
+            socialApps: components["schemas"]["SocialAppSchema"][];
         };
         /** InstanceLicenseOut */
         InstanceLicenseOut: {
@@ -2338,8 +2402,6 @@ export interface components {
         EventIngestOut: {
             /** Event Id */
             event_id: string;
-            /** Task Id */
-            task_id?: string | null;
         };
         AppContext: {
             /**
@@ -2987,6 +3049,11 @@ export interface components {
         ProjectAlertSchema: {
             /** Alertrecipients */
             alertRecipients: components["schemas"]["AlertRecipientSchema"][];
+            /**
+             * Environments
+             * @description Only alert on events and uptime monitors from these environments. Empty matches every environment.
+             */
+            environments: string[];
             /** ID */
             id?: number | null;
             /** Name */
@@ -3021,6 +3088,11 @@ export interface components {
         ProjectAlertIn: {
             /** Name */
             name?: string | null;
+            /**
+             * Environments
+             * @description Only alert on events and uptime monitors from these environments. Empty matches every environment.
+             */
+            environments?: string[];
             /** Alertrecipients */
             alertRecipients?: (components["schemas"]["EmailAlertRecipientIn"] | components["schemas"]["WebhookAlertRecipientIn"] | components["schemas"]["ZulipAlertRecipientIn"])[] | null;
             /** Timespan Minutes */
@@ -3040,7 +3112,7 @@ export interface components {
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
-            recipientType: "discord" | "feishu" | "googlechat" | "ntfy" | "teams" | "webhook";
+            recipientType: "discord" | "feishu" | "googlechat" | "ntfy" | "slack" | "teams" | "webhook";
             /**
              * Url
              * Format: uri
@@ -4469,6 +4541,73 @@ export interface components {
             /** Acceptinvite */
             acceptInvite: boolean;
         };
+        /** OrganizationSocialAppSchema */
+        OrganizationSocialAppSchema: {
+            /** Serverurl */
+            serverUrl: string | null;
+            /** Brand */
+            brand: string;
+            /** Callbackurl */
+            callbackUrl: string | null;
+            /** Loginurl */
+            loginUrl: string;
+            /** ID */
+            id?: number | null;
+            /** Name */
+            name: string;
+            /** Provider */
+            provider: string;
+            /** provider ID */
+            providerID?: string | null;
+            /**
+             * Client Id
+             * @description App ID, or consumer key
+             */
+            clientID: string;
+        };
+        /**
+         * OrganizationSocialAppIn
+         * @description Create an organization-managed social app.
+         *
+         *     Every choice runs on the OpenID Connect machinery — each app gets its own
+         *     provider_id-scoped callback URL, which is what makes several apps of the
+         *     same brand (one per organization) coexist. Non-OIDC providers share one
+         *     callback URL per provider and cannot be disambiguated per organization.
+         */
+        OrganizationSocialAppIn: {
+            /** Name */
+            name: string;
+            /** Serverurl */
+            serverUrl?: string | null;
+            /** Clientid */
+            clientID: string;
+            /**
+             * Provider
+             * @default openid_connect
+             * @enum {string}
+             */
+            provider: "openid_connect" | "google";
+            /** Clientsecret */
+            clientSecret: string;
+        };
+        /**
+         * OrganizationSocialAppUpdateIn
+         * @description Update an organization-managed social app.
+         *
+         *     provider is absent deliberately: it fixes the callback URL, which is
+         *     already registered at the identity provider, so it cannot change after
+         *     creation.
+         */
+        OrganizationSocialAppUpdateIn: {
+            /** Name */
+            name: string;
+            /** Serverurl */
+            serverUrl?: string | null;
+            /** Clientid */
+            clientID: string;
+            /** Clientsecret */
+            clientSecret?: string | null;
+        };
         /** TransactionGroupFilters */
         TransactionGroupFilters: {
             /** Start */
@@ -4908,12 +5047,12 @@ export interface components {
             prices: components["schemas"]["StripeNestedPriceSchema"][];
             /** Marketingfeatures */
             marketingFeatures: string[];
+            /** Events */
+            events: number;
             /** Name */
             name: string;
             /** Description */
             description: string;
-            /** Events */
-            events: number;
         };
         /**
          * CollectionMethod
@@ -4924,12 +5063,12 @@ export interface components {
         StripeProductSchema: {
             /** Stripeid */
             stripeID: string;
+            /** Events */
+            events: number;
             /** Name */
             name: string;
             /** Description */
             description: string;
-            /** Events */
-            events: number;
             /** Default Price */
             default_price_id?: string | null;
         };
@@ -5153,14 +5292,13 @@ export interface components {
         };
         /** MonitorCheckSchema */
         MonitorCheckSchema: {
+            /**
+             * Startcheck
+             * Format: date-time
+             */
+            startCheck: string;
             /** Is Up */
             isUp: boolean;
-            /**
-             * Start Check
-             * Format: date-time
-             * @description Time when the start of this check was performed
-             */
-            startCheck?: string;
             /**
              * Reason
              * @default 0
@@ -5250,6 +5388,8 @@ export interface components {
             confirmationThreshold: number;
             /** Project */
             project?: string | null;
+            /** Environmentid */
+            environmentID?: number | null;
             /**
              * Monitor Type
              * @default Ping
@@ -5265,14 +5405,13 @@ export interface components {
          * @description Monitor check with response time. Used in Monitors detail api and monitor checks list
          */
         MonitorCheckResponseTimeSchema: {
+            /**
+             * Startcheck
+             * Format: date-time
+             */
+            startCheck: string;
             /** Is Up */
             isUp: boolean;
-            /**
-             * Start Check
-             * Format: date-time
-             * @description Time when the start of this check was performed
-             */
-            startCheck?: string;
             /**
              * Reason
              * @default 0
@@ -5722,6 +5861,28 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SettingsOut"];
+                };
+            };
+        };
+    };
+    glitchtip_api_api_get_organization_login_settings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LoginSettingsOut"];
                 };
             };
         };
@@ -6348,7 +6509,7 @@ export interface operations {
             };
         };
     };
-    apps_issue_events_api_comments_organizations_list_comments: {
+    apps_issue_events_api_comments_list_organization_comments: {
         parameters: {
             query?: {
                 /** @description Number of results to return per page. */
@@ -6376,7 +6537,7 @@ export interface operations {
             };
         };
     };
-    apps_issue_events_api_comments_organization_add_comment: {
+    apps_issue_events_api_comments_add_organization_comment: {
         parameters: {
             query?: never;
             header?: never;
@@ -6451,7 +6612,7 @@ export interface operations {
             };
         };
     };
-    apps_issue_events_api_comments_organization_update_comment: {
+    apps_issue_events_api_comments_update_organization_comment: {
         parameters: {
             query?: never;
             header?: never;
@@ -6479,7 +6640,7 @@ export interface operations {
             };
         };
     };
-    apps_issue_events_api_comments_organization_delete_comment: {
+    apps_issue_events_api_comments_delete_organization_comment: {
         parameters: {
             query?: never;
             header?: never;
@@ -6792,7 +6953,7 @@ export interface operations {
             };
         };
     };
-    apps_issue_events_api_issues_get_org_issues: {
+    apps_issue_events_api_issues_get_organization_issue: {
         parameters: {
             query?: never;
             header?: never;
@@ -6885,7 +7046,7 @@ export interface operations {
             };
         };
     };
-    apps_issue_events_api_issues_list_org_issue_commits: {
+    apps_issue_events_api_issues_list_organization_issue_commits: {
         parameters: {
             query?: never;
             header?: never;
@@ -7688,6 +7849,102 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["AcceptInviteSchema"];
                 };
+            };
+        };
+    };
+    apps_organizations_ext_social_app_api_list_organization_social_apps: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrganizationSocialAppSchema"][];
+                };
+            };
+        };
+    };
+    apps_organizations_ext_social_app_api_create_organization_social_app: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OrganizationSocialAppIn"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrganizationSocialAppSchema"];
+                };
+            };
+        };
+    };
+    apps_organizations_ext_social_app_api_update_organization_social_app: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+                social_app_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OrganizationSocialAppUpdateIn"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrganizationSocialAppSchema"];
+                };
+            };
+        };
+    };
+    apps_organizations_ext_social_app_api_delete_organization_social_app: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+                social_app_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
