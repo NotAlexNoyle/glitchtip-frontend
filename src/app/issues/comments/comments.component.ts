@@ -64,9 +64,18 @@ export class CommentsComponent implements OnInit {
 
   createOrUpdateComment(data: { text: string; id?: number }) {
     if (data.id) {
-      this.commentsService.updateComment(+this.issueID(), data.id, data.text);
+      this.commentsService.updateComment(
+        this.orgSlug(),
+        +this.issueID(),
+        data.id,
+        data.text,
+      );
     } else {
-      this.commentsService.createComment(+this.issueID(), data.text);
+      this.commentsService.createComment(
+        this.orgSlug(),
+        +this.issueID(),
+        data.text,
+      );
     }
   }
 
@@ -80,7 +89,11 @@ export class CommentsComponent implements OnInit {
 
   deleteComment(commentId: number) {
     if (window.confirm("Are you sure you want to delete this comment?")) {
-      this.commentsService.deleteComment(+this.issueID(), commentId);
+      this.commentsService.deleteComment(
+        this.orgSlug(),
+        +this.issueID(),
+        commentId,
+      );
     }
   }
 }

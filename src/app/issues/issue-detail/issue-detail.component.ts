@@ -183,7 +183,7 @@ export class IssueDetailComponent implements OnInit {
         `Are you sure you want delete this issue? You will permanently lose this issue and all associated events.`,
       )
     ) {
-      this.issueService.deleteIssue(id.toString());
+      this.issueService.deleteIssue(this.orgSlug(), id.toString());
     }
   }
 

@@ -216,6 +216,9 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
       if (statusDetails) {
         body.statusDetails = statusDetails;
       }
+      if (!this.orgSlug()) {
+        return
+      }
       const { data, error } = await client.PUT(
         "/api/0/organizations/{organization_slug}/issues/{issue_id}/",
         {
@@ -253,11 +256,7 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
     this.setUpdatedCommentCount(num);
   }
 
-  async deleteIssue(id: string) {
-    const orgSlug = this.orgSlug();
-    if (!orgSlug) {
-      return;
-    }
+  async deleteIssue(orgSlug: string, id: string) {
     const { error } = await client.DELETE(
       "/api/0/organizations/{organization_slug}/issues/{issue_id}/",
       {

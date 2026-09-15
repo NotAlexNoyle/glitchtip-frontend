@@ -86,11 +86,7 @@ export class CommentsService extends StatefulService<CommentsState> {
     super(initialState);
   }
 
-  async createComment(issueId: number, text: string) {
-    const orgSlug = this.orgSlug();
-    if (!orgSlug) {
-      return;
-    }
+  async createComment(orgSlug: string, issueId: number, text: string) {
     this.setCreateCommentLoadingStart();
     const { data, error } = await client.POST(
       "/api/0/organizations/{organization_slug}/issues/{issue_id}/comments/",
@@ -121,11 +117,12 @@ export class CommentsService extends StatefulService<CommentsState> {
     this.setCommentUpdateModeCancel(commentId);
   }
 
-  async updateComment(issueId: number, commentId: number, text: string) {
-    const orgSlug = this.orgSlug();
-    if (!orgSlug) {
-      return;
-    }
+  async updateComment(
+    orgSlug: string,
+    issueId: number,
+    commentId: number,
+    text: string,
+  ) {
     this.setCommentUpdateLoadingStart(commentId);
     const { data, error } = await client.PUT(
       "/api/0/organizations/{organization_slug}/issues/{issue_id}/comments/{comment_id}/",
@@ -154,11 +151,7 @@ export class CommentsService extends StatefulService<CommentsState> {
     }
   }
 
-  async deleteComment(issueId: number, commentId: number) {
-    const orgSlug = this.orgSlug();
-    if (!orgSlug) {
-      return;
-    }
+  async deleteComment(orgSlug: string, issueId: number, commentId: number) {
     this.setCommentDeleteLoadingStart(commentId);
     const { error, response } = await client.DELETE(
       "/api/0/organizations/{organization_slug}/issues/{issue_id}/comments/{comment_id}/",
