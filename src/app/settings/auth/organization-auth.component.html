@@ -19,8 +19,8 @@
       </p>
       @if (resourceError()) {
         <mat-error i18n
-          >Unable to load SSO providers. A role of manager or above is required
-          to view them.</mat-error
+          >Unable to load SSO providers. Viewing them requires a role of manager
+          or above; if you have one, try reloading the page.</mat-error
         >
       } @else {
         @for (app of socialApps(); track app.id) {
@@ -110,6 +110,9 @@
                 i18n-placeholder
               />
               <mat-hint i18n>Shown on the sign-in button</mat-hint>
+              @if (form.controls.name.errors?.["required"]) {
+                <mat-error i18n>A name is required</mat-error>
+              }
             </mat-form-field>
             @if (showIssuerField()) {
               <mat-form-field class="full-width" appearance="outline">
@@ -123,11 +126,17 @@
                   >The OIDC issuer or discovery URL from your identity
                   provider</mat-hint
                 >
+                @if (form.controls.serverUrl.errors?.["required"]) {
+                  <mat-error i18n>An issuer URL is required</mat-error>
+                }
               </mat-form-field>
             }
             <mat-form-field class="full-width" appearance="outline">
               <mat-label i18n>Client ID</mat-label>
               <input matInput formControlName="clientID" />
+              @if (form.controls.clientID.errors?.["required"]) {
+                <mat-error i18n>A client ID is required</mat-error>
+              }
             </mat-form-field>
             <mat-form-field class="full-width" appearance="outline">
               <mat-label i18n>Client secret</mat-label>
@@ -135,12 +144,10 @@
               @if (editingApp()) {
                 <mat-hint i18n>Leave blank to keep the current secret</mat-hint>
               }
+              @if (form.controls.clientSecret.errors?.["required"]) {
+                <mat-error i18n>A client secret is required</mat-error>
+              }
             </mat-form-field>
-            @if (showIsPublicToggle()) {
-              <mat-checkbox formControlName="isPublic" i18n
-                >Show on this server's main login page</mat-checkbox
-              >
-            }
             @if (error()) {
               <mat-error>{{ error() }}</mat-error>
             }

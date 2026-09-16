@@ -30,8 +30,8 @@ export interface paths {
         };
         /**
          * Get Organization Login Settings
-         * @description Sign-in options for one organization's login page (/login/<org slug>),
-         *     including social apps hidden from the instance-wide login page. Responds
+         * @description Sign-in options for one organization's own login page, including social
+         *     apps hidden from the instance-wide login page. Responds
          *     200 with an empty list for unknown slugs so anonymous requests cannot
          *     enumerate which organizations exist.
          */
@@ -350,7 +350,7 @@ export interface paths {
         put?: never;
         /**
          * Chunk Upload
-         * @description Upload one more more gzipped files to save
+         * @description Upload one or more gzipped files to save
          */
         post: operations["apps_files_api_chunk_upload"];
         delete?: never;
@@ -394,6 +394,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/0/organizations/{organization_slug}/issues/{issue_id}/comments/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Organization Comments */
+        get: operations["apps_issue_events_api_comments_list_organization_comments"];
+        put?: never;
+        /** Add Organization Comment */
+        post: operations["apps_issue_events_api_comments_add_organization_comment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/0/issues/{issue_id}/comments/{comment_id}/": {
         parameters: {
             query?: never;
@@ -412,6 +430,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/0/organizations/{organization_slug}/issues/{issue_id}/comments/{comment_id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update Organization Comment */
+        put: operations["apps_issue_events_api_comments_update_organization_comment"];
+        post?: never;
+        /** Delete Organization Comment */
+        delete: operations["apps_issue_events_api_comments_delete_organization_comment"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/0/issues/{issue_id}/events/": {
         parameters: {
             query?: never;
@@ -421,6 +457,23 @@ export interface paths {
         };
         /** List Issue Event */
         get: operations["apps_issue_events_api_events_list_issue_event"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/0/organizations/{organization_slug}/issues/{issue_id}/events/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Organization Issue Event */
+        get: operations["apps_issue_events_api_events_list_organization_issue_event"];
         put?: never;
         post?: never;
         delete?: never;
@@ -446,6 +499,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/0/organizations/{organization_slug}/issues/{issue_id}/events/latest/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Organization Latest Issue Event */
+        get: operations["apps_issue_events_api_events_get_organization_latest_issue_event"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/0/issues/{issue_id}/events/{event_id}/": {
         parameters: {
             query?: never;
@@ -455,6 +525,23 @@ export interface paths {
         };
         /** Get Issue Event */
         get: operations["apps_issue_events_api_events_get_issue_event"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/0/organizations/{organization_slug}/issues/{issue_id}/events/{event_id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Organization Issue Event */
+        get: operations["apps_issue_events_api_events_get_organization_issue_event"];
         put?: never;
         post?: never;
         delete?: never;
@@ -533,6 +620,25 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/0/organizations/{organization_slug}/issues/{issue_id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Organization Issue */
+        get: operations["apps_issue_events_api_issues_get_organization_issue"];
+        /** Update Organization Issue */
+        put: operations["apps_issue_events_api_issues_update_organization_issue"];
+        post?: never;
+        /** Delete Organization Issue */
+        delete: operations["apps_issue_events_api_issues_delete_organization_issue"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/0/issues/{issue_id}/commits/": {
         parameters: {
             query?: never;
@@ -553,16 +659,16 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/0/organizations/{organization_slug}/issues/{issue_id}/": {
+    "/api/0/organizations/{organization_slug}/issues/{issue_id}/commits/": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
-        /** Update Organization Issue */
-        put: operations["apps_issue_events_api_issues_update_organization_issue"];
+        /** List Organization Issue Commits */
+        get: operations["apps_issue_events_api_issues_list_organization_issue_commits"];
+        put?: never;
         post?: never;
         delete?: never;
         options?: never;
@@ -623,6 +729,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/0/organizations/{organization_slug}/issues/{issue_id}/tags/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Organization Issue Tags */
+        get: operations["apps_issue_events_api_issues_list_organization_issue_tags"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/0/organizations/{organization_slug}/issues-stats/": {
         parameters: {
             query?: never;
@@ -655,6 +778,23 @@ export interface paths {
         };
         /** List User Reports */
         get: operations["apps_issue_events_api_user_reports_list_user_reports"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/0/organizations/{organization_slug}/issues/{issue_id}/user-reports/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Organization User Reports */
+        get: operations["apps_issue_events_api_user_reports_list_organization_user_reports"];
         put?: never;
         post?: never;
         delete?: never;
@@ -800,7 +940,7 @@ export interface paths {
          * Create Organization
          * @description Create new organization
          *     The first organization on a server is always allowed to be created.
-         *     Afterwards, ENABLE_OPEN_USER_REGISTRATION is checked.
+         *     Afterwards, ENABLE_ORGANIZATION_CREATION is checked.
          *     Superusers are always allowed to create organizations.
          */
         post: operations["apps_organizations_ext_api_create_organization"];
@@ -2111,8 +2251,6 @@ export interface components {
         SocialAppSchema: {
             /** Scopes */
             scopes: string[];
-            /** Authorize Url */
-            authorize_url: string | null;
             /** Brand */
             brand: string;
             /** Name */
@@ -2264,8 +2402,6 @@ export interface components {
         EventIngestOut: {
             /** Event Id */
             event_id: string;
-            /** Task Id */
-            task_id?: string | null;
         };
         AppContext: {
             /**
@@ -2913,6 +3049,11 @@ export interface components {
         ProjectAlertSchema: {
             /** Alertrecipients */
             alertRecipients: components["schemas"]["AlertRecipientSchema"][];
+            /**
+             * Environments
+             * @description Only alert on events and uptime monitors from these environments. Empty matches every environment.
+             */
+            environments: string[];
             /** ID */
             id?: number | null;
             /** Name */
@@ -2947,6 +3088,11 @@ export interface components {
         ProjectAlertIn: {
             /** Name */
             name?: string | null;
+            /**
+             * Environments
+             * @description Only alert on events and uptime monitors from these environments. Empty matches every environment.
+             */
+            environments?: string[];
             /** Alertrecipients */
             alertRecipients?: (components["schemas"]["EmailAlertRecipientIn"] | components["schemas"]["WebhookAlertRecipientIn"] | components["schemas"]["ZulipAlertRecipientIn"])[] | null;
             /** Timespan Minutes */
@@ -2966,7 +3112,7 @@ export interface components {
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
-            recipientType: "discord" | "feishu" | "googlechat" | "ntfy" | "teams" | "webhook";
+            recipientType: "discord" | "feishu" | "googlechat" | "ntfy" | "slack" | "teams" | "webhook";
             /**
              * Url
              * Format: uri
@@ -4401,8 +4547,6 @@ export interface components {
             serverUrl: string | null;
             /** Brand */
             brand: string;
-            /** Ispublic */
-            isPublic: boolean;
             /** Callbackurl */
             callbackUrl: string | null;
             /** Loginurl */
@@ -4433,45 +4577,36 @@ export interface components {
         OrganizationSocialAppIn: {
             /** Name */
             name: string;
-            /**
-             * Provider
-             * @default openid_connect
-             * @enum {string}
-             */
-            provider: "openid_connect" | "google";
             /** Serverurl */
             serverUrl?: string | null;
             /** Clientid */
             clientID: string;
-            /** Clientsecret */
-            clientSecret: string;
-            /**
-             * Ispublic
-             * @default false
-             */
-            isPublic: boolean;
-        };
-        /** OrganizationSocialAppUpdateIn */
-        OrganizationSocialAppUpdateIn: {
-            /** Name */
-            name: string;
             /**
              * Provider
              * @default openid_connect
              * @enum {string}
              */
             provider: "openid_connect" | "google";
+            /** Clientsecret */
+            clientSecret: string;
+        };
+        /**
+         * OrganizationSocialAppUpdateIn
+         * @description Update an organization-managed social app.
+         *
+         *     provider is absent deliberately: it fixes the callback URL, which is
+         *     already registered at the identity provider, so it cannot change after
+         *     creation.
+         */
+        OrganizationSocialAppUpdateIn: {
+            /** Name */
+            name: string;
             /** Serverurl */
             serverUrl?: string | null;
             /** Clientid */
             clientID: string;
             /** Clientsecret */
             clientSecret?: string | null;
-            /**
-             * Ispublic
-             * @default false
-             */
-            isPublic: boolean;
         };
         /** TransactionGroupFilters */
         TransactionGroupFilters: {
@@ -4912,12 +5047,12 @@ export interface components {
             prices: components["schemas"]["StripeNestedPriceSchema"][];
             /** Marketingfeatures */
             marketingFeatures: string[];
+            /** Events */
+            events: number;
             /** Name */
             name: string;
             /** Description */
             description: string;
-            /** Events */
-            events: number;
         };
         /**
          * CollectionMethod
@@ -4928,12 +5063,12 @@ export interface components {
         StripeProductSchema: {
             /** Stripeid */
             stripeID: string;
+            /** Events */
+            events: number;
             /** Name */
             name: string;
             /** Description */
             description: string;
-            /** Events */
-            events: number;
             /** Default Price */
             default_price_id?: string | null;
         };
@@ -5157,14 +5292,13 @@ export interface components {
         };
         /** MonitorCheckSchema */
         MonitorCheckSchema: {
+            /**
+             * Startcheck
+             * Format: date-time
+             */
+            startCheck: string;
             /** Is Up */
             isUp: boolean;
-            /**
-             * Start Check
-             * Format: date-time
-             * @description Time when the start of this check was performed
-             */
-            startCheck?: string;
             /**
              * Reason
              * @default 0
@@ -5254,6 +5388,8 @@ export interface components {
             confirmationThreshold: number;
             /** Project */
             project?: string | null;
+            /** Environmentid */
+            environmentID?: number | null;
             /**
              * Monitor Type
              * @default Ping
@@ -5269,14 +5405,13 @@ export interface components {
          * @description Monitor check with response time. Used in Monitors detail api and monitor checks list
          */
         MonitorCheckResponseTimeSchema: {
+            /**
+             * Startcheck
+             * Format: date-time
+             */
+            startCheck: string;
             /** Is Up */
             isUp: boolean;
-            /**
-             * Start Check
-             * Format: date-time
-             * @description Time when the start of this check was performed
-             */
-            startCheck?: string;
             /**
              * Reason
              * @default 0
@@ -6374,6 +6509,61 @@ export interface operations {
             };
         };
     };
+    apps_issue_events_api_comments_list_organization_comments: {
+        parameters: {
+            query?: {
+                /** @description Number of results to return per page. */
+                limit?: number | null;
+                /** @description The pagination cursor value. */
+                cursor?: string | null;
+            };
+            header?: never;
+            path: {
+                issue_id: number;
+                organization_slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommentSchema"][];
+                };
+            };
+        };
+    };
+    apps_issue_events_api_comments_add_organization_comment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+                issue_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostCommentSchema"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommentSchema"];
+                };
+            };
+        };
+    };
     apps_issue_events_api_comments_update_comment: {
         parameters: {
             query?: never;
@@ -6422,6 +6612,56 @@ export interface operations {
             };
         };
     };
+    apps_issue_events_api_comments_update_organization_comment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+                issue_id: number;
+                comment_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostCommentSchema"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommentSchema"];
+                };
+            };
+        };
+    };
+    apps_issue_events_api_comments_delete_organization_comment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+                issue_id: number;
+                comment_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     apps_issue_events_api_events_list_issue_event: {
         parameters: {
             query?: {
@@ -6433,6 +6673,34 @@ export interface operations {
             header?: never;
             path: {
                 issue_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IssueEventSchema"][];
+                };
+            };
+        };
+    };
+    apps_issue_events_api_events_list_organization_issue_event: {
+        parameters: {
+            query?: {
+                /** @description Number of results to return per page. */
+                limit?: number | null;
+                /** @description The pagination cursor value. */
+                cursor?: string | null;
+            };
+            header?: never;
+            path: {
+                issue_id: number;
+                organization_slug: string;
             };
             cookie?: never;
         };
@@ -6471,11 +6739,58 @@ export interface operations {
             };
         };
     };
+    apps_issue_events_api_events_get_organization_latest_issue_event: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+                issue_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IssueEventDetailSchema"];
+                };
+            };
+        };
+    };
     apps_issue_events_api_events_get_issue_event: {
         parameters: {
             query?: never;
             header?: never;
             path: {
+                issue_id: number;
+                event_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IssueEventDetailSchema"];
+                };
+            };
+        };
+    };
+    apps_issue_events_api_events_get_organization_issue_event: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
                 issue_id: number;
                 event_id: string;
             };
@@ -6638,11 +6953,12 @@ export interface operations {
             };
         };
     };
-    apps_issue_events_api_issues_list_issue_commits: {
+    apps_issue_events_api_issues_get_organization_issue: {
         parameters: {
             query?: never;
             header?: never;
             path: {
+                organization_slug: string;
                 issue_id: number;
             };
             cookie?: never;
@@ -6655,7 +6971,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CommitSchema"][];
+                    "application/json": components["schemas"]["IssueDetailSchema"];
                 };
             };
         };
@@ -6683,6 +6999,72 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["IssueDetailSchema"];
+                };
+            };
+        };
+    };
+    apps_issue_events_api_issues_delete_organization_issue: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+                issue_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    apps_issue_events_api_issues_list_issue_commits: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                issue_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommitSchema"][];
+                };
+            };
+        };
+    };
+    apps_issue_events_api_issues_list_organization_issue_commits: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+                issue_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommitSchema"][];
                 };
             };
         };
@@ -6842,6 +7224,31 @@ export interface operations {
             };
         };
     };
+    apps_issue_events_api_issues_list_organization_issue_tags: {
+        parameters: {
+            query?: {
+                key?: string | null;
+            };
+            header?: never;
+            path: {
+                organization_slug: string;
+                issue_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IssueTagSchema"][];
+                };
+            };
+        };
+    };
     apps_issue_events_api_issues_issue_stats: {
         parameters: {
             query: {
@@ -6877,6 +7284,34 @@ export interface operations {
             };
             header?: never;
             path: {
+                issue_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserReportSchema"][];
+                };
+            };
+        };
+    };
+    apps_issue_events_api_user_reports_list_organization_user_reports: {
+        parameters: {
+            query?: {
+                /** @description Number of results to return per page. */
+                limit?: number | null;
+                /** @description The pagination cursor value. */
+                cursor?: string | null;
+            };
+            header?: never;
+            path: {
+                organization_slug: string;
                 issue_id: number;
             };
             cookie?: never;

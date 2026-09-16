@@ -19,9 +19,12 @@
             Signing in to <strong>{{ orgSlug }}</strong>
           </p>
           @if (orgLoginSettingsLoaded() && !socialApps().length) {
+            <!-- An unknown slug answers 200 with an empty list so anonymous
+                 callers cannot enumerate organizations, so this wording must
+                 not claim the organization exists. -->
             <p class="body-text org-login-note" i18n>
-              This organization has no single sign-on providers configured. Use
-              your email and password, or the
+              No single sign-on providers are available for this identifier.
+              Use your email and password, or the
               <a class="auth-link" routerLink="/login">standard login page</a>.
             </p>
           }

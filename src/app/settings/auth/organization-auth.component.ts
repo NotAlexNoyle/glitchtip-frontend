@@ -15,7 +15,6 @@ import {
 import { RouterLink } from "@angular/router";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
-import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatDialog } from "@angular/material/dialog";
 import { MatDividerModule } from "@angular/material/divider";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -24,7 +23,6 @@ import { MatInputModule } from "@angular/material/input";
 import { MatRadioModule } from "@angular/material/radio";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { OrganizationsService } from "src/app/api/organizations.service";
-import { SettingsService } from "src/app/api/settings.service";
 import { ConfirmDialogComponent } from "src/app/shared/confirm-dialog/confirm-dialog.component";
 import { CopyInputComponent } from "src/app/shared/copy-input/copy-input.component";
 import { LoadingButtonComponent } from "src/app/shared/loading-button/loading-button.component";
@@ -42,7 +40,6 @@ import {
   imports: [
     MatButtonModule,
     MatCardModule,
-    MatCheckboxModule,
     MatDividerModule,
     MatFormFieldModule,
     MatIconModule,
@@ -58,21 +55,21 @@ import {
 export class OrganizationAuthComponent {
   private service = inject(OrganizationSocialAppsService);
   private organizationsService = inject(OrganizationsService);
-  private settings = inject(SettingsService);
   private snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
 
   socialApps = this.service.socialApps;
-  resourceError = computed(() => this.service.socialAppsResource.serverError());
+  /**
+   * Any failure to load: a permission denial, a 500, or a dropped connection.
+   * serverError() alone misses the last -- a rejected fetch never becomes a
+   * ninja error body, so the page would fall through to "none configured".
+   */
+  resourceError = computed(
+    () => this.service.socialAppsResource.error() !== undefined,
+  );
   loadingApps = computed(() => this.service.socialAppsResource.isLoading());
   accessOrgWrite = this.organizationsService.accessOrgWrite;
   orgSlug = this.organizationsService.activeOrganizationSlug;
-  /** The public-login-page toggle only exists on single-tenant self-host */
-  showIsPublicToggle = computed(
-    () =>
-      this.settings.billingEnabled() === false &&
-      this.settings.enableOrganizationCreation() === false,
-  );
 
   constructor() {
     // Keep the page's resource keyed to the active org only while mounted
@@ -98,7 +95,6 @@ export class OrganizationAuthComponent {
     serverUrl: new FormControl(""),
     clientID: new FormControl("", [Validators.required]),
     clientSecret: new FormControl(""),
-    isPublic: new FormControl(false),
   });
 
   /** The issuer URL only applies to bring-your-own OIDC providers */
@@ -135,7 +131,8 @@ export class OrganizationAuthComponent {
   startAdd() {
     this.editingApp.set(null);
     this.error.set(null);
-    this.form.reset({ provider: "google", name: "Google", isPublic: false });
+    this.planLimited.set(false);
+    this.form.reset({ provider: "google", name: "Google" });
     this.form.controls.clientSecret.setValidators([Validators.required]);
     this.form.controls.clientSecret.updateValueAndValidity();
     this.syncServerUrlValidator();
@@ -145,13 +142,13 @@ export class OrganizationAuthComponent {
   startEdit(app: OrganizationSocialApp) {
     this.editingApp.set(app);
     this.error.set(null);
+    this.planLimited.set(false);
     this.form.reset({
       provider: app.brand === "google" ? "google" : "openid_connect",
       name: app.name,
       serverUrl: app.serverUrl,
       clientID: app.clientID,
       clientSecret: "",
-      isPublic: app.isPublic,
     });
     this.form.controls.clientSecret.clearValidators();
     this.form.controls.clientSecret.updateValueAndValidity();
@@ -163,30 +160,33 @@ export class OrganizationAuthComponent {
     this.showForm.set(false);
     this.editingApp.set(null);
     this.error.set(null);
+    this.planLimited.set(false);
   }
 
   async onSubmit() {
     if (!this.form.valid) {
+      this.form.markAllAsTouched();
       return;
     }
     this.saving.set(true);
     this.error.set(null);
     const value = this.form.value;
     const payload = {
-      provider: value.provider!,
       name: value.name!,
       serverUrl: this.showIssuerField() ? value.serverUrl : null,
       clientID: value.clientID!,
-      isPublic: value.isPublic ?? false,
     };
     const editing = this.editingApp();
     const result = editing
-      ? await this.service.updateSocialApp(editing.id!, {
+      ? // provider is deliberately absent from the update payload: it fixes
+        // the callback URL already registered at the identity provider.
+        await this.service.updateSocialApp(editing.id!, {
           ...payload,
           clientSecret: value.clientSecret ? value.clientSecret : null,
         })
       : await this.service.createSocialApp({
           ...payload,
+          provider: value.provider!,
           clientSecret: value.clientSecret!,
         });
     this.saving.set(false);
