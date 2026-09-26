@@ -77,7 +77,6 @@ GlitchTip 7.0 squashes old database migrations and changes how GlitchTip runs. B
 1. Upgrade to the latest 6.x release first and let it start, so its migrations complete. Upgrading directly from an older release to 7.0 is not supported.
 2. Upgrade PostgreSQL to 15 or newer. PostgreSQL 14 is no longer supported.
 3. If you run separate web and worker services, remove the worker service and keep one GlitchTip service. There is no separate worker in 7.0: `./bin/run-worker.sh` and any `SERVER_ROLE` other than `web` or `all_in_one` now refuse to start. `SERVER_ROLE` and `GLITCHTIP_EMBED_WORKER` are no longer needed and may be removed.
-4. Minidump (native crash) ingestion is now off by default. Set `GLITCHTIP_ENABLE_MINIDUMP=true` if you use it.
 
 ## PikaPods
 
@@ -206,7 +205,6 @@ Optional environment variables:
 - `CSRF_TRUSTED_ORIGINS` Comma-separated list of trusted origins for CSRF. Required when using a reverse proxy with a different domain.
 - `BASE_PATH` Set when running GlitchTip under a subpath (e.g. `/glitchtip`).
 - `PROXY_ENV` (Default False) Set to True to trust HTTP_PROXY, HTTPS_PROXY, and NO_PROXY environment variables.
-- `GLITCHTIP_ENABLE_MINIDUMP` (Default False) Accept minidump (native crash report) uploads. Set to True if you send minidumps from native applications.
 - `SKIP_INIT` (Default False) Skip automatic database migrations and partition maintenance on startup. Useful in environments with pre/post upgrade hooks (e.g., the Helm chart sets this by default).
 - `LOG_LEVEL` (Default WARNING) Python log level. Set to `INFO` or `DEBUG` for troubleshooting.
 - `ENABLE_OBSERVABILITY_API` (Default False) Enable Prometheus metrics endpoint.
