@@ -6,10 +6,10 @@ Not sure which? Elestio, Pikapods, and Nodion all support GlitchTip via a revenu
 
 ### System Requirements
 
-GlitchTip requires PostgreSQL (14+) and a single service (or separate web and worker services for scaling). Valkey (or redis) 7+ is optional.
+GlitchTip requires PostgreSQL (15+) and a single service. That one process serves the web app, ingests events, and runs background tasks and the scheduler. To scale, run more replicas of the same service. Valkey (or redis) 7+ is optional.
 
 - Recommended system requirements: 512 MB RAM, x86 or arm64 CPU
-- Minimum system requirements: 256 MB RAM when using all-in-one setup. Careful configuration will allow 128 MB + swap.
+- Minimum system requirements: 256 MB RAM. Careful configuration will allow 128 MB + swap.
 
 Disk usage varies on usage and event size. As a rough guide, a 1 million event per month instance may require 30GB of disk.
 
@@ -70,6 +70,15 @@ Install and run certbot. Follow [instructions](https://certbot.eff.org/instructi
 
 Database migrations will automatically happen.
 
+### Upgrading from 6.x to 7.0
+
+GlitchTip 7.0 squashes old database migrations and changes how GlitchTip runs. Before changing the image tag to `glitchtip/glitchtip:7`:
+
+1. Upgrade to the latest 6.x release first and let it start, so its migrations complete. Upgrading directly from an older release to 7.0 is not supported.
+2. Upgrade PostgreSQL to 15 or newer. PostgreSQL 14 is no longer supported.
+3. If you run separate web and worker services, remove the worker service and keep one GlitchTip service. There is no separate worker in 7.0: `./bin/run-worker.sh` and any `SERVER_ROLE` other than `web` or `all_in_one` now refuse to start. `SERVER_ROLE` and `GLITCHTIP_EMBED_WORKER` are no longer needed and may be removed.
+4. Minidump (native crash) ingestion is now off by default. Set `GLITCHTIP_ENABLE_MINIDUMP=true` if you use it.
+
 ## PikaPods
 
 <a href="https://www.pikapods.com/pods?run=glitchtip">
@@ -112,7 +121,7 @@ Nodion allows adjusting many environment variables for configuration. See config
 <img src="https://railway.com/button.svg" alt="Deploy on Railway" style="width:200px;"/>
 </a>
 
-Railway is a modern app hosting platform that makes it easy to deploy GlitchTip. The template deploys GlitchTip in all-in-one mode with PostgreSQL and Redis, and is ready to use immediately — no manual environment variable setup required.
+Railway is a modern app hosting platform that makes it easy to deploy GlitchTip. The template deploys GlitchTip with PostgreSQL and Redis, and is ready to use immediately — no manual environment variable setup required.
 
 Sign up and deploy GlitchTip on Railway [here](https://railway.com/new/template/glitchtip?utm_medium=integration&utm_source=button&utm_campaign=glitchtip). After deployment, configure email and other optional settings via environment variables. See [Configuration](https://glitchtip.com/documentation/install#configuration).
 
@@ -148,7 +157,7 @@ For high availability, production servers we recommend using multiple Kubernetes
 
 ## Installing Without Docker
 
-This method is not recommended and assumes the reader knows how to deploy Django, background task workers, SSL, and a web server. It requires manual upgrades.
+This method is not recommended and assumes the reader knows how to deploy an ASGI Django application, SSL, and a web server. It requires manual upgrades.
 
 1. `git clone` or download the latest Django backend [release tag](https://gitlab.com/glitchtip/glitchtip-backend/-/tags). Take note of the version number.
 2. Download the latest frontend code at `wget https://gitlab.com/api/v4/projects/15449363/jobs/artifacts/<VERSION HERE>/download?job=build-assets -O assets.zip`. Replace the VERSION HERE with the same version from step 1. It must be exact, including the "v".
@@ -157,8 +166,8 @@ This method is not recommended and assumes the reader knows how to deploy Django
 5. Set required [environment variables](https://glitchtip.com/documentation/install#configuration).
 6. Migrate the database with `./manage.py migrate`
 7. Collect static files `./manage.py collectstatic`
-8. Configure the Django application with your favorite web server such as nginx or apache. Ensure SSL is configured. See `./bin/*` for run scripts to use or as examples.
-9. Start the background worker with your preferred init system. For example systemd or supervisor. See `./bin/run-worker` for the worker command.
+8. Run `./bin/start.sh` with your preferred init system, such as systemd or supervisor. It starts one process that serves HTTP and runs background tasks and the scheduler; there is no separate worker to run. See `./bin/*` for the other run scripts.
+9. Put a web server such as nginx or apache in front of it as a reverse proxy. Ensure SSL is configured.
 
 To upgrade, follow the same steps with the latest version tag. Include migrating the database and collectstatic.
 
@@ -173,7 +182,7 @@ Required environment variables:
 - Alternatively, use the SendGrid API by setting `SENDGRID_API_KEY`. Set `EMAIL_BACKEND` to `anymail.backends.sendgrid.EmailBackend`.
 - GlitchTip supports additional email providers via [Anymail](https://anymail.dev): Postmark, Mailjet, Mandrill, SparkPost, Brevo, and Postal. Set the appropriate API key and `EMAIL_BACKEND`. See [Anymail documentation](https://anymail.dev/en/stable/) for details.
 - `DEFAULT_FROM_EMAIL` Default from email address. Example `info@example.com`
-- `GLITCHTIP_DOMAIN` Set to your domain. Include scheme (http or https). Example: `https://glitchtip.example.com`.
+- `GLITCHTIP_URL` Set to your GlitchTip URL. Include scheme (http or https). Example: `https://glitchtip.example.com`. The older names `GLITCHTIP_DOMAIN` and `APP_URL` are still accepted.
 
 Optional environment variables:
 
@@ -182,7 +191,7 @@ Optional environment variables:
 - `VALKEY_SSL_CA_CERTS` Path to a PEM file containing the CA certificate used to verify the Valkey server's certificate. Required when connecting over TLS to a server with a self-signed or private CA. Mount the CA into the container and set this to its path (e.g. `/etc/ssl/certs/valkey-ca/ca.crt`).
 - `VALKEY_SSL_CERTFILE` / `VALKEY_SSL_KEYFILE` Paths to client certificate and key files, for mutual TLS (mTLS). Both must be set together. Only needed if the server requires client certificate authentication.
 - `VALKEY_SSL_CERT_REQS` Set to `none` to skip certificate verification entirely — encrypted but unvalidated. Useful for self-signed setups where mounting the CA isn't practical. Defaults to `required`.
-- `DATABASE_URL` Set PostgreSQL connect string. PostgreSQL 14 and above are supported.
+- `DATABASE_URL` Set PostgreSQL connect string. PostgreSQL 15 and above are supported.
 - `CACHE_URL` use alternative cache backend for django, defaults to `VALKEY_URL`
 - Content Security Policy (CSP) headers are enabled by default. In most cases there is no need to change these. However, you may add environment variables as documented in the [Django security documentation](https://docs.djangoproject.com/en/stable/ref/settings/#secure-csp) to modify them. GlitchTip supports setting these via environment variables using the `CSP_` prefix. For example, set `CSP_DEFAULT_SRC='self',scripts.example.com` to modify the default CSP header. Note the usage of comma separated values and single quotes on certain values such as 'self'.
 - `ENABLE_USER_REGISTRATION` (Default True) When True, any user will be able to register through the self-signup. When False, user self-signup is disabled after the first user is registered. Subsequent users must use social apps if enabled or be created by a superuser on the backend and organization invitations may only be sent to existing users.
@@ -197,7 +206,7 @@ Optional environment variables:
 - `CSRF_TRUSTED_ORIGINS` Comma-separated list of trusted origins for CSRF. Required when using a reverse proxy with a different domain.
 - `BASE_PATH` Set when running GlitchTip under a subpath (e.g. `/glitchtip`).
 - `PROXY_ENV` (Default False) Set to True to trust HTTP_PROXY, HTTPS_PROXY, and NO_PROXY environment variables.
-- `GLITCHTIP_EMBED_WORKER` (Default False) Run the background worker within the web server process instead of separately. Equivalent to `SERVER_ROLE=all_in_one`.
+- `GLITCHTIP_ENABLE_MINIDUMP` (Default False) Accept minidump (native crash report) uploads. Set to True if you send minidumps from native applications.
 - `SKIP_INIT` (Default False) Skip automatic database migrations and partition maintenance on startup. Useful in environments with pre/post upgrade hooks (e.g., the Helm chart sets this by default).
 - `LOG_LEVEL` (Default WARNING) Python log level. Set to `INFO` or `DEBUG` for troubleshooting.
 - `ENABLE_OBSERVABILITY_API` (Default False) Enable Prometheus metrics endpoint.
@@ -248,10 +257,10 @@ GLITCHTIP_ENABLE_DUCKDB=true
 
 ### Server configuration
 
-Scaling GlitchTip? Review these granian (web server) and django-vtasks (worker) environment variables.
+Scaling GlitchTip? Each GlitchTip process runs the granian web server and the django-vtasks task worker together, so scale by adding replicas and review these environment variables.
 
 - `VTASKS_CONCURRENCY` (Default 20) Number of concurrent asyncio background tasks to run.
-- `DATABASE_POOL_MAX_SIZE` (Default 20) psycopg connection pool size, consider setting it the same as vtasks concurrency. Be aware of your postgres connection limit.
+- `DATABASE_POOL_MAX_SIZE` (Default 20) Database connection pool size, consider setting it the same as vtasks concurrency. Be aware of your postgres connection limit.
 - `GRANIAN_WORKERS` (Default 1) Number of granian web workers to run. GlitchTip uses ASGI (async Python). Setting this higher is only recommended when not scaling horizontally. See more granian settings [here](https://github.com/emmett-framework/granian)
 
 ### Security headers
@@ -292,13 +301,12 @@ More partitions mean more locks, so shorter [retention](#data-retention) and [co
 
 ### Advanced database permissions
 
-A best practice is to assign the least privledged role needed to each GlitchTip service.
+A best practice is to give GlitchTip's everyday queries a least privileged role. GlitchTip accepts two database connection strings:
 
-- web - Read and write access to rows.
-- worker and migrate - Requires all permissions for the schema, including CREATE/DROP/ALTER table. It doesn't need to be a superuser or manage roles.
-  Both services manage partitions, therefore they need to be the same role (owner of tables).
+- `DATABASE_URL` - Used for normal reads and writes. Needs read and write access to rows.
+- `MAINTENANCE_DATABASE_URL` (optional) - Used for migrations, partition maintenance, and data retention. Requires all permissions for the schema, including CREATE/DROP/ALTER table. It doesn't need to be a superuser or manage roles. It must be the owner of the tables. When unset, `DATABASE_URL` is used for everything and must have these permissions.
 
-A simple example is to assign a single limited user to web.
+A simple example is to assign a limited role to `DATABASE_URL`.
 
 ```sql
 CREATE ROLE glitchtip_app WITH LOGIN PASSWORD 'replace_with_app_password';
@@ -319,7 +327,7 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public
    GRANT EXECUTE ON FUNCTIONS TO glitchtip_app;
 ```
 
-Here's an example for the migrate/worker role.
+Here's an example for the `MAINTENANCE_DATABASE_URL` role.
 
 ```sql
 CREATE ROLE glitchtip_maintainer WITH LOGIN PASSWORD 'replace_with_maintainer_password';

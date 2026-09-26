@@ -3,7 +3,7 @@ x-environment: &default-environment
   VALKEY_URL: redis://valkey:6379 # Or set to blank string to disable
   SECRET_KEY: change_me_to_something_random # best to run openssl rand -hex 32
   EMAIL_URL: consolemail:// # Example smtp://email:password@smtp_url:port https://glitchtip.com/documentation/install#configuration
-  GLITCHTIP_DOMAIN: https://glitchtip.example.com # Change this to your domain
+  GLITCHTIP_URL: https://glitchtip.example.com # Change this to your domain
   DEFAULT_FROM_EMAIL: email@example.com # Change this to your email
   ENABLE_ADMIN: "False" # Set to True to enable Django Admin at /admin/
   ENABLE_OPENAPI: "False" # Set to True to enable OpenAPI spec at /api/docs
@@ -35,13 +35,12 @@ services:
     image: valkey/valkey:9
     restart: unless-stopped
   web:
-    image: glitchtip/glitchtip:6 # Check https://glitchtip.com/blog/ for new major versions
+    image: glitchtip/glitchtip:7 # Check https://glitchtip.com/blog/ for new major versions
     depends_on: *default-depends_on
     ports:
       - "8000:8000"
     environment:
       <<: *default-environment
-      SERVER_ROLE: all_in_one
     restart: unless-stopped
     volumes:
       - uploads:/code/uploads
