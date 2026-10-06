@@ -1,5 +1,10 @@
-import { seedBackend, requestLogin } from "./utils.cy";
-import { seededOrg, seededProject3, seededTeam } from "../fixtures/variables";
+import { seedBackend, requestLogin, getDSN, uniqueId } from "./utils.cy";
+import {
+  seededOrg,
+  seededProject1,
+  seededProject3,
+  seededTeam,
+} from "../fixtures/variables";
 
 function createProject(body: { name: string; platform?: string }) {
   return cy.getCookie("csrftoken").then((cookie) =>
@@ -142,6 +147,60 @@ describe(
         );
         cy.wait("@issues");
         cy.get("[data-cy=no-results]");
+      });
+    });
+  },
+);
+
+describe(
+  "Issue short ID search",
+  { defaultCommandTimeout: 6000, requestTimeout: 10000 },
+  () => {
+    beforeEach(() => {
+      seedBackend(true, true);
+      requestLogin();
+    });
+
+    it("opens the issue when searching its short ID", () => {
+      const title = `ShortIdSearch${uniqueId(8)}`;
+      cy.request(
+        `/api/0/projects/${seededOrg.slug}/${seededProject1.slug}/keys/`,
+      ).then((keysRes) => {
+        cy.request("POST", getDSN(keysRes.body[0].dsn.public), {
+          event_id: uniqueId(),
+          level: "error",
+          exception: { values: [{ type: title, value: "short id search" }] },
+        });
+      });
+
+      // Ingest is asynchronous; wait for the issue to exist
+      const findIssue = (attempts = 20): Cypress.Chainable<any> =>
+        cy
+          .request(
+            `/api/0/projects/${seededOrg.slug}/${seededProject1.slug}/issues/?sort=-first_seen&limit=1`,
+          )
+          .then((res) => {
+            const issue = res.body[0];
+            if (issue?.title.startsWith(title) || attempts <= 1) {
+              return issue;
+            }
+            cy.wait(500);
+            return findIssue(attempts - 1);
+          });
+
+      findIssue().then((issue) => {
+        cy.intercept("GET", "/api/0/organizations/*/issues/?*").as("issues");
+        // Lowercase still matches; the server ignores case
+        cy.visit(
+          `/${seededOrg.slug}/issues?query=${issue.shortId.toLowerCase()}`,
+        );
+        cy.wait("@issues")
+          .its("request.url")
+          .should("include", "shortIdLookup=1");
+        cy.location("pathname").should(
+          "eq",
+          `/${seededOrg.slug}/issues/${issue.id}`,
+        );
       });
     });
   },

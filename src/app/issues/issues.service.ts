@@ -7,6 +7,7 @@ import { getPaginationHeaders, getPaginator } from "../shared/pagination.utils";
 import { keepPreviousValue } from "../shared/signal.utils";
 import { IssueStatus, IssueStatusUpdate, StatsPeriod } from "./interfaces";
 import { apiResource } from "../shared/api/api-resource-factory";
+import { looksLikeShortId } from "./utils";
 
 export interface DataParams {
   orgSlug: string;
@@ -80,6 +81,10 @@ export class IssuesService extends StatefulService<IssuesState> {
               start: params.params.start,
               end: params.params.end,
               sort,
+              shortIdLookup:
+                params.params.query && looksLikeShortId(params.params.query)
+                  ? "1"
+                  : undefined,
               project: params.params.project?.map((p) => parseInt(p)),
               environment: params.params.environment
                 ? [params.params.environment]
@@ -94,15 +99,13 @@ export class IssuesService extends StatefulService<IssuesState> {
         );
       }
       const pagination = getPaginationHeaders(response);
-      if (
-        response.headers.has("x-sentry-direct-hit") &&
-        response.headers.get("x-sentry-direct-hit") === "1" &&
-        data.length &&
-        data[0].matchingEventId
-      ) {
+      if (response.headers.get("x-sentry-direct-hit") === "1" && data?.length) {
+        // An event ID hit opens that event; a short ID hit opens the issue
         const directHit = data[0];
         this.router.navigate(
-          [directHit.id, "events", directHit.matchingEventId],
+          directHit.matchingEventId
+            ? [directHit.id, "events", directHit.matchingEventId]
+            : [directHit.id],
           {
             relativeTo: this.route,
             queryParams: { query: null },

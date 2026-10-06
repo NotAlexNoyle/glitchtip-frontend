@@ -6494,6 +6494,7 @@ export interface operations {
                 environment?: string[] | null;
                 query?: string | null;
                 sort?: "last_seen" | "first_seen" | "count" | "priority" | "-last_seen" | "-first_seen" | "-count" | "-priority";
+                shortIdLookup?: string | null;
                 /** @description Number of results to return per page. */
                 limit?: number | null;
                 /** @description The pagination cursor value. */
@@ -6590,6 +6591,7 @@ export interface operations {
                 environment?: string[] | null;
                 query?: string | null;
                 sort?: "last_seen" | "first_seen" | "count" | "priority" | "-last_seen" | "-first_seen" | "-count" | "-priority";
+                shortIdLookup?: string | null;
                 /** @description Number of results to return per page. */
                 limit?: number | null;
                 /** @description The pagination cursor value. */

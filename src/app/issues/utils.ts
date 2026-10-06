@@ -25,3 +25,12 @@ export function isSwiftNameMangled(
   }
   return functionName.startsWith("$s") || functionName.startsWith("_$s");
 }
+
+/**
+ * Whether a search could be an issue short ID such as `MY-APP-1A`: a project
+ * slug, a hyphen, then a base32 code. Mirrors the backend's parser, so only
+ * these searches ask it for a short ID lookup.
+ */
+export function looksLikeShortId(query: string): boolean {
+  return /^[a-z0-9_-]{1,50}-[0-9a-v]{1,7}$/i.test(query.trim());
+}

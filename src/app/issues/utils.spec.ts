@@ -4,6 +4,7 @@ import {
   isIosPlatform,
   cleanIosPath,
   isSwiftNameMangled,
+  looksLikeShortId,
 } from "./utils";
 
 /**
@@ -86,5 +87,27 @@ describe("isSwiftNameMangled", () => {
   it("is safe with null inputs", () => {
     expect(isSwiftNameMangled(null, "cocoa")).toBe(false);
     expect(isSwiftNameMangled("$s4MyApp", null)).toBe(false);
+  });
+});
+
+describe("looksLikeShortId", () => {
+  it("matches short IDs, including hyphenated slugs and any case", () => {
+    for (const query of ["PROJECT-1A", "my-app-1a", " MY-APP-V ", "a_b-0"]) {
+      expect(looksLikeShortId(query), query).toBe(true);
+    }
+  });
+
+  it("rejects searches that are not a short ID", () => {
+    for (const query of [
+      "is:unresolved",
+      "TypeError: x-1",
+      "my app-1a",
+      "MYAPP",
+      "MY-APP-",
+      "MY-APP-ZZ",
+      "MY-APP-\u212a", // Kelvin sign case-folds to "k" outside ASCII
+    ]) {
+      expect(looksLikeShortId(query), query).toBe(false);
+    }
   });
 });
