@@ -358,50 +358,60 @@ export class OrganizationDetailService extends StatefulService<OrganizationsStat
   async leaveTeam(teamSlug: string) {
     const orgSlug = this.organizationsService.activeOrganizationSlug();
     this.setLeaveTeamLoading(teamSlug);
-    const { data, error, response } = await client.DELETE(
-      "/api/0/organizations/{organization_slug}/members/{member_id}/teams/{team_slug}/",
-      {
-        params: {
-          path: {
-            organization_slug: orgSlug,
-            member_id: "me",
-            team_slug: teamSlug,
+    try {
+      const { data, error, response } = await client.DELETE(
+        "/api/0/organizations/{organization_slug}/members/{member_id}/teams/{team_slug}/",
+        {
+          params: {
+            path: {
+              organization_slug: orgSlug,
+              member_id: "me",
+              team_slug: teamSlug,
+            },
           },
         },
-      },
-    );
-    if (data) {
-      this.snackBar.open($localize`You have left ${data.slug}`);
-    } else {
-      const errors = handleError(error, response);
-      if (errors.detail.length) {
-        this.setLeaveTeamError(errors.detail[0].msg);
+      );
+      if (data) {
+        this.setTeamMembership(teamSlug, false);
+        this.snackBar.open($localize`You have left ${data.slug}`);
+      } else {
+        const errors = handleError(error, response);
+        if (errors.detail.length) {
+          this.setLeaveTeamError(errors.detail[0].msg);
+        }
       }
+    } finally {
+      this.setLeaveTeamLoading("");
     }
   }
 
   async joinTeam(teamSlug: string) {
     const orgSlug = this.organizationsService.activeOrganizationSlug();
     this.setJoinTeamLoading(teamSlug);
-    const { data, error, response } = await client.POST(
-      "/api/0/organizations/{organization_slug}/members/{member_id}/teams/{team_slug}/",
-      {
-        params: {
-          path: {
-            organization_slug: orgSlug,
-            member_id: "me",
-            team_slug: teamSlug,
+    try {
+      const { data, error, response } = await client.POST(
+        "/api/0/organizations/{organization_slug}/members/{member_id}/teams/{team_slug}/",
+        {
+          params: {
+            path: {
+              organization_slug: orgSlug,
+              member_id: "me",
+              team_slug: teamSlug,
+            },
           },
         },
-      },
-    );
-    if (data) {
-      this.snackBar.open($localize`You joined ${data.slug}`);
-    } else {
-      const errors = handleError(error, response);
-      if (errors.detail.length) {
-        this.setJoinTeamError(errors.detail[0].msg);
+      );
+      if (data) {
+        this.setTeamMembership(teamSlug, true);
+        this.snackBar.open($localize`You joined ${data.slug}`);
+      } else {
+        const errors = handleError(error, response);
+        if (errors.detail.length) {
+          this.setJoinTeamError(errors.detail[0].msg);
+        }
       }
+    } finally {
+      this.setJoinTeamLoading("");
     }
   }
 
@@ -410,6 +420,29 @@ export class OrganizationDetailService extends StatefulService<OrganizationsStat
       loading: initialState.loading,
       errors: initialState.errors,
     });
+  }
+
+  /**
+   * Update the team locally before refetching: reload() keeps serving the old
+   * org until it finishes, so the button would briefly flip back.
+   */
+  private setTeamMembership(teamSlug: string, isMember: boolean) {
+    this.organizationsService.activeOrganizationResource.update(
+      (org) =>
+        org && {
+          ...org,
+          teams: org.teams.map((team) =>
+            team.slug === teamSlug
+              ? {
+                  ...team,
+                  isMember,
+                  memberCount: team.memberCount + (isMember ? 1 : -1),
+                }
+              : team,
+          ),
+        },
+    );
+    this.organizationsService.refreshActiveOrganization();
   }
 
   private setLeaveTeamLoading(team: string) {
