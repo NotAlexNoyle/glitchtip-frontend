@@ -46,7 +46,7 @@ server {
 }
 ```
 
-This configuration will direct glitchtip.example.com to port 8000 (the default GlitchTip docker compose port).
+This configuration will direct glitchtip.example.com to port 8000 (the default GlitchTip docker compose port). Since nginx runs on the same server, change the web service's port in compose.yml to `"127.0.0.1:8000:8000"` so that GlitchTip is only reachable through nginx.
 
 Install and run certbot. Follow [instructions](https://certbot.eff.org/instructions).
 
@@ -60,8 +60,18 @@ Install and run certbot. Follow [instructions](https://certbot.eff.org/instructi
         ProxyPass / http://localhost:8000/
         ProxyPassReverse / http://localhost:8000/
         RequestHeader set "X-Forwarded-Proto" expr=%{REQUEST_SCHEME}
-        RequestHeader set "X-Forwarded-SSL" expr=%{HTTPS}
 ```
+
+### Reverse proxies and client IP addresses
+
+GlitchTip limits failed logins per client IP address. Behind a reverse proxy, it reads the client's address from the `X-Forwarded-For` header, but only when the request comes from a proxy it trusts, because a client can put anything in that header.
+
+- Proxies on private or internal addresses are trusted automatically. That covers a proxy on the same server, on a Docker network, in Kubernetes, and on most hosting platforms. The nginx and Apache examples above need no extra configuration.
+- A proxy with a public IP address, usually a CDN such as Cloudflare, must be listed in `TRUSTED_PROXIES`. Use your provider's published address ranges, for example `TRUSTED_PROXIES=173.245.48.0/20,103.21.244.0/22,...`. Until it is listed, GlitchTip logs a warning that names the address, and all users behind that address share one login rate limit.
+- When a CDN is in front, configure your server or firewall to accept web traffic only from the CDN, so that nobody can bypass it.
+- `TRUSTED_PROXIES=*` trusts every connection and takes the first address in `X-Forwarded-For`. Use it only if your proxy replaces the header instead of adding to it, and GlitchTip can't be reached except through that proxy. Otherwise clients can bypass the login rate limit.
+
+To check your setup, sign in with a wrong password 11 times within a minute. The 11th attempt should be refused with "too many attempts".
 
 ### Upgrading
 
@@ -195,6 +205,7 @@ Optional environment variables:
 - `GLITCHTIP_INSTANCE_NAME` Custom instance name displayed in the UI. Supports markdown. Example: `"[My Company's](https://example.com) GlitchTip"`
 - `ALLOWED_HOSTS` (Default `*`) Comma-separated list of allowed hostnames. Restrict this in production for added security.
 - `CSRF_TRUSTED_ORIGINS` Comma-separated list of trusted origins for CSRF. Required when using a reverse proxy with a different domain.
+- `TRUSTED_PROXIES` Comma-separated addresses or networks of reverse proxies with public IP addresses, such as a CDN. Proxies on private addresses are always trusted. See [Reverse proxies and client IP addresses](#reverse-proxies-and-client-ip-addresses).
 - `BASE_PATH` Set when running GlitchTip under a subpath (e.g. `/glitchtip`).
 - `PROXY_ENV` (Default False) Set to True to trust HTTP_PROXY, HTTPS_PROXY, and NO_PROXY environment variables.
 - `GLITCHTIP_EMBED_WORKER` (Default False) Run the background worker within the web server process instead of separately. Equivalent to `SERVER_ROLE=all_in_one`.
