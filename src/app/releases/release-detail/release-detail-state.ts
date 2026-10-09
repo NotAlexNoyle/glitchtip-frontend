@@ -54,10 +54,17 @@ export class ReleaseDetailService {
   #pagination = keepPreviousValue(
     () => this.#releaseFilesResource.value()?.pagination,
   );
-  release = computed(() => this.#releaseResource.value());
+  release = computed(() => {
+    // .value() throws in the error state; the error surfaces via errors below.
+    if (this.#releaseResource.error()) return undefined;
+    return this.#releaseResource.value();
+  });
   releaseFiles = computed(() => this.#releaseFilesData() ?? []);
-  releaseFileErrors = computed(
-    () => this.#releaseFilesResource.serverError()?.detail,
+  // A failed release request outranks the files list, which is moot without it.
+  errors = computed(
+    () =>
+      this.#releaseResource.serverError()?.detail ??
+      this.#releaseFilesResource.serverError()?.detail,
   );
   paginator = computed(() => getPaginator(this.#pagination()));
   loading = computed(

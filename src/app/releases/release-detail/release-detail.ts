@@ -45,7 +45,7 @@ export class ReleaseDetail {
   release = this.service.release;
   paginator = this.service.paginator;
   releaseFiles = this.service.releaseFiles;
-  fileListErrors = this.service.releaseFileErrors;
+  errors = this.service.errors;
   loading = this.service.loading;
   initialLoadComplete = this.service.initialLoadComplete;
 

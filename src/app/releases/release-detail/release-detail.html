@@ -10,9 +10,9 @@
   }
   <div class="table-container">
     <gt-loading-overlay [loading]="loading()" label="Loading release files">
-      @if (fileListErrors()?.length) {
+      @if (errors()?.length) {
         <div class="table-empty-states">
-          @if (fileListErrors()?.length === 1) {
+          @if (errors()?.length === 1) {
             <h3 class="body-text-strong">
               There was an error processing your request
             </h3>
@@ -22,7 +22,7 @@
             </h3>
           }
           <ul>
-            @for (error of fileListErrors(); track $index) {
+            @for (error of errors(); track $index) {
               <li>{{ error.msg || error }}</li>
             }
           </ul>
@@ -71,7 +71,7 @@
               @if (
                 initialLoadComplete() === true &&
                 loading() === false &&
-                !fileListErrors()?.length
+                !errors()?.length
               ) {
                 <div class="body-text-strong" i18n
                   >There are no files associated with this release.</div
