@@ -1,7 +1,7 @@
 @if (errorReports()) {
   <p class="mat-body-1"> {{ errorReports() }} </p>
 }
-@if (reports().length === 0 && loading() === false) {
+@if (reports().length === 0 && loading() === false && !errorReports()) {
   <mat-card class="mat-elevation-z0">
     <mat-card-content>
       <p i18n>No user reports have been submitted.</p>
