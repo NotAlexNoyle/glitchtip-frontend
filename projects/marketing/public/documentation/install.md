@@ -64,14 +64,18 @@ Install and run certbot. Follow [instructions](https://certbot.eff.org/instructi
 
 ### Reverse proxies and client IP addresses
 
-GlitchTip limits failed logins per client IP address. Behind a reverse proxy, it reads the client's address from the `X-Forwarded-For` header, but only when the request comes from a proxy it trusts, because a client can put anything in that header.
+GlitchTip rate-limits logins, signups and password resets per client IP address. Behind a reverse proxy, it reads the client's address from the `X-Forwarded-For` header, but only from proxies it trusts, because a client can put anything in that header. `TRUSTED_PROXIES` controls which proxies are trusted.
 
-- Proxies on private or internal addresses are trusted automatically. That covers a proxy on the same server, on a Docker network, in Kubernetes, and on most hosting platforms. The nginx and Apache examples above need no extra configuration.
-- A proxy with a public IP address, usually a CDN such as Cloudflare, must be listed in `TRUSTED_PROXIES`. Use your provider's published address ranges, for example `TRUSTED_PROXIES=173.245.48.0/20,103.21.244.0/22,...`. Until it is listed, GlitchTip logs a warning that names the address, and all users behind that address share one login rate limit.
-- When a CDN is in front, configure your server or firewall to accept web traffic only from the CDN, so that nobody can bypass it.
-- `TRUSTED_PROXIES=*` trusts every connection and takes the first address in `X-Forwarded-For`. Use it only if your proxy replaces the header instead of adding to it, and GlitchTip can't be reached except through that proxy. Otherwise clients can bypass the login rate limit.
+- **Default (`private`).** Proxies on private, loopback, link-local and carrier-grade NAT addresses are trusted. That covers a proxy on the same server, a Docker network, Kubernetes and most hosting platforms, so the nginx and Apache examples above need no extra configuration. It stops clients on the internet from choosing their address. It does not stop clients that your proxy itself sees on a private address, such as users on your LAN or VPN.
+- **Behind Cloudflare,** set `TRUSTED_PROXIES=cloudflare,private`. Cloudflare connects from public addresses, so it isn't trusted by default; until it is, all users behind the same Cloudflare address share one rate limit, and GlitchTip logs a warning. `cloudflare` is the list Cloudflare published when your GlitchTip version was released. For another CDN, list its published ranges (IPv4 and IPv6) plus `private`.
+- **To trust only your own proxies,** list their addresses or networks, for example `TRUSTED_PROXIES=10.0.0.5`. A value replaces the default, and loopback is always trusted. GlitchTip logs the proxies it sees, which is a good starting point.
+- `TRUSTED_PROXIES=*` trusts every connection and takes the first address in `X-Forwarded-For`. Avoid it: unless your proxy replaces the header and GlitchTip can be reached only through that proxy, clients can bypass the rate limits.
 
-To check your setup, sign in with a wrong password 11 times within a minute. The 11th attempt should be refused with "too many attempts".
+Getting this wrong does not break GlitchTip: an untrusted proxy's own address is used instead, so users behind it share a rate limit.
+
+Your proxies must set `X-Forwarded-Proto` and add the connecting address to `X-Forwarded-For` (in nginx, `$proxy_add_x_forwarded_for`). When a CDN is in front, configure your server or firewall to accept web traffic only from the CDN.
+
+To check your setup, look at the GlitchTip log. The startup banner shows the `TRUSTED_PROXIES` setting, a "Trusted proxies seen so far" line lists the proxies requests came through, and a warning names any proxy that should be added.
 
 ### Upgrading
 
@@ -205,7 +209,7 @@ Optional environment variables:
 - `GLITCHTIP_INSTANCE_NAME` Custom instance name displayed in the UI. Supports markdown. Example: `"[My Company's](https://example.com) GlitchTip"`
 - `ALLOWED_HOSTS` (Default `*`) Comma-separated list of allowed hostnames. Restrict this in production for added security.
 - `CSRF_TRUSTED_ORIGINS` Comma-separated list of trusted origins for CSRF. Required when using a reverse proxy with a different domain.
-- `TRUSTED_PROXIES` Comma-separated addresses or networks of reverse proxies with public IP addresses, such as a CDN. Proxies on private addresses are always trusted. See [Reverse proxies and client IP addresses](#reverse-proxies-and-client-ip-addresses).
+- `TRUSTED_PROXIES` (Default `private`) Reverse proxies whose `X-Forwarded-For` header is trusted: comma-separated addresses, networks and the keywords `private`, `loopback` and `cloudflare`. Behind Cloudflare, set `cloudflare,private`. See [Reverse proxies and client IP addresses](#reverse-proxies-and-client-ip-addresses).
 - `BASE_PATH` Set when running GlitchTip under a subpath (e.g. `/glitchtip`).
 - `PROXY_ENV` (Default False) Set to True to trust HTTP_PROXY, HTTPS_PROXY, and NO_PROXY environment variables.
 - `GLITCHTIP_EMBED_WORKER` (Default False) Run the background worker within the web server process instead of separately. Equivalent to `SERVER_ROLE=all_in_one`.
