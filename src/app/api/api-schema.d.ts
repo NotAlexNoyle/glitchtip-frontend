@@ -2025,10 +2025,6 @@ export interface components {
             enableOrganizationCreation: boolean;
             /** Stripepublickey */
             stripePublicKey: string | null;
-            /** Plausibleurl */
-            plausibleUrl: string | null;
-            /** Plausibledomain */
-            plausibleDomain: string | null;
             /** Chatwootwebsitetoken */
             chatwootWebsiteToken: string | null;
             /** Sentrydsn */
