@@ -5,12 +5,7 @@ import {
   inject,
   ChangeDetectionStrategy,
 } from "@angular/core";
-import {
-  ActivatedRoute,
-  NavigationEnd,
-  Router,
-  RouterOutlet,
-} from "@angular/router";
+import { RouterOutlet } from "@angular/router";
 import { SettingsService } from "./api/settings.service";
 import { UserService } from "./api/user/user.service";
 import { setTheme } from "./shared/shared.utils";
@@ -24,14 +19,13 @@ import { MatIconRegistry } from "@angular/material/icon";
   imports: [RouterOutlet],
 })
 export class AppComponent implements OnInit {
-  private settings = inject(SettingsService);
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
   private authService = inject(AuthService);
   private userService = inject(UserService);
   private matIconRegistry = inject(MatIconRegistry);
 
   constructor() {
+    // Start settings at boot: it configures error reporting for the app.
+    inject(SettingsService);
     effect(() =>
       setTheme(
         this.userService.user()?.options.preferredTheme ||
@@ -42,14 +36,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.matIconRegistry.setDefaultFontSetClass("material-symbols-filled");
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        const params = this.route.snapshot.firstChild?.params;
-        const orgSlug = params ? params["org-slug"] : undefined;
-        this.settings.triggerPlausibleReport(orgSlug);
-      }
-    });
-
     const systemTheme = matchMedia("(prefers-color-scheme: dark)");
     systemTheme.addEventListener("change", () =>
       setTheme(this.userService.user()?.options.preferredTheme),
