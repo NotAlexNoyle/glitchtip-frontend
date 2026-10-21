@@ -478,6 +478,28 @@ gt-pagination-buttons {
   padding: 1.5em 24px 0.5em;
 }
 
+.mat-mdc-table .table-numeric,
+.mat-mdc-table .table-end {
+  text-align: end;
+
+  .mat-sort-header-container {
+    justify-content: flex-end;
+
+    // The arrow-before layout is row-reverse, so flex-start is the right edge.
+    &.mat-sort-header-position-before {
+      justify-content: flex-start;
+    }
+  }
+}
+
+.mat-mdc-table .table-numeric {
+  font-variant-numeric: tabular-nums;
+
+  &.mat-mdc-cell {
+    white-space: nowrap;
+  }
+}
+
 // TODO: Find a better way to match this height with the height of mat formfield items
 .mat-button-toggle-group {
   height: 40px;

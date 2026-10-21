@@ -5,28 +5,17 @@ $iconWidth: 56px;
 table {
   width: 100%;
   margin-bottom: 40px;
-
-  // &.fixedLayout {
-  //   table-layout: fixed;
-  // }
+  table-layout: fixed;
 }
 
-.mat-column-version, .mat-column-header-spacing {
-  width: 90%;
-  @media screen and (max-width: vars.$large - 1) {
-    width: 500px;
-  }
-  @media screen and (max-width: vars.$medium - 1) {
-    width: 400px;
-  }
-  @media screen and (max-width: vars.$tablet - 1) {
-    width: 200px;
-  }
+.mat-column-version,
+.mat-column-header-spacing {
+  width: auto;
 }
 
 .mat-column-created,
 .mat-column-pagination {
-  width: 10%;
+  width: 140px;
 }
 
 .version {
@@ -36,5 +25,4 @@ table {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  max-width: fit-content;
 }

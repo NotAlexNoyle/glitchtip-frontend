@@ -170,10 +170,17 @@ export class TablePatternPreview {
     "Put class table-header on the sticky mat-header-row",
     "On reload, run a top progress bar and keep the previous rows (via keepPreviousValue), dimmed, instead of blanking the table",
     "Show .table-empty-states inside the container when there are no rows",
+    "Keep columns at stable widths (table-layout: fixed): the primary column flexes, secondary columns are a fixed pixel width, and overflowing content truncates, so columns don't reflow as the data changes",
+    "Put class table-numeric on the header and cells of numeric columns: right-aligned, tabular figures, sort arrow before the label (arrowPosition=\"before\")",
+    "Put class table-end on a short last column, such as a date, so every table ends at the same right edge",
+    "Show exact counts with locale separators (| number), not abbreviations like 12.3K",
+    "Keep one unit and one number of decimals per column",
     "On narrow widths, let the container scroll horizontally (min-width on the table) so columns stay legible",
   ];
   readonly donts = [
     "Build one-off table styles per page",
+    "Size columns with percentages that collapse to their content; give secondary columns a fixed width instead so the table doesn't shift when the data changes",
+    "Right-align identifiers that happen to be numbers, such as issue IDs",
   ];
   readonly composition = {
     contains: ["Pagination buttons", "Loading button", "Buttons & actions"],

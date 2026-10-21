@@ -176,11 +176,6 @@
   width: 100%;
   min-width: 700px;
 
-  .num {
-    text-align: right;
-    white-space: nowrap;
-  }
-
   .span-description {
     font: var(--mat-sys-body-small);
     font-family: vars.$font-mono, monospace;

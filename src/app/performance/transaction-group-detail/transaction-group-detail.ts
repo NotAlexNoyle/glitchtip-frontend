@@ -8,7 +8,7 @@ import {
   ChangeDetectionStrategy,
 } from "@angular/core";
 import { RouterLink } from "@angular/router";
-import { PercentPipe } from "@angular/common";
+import { DecimalPipe, PercentPipe } from "@angular/common";
 import { MatIconModule } from "@angular/material/icon";
 import { MatCardModule } from "@angular/material/card";
 import { MatTableModule } from "@angular/material/table";
@@ -33,6 +33,7 @@ type SpanSortKey = "totalTime" | "avgDuration" | "p95Duration" | "count";
     MatSortModule,
     RouterLink,
     MatIconModule,
+    DecimalPipe,
     PercentPipe,
     TopAppBar,
     BackLinkComponent,

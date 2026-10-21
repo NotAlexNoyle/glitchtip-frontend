@@ -11,7 +11,7 @@ import {
   signal,
   ViewChild,
 } from "@angular/core";
-import { DatePipe, I18nPluralPipe } from "@angular/common";
+import { DatePipe, DecimalPipe, I18nPluralPipe } from "@angular/common";
 import { FormControl, FormGroup } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCheckboxModule } from "@angular/material/checkbox";
@@ -59,6 +59,7 @@ import { SearchHelpConfig } from "../../list-elements/data-filter-bar/data-filte
     RouterLink,
     IssueZeroStatesComponent,
     DatePipe,
+    DecimalPipe,
     DaysAgoPipe,
     DaysOldPipe,
     I18nPluralPipe,
