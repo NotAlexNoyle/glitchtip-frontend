@@ -20,12 +20,20 @@ html {
 }
 
 // Brand color override
+@mixin brand-dark {
+  --mat-sys-primary: #d94a5f;
+  --mat-sys-on-primary: #ffffff;
+  --mat-sys-error: #f54e6f;
+}
+
 @media (prefers-color-scheme: dark) {
-  :root {
-    --mat-sys-primary: #d94a5f;
-    --mat-sys-on-primary: #ffffff;
-    --mat-sys-error: #f54e6f;
+  :root:not(.light) {
+    @include brand-dark;
   }
+}
+
+:root.dark {
+  @include brand-dark;
 }
 
 // Extended color

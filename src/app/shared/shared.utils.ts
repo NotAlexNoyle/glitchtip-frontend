@@ -206,6 +206,13 @@ export function parseErrorMessage(err: HttpErrorResponse): string[] {
 }
 
 export function setTheme(preferredTheme?: string | null) {
+  const dark =
+    preferredTheme === "dark" ||
+    (preferredTheme !== "light" &&
+      matchMedia("(prefers-color-scheme: dark)").matches);
+  document.documentElement.classList.toggle("dark", dark);
+  document.documentElement.classList.toggle("light", !dark);
+
   if (preferredTheme === "light") {
     document.documentElement.style.setProperty("color-scheme", "light");
     localStorage.setItem("theme", "light");
