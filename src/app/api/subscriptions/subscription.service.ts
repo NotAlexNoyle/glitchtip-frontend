@@ -1,26 +1,48 @@
 import { computed, Injectable, inject, signal } from "@angular/core";
 import { Router } from "@angular/router";
 import { StatefulService } from "src/app/shared/stateful-service/signal-state.service";
-import { client } from "../../shared/api/api";
+import { client, handleError } from "../../shared/api/api";
+import { UNHANDLED_ERROR } from "src/app/constants";
 import { OrganizationsService } from "../organizations.service";
 import { SettingsService } from "../settings.service";
 import { apiResource } from "src/app/shared/api/api-resource-factory";
+import {
+  capAdjustable,
+  capBelowBilled as overageCapBelowBilled,
+  capReached as overageCapReached,
+  displayedThrottleRate,
+  isOverageInactive,
+  overageInactiveCause,
+  overageThrottleState,
+  reportedCostOwedCents as overageReportedCostOwedCents,
+} from "./overage-throttle-state";
+import { showSubscriptionRefreshTimeout } from "./subscription-refresh-state";
 
 export interface SubscriptionState {
   billingPortalLoading: boolean;
   billingPortalLoadingError: string;
   subscriptionRefreshing: boolean;
-  subscriptionRefreshTimeout: boolean;
+  // Org slug, not a flag: switching org keeps the page mounted.
+  subscriptionRefreshTimeoutSlug: string | null;
   fromStripe: boolean;
+  overageConfigLoading: boolean;
+  overageConfigError: string;
 }
 
 const initialState: SubscriptionState = {
   billingPortalLoading: false,
   billingPortalLoadingError: "",
   subscriptionRefreshing: false,
-  subscriptionRefreshTimeout: false,
+  subscriptionRefreshTimeoutSlug: null,
   fromStripe: false,
+  overageConfigLoading: false,
+  overageConfigError: "",
 };
+
+// How long after a cap change to refetch overage status a second time. The
+// server clears the throttle rate in an enqueued task, so this only needs to
+// outlast typical task-queue latency, not a sweep interval.
+const THROTTLE_SETTLE_REFETCH_MS = 5_000;
 
 @Injectable({
   providedIn: "root",
@@ -29,12 +51,13 @@ export class SubscriptionService extends StatefulService<SubscriptionState> {
   private settingsService = inject(SettingsService);
   private organizationsService = inject(OrganizationsService);
   private router = inject(Router);
+  private throttleSettleTimer: ReturnType<typeof setTimeout> | undefined;
 
   stripePublicKey = this.settingsService.stripePublicKey;
 
   // The explicitly-selected org (route / switcher), not the activeOrganizationSlug
   // fallback which defaults to organizations()[0]. These resources are read
-  // app-wide (e.g. the Chatwoot effect in UserService), so keying on the fallback
+  // app-wide (e.g. the over-limit snackbar), so keying on the fallback
   // briefly fetches the first org's data before the route resolves — the "loads
   // both orgs' subscriptions" / wrong-org fetch.
   private selectedSlug = computed(
@@ -45,14 +68,18 @@ export class SubscriptionService extends StatefulService<SubscriptionState> {
     this.settingsService.billingEnabled() ? this.selectedSlug() : "",
   );
   subscriptionResource = apiResource(this.organizationSlug, (orgSlug) => ({
-    url: "/api/0/stripe/subscriptions/{organization_slug}/",
+    url: "/api/0/stripe/subscriptions/{organization_id_or_slug}/",
     options: {
       params: {
-        path: { organization_slug: orgSlug },
+        path: this.organizationsService.orgPath(orgSlug),
       },
     },
   }));
   subscription = computed(() => {
+    // value() throws in the error state.
+    if (!this.subscriptionResource.hasValue()) {
+      return null;
+    }
     const subscriptionResponse = this.subscriptionResource.value();
     if (!subscriptionResponse) {
       return null;
@@ -68,8 +95,12 @@ export class SubscriptionService extends StatefulService<SubscriptionState> {
       this.subscriptionResource.isLoading() ||
       this.state().subscriptionRefreshing,
   );
-  subscriptionRefreshTimeout = computed(
-    () => this.state().subscriptionRefreshTimeout,
+  subscriptionRefreshTimeout = computed(() =>
+    showSubscriptionRefreshTimeout(
+      this.state().subscriptionRefreshTimeoutSlug,
+      this.organizationSlug(),
+      this.subscription() != null,
+    ),
   );
 
   // Gates the detail-page resources below; component owns the on/off lifecycle.
@@ -82,15 +113,20 @@ export class SubscriptionService extends StatefulService<SubscriptionState> {
 
   setDetailActive(active: boolean) {
     this.detailActive.set(active);
+    // Keyed on the org, not detailSlug, so entry does not re-trigger the fetch.
+    // Reload explicitly, or the card renders whatever the snackbar last cached.
+    if (active) {
+      this.overageStatusResource.reload();
+    }
   }
 
   eventsCountCurrentPeriodResource = apiResource(
     this.detailSlug,
     (orgSlug) => ({
-      url: "/api/0/stripe/subscriptions/{organization_slug}/events_count/period/",
+      url: "/api/0/stripe/subscriptions/{organization_id_or_slug}/events_count/period/",
       options: {
         params: {
-          path: { organization_slug: orgSlug },
+          path: this.organizationsService.orgPath(orgSlug),
           query: { periods_ago: 0 },
         },
       },
@@ -107,10 +143,10 @@ export class SubscriptionService extends StatefulService<SubscriptionState> {
   eventsCountPreviousPeriodResource = apiResource(
     this.detailSlug,
     (orgSlug) => ({
-      url: "/api/0/stripe/subscriptions/{organization_slug}/events_count/period/",
+      url: "/api/0/stripe/subscriptions/{organization_id_or_slug}/events_count/period/",
       options: {
         params: {
-          path: { organization_slug: orgSlug },
+          path: this.organizationsService.orgPath(orgSlug),
           query: { periods_ago: 1 },
         },
       },
@@ -123,10 +159,10 @@ export class SubscriptionService extends StatefulService<SubscriptionState> {
   previousPeriodLoading = this.eventsCountPreviousPeriodResource.isLoading;
 
   dailyEventsResource = apiResource(this.detailSlug, (orgSlug) => ({
-    url: "/api/0/stripe/subscriptions/{organization_slug}/events_count/daily/",
+    url: "/api/0/stripe/subscriptions/{organization_id_or_slug}/events_count/daily/",
     options: {
       params: {
-        path: { organization_slug: orgSlug },
+        path: this.organizationsService.orgPath(orgSlug),
       },
     },
   }));
@@ -134,6 +170,27 @@ export class SubscriptionService extends StatefulService<SubscriptionState> {
     if (this.dailyEventsResource.error()) return [];
     return this.dailyEventsResource.value()?.data ?? [];
   });
+
+  // The snackbar shows app-wide, so this is keyed on the org rather than
+  // detailSlug: one call per billing-enabled org, and the key stays a signal.
+  overageStatusResource = apiResource(this.organizationSlug, (orgSlug) => ({
+    url: "/api/0/stripe/subscriptions/{organization_id_or_slug}/overage/",
+    options: {
+      params: {
+        path: this.organizationsService.orgPath(orgSlug),
+      },
+    },
+  }));
+  overageStatus = computed(() => {
+    if (this.overageStatusResource.error()) return null;
+    return this.overageStatusResource.value() ?? null;
+  });
+  // Narrower than an "unknown" throttle state, which also covers the initial
+  // load. Surfaces only the failed fetch, where the organization payload can
+  // still report a throttle rate we would otherwise say nothing about.
+  overageStatusUnavailable = computed(
+    () => !!this.overageStatusResource.error(),
+  );
 
   predictedEndOfMonth = computed(() => {
     const subscription = this.subscription();
@@ -160,6 +217,68 @@ export class SubscriptionService extends StatefulService<SubscriptionState> {
       ((eventsCountCurrentPeriod.total ?? 0) / elapsedDays) * totalDays,
     );
   });
+
+  overageEnabled = computed(() => this.overageStatus()?.enabled ?? false);
+  overageEligible = computed(() => this.overageStatus()?.eligible ?? false);
+  overageConfigured = computed(() => this.overageStatus()?.configured ?? false);
+  // Server-enforced ceiling; env-configurable, so the client reads it rather
+  // than keeping a copy. Falls back to the server default before status loads.
+  maxCapCents = computed(() => this.overageStatus()?.maxCapCents ?? 1_000_000);
+  // One definition, shared with overageThrottleState: whether the configure
+  // endpoint would accept a cap change. Gates the render, the Adjust button and
+  // the "raise the cap" remedy alike, so the three cannot disagree.
+  canConfigureOverage = computed(() => capAdjustable(this.overageStatus()));
+
+  // Percent of new events being dropped (0 = none, 100 = all).
+  throttleRate = computed(() => this.overageStatus()?.throttleRate ?? 0);
+  overageInactive = computed(() => isOverageInactive(this.overageStatus()));
+  inactiveCause = computed(() => overageInactiveCause(this.overageStatus()));
+  throttleState = computed(() => overageThrottleState(this.overageStatus()));
+  // The page banner's rate, from the same response as throttleState.
+  eventThrottleRate = computed(() =>
+    displayedThrottleRate(
+      this.overageStatus(),
+      this.organizationsService.activeOrganization()?.eventThrottleRate,
+    ),
+  );
+  // The banner's copy depends on this, so a throttled org's page waits for it.
+  // Reloads keep the previous value, so the post-save refetch won't trip it.
+  throttleStatePending = computed(
+    () =>
+      !!this.organizationsService.activeOrganization()?.eventThrottleRate &&
+      this.throttleState() === "unknown" &&
+      !this.overageStatusUnavailable(),
+  );
+
+  // Progress by units, not cost (floored capUnits keep cost just under the cap).
+  capProgressPercent = computed(() => {
+    const s = this.overageStatus();
+    if (!s || !s.capUnits) return 0;
+    return Math.min(100, Math.round((s.overageUnits / s.capUnits) * 100));
+  });
+
+  capReached = computed(() => overageCapReached(this.overageStatus()));
+  capBelowBilled = computed(() => overageCapBelowBilled(this.overageStatus()));
+  reportedCostOwedCents = computed(() =>
+    overageReportedCostOwedCents(this.overageStatus()),
+  );
+
+  // Forecast cap hit this cycle, in units (clients have no tier rates for $).
+  private predictedOverageUnits = computed(() => {
+    const predicted = this.predictedEndOfMonth();
+    const s = this.overageStatus();
+    if (predicted == null || !s) return null;
+    return Math.max(0, predicted - s.quota);
+  });
+  willReachCap = computed(() => {
+    const s = this.overageStatus();
+    const predUnits = this.predictedOverageUnits();
+    if (!s || !s.enabled || !s.capUnits || predUnits == null) return false;
+    return predUnits >= s.capUnits;
+  });
+
+  overageConfigLoading = computed(() => this.state().overageConfigLoading);
+  overageConfigError = computed(() => this.state().overageConfigError);
 
   billingPortalLoading = computed(() => this.state().billingPortalLoading);
   billingPortalLoadingError = computed(
@@ -208,10 +327,10 @@ export class SubscriptionService extends StatefulService<SubscriptionState> {
     this.setBillingPortalLoadingStart();
     const orgSlug = this.organizationSlug();
     const { data, error } = await client.POST(
-      "/api/0/stripe/organizations/{organization_slug}/create-billing-portal/",
+      "/api/0/stripe/organizations/{organization_id_or_slug}/create-billing-portal/",
       {
         params: {
-          path: { organization_slug: orgSlug },
+          path: this.organizationsService.orgPath(orgSlug),
         },
       },
     );
@@ -227,11 +346,71 @@ export class SubscriptionService extends StatefulService<SubscriptionState> {
   }
 
   /**
+   * Enable/disable metered overage billing and set the spend cap (owner-only).
+   * Enabling migrates the Stripe subscription from classic to flexible (one-way)
+   * and attaches a metered item; the caller confirms that with the user first.
+   */
+  async configureOverage(enabled: boolean, capCents: number) {
+    this.setState({ overageConfigLoading: true, overageConfigError: "" });
+    const orgSlug = this.organizationSlug();
+    // openapi-fetch rethrows a rejected fetch, so without the finally an
+    // offline request would leave the spinner running and the toggle disabled
+    // with no way back.
+    try {
+      const { data, error, response } = await client.POST(
+        "/api/0/stripe/organizations/{organization_id_or_slug}/overage/",
+        {
+          params: {
+            path: this.organizationsService.orgPath(orgSlug),
+          },
+          body: { enabled, capCents },
+        },
+      );
+      if (response.status === 404) {
+        this.setState({
+          overageConfigError:
+            "Only organization owners can change billing settings.",
+        });
+        return null;
+      }
+      if (error || !data) {
+        this.setState({
+          overageConfigError: handleError(error, response).detail[0].msg,
+        });
+        return null;
+      }
+      // Refetch rather than writing the response body in. The server recomputes
+      // the throttle rate in a task it enqueues on the way out, so the body it
+      // returns pairs the new cap with the pre-change rate; storing that leaves
+      // the card claiming events are being dropped after they have resumed.
+      // `set` would also park the resource, so nothing would correct it later.
+      this.overageStatusResource.reload();
+      this.subscriptionResource.reload();
+      // The immediate reload above races that task and usually loses, showing
+      // the "taking effect" notice. One delayed refetch picks up the cleared
+      // rate so the notice dismisses itself; no polling, the state cannot
+      // outlive the task. Replaces, not stacks, on rapid saves.
+      clearTimeout(this.throttleSettleTimer);
+      this.throttleSettleTimer = setTimeout(
+        () => this.overageStatusResource.reload(),
+        THROTTLE_SETTLE_REFETCH_MS,
+      );
+      return data;
+    } catch {
+      this.setState({ overageConfigError: UNHANDLED_ERROR });
+      return null;
+    } finally {
+      this.setState({ overageConfigLoading: false });
+    }
+  }
+
+  /**
    * Keep trying to get subscription, for users redirected from Stripe
    */
   refreshUntilSubscriptionOrTimeout() {
     // Re-entry guard: only one polling timer should run at a time.
     if (this.refreshTimerRef !== undefined) return;
+    const orgSlug = this.organizationSlug();
     this.setSubscriptionRefreshingStart();
     let i = 0;
     this.refreshTimerRef = window.setInterval(() => {
@@ -241,7 +420,7 @@ export class SubscriptionService extends StatefulService<SubscriptionState> {
         clearInterval(this.refreshTimerRef);
         this.refreshTimerRef = undefined;
       } else if (i === 2) {
-        this.setSubscriptionRefreshingTimeout();
+        this.setSubscriptionRefreshingTimeout(orgSlug);
         clearInterval(this.refreshTimerRef);
         this.refreshTimerRef = undefined;
       }
@@ -251,10 +430,10 @@ export class SubscriptionService extends StatefulService<SubscriptionState> {
 
   private async getSubscriptionData(orgSlug: string) {
     const { data, error } = await client.GET(
-      "/api/0/stripe/subscriptions/{organization_slug}/",
+      "/api/0/stripe/subscriptions/{organization_id_or_slug}/",
       {
         params: {
-          path: { organization_slug: orgSlug },
+          path: this.organizationsService.orgPath(orgSlug),
         },
       },
     );
@@ -272,10 +451,10 @@ export class SubscriptionService extends StatefulService<SubscriptionState> {
     this.setState({ subscriptionRefreshing: false });
   }
 
-  private setSubscriptionRefreshingTimeout() {
+  private setSubscriptionRefreshingTimeout(orgSlug: string) {
     this.setState({
       subscriptionRefreshing: false,
-      subscriptionRefreshTimeout: true,
+      subscriptionRefreshTimeoutSlug: orgSlug,
     });
   }
 
@@ -301,6 +480,8 @@ export class SubscriptionService extends StatefulService<SubscriptionState> {
     // (free-tier creation, post-Stripe return). The per-page usage resources
     // below are safe to clear; they refetch reactively once setDetailActive(true)
     // re-flips detailSlug back to the current org on re-entry.
+    // overageStatusResource is excluded for the same reason: it is keyed on the
+    // org slug too. setDetailActive(true) reloads it explicitly on re-entry.
     this.eventsCountCurrentPeriodResource.set(undefined);
     this.dailyEventsResource.set(undefined);
     this.eventsCountPreviousPeriodResource.set(undefined);

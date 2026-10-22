@@ -24,6 +24,7 @@ describe("Create New Project", () => {
   });
 
   it("create new project with new team but no platform", () => {
+    cy.intercept("GET", /\/api\/0\/organizations\/(\?|$)/).as("orgList");
     cy.visit(`/${seededOrg.slug}/settings/projects/new`);
     cy.contains("Create a New Project");
     cy.get("#create-team-from-projects").click();
@@ -33,19 +34,27 @@ describe("Create New Project", () => {
     cy.get("input[formcontrolname=slug]").type(secondSeededTeam.slug);
     cy.get("#create-team-submit").click();
     cy.contains(new RegExp("^" + secondSeededTeam.slug + "$", "g"));
-    cy.intercept("POST", `api/0/teams/${seededOrg.slug}/*/projects/`).as(
+    cy.intercept("POST", `api/0/teams/*/*/projects/`).as(
       "createProjectRequest",
     );
     cy.get("input[formcontrolname=name]").type(newProject.name);
-    cy.get("[data-cy=create-project-form]").submit();
-    cy.wait("@createProjectRequest").then(({ response }) =>
-      cy
-        .url()
-        .should(
+    // A request made before the org list loads falls back to the slug, so
+    // only one made after it is sure to carry the id.
+    cy.wait("@orgList").then(({ response: orgList }) => {
+      const org = orgList!.body.find(
+        (o: { slug: string }) => o.slug === seededOrg.slug,
+      );
+      cy.get("[data-cy=create-project-form]").submit();
+      cy.wait("@createProjectRequest").then(({ request, response }) => {
+        expect(request.url).to.contain(
+          `/api/0/teams/${org.id}/${secondSeededTeam.slug}/projects/`,
+        );
+        cy.url().should(
           "contain",
           `/${seededOrg.slug}/issues?project=${response?.body.id}`,
-        ),
-    );
+        );
+      });
+    });
   });
 
   it("create new project with platform and existing team", () => {
@@ -80,6 +89,7 @@ describe("Edit and Delete a project", () => {
     cy.contains("Settings for New Project Name");
     // delete from db
     cy.get("#delete-project").click();
+    cy.get("[data-cy='dialog-confirm']").click();
   });
 
   it("edit the project platform", () => {
@@ -91,6 +101,8 @@ describe("Edit and Delete a project", () => {
 
   it("should remove the project and redirect to projects page", () => {
     cy.get("#delete-project").click();
+    cy.contains("Are you sure you want to delete this project?");
+    cy.get("[data-cy='dialog-confirm']").click();
     cy.contains("Your project has been successfully deleted");
     cy.url().should(
       "eq",
@@ -109,11 +121,13 @@ describe("Add and edit alerts", () => {
   it("should add a project alert, remove email recipient, add email recipient back", () => {
     cy.get("#create-new-alert").click();
     cy.get("[data-cy=quantity]").clear().type("2");
-    cy.get("button").contains("submit").click();
+    cy.get("button").contains("Submit").click();
     cy.contains("Remove Alert 1");
     cy.get("[data-cy=quantity]").should("have.value", "2");
 
     cy.get("#delete-recipient").click();
+    cy.contains("Are you sure you want to remove this recipient?");
+    cy.get("[data-cy='dialog-confirm']").click();
     cy.contains("This alert isn't being sent anywhere.");
 
     cy.get("button").contains("Add An Alert Recipient").click();
@@ -130,11 +144,9 @@ describe("Add and edit alerts", () => {
   it("should add an alert for uptime notifications, then update it to work for error notifications", () => {
     cy.get("#create-new-alert").click();
     cy.get("[data-cy=error-check]").click();
-    cy.contains(
-      "Please select events or uptime monitor triggers for your alert.",
-    );
+    cy.contains("Select at least one condition: event frequency or uptime.");
     cy.get("[data-cy=uptime-check]").click();
-    cy.get("button").contains("submit").click();
+    cy.get("button").contains("Submit").click();
     cy.contains("Success! Your new alert has been added.");
 
     cy.get("[data-cy=error-check]").find("input").should("not.be.checked");

@@ -1,16 +1,15 @@
-import { computed, Injectable, resource, signal } from "@angular/core";
-import {
-  client,
-  handleError,
-  NinjaErrorResponse,
-} from "src/app/shared/api/api";
+import { computed, inject, Injectable, resource, signal } from "@angular/core";
+import { OrganizationsService } from "src/app/api/organizations.service";
+import { client, handleError } from "src/app/shared/api/api";
 import {
   getPaginationHeaders,
   getPaginator,
 } from "src/app/shared/pagination.utils";
+import { keepPreviousValue } from "src/app/shared/signal.utils";
 
 @Injectable()
 export class MonitorChecksService {
+  private organizationsService = inject(OrganizationsService);
   #params = signal<
     | {
         orgSlug: string;
@@ -27,11 +26,11 @@ export class MonitorChecksService {
         return undefined;
       }
       const { data, error, response } = await client.GET(
-        "/api/0/organizations/{organization_slug}/monitors/{monitor_id}/checks/",
+        "/api/0/organizations/{organization_id_or_slug}/monitors/{monitor_id}/checks/",
         {
           params: {
             path: {
-              organization_slug: params.params.orgSlug,
+              ...this.organizationsService.orgPath(params.params.orgSlug),
               monitor_id: params.params.id,
             },
             query: {
@@ -41,20 +40,33 @@ export class MonitorChecksService {
           },
         },
       );
-      const pagination = getPaginationHeaders(response);
-      let errors: NinjaErrorResponse | undefined;
       if (error) {
-        errors = handleError(error, response);
+        return {
+          data,
+          errors: handleError(error, response),
+          pagination: undefined,
+        };
       }
-      return { data, errors, pagination };
+      const pagination = getPaginationHeaders(response);
+      return {
+        data,
+        errors: undefined,
+        pagination,
+      };
     },
   });
-  monitorChecks = computed(() => this.#monitorChecks.value()?.data || []);
+  // Keep the last page visible during a reload so the table doesn't blank out.
+  #monitorChecksData = keepPreviousValue(
+    () => this.#monitorChecks.value()?.data,
+  );
+  monitorChecks = computed(() => this.#monitorChecksData() ?? []);
   loading = computed(() => this.#monitorChecks.isLoading());
   initialLoadComplete = computed(
     () => this.#monitorChecks.hasValue() || !this.#monitorChecks.isLoading(),
   );
-  pagination = computed(() => this.#monitorChecks.value()?.pagination);
+  errors = computed(() => this.#monitorChecks.value()?.errors?.detail);
+  hasError = computed(() => !!this.#monitorChecks.value()?.errors);
+  pagination = keepPreviousValue(() => this.#monitorChecks.value()?.pagination);
   paginator = computed(() => getPaginator(this.pagination()));
 
   setParams(

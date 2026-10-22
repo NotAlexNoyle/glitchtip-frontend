@@ -34,6 +34,7 @@ import {
   stringAttribute,
 } from "src/app/shared/shared.utils";
 import { ConfirmDialogComponent } from "src/app/shared/confirm-dialog/confirm-dialog.component";
+import { LoadingOverlayComponent } from "src/app/shared/loading-overlay/loading-overlay.component";
 import { EnvironmentsService } from "src/app/api/environments.service";
 import { ListAppBar } from "src/app/list-elements/list-app-bar/list-app-bar";
 import { IssueChart } from "./charts/issue-chart";
@@ -54,6 +55,7 @@ import { SearchHelpConfig } from "../../list-elements/data-filter-bar/data-filte
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
+    LoadingOverlayComponent,
     RouterLink,
     IssueZeroStatesComponent,
     DatePipe,
@@ -90,6 +92,7 @@ export class IssuesPage implements OnInit, OnDestroy {
   paginator = this.service.paginator;
   loading = this.service.loading;
   initialLoad = this.service.initialLoad;
+  initialLoadComplete = this.service.initialLoadComplete;
   form = new FormGroup({
     query: new FormControl(""),
   });
@@ -354,13 +357,11 @@ export class IssuesPage implements OnInit, OnDestroy {
 
   mergeSelectedIssues() {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      restoreFocus: false,
-      height: "200px",
-      width: "350px",
       data: {
-        title: $localize`Merge issues`,
+        title: $localize`Merge issues?`,
         message: $localize`This action will merge your selected issues into a single issue.`,
         confirmText: $localize`Merge`,
+        destructive: false,
       },
     });
 
@@ -379,11 +380,8 @@ export class IssuesPage implements OnInit, OnDestroy {
       : this.numberOfSelectedIssues();
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      restoreFocus: false,
-      height: "200px",
-      width: "350px",
       data: {
-        title: $localize`Delete issues`,
+        title: $localize`Delete issues?`,
         message: $localize`Are you sure you want to delete ${count} issue(s)? You will permanently lose these issues and all associated events.`,
         confirmText: $localize`Delete`,
       },

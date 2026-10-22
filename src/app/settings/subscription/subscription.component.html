@@ -6,8 +6,7 @@
     <ng-container slot="right">
       @if (subscription() && subscription()!.status !== "canceled") {
         <button
-          mat-flat-button
-          color="primary"
+          mat-stroked-button
           class="manage-subscription-button"
           (click)="manageSubscription()"
           [disabled]="billingPortalLoading()"
@@ -39,11 +38,11 @@
     @if (fromStripe()) {
       <span class="body-text-strong">Redirected from Stripe</span>
     }
-    @if (subscriptionLoading() || subscriptionRefreshTimeout()) {
+    @if (pageLoading() || subscriptionRefreshTimeout()) {
       <mat-card>
         <mat-card-header></mat-card-header>
         <mat-card-content>
-          @if (subscriptionLoading()) {
+          @if (pageLoading()) {
             <div class="spinner-container">
               <mat-spinner diameter="36"></mat-spinner>
             </div>
@@ -61,12 +60,27 @@
       </mat-card>
     } @else {
       @if (subscription(); as subscription) {
-        @if (subscription.effectivePrice === 0) {
+        @if (
+          subscription.effectivePrice === 0 ||
+          (subscription.status !== "canceled" &&
+            (eventThrottleRate() ||
+              activeOrganization()?.isAcceptingEvents === false))
+        ) {
           <gt-upgrade-banner
             [usagePercent]="
               thisMonthPercent() >= 80 ? thisMonthPercent() : null
             "
+            [eventThrottleRate]="eventThrottleRate()"
+            [isAcceptingEvents]="
+              activeOrganization()?.isAcceptingEvents ?? null
+            "
             [nextPlanEvents]="nextProduct()?.events ?? null"
+            [plansLoaded]="plansLoaded()"
+            [throttleState]="throttleState()"
+            [throttleStateUnavailable]="throttleStateUnavailable()"
+            [contactEmail]="billingEmail"
+            [paid]="subscription.effectivePrice > 0"
+            [canManage]="canManageOverage()"
             [upgradeLoading]="upgradeLoading()"
             (upgradeClick)="upgradeToNextPlan()"
             (comparePlansClick)="openBuiltInPricing()"
@@ -117,6 +131,9 @@
                 <gt-subscription-charts
                   [totalEventsAllowed]="totalEventsAllowed()"
                 />
+                @if (showOverageCard()) {
+                  <gt-overage-card />
+                }
                 <p class="body-text" i18n
                   >If you have questions about your subscription, please contact
                   us at

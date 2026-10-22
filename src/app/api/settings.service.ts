@@ -12,7 +12,10 @@ export class SettingsService {
   private microSentry = inject(MicroSentryService);
 
   settingsResource = apiResource(() => ({ url: "/api/settings/" }));
-  settings = computed(() => this.settingsResource.value());
+  settings = computed(() => {
+    if (this.settingsResource.error()) return undefined;
+    return this.settingsResource.value();
+  });
   socialApps = computed(() => this.settings()?.socialApps || []);
   billingEnabled = computed(() => this.settings()?.billingEnabled);
   paidForGlitchTip = computed(() => this.settings()?.iPaidForGlitchTip);
@@ -38,12 +41,11 @@ export class SettingsService {
   constructor() {
     setTimeout(() => this.refreshSettings(), 5000);
     effect(() => {
-      // Configure microsentry and chatwoot. Use computed functions to avoid
+      // Configure microsentry. Use computed functions to avoid
       // running when unnecessary
       const sentryDSN = this.sentryDSN();
       const environment = this.environment();
       const version = this.version();
-      const chatwootWebsiteToken = this.chatwootWebsiteToken();
       if (sentryDSN) {
         // Micro-sentry does not support dynamic configuration, force it to
         const options = {
@@ -75,21 +77,6 @@ export class SettingsService {
         if (options.release) {
           (this.microSentry as any).release = options.release;
         }
-      }
-      if (chatwootWebsiteToken) {
-        (function (d, t) {
-          const BASE_URL = "https://app.chatwoot.com";
-          const g: any = d.createElement(t),
-            s: any = d.getElementsByTagName(t)[0];
-          g.src = BASE_URL + "/packs/js/sdk.js";
-          s.parentNode.insertBefore(g, s);
-          g.onload = function () {
-            (window as any).chatwootSDK.run({
-              websiteToken: chatwootWebsiteToken,
-              baseUrl: BASE_URL,
-            });
-          };
-        })(document, "script");
       }
     });
   }

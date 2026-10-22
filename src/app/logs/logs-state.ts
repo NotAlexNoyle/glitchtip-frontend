@@ -1,4 +1,5 @@
-import { computed, effect, Injectable, signal } from "@angular/core";
+import { computed, effect, inject, Injectable, signal } from "@angular/core";
+import { OrganizationsService } from "../api/organizations.service";
 import { apiResource } from "../shared/api/api-resource-factory";
 
 export interface LogsParams {
@@ -14,6 +15,7 @@ export interface LogsParams {
 
 @Injectable()
 export class LogsService {
+  private organizationsService = inject(OrganizationsService);
   params = signal<LogsParams | undefined>(undefined);
 
   // Track accumulated logs for "load more"
@@ -22,12 +24,10 @@ export class LogsService {
   #initialHitCount = signal<string | undefined>(undefined);
 
   #logsResource = apiResource.paginated(this.params, (params) => ({
-    url: "/api/0/organizations/{organization_slug}/logs/",
+    url: "/api/0/organizations/{organization_id_or_slug}/logs/",
     options: {
       params: {
-        path: {
-          organization_slug: params.orgSlug,
-        },
+        path: this.organizationsService.orgPath(params.orgSlug),
         query: {
           cursor: params.cursor,
           level: params.level,
@@ -45,12 +45,10 @@ export class LogsService {
   // Services list for filter dropdown
   #orgSlug = computed(() => this.params()?.orgSlug);
   #servicesResource = apiResource(this.#orgSlug, (orgSlug) => ({
-    url: "/api/0/organizations/{organization_slug}/logs/resources/",
+    url: "/api/0/organizations/{organization_id_or_slug}/logs/resources/",
     options: {
       params: {
-        path: {
-          organization_slug: orgSlug,
-        },
+        path: this.organizationsService.orgPath(orgSlug),
         query: {
           resource_type: "service",
         },
@@ -61,6 +59,11 @@ export class LogsService {
   constructor() {
     // When resource loads, handle accumulation
     effect(() => {
+      // .value() throws in the error state, which would abort this effect.
+      if (this.#logsResource.error()) {
+        this.#isLoadingMore.set(false);
+        return;
+      }
       const result = this.#logsResource.value();
       const data = result?.data;
       if (!data) return;
@@ -98,7 +101,12 @@ export class LogsService {
   hasNextPage = computed(() => this.paginator()?.hasNextPage ?? false);
   hitCount = computed(() => this.#initialHitCount() ?? this.paginator()?.count);
 
-  services = computed(() => this.#servicesResource.value() || []);
+  // A failed filter request should not take the page down with it.
+  services = computed(() =>
+    this.#servicesResource.error()
+      ? []
+      : (this.#servicesResource.value() ?? []),
+  );
   servicesLoading = computed(() => this.#servicesResource.isLoading());
 
   loadMore() {
@@ -116,9 +124,9 @@ export class LogsService {
     });
   }
 
-  // Reset accumulated logs when filters change (called by component)
-  resetAccumulation() {
-    this.#accumulatedLogs.set([]);
+  // Reset the cached hit count on filter change; rows are intentionally NOT
+  // cleared so gt-loading-overlay can dim them until the new page replaces them.
+  resetHitCount() {
     this.#initialHitCount.set(undefined);
   }
 }

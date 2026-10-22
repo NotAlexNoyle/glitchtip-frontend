@@ -180,7 +180,7 @@
             "outputPath": "dist/marketing",
             "index": "projects/marketing/src/index.html",
             "browser": "projects/marketing/src/main.ts",
-            "polyfills": ["zone.js", "@angular/localize/init"],
+            "polyfills": ["@angular/localize/init"],
             "tsConfig": "projects/marketing/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -198,7 +198,6 @@
             "stylePreprocessorOptions": {
               "includePaths": ["./src/assets/styles", ""]
             },
-            "scripts": ["projects/marketing/src/analytics.js"],
             "server": "projects/marketing/src/main.server.ts",
             "prerender": {
               "discoverRoutes": true,
@@ -218,8 +217,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kB",
-                  "maximumError": "4kB"
+                  "maximumWarning": "6kB",
+                  "maximumError": "10kB"
                 }
               ],
               "outputHashing": "all"
@@ -227,7 +226,8 @@
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "externalDependencies": ["marked-katex-extension"]
             }
           },
           "defaultConfiguration": "production"
@@ -265,7 +265,7 @@
             "outputPath": "dist/component-preview",
             "index": "projects/component-preview/src/index.html",
             "browser": "projects/component-preview/src/main.ts",
-            "polyfills": ["zone.js", "@angular/localize/init"],
+            "polyfills": ["@angular/localize/init"],
             "tsConfig": "projects/component-preview/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [

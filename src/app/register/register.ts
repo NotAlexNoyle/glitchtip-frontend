@@ -29,6 +29,7 @@ import { StatefulComponent } from "../shared/stateful-service/signal-state.compo
 import type { components } from "src/app/api/api-schema";
 import { AcceptInviteService } from "../accept/accept-invite/accept-invite.service";
 import { LoadingButtonComponent } from "../shared/loading-button/loading-button.component";
+import { isServerRenderedUrl } from "../server-routes";
 
 type SocialApp = components["schemas"]["SocialAppSchema"];
 
@@ -68,6 +69,7 @@ export class Register
   enableUserRegistration = this.settings.enableUserRegistration;
   enableSocialAppsUserRegistration =
     this.settings.enableSocialAppsUserRegistration;
+  billingEnabled = this.settings.billingEnabled;
   form = new FormGroup({
     email: new FormControl("", [Validators.required, Validators.email]),
     password: new FormControl("", [
@@ -121,7 +123,12 @@ export class Register
       );
       if (data?.meta.is_authenticated) {
         if (nextUrl) {
-          this.router.navigateByUrl(nextUrl);
+          if (isServerRenderedUrl(nextUrl)) {
+            // Load Django, not JS router
+            window.location.href = nextUrl;
+          } else {
+            this.router.navigateByUrl(nextUrl);
+          }
         } else {
           this.router.navigate(["organizations", "new"]);
         }

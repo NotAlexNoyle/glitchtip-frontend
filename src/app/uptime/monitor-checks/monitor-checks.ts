@@ -9,6 +9,7 @@ import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import { MatTableModule } from "@angular/material/table";
 import { Router, RouterModule } from "@angular/router";
 import { PaginationButtons } from "src/app/list-elements/pagination-buttons/pagination-buttons";
+import { LoadingOverlayComponent } from "src/app/shared/loading-overlay/loading-overlay.component";
 import { HumanizeDurationPipe } from "src/app/shared/seconds-or-ms.pipe";
 import { DownReason } from "../uptime.interfaces";
 import { reasonTextConversions } from "../uptime.utils";
@@ -29,6 +30,7 @@ type MonitorDetail = components["schemas"]["MonitorDetailSchema"];
     MatButtonToggleModule,
     RouterModule,
     PaginationButtons,
+    LoadingOverlayComponent,
   ],
   providers: [MonitorChecksService],
 })
@@ -44,7 +46,9 @@ export class MonitorChecks {
   monitorChecks = this.service.monitorChecks;
   paginator = this.service.paginator;
   loading = this.service.loading;
-  initialLoadComplete = this.service.initialLoadComplete
+  initialLoadComplete = this.service.initialLoadComplete;
+  errors = this.service.errors;
+  hasError = this.service.hasError;
   displayedColumns = ["status", "reason", "responseTime", "startCheck"];
 
   constructor() {

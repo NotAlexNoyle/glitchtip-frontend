@@ -29,6 +29,7 @@
           <gt-alert-form
             #newAlert
             [newAlert]="true"
+            [availableEnvironments]="availableEnvironments()"
             (alertSubmit)="newAlertProperties($event)"
           ></gt-alert-form>
           <h4 class="body-text-strong">Recipients:</h4>
@@ -107,7 +108,6 @@
                       <button
                         class="recipient-action small-icon-button"
                         mat-icon-button
-                        color="primary"
                         attr.aria-label="Edit recipient"
                         (click)="
                           openEditNewRecipientDialog(recipient, recipientIndex)
@@ -119,7 +119,6 @@
                     <button
                       class="recipient-action small-icon-button"
                       mat-icon-button
-                      color="primary"
                       attr.aria-label="Delete Alert For {{ recipient.url }}"
                       (click)="removeNewAlertRecipient(recipient.url)"
                     >
@@ -130,33 +129,30 @@
               </li>
             }
           </ul>
-          <button
-            mat-stroked-button
-            color="primary"
-            (click)="openCreateRecipientDialog()"
-          >
+          <button mat-stroked-button (click)="openCreateRecipientDialog()">
             <mat-icon>add</mat-icon>
             <ng-container i18n>Add An Alert Recipient</ng-container>
           </button>
           <div class="new-alert-actions">
             <gt-loading-button
-              buttonText="submit"
+              buttonText="Submit"
               [loading]="newAlertLoading() === true"
               (buttonClick)="submitCreateAlert()"
               i18n
               >Submit</gt-loading-button
             >
-            <button (click)="closeNewAlert()" mat-stroked-button i18n
-              >Cancel</button
-            >
+            <button (click)="closeNewAlert()" mat-button i18n>Cancel</button>
           </div>
         </div>
       }
       @if (projectAlerts()?.length === 0 && newAlertOpen() === false) {
-        <p class="no-alerts" i18n
-          >You don't have any alerts set up. Click "Create New Alert" on the top
-          right of this card to get started.</p
-        >
+        <gt-empty-state
+          icon="notifications"
+          i18n-title
+          title="No alerts"
+          i18n-message
+          message="Create an alert to get notified when this project has new issues."
+        />
       } @else {
         @for (alert of projectAlerts(); track alert; let i = $index) {
           <div class="alert">
@@ -177,6 +173,7 @@
               <gt-loading-button
                 [buttonText]="'Remove Alert ' + (i + 1)"
                 buttonStyle="stroked"
+                color="warn"
                 (buttonClick)="removeAlert(alert.id!)"
                 [disabled]="!accessProjectWrite()"
                 [loading]="removeAlertLoading() === alert.id"
@@ -195,6 +192,8 @@
               [quantity]="alert.quantity!"
               [uptime]="alert.uptime"
               [errorAlert]="alert.errorAlert"
+              [environments]="alert.environments"
+              [availableEnvironments]="availableEnvironments()"
               (alertSubmit)="updateProperties($event, alert)"
             ></gt-alert-form>
             <h4 class="body-text-strong">Recipients:</h4>
@@ -286,7 +285,6 @@
                           <button
                             class="recipient-action small-icon-button"
                             mat-icon-button
-                            color="primary"
                             attr.aria-label="Test recipient"
                             matTooltip="Send test notification"
                             [disabled]="testAlertLoading() === recipient.id"
@@ -301,7 +299,6 @@
                           <button
                             class="recipient-action small-icon-button"
                             mat-icon-button
-                            color="primary"
                             attr.aria-label="Edit recipient"
                             (click)="openEditRecipientDialog(recipient, alert)"
                           >
@@ -312,7 +309,6 @@
                           class="recipient-action small-icon-button"
                           id="delete-recipient"
                           mat-icon-button
-                          color="primary"
                           attr.aria-label="Delete Alert {{ i + 0 }}"
                           (click)="removeAlertRecipient(recipient, alert)"
                         >
@@ -326,7 +322,6 @@
             </ul>
             <button
               mat-stroked-button
-              color="primary"
               (click)="openUpdateRecipientDialog(alert)"
             >
               <mat-icon>add</mat-icon>
