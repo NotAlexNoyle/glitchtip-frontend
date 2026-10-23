@@ -48,6 +48,7 @@
               <gt-loading-button
                 buttonText="Leave Team"
                 buttonStyle="stroked"
+                color="warn"
                 [loading]="loading().removeTeamMember === yourTeam.slug"
                 (buttonClick)="leaveTeam(yourTeam.slug)"
                 id="leave-team"

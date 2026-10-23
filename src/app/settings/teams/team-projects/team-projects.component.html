@@ -45,6 +45,7 @@
               <gt-loading-button
                 buttonText="Remove"
                 buttonStyle="stroked"
+                color="warn"
                 [loading]="project.slug === loading().removeProjectFromTeam"
                 (buttonClick)="removeProject(project.slug!)"
                 id="remove-team-member"
