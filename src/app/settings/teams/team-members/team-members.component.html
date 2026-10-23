@@ -41,7 +41,6 @@
             <gt-loading-button
               buttonText="Remove"
               buttonStyle="stroked"
-              color="warn"
               [loading]="selectedTeamMember?.toString() === teamMember.id"
               (buttonClick)="removeTeamMember(teamMember.id, teamMember.email)"
               id="remove-team-member"
