@@ -63,10 +63,6 @@ async function convertFile(sourcePath, destPath) {
         const rawTarget = file[id].target;
         if (rawTarget !== undefined && rawTarget !== null) {
           const translation = flattenTranslation(rawTarget);
-          // An untranslated copy of the source; $localize falls back to it anyway
-          if (translation === flattenTranslation(file[id].source)) {
-            continue;
-          }
           // ICU messages carry their placeholders as plain {NAME} text
           translations[id] = translation.trimStart().startsWith("{VAR_")
             ? translation.replace(/\{\$([A-Z0-9_]+)\}/g, "{$1}")
