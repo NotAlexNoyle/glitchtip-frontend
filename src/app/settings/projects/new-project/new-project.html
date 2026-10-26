@@ -46,8 +46,14 @@
         <div class="team-row">
           <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-select
-              (click)="teams.length ? undefined : openCreateTeamDialog()"
-              [placeholder]="teams.length ? assignTeamText : createTeamText"
+              (click)="
+                teams.length || !canWriteTeam()
+                  ? undefined
+                  : openCreateTeamDialog()
+              "
+              [placeholder]="
+                teams.length || !canWriteTeam() ? assignTeamText : createTeamText
+              "
               formControlName="team"
               [attr.aria-labelledby]="teamSection.titleId"
             >
@@ -63,15 +69,17 @@
               }
             </mat-error>
           </mat-form-field>
-          <button
-            mat-button
-            type="button"
-            id="create-team-from-projects"
-            (click)="openCreateTeamDialog()"
-          >
-            <mat-icon>add</mat-icon>
-            <ng-container i18n>New team</ng-container>
-          </button>
+          @if (canWriteTeam()) {
+            <button
+              mat-button
+              type="button"
+              id="create-team-from-projects"
+              (click)="openCreateTeamDialog()"
+            >
+              <mat-icon>add</mat-icon>
+              <ng-container i18n>New team</ng-container>
+            </button>
+          }
         </div>
       }
     </gt-settings-section>

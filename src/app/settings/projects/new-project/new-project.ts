@@ -29,6 +29,7 @@ import { PageHeaderComponent } from "src/app/shared/detail/page-header/page-head
 import { BackLinkComponent } from "src/app/shared/detail/back-link/back-link.component";
 import { TopAppBar } from "src/app/shared/top-app-bar/top-app-bar";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { OrganizationsService } from "src/app/api/organizations.service";
 
 @Component({
   templateUrl: "./new-project.html",
@@ -61,6 +62,7 @@ export class NewProject {
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
   dialog = inject(MatDialog);
+  canWriteTeam = inject(OrganizationsService).canWriteTeam;
 
   orgSlug = input.required<string>({ alias: "org-slug" });
   teams = this.teamsService.teams;
