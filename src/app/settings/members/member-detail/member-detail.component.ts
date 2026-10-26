@@ -30,7 +30,6 @@ import { TopAppBar } from "src/app/shared/top-app-bar/top-app-bar";
 
 @Component({
   templateUrl: "./member-detail.component.html",
-  styleUrls: ["./member-detail.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     DatePipe,

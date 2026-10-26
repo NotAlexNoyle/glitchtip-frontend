@@ -1,7 +1,12 @@
 import { MemberRole } from "src/app/api/organizations/organizations.interface";
 
 /** Same values a role is saved as, lowest access first. */
-export const MEMBER_ROLES: MemberRole[] = ["member", "admin", "manager", "owner"];
+export const MEMBER_ROLES: MemberRole[] = [
+  "member",
+  "admin",
+  "manager",
+  "owner",
+];
 
 export function roleName(role: MemberRole | null | undefined) {
   switch (role) {
