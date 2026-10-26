@@ -197,6 +197,7 @@ export class ButtonsPreview {
     "Leave a secondary outlined button uncolored: primary and warn are both red, so a color on an outline reads as destructive",
     "Put the icon before the label",
     "Style destructive actions as an outlined warn button plus a confirm dialog",
+    "Keep row actions neutral; the confirm dialog carries the warning",
     "Use the two standard icon-button sizes, not ad-hoc ones",
   ];
   readonly donts = [
