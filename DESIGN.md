@@ -65,6 +65,14 @@ Conventions for every component:
 - Selector prefix `gt-`.
 - Build write and delete controls behind the relevant permission signal (see the permission-gating convention in `CLAUDE.md`).
 
+### Tables
+
+Tables use `mat-table` inside `.table-container` with the shared global classes (see the Table pattern preview).
+
+- **Numeric columns:** put `.table-numeric` on the header and cells. They right-align with tabular figures, and the sort arrow goes before the label (`arrowPosition="before"`). Identifiers that happen to be numbers, such as issue IDs, stay left-aligned.
+- **End column:** put `.table-end` on a short last column, such as a date, so it right-aligns.
+- **One right edge:** every table ends on the same right edge. The primary column flexes, secondary columns get a fixed width, and overflowing content truncates.
+
 ## Accessibility
 
 - Color pairings must meet WCAG contrast; the preview app shows on-color pairings for a quick check.

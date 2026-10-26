@@ -131,8 +131,12 @@ const DEMO_ROWS: DemoRow[] = [
               <td mat-cell *matCellDef="let row">{{ row.title }}</td>
             </ng-container>
             <ng-container matColumnDef="events">
-              <th mat-header-cell *matHeaderCellDef>Events</th>
-              <td mat-cell *matCellDef="let row">{{ row.events }}</td>
+              <th mat-header-cell *matHeaderCellDef class="table-numeric">
+                Events
+              </th>
+              <td mat-cell *matCellDef="let row" class="table-numeric">
+                {{ row.events }}
+              </td>
             </ng-container>
             <ng-container matColumnDef="lastSeen">
               <th mat-header-cell *matHeaderCellDef>Last seen</th>
@@ -197,6 +201,13 @@ export class TablePatternPreview {
   <table mat-table [dataSource]="rows()" class="mat-elevation-z2"
          [attr.aria-busy]="loading()">
     ...
+    <ng-container matColumnDef="events">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header
+          class="table-numeric" arrowPosition="before">Events</th>
+      <td mat-cell *matCellDef="let row" class="table-numeric">
+        {{ row.events | number }}
+      </td>
+    </ng-container>
     <tr mat-header-row class="table-header"
         *matHeaderRowDef="columns; sticky: true"></tr>
     <tr mat-row *matRowDef="let row; columns: columns"></tr>
