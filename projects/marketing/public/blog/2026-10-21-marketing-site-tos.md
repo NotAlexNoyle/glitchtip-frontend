@@ -65,7 +65,7 @@ GlitchTip now has one clean design system, from glitchtip.com to the app.
 
 <div style="width: 800px; max-width: 100%; margin: 0 auto;">
 
-<img src="../assets/blog-images/marketing-site-tos/new-marketing-hero.png" alt="The new GlitchTip home page">
+<img src="../assets/blog-images/marketing-site-tos/new-marketing-hero.png" alt="The new GlitchTip home page" style="display: block; width: 100%; aspect-ratio: 1548 / 839; object-fit: cover; object-position: top;">
 
 </div>
 
