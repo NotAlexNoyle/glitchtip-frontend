@@ -263,13 +263,6 @@ body {
   margin: 0 0 var(--gt-space-3);
 }
 
-.preview-note {
-  font: var(--mat-sys-body-small);
-  color: var(--mat-sys-on-surface-variant);
-  max-width: 68ch;
-  margin: 0;
-}
-
 // A short muted note directly under a section title.
 .preview-section__note {
   font: var(--mat-sys-body-small);
