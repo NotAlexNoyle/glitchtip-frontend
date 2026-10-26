@@ -30,6 +30,7 @@ import { BackLinkComponent } from "src/app/shared/detail/back-link/back-link.com
 import { TopAppBar } from "src/app/shared/top-app-bar/top-app-bar";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { OrganizationsService } from "src/app/api/organizations.service";
+import { FormErrorComponent } from "src/app/shared/forms/form-error/form-error.component";
 
 @Component({
   templateUrl: "./new-project.html",
@@ -50,6 +51,7 @@ import { OrganizationsService } from "src/app/api/organizations.service";
     MatButtonModule,
     MatIconModule,
     LoadingButtonComponent,
+    FormErrorComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [NewProjectService],

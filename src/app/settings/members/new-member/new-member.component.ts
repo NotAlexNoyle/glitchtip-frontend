@@ -28,6 +28,7 @@ import { SettingsSectionComponent } from "src/app/shared/settings-section/settin
 import { PageHeaderComponent } from "src/app/shared/detail/page-header/page-header.component";
 import { BackLinkComponent } from "src/app/shared/detail/back-link/back-link.component";
 import { TopAppBar } from "src/app/shared/top-app-bar/top-app-bar";
+import { FormErrorComponent } from "src/app/shared/forms/form-error/form-error.component";
 import { MEMBER_ROLES, roleDescription, roleName } from "../member-roles";
 
 /** Custom validator to vaildate emails separated by commas */
@@ -70,6 +71,7 @@ function emailsValidator(control: AbstractControl): ValidationErrors | null {
     MatSelectModule,
     MatOptionModule,
     LoadingButtonComponent,
+    FormErrorComponent,
   ],
 })
 export class NewMemberComponent implements OnInit, OnDestroy {

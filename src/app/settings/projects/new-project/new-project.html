@@ -10,9 +10,7 @@
     (ngSubmit)="onSubmit()"
     data-cy="create-project-form"
   >
-    @if (error()) {
-      <mat-error class="server-error">{{ error() }}</mat-error>
-    }
+    <gt-form-error [errors]="error()" />
     <gt-settings-section #nameSection i18n-title title="Name">
       <span slot="description" i18n
         >Usually the app or service that sends the errors.</span
@@ -55,7 +53,7 @@
                 teams.length || !canWriteTeam() ? assignTeamText : createTeamText
               "
               formControlName="team"
-              [attr.aria-labelledby]="teamSection.titleId"
+              [aria-labelledby]="teamSection.titleId"
             >
               @for (team of teams; track team) {
                 <mat-option [value]="team.slug">
@@ -91,7 +89,7 @@
       <gt-platform-picker formControlName="platform" />
     </gt-settings-section>
 
-    <div class="actions">
+    <div class="gt-form-actions">
       <gt-loading-button
         i18n-buttonText
         data-cy="create-project-submit"

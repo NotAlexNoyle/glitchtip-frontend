@@ -6,23 +6,21 @@
 <section class="l-body">
   <gt-page-header i18n-title title="Invite members" />
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    @if (errors().addOrganizationMembers; as error) {
-      <mat-error class="server-error">{{ error }}</mat-error>
-    }
+    <gt-form-error [errors]="errors().addOrganizationMembers" />
     <gt-settings-section #emailSection i18n-title title="Emails">
-      <span slot="description"
-        ><ng-container i18n>Separate several with commas.</ng-container
-        >{{ " " }}@if (enableUserRegistration()) {
+      <span slot="description">
+        @if (enableUserRegistration()) {
           <ng-container i18n
-            >People without an account are asked to create one.</ng-container
+            >Separate several with commas. People without an account are asked
+            to create one.</ng-container
           >
         } @else {
           <ng-container i18n
-            >Only people who already have an account can be
-            invited.</ng-container
+            >Separate several with commas. Only people who already have an
+            account can be invited.</ng-container
           >
-        }</span
-      >
+        }
+      </span>
       <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <input
           matInput
@@ -47,7 +45,7 @@
       <span slot="description">{{ roleDescription(formRole.value) }}</span>
       <mat-radio-group
         formControlName="role"
-        class="roles"
+        class="gt-radio-column"
         [attr.aria-labelledby]="roleSection.titleId"
       >
         @for (role of roles; track role) {
@@ -68,7 +66,7 @@
           multiple
           formControlName="teams"
           disableOptionCentering
-          [attr.aria-labelledby]="teamsSection.titleId"
+          [aria-labelledby]="teamsSection.titleId"
         >
           @if (organizationTeams().length) {
             @for (team of organizationTeams(); track team.id) {
@@ -81,7 +79,7 @@
       </mat-form-field>
     </gt-settings-section>
 
-    <div class="actions">
+    <div class="gt-form-actions">
       <gt-loading-button
         i18n-buttonText
         buttonText="Send invites"
