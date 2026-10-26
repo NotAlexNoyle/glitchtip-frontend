@@ -13,7 +13,7 @@ import {
   ValidationErrors,
   ReactiveFormsModule,
 } from "@angular/forms";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, RouterLink } from "@angular/router";
 import { map } from "rxjs/operators";
 import { OrganizationDetailService } from "src/app/api/organizations/organization-detail.service";
 import { SettingsService } from "src/app/api/settings.service";
@@ -23,8 +23,12 @@ import { MatSelectModule } from "@angular/material/select";
 import { MatRadioModule } from "@angular/material/radio";
 import { MatInputModule } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatDividerModule } from "@angular/material/divider";
-import { MatCardModule } from "@angular/material/card";
+import { MatButtonModule } from "@angular/material/button";
+import { SettingsSectionComponent } from "src/app/shared/settings-section/settings-section.component";
+import { PageHeaderComponent } from "src/app/shared/detail/page-header/page-header.component";
+import { BackLinkComponent } from "src/app/shared/detail/back-link/back-link.component";
+import { TopAppBar } from "src/app/shared/top-app-bar/top-app-bar";
+import { MEMBER_ROLES, roleDescription, roleName } from "../member-roles";
 
 /** Custom validator to vaildate emails separated by commas */
 function validateEmails(emails: string) {
@@ -53,8 +57,12 @@ function emailsValidator(control: AbstractControl): ValidationErrors | null {
   styleUrls: ["./new-member.component.scss"],
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
-    MatCardModule,
-    MatDividerModule,
+    RouterLink,
+    MatButtonModule,
+    TopAppBar,
+    BackLinkComponent,
+    PageHeaderComponent,
+    SettingsSectionComponent,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -81,6 +89,9 @@ export class NewMemberComponent implements OnInit, OnDestroy {
     teams: new FormControl([]),
   });
   formRole = this.form.get("role") as FormControl;
+  readonly roles = MEMBER_ROLES;
+  roleName = roleName;
+  roleDescription = roleDescription;
 
   ngOnInit(): void {
     this.route.params
