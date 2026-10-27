@@ -193,7 +193,7 @@ export class ButtonsPreview {
   readonly dos = [
     "Use one filled button per view, for the primary action",
     "Use outlined for the secondary action next to it",
-    "Keep cancel, close, and dismiss as text buttons",
+    "Keep cancel, close, and dismiss as text buttons; they are neutral, so Cancel never reads as destructive",
     "Leave a secondary outlined button uncolored: primary and warn are both red, so a color on an outline reads as destructive",
     "Put the icon before the label",
     "Style destructive actions as an outlined warn button plus a confirm dialog",
