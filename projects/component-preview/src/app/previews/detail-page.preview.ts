@@ -5,7 +5,6 @@ import { BreakpointObserver } from "@angular/cdk/layout";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { MatMenuModule } from "@angular/material/menu";
-import { MatCardModule } from "@angular/material/card";
 import { TopAppBar } from "src/app/shared/top-app-bar/top-app-bar";
 import { BackLinkComponent } from "src/app/shared/detail/back-link/back-link.component";
 import { DetailHeaderComponent } from "src/app/shared/detail/header/header.component";
@@ -25,7 +24,6 @@ import { ApiRow, PreviewDocComponent } from "../docs/preview-doc.component";
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
-    MatCardModule,
     PreviewDocComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -36,7 +34,7 @@ import { ApiRow, PreviewDocComponent } from "../docs/preview-doc.component";
         // side padding) at example scale.
         padding: var(--gt-space-4) var(--gt-space-5) var(--gt-space-5);
       }
-      .dp-body mat-card {
+      .dp-body p {
         margin-top: var(--gt-space-4);
       }
       .top-bar-actions {
@@ -74,7 +72,7 @@ import { ApiRow, PreviewDocComponent } from "../docs/preview-doc.component";
         <ng-container slot="right">
           <div class="top-bar-actions">
             @if (isMobile()) {
-              <button mat-icon-button aria-label="Settings">
+              <button mat-icon-button aria-label="Edit monitor">
                 <mat-icon>settings</mat-icon>
               </button>
               <button mat-icon-button [matMenuTriggerFor]="more" aria-label="More">
@@ -87,7 +85,7 @@ import { ApiRow, PreviewDocComponent } from "../docs/preview-doc.component";
                 </button>
               </mat-menu>
             } @else {
-              <button mat-flat-button color="primary">Settings</button>
+              <button mat-stroked-button>Edit monitor</button>
               <button mat-icon-button class="medium-icon-button" aria-label="Delete">
                 <mat-icon>delete</mat-icon>
               </button>
@@ -97,11 +95,7 @@ import { ApiRow, PreviewDocComponent } from "../docs/preview-doc.component";
       </gt-top-app-bar>
       <section class="dp-body">
         <gt-detail-header [title]="['Uptime details for GlitchTip Health', null]" />
-        <mat-card appearance="outlined">
-          <mat-card-content>
-            Monitor content: response times, check history, status.
-          </mat-card-content>
-        </mat-card>
+        <p>Monitor content: response times, check history, status.</p>
       </section>
     </preview-doc>
   `,
@@ -155,8 +149,8 @@ import { DetailHeaderComponent } from "src/app/shared/detail/header/header.compo
     <gt-back-link backLinkText="View all uptime monitors" />
   </ng-container>
   <ng-container slot="right">
-    <button mat-flat-button color="primary" [routerLink]="['./update']">
-      Settings
+    <button mat-stroked-button [routerLink]="['./update']">
+      Edit monitor
     </button>
   </ng-container>
 </gt-top-app-bar>
