@@ -3,6 +3,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { IssueDetailService } from "../issue-detail/issue-detail.service";
 import { StatefulService } from "src/app/shared/stateful-service/signal-state.service";
 import { client } from "src/app/shared/api/api";
+import { OrganizationsService } from "src/app/api/organizations.service";
 import { components } from "src/app/api/api-schema";
 
 type Comment = components["schemas"]["CommentSchema"];
@@ -25,19 +26,24 @@ const initialState: CommentsState = {
 export class CommentsService extends StatefulService<CommentsState> {
   private issueDetailService = inject(IssueDetailService);
   private snackbar = inject(MatSnackBar);
+  private organizationsService = inject(OrganizationsService);
   issueID = signal<number | undefined>(undefined);
+  orgSlug = signal<string | undefined>(undefined);
 
   private commentsResource = resource({
-    params: () => ({ issueID: this.issueID() }),
+    params: () => ({ issueID: this.issueID(), orgSlug: this.orgSlug() }),
     loader: async ({ params }) => {
-      if (!params.issueID) {
+      if (!params.issueID || !params.orgSlug) {
         return undefined;
       }
       const { data, error } = await client.GET(
-        "/api/0/issues/{issue_id}/comments/",
+        "/api/0/organizations/{organization_id_or_slug}/issues/{issue_id}/comments/",
         {
           params: {
-            path: { issue_id: params.issueID },
+            path: {
+              ...this.organizationsService.orgPath(params.orgSlug),
+              issue_id: params.issueID,
+            },
           },
         },
       );
@@ -80,11 +86,20 @@ export class CommentsService extends StatefulService<CommentsState> {
   }
 
   async createComment(issueId: number, text: string) {
+    const orgSlug = this.orgSlug();
+    if (!orgSlug) {
+      return;
+    }
     this.setCreateCommentLoadingStart();
     const { data, error } = await client.POST(
-      "/api/0/issues/{issue_id}/comments/",
+      "/api/0/organizations/{organization_id_or_slug}/issues/{issue_id}/comments/",
       {
-        params: { path: { issue_id: issueId } },
+        params: {
+          path: {
+            ...this.organizationsService.orgPath(orgSlug),
+            issue_id: issueId,
+          },
+        },
         body: { data: { text } },
       },
     );
@@ -109,12 +124,17 @@ export class CommentsService extends StatefulService<CommentsState> {
   }
 
   async updateComment(issueId: number, commentId: number, text: string) {
+    const orgSlug = this.orgSlug();
+    if (!orgSlug) {
+      return;
+    }
     this.setCommentUpdateLoadingStart(commentId);
     const { data, error } = await client.PUT(
-      "/api/0/issues/{issue_id}/comments/{comment_id}/",
+      "/api/0/organizations/{organization_id_or_slug}/issues/{issue_id}/comments/{comment_id}/",
       {
         params: {
           path: {
+            ...this.organizationsService.orgPath(orgSlug),
             issue_id: issueId,
             comment_id: commentId,
           },
@@ -137,12 +157,17 @@ export class CommentsService extends StatefulService<CommentsState> {
   }
 
   async deleteComment(issueId: number, commentId: number) {
+    const orgSlug = this.orgSlug();
+    if (!orgSlug) {
+      return;
+    }
     this.setCommentDeleteLoadingStart(commentId);
     const { error, response } = await client.DELETE(
-      "/api/0/issues/{issue_id}/comments/{comment_id}/",
+      "/api/0/organizations/{organization_id_or_slug}/issues/{issue_id}/comments/{comment_id}/",
       {
         params: {
           path: {
+            ...this.organizationsService.orgPath(orgSlug),
             issue_id: issueId,
             comment_id: commentId,
           },

@@ -48,8 +48,10 @@ export class CommentsComponent implements OnInit {
   user = this.userService.user;
   displayCommentCreation = computed(() => this.comments().length < 50);
   issueID = input.required<string>({ alias: "issue-id" });
+  orgSlug = input.required<string>({ alias: "org-slug" });
 
   ngOnInit(): void {
+    this.commentsService.orgSlug.set(this.orgSlug());
     this.route.params.subscribe((params) => {
       if (params["issue-id"]) {
         this.commentsService.issueID.set(params["issue-id"]);

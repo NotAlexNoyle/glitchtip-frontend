@@ -35,6 +35,7 @@ export class UserReportsIssueComponent {
   protected route = inject(ActivatedRoute);
 
   issueID = input.required<string>({ alias: "issue-id" });
+  orgSlug = input.required<string>({ alias: "org-slug" });
   cursor = input("");
   paginator = this.#service.paginator;
   reports = this.#service.reports;
@@ -42,6 +43,8 @@ export class UserReportsIssueComponent {
   loading = this.#service.loading;
 
   constructor() {
-    effect(() => this.#service.setParams(this.issueID(), this.cursor()));
+    effect(() =>
+      this.#service.setParams(this.orgSlug(), this.issueID(), this.cursor()),
+    );
   }
 }
