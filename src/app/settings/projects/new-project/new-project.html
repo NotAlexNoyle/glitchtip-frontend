@@ -1,6 +1,6 @@
 <gt-top-app-bar>
   <ng-container slot="left">
-    <gt-back-link i18n-backLinkText backLinkText="Back to projects" />
+    <gt-back-link i18n-backLinkText backLinkText="Projects" />
   </ng-container>
 </gt-top-app-bar>
 <section class="l-body">
@@ -10,7 +10,6 @@
     (ngSubmit)="onSubmit()"
     data-cy="create-project-form"
   >
-    <gt-form-error [errors]="error()" />
     <gt-settings-section #nameSection i18n-title title="Name">
       <span slot="description" i18n
         >Usually the app or service that sends the errors.</span
@@ -89,12 +88,12 @@
       <gt-platform-picker formControlName="platform" />
     </gt-settings-section>
 
+    <gt-form-error [errors]="error()" />
     <div class="gt-form-actions">
       <gt-loading-button
         i18n-buttonText
         data-cy="create-project-submit"
         buttonText="Create project"
-        buttonStyle="stroked"
         [loading]="loading()"
       />
       <a mat-button [routerLink]="['..']" i18n>Cancel</a>

@@ -1,12 +1,11 @@
 <gt-top-app-bar>
   <ng-container slot="left">
-    <gt-back-link i18n-backLinkText backLinkText="Back to members" />
+    <gt-back-link i18n-backLinkText backLinkText="Members" />
   </ng-container>
 </gt-top-app-bar>
 <section class="l-body">
   <gt-page-header i18n-title title="Invite members" />
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <gt-form-error [errors]="errors().addOrganizationMembers" />
     <gt-settings-section #emailSection i18n-title title="Emails">
       <span slot="description">
         @if (enableUserRegistration()) {
@@ -79,11 +78,11 @@
       </mat-form-field>
     </gt-settings-section>
 
+    <gt-form-error [errors]="errors().addOrganizationMembers" />
     <div class="gt-form-actions">
       <gt-loading-button
         i18n-buttonText
         buttonText="Send invites"
-        buttonStyle="stroked"
         [loading]="loading().addOrganizationMembers"
       />
       <a mat-button [routerLink]="['..']" i18n>Cancel</a>
