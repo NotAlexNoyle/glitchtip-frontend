@@ -55,7 +55,6 @@ function emailsValidator(control: AbstractControl): ValidationErrors | null {
 @Component({
   selector: "gt-new-member",
   templateUrl: "./new-member.component.html",
-  styleUrls: ["./new-member.component.scss"],
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     RouterLink,
