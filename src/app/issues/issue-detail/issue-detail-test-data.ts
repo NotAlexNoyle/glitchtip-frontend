@@ -9,7 +9,6 @@ interface APIIssueDetail extends Omit<IssueDetail, "project"> {
   project: APIProjectReference;
 }
 
-// data from api/0/issues/{{ issue number }}
 export const sampleApiIssueDetail: APIIssueDetail = {
   seenBy: [
     {

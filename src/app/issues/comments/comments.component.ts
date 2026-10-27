@@ -1,12 +1,11 @@
 import {
   Component,
-  OnInit,
   computed,
+  effect,
   inject,
   input,
   ChangeDetectionStrategy,
 } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
 import { CommentsService } from "./comments.service";
 import { UserService } from "src/app/api/user/user.service";
 import { MarkdownComponent, provideMarkdown } from "ngx-markdown";
@@ -35,9 +34,8 @@ import { ConfirmDialogComponent } from "src/app/shared/confirm-dialog/confirm-di
   changeDetection: ChangeDetectionStrategy.Eager,
   providers: [CommentsService, provideMarkdown()],
 })
-export class CommentsComponent implements OnInit {
+export class CommentsComponent {
   private userService = inject(UserService);
-  protected route = inject(ActivatedRoute);
   private dialog = inject(MatDialog);
   commentsService = inject(CommentsService);
 
@@ -50,12 +48,10 @@ export class CommentsComponent implements OnInit {
   issueID = input.required<string>({ alias: "issue-id" });
   orgSlug = input.required<string>({ alias: "org-slug" });
 
-  ngOnInit(): void {
-    this.commentsService.orgSlug.set(this.orgSlug());
-    this.route.params.subscribe((params) => {
-      if (params["issue-id"]) {
-        this.commentsService.issueID.set(params["issue-id"]);
-      }
+  constructor() {
+    effect(() => {
+      this.commentsService.orgSlug.set(this.orgSlug());
+      this.commentsService.issueID.set(+this.issueID());
     });
   }
 

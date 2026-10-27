@@ -226,9 +226,7 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
         {
           params: {
             path: {
-              ...this.organization.orgPath(
-                this.organization.activeOrganizationSlug(),
-              ),
+              ...this.organization.orgPath(this.orgSlug()),
               issue_id: parseInt(this.issueID()),
             },
           },
@@ -282,10 +280,7 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
       );
     } else {
       this.snackBar.open($localize`Issue ${id} has been deleted.`);
-      this.router.navigate([
-        this.organization.activeOrganizationSlug(),
-        "issues",
-      ]);
+      this.router.navigate([orgSlug, "issues"]);
     }
   }
 
