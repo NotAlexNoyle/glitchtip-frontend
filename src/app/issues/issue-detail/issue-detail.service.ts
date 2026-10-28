@@ -66,7 +66,7 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
     () => this.event() && this.event()?.previousEventID !== null,
   );
   readonly nextEventUrl = computed(() => {
-    const orgSlug = this.organization.activeOrganizationSlug();
+    const orgSlug = this.orgSlug();
     const issue = this.issue();
     const event = this.event();
 
@@ -76,7 +76,7 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
     return null;
   });
   readonly previousEventUrl = computed(() => {
-    const orgSlug = this.organization.activeOrganizationSlug();
+    const orgSlug = this.orgSlug();
     const issue = this.issue();
     const event = this.event();
 
