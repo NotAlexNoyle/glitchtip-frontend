@@ -1,167 +1,173 @@
 @if (initialLoadComplete() && event() === null) {
-  <section class="mat-typography">
-    <h2 i18n>Event not found</h2>
-    <p i18n class="body-text">
-      This may be because the URL is pointing to an event that doesn't exist or
-      was deleted.
-    </p>
-  </section>
+  <gt-panel>
+    <gt-empty-state
+      icon="search"
+      i18n-title
+      title="Event not found"
+      [message]="eventNotFoundMessage"
+    >
+      @if (eventID()) {
+        <a mat-button [routerLink]="latestUrl()" i18n>View latest event</a>
+      }
+    </gt-empty-state>
+  </gt-panel>
 }
 
 @if (event(); as event) {
-  <section class="mat-typography">
-    <section class="header">
-      <div>
-        <h2 i18n>Event</h2>
-        <p>
-          <a>{{ event?.id }}</a>
-        </p>
-        <p>
-          @if (event?.dateCreated) {
-            <span class="space">{{
-              $safeNavigationMigration(event?.dateCreated) | date: "long"
-            }}</span>
-          }
-          <ng-container i18n><a
-            target="_blank"
-            [href]="
-              '/organizations/' +
-              orgSlug() +
-              '/issues/' +
-              event.groupID +
-              '/events/' +
-              $safeNavigationMigration(event?.id) +
-              '/json/'
-            "
-            >raw JSON</a
+  <section class="event-zone" i18n-aria-label aria-label="This event">
+    <div class="event-bar">
+      <div class="event-bar__switch">
+        @let latest = nextEvent() === false;
+        <span
+          class="gt-select-ghost event-switch"
+          [class.gt-select-ghost--open]="switcherOpen()"
+          (click)="$event.target === $event.currentTarget && switcher.open()"
+        >
+          <mat-select
+            #switcher
+            i18n-aria-label
+            aria-label="Event"
+            [panelWidth]="null"
+            [value]="event.id"
+            (valueChange)="onPickEvent($event, switcher)"
+            (openedChange)="onSwitcherOpened($event)"
           >
-          <span class="action-separator" aria-hidden="true">·</span></ng-container>
-          <button
-            type="button"
-            class="link-button"
-            [cdkCopyToClipboard]="aiPayload()"
-            (cdkCopyToClipboardCopied)="onCopiedForAI()"
-            i18n
+            <mat-select-trigger
+              ><span class="gt-select-ghost__value event-switch__value"
+                ><span class="event-switch__name">
+                  @if (latest) {
+                    <span class="event-switch__long" i18n>Latest event</span>
+                    <span class="event-switch__short" i18n>Latest</span>
+                  } @else {
+                    <span class="event-switch__long" i18n>Event</span>
+                    <span class="gt-mono">{{ event.eventID.slice(0, 8) }}</span>
+                  }
+                </span>
+                @if (event.dateCreated && !latest) {
+                  <span
+                    class="event-switch__fact"
+                    [matTooltip]="event.dateCreated | date: 'medium'"
+                    >{{ event.dateCreated | daysAgo }}</span
+                  >
+                }
+                @if (environment(); as env) {
+                  <span class="event-switch__fact">{{ env }}</span>
+                }
+                @if (showRelease()) {
+                  <span class="event-switch__fact">{{ release() }}</span>
+                }
+              </span></mat-select-trigger
+            >
+            @for (o of switcherOptions(); track o.id) {
+              <mat-option class="event-option" [value]="o.id">
+                <span class="event-option__line">
+                  <span [matTooltip]="o.date | date: 'medium'">{{
+                    o.date | daysAgo
+                  }}</span>
+                  <span class="gt-mono event-option__id">{{ o.short }}</span>
+                  @if (o.latest) {
+                    <span class="event-option__muted" i18n>latest</span>
+                  }
+                </span>
+                @if (o.details) {
+                  <span class="event-option__details">{{ o.details }}</span>
+                }
+              </mat-option>
+            }
+            @if (recentLoading()) {
+              <mat-option disabled class="event-option" [value]="null">
+                <span class="event-option__muted" i18n>Loading events</span>
+              </mat-option>
+            } @else if (hasMoreEvents()) {
+              <mat-option class="event-option" [value]="showMoreValue">
+                <span i18n>Show more</span>
+              </mat-option>
+            }
+          </mat-select>
+        </span>
+        @if (eventCount()) {
+          <span class="event-bar__count" i18n
+            >of {{ eventCount() | number // i18n(ph="count") }}</span
           >
-            copy for AI
-          </button>
-        </p>
+        }
       </div>
-      <nav class="navigation-buttons">
-        <button
-          mat-button
-          [routerLink]="previousEventUrl() || ''"
+      <div class="event-bar__actions">
+        <gt-split-button
+          icon="content_copy"
+          i18n-label
+          label="Copy for AI"
+          i18n-menuLabel
+          menuLabel="More event actions"
+          [menu]="more"
+          (action)="copyForAI()"
+        />
+        <mat-menu #more="matMenu" xPosition="before">
+          <button
+            mat-menu-item
+            type="button"
+            [cdkCopyToClipboard]="eventLink()"
+            (cdkCopyToClipboardCopied)="onCopiedLink()"
+          >
+            <span i18n>Copy event link</span>
+          </button>
+          <button
+            mat-menu-item
+            type="button"
+            [cdkCopyToClipboard]="event.eventID"
+            (cdkCopyToClipboardCopied)="onCopiedId()"
+          >
+            <span i18n>Copy event ID</span>
+          </button>
+          @if (trace()) {
+            <button
+              mat-menu-item
+              type="button"
+              [cdkCopyToClipboard]="trace()"
+              (cdkCopyToClipboardCopied)="onCopiedTrace()"
+            >
+              <span i18n>Copy trace</span>
+            </button>
+          }
+          <a mat-menu-item target="_blank" [href]="rawJsonUrl()">
+            <span i18n>Raw JSON</span>
+          </a>
+        </mat-menu>
+        <span class="gt-bar-divider" aria-hidden="true"></span>
+        <a
+          mat-icon-button
+          i18n-aria-label
+          aria-label="Older event"
+          i18n-matTooltip
+          matTooltip="Older event"
+          [routerLink]="previousEventUrl() || null"
           [disabled]="previousEvent() === false"
         >
-          <mat-icon>keyboard_arrow_left</mat-icon> <ng-container i18n>Older</ng-container>
-        </button>
-        <button
-          mat-button
-          [routerLink]="nextEventUrl() || ''"
+          <mat-icon>keyboard_arrow_left</mat-icon>
+        </a>
+        <a
+          mat-icon-button
+          i18n-aria-label
+          aria-label="Newer event"
+          i18n-matTooltip
+          matTooltip="Newer event"
+          [routerLink]="nextEventUrl() || null"
           [disabled]="nextEvent() === false"
         >
-          <ng-container i18n>Newer</ng-container> <mat-icon iconPositionEnd>keyboard_arrow_right</mat-icon>
-        </button>
-      </nav>
-    </section>
-    @if (event?.contexts || event?.user) {
-      <mat-divider></mat-divider>
-    }
-    <gt-contexts></gt-contexts>
-    <mat-divider></mat-divider>
-    @if (event?.tags && event.tags.length > 0) {
-      <section class="tags">
-        <h2 i18n>Tags</h2>
-        <ul class="tag-pills">
-          @for (tag of event.tags; track tag.key) {
-            <li class="tag-pill">
-              <a
-                [routerLink]="['/', orgSlug(), 'issues']"
-                [queryParams]="generateQuery(tag)"
-                queryParamsHandling="merge"
-                class="tag-pill__link"
-              >
-                <span class="tag-pill__key">{{ tag.key }}</span>
-                <span class="tag-pill__value">{{ tag.value }}</span>
-              </a>
-              @if (isValidUrl(tag.value)) {
-                <a
-                  [href]="tag.value"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="tag-pill__external"
-                  i18n-aria-label
-                  aria-label="Open {{ tag.key }} in a new tab"
-                >
-                  <mat-icon>open_in_new</mat-icon>
-                </a>
-              }
-            </li>
-          }
-        </ul>
-      </section>
-    }
-    <gt-entry-message></gt-entry-message>
-    <gt-entry-exception
-      [eventTitle]="$safeNavigationMigration(event?.title)"
-      [eventPlatform]="$safeNavigationMigration(event?.platform)!"
-    ></gt-entry-exception>
-    <gt-entry-csp></gt-entry-csp>
-    <gt-entry-breadcrumbs></gt-entry-breadcrumbs>
-    <gt-entry-request></gt-entry-request>
-    @for (context of contexts() | keyvalue; track context) {
-      <section>
-        <mat-divider></mat-divider>
-        <h3>
-          {{ context.value!.type! }}
-          @if (context.value!.type!) {
-            ({{ context.key }})
-          } @else {
-            {{ context.key }}
-          }
-        </h3>
-        <dl>
-          @for (
-            context_entry of context.value | keyvalue;
-            track context_entry
-          ) {
-            @if (context_entry.key !== "type") {
-              <gt-entry-data
-                [key]="context_entry.key"
-                [value]="context_entry.value"
-              ></gt-entry-data>
-            }
-          }
-        </dl>
-      </section>
-    }
-    @if (event.context) {
-      <section>
-        <mat-divider></mat-divider>
-        <h3 i18n>Additional Data</h3>
-        <dl>
-          @for (context of event.context | keyvalue; track context) {
-            <gt-entry-data [key]="context.key" [value]="context.value">
-            </gt-entry-data>
-          }
-        </dl>
-      </section>
-    }
-    @if (event?.sdk) {
-      <section>
-        <mat-divider></mat-divider>
-        <h3>SDK</h3>
-        <dl>
-          <gt-entry-data
-            key="name"
-            [value]="$safeNavigationMigration(event?.sdk?.name)"
-          ></gt-entry-data>
-          <gt-entry-data
-            key="version"
-            [value]="$safeNavigationMigration(event?.sdk?.version)"
-          ></gt-entry-data>
-        </dl>
-      </section>
-    }
+          <mat-icon>keyboard_arrow_right</mat-icon>
+        </a>
+      </div>
+    </div>
+
+    <div
+      class="event-zone__body"
+      [class.event-zone__body--flash-a]="flash() === 1"
+      [class.event-zone__body--flash-b]="flash() === 2"
+    >
+      <gt-entry-exception />
+      <gt-entry-message />
+      <gt-entry-csp />
+      <gt-entry-breadcrumbs />
+      <gt-entry-request />
+    </div>
   </section>
 }

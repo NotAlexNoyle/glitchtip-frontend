@@ -10,13 +10,10 @@ import {
   Message,
   Values,
   EntryType,
-  AnnotatedContexts,
   BreadcrumbValueData,
   IssueTags,
   IssueTagsAdjusted,
 } from "../interfaces";
-import { generateIconPath } from "../../shared/shared.utils";
-import { Json } from "src/app/interface-primitives";
 import { OrganizationsService } from "src/app/api/organizations.service";
 import { StatefulService } from "src/app/shared/stateful-service/signal-state.service";
 import { client } from "src/app/shared/api/api";
@@ -154,10 +151,6 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
   readonly eventEntryMessage = computed(() => {
     const event = this.event();
     return event ? this.getEventEntryMessage(event) : undefined;
-  });
-  readonly specialContexts = computed(() => {
-    const event = this.event();
-    return event ? this.getSpecialContexts(event) : undefined;
   });
   readonly breadcrumbs = computed(() => {
     const event = this.event();
@@ -532,150 +525,6 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
       return [...values];
     }
     return;
-  }
-
-  checkContextName(
-    contextsObject: { [key: string]: Json },
-    defaultUnknown: string,
-  ) {
-    if (
-      contextsObject.name !== "Other" &&
-      typeof contextsObject.name === "string"
-    ) {
-      return contextsObject.name;
-    }
-    return `Unknown ${defaultUnknown}`;
-  }
-
-  /**
-   * For the contexts bar in event detail, find specific contexts and
-   * return array of matching objects to loop through in template.
-   * The order they are return in should always be user, browser, runtime
-   * os, device, gpu
-   */
-  getSpecialContexts(event: EventDetail): AnnotatedContexts[] {
-    const user: any = event.user;
-    const contexts = event.contexts;
-    const contextsArray: AnnotatedContexts[] = [];
-
-    for (const key in contexts) {
-      if (key) {
-        const contextsObject: any = contexts[key];
-
-        if (key === "browser") {
-          contextsArray.unshift({
-            type: key,
-            icon: contextsObject.name
-              ? generateIconPath(contextsObject.name as string)
-              : null,
-            matIcon: "tab",
-            title: this.checkContextName(contextsObject, "Browser"),
-            subtitle: contextsObject.version
-              ? (contextsObject.version as string)
-              : "Unknown",
-            key: "Version",
-          });
-        }
-        if (key === "runtime") {
-          contextsArray.unshift({
-            type: key,
-            icon: contextsObject.name
-              ? generateIconPath(contextsObject.name as string)
-              : null,
-            matIcon: "tab",
-            title: this.checkContextName(contextsObject, "Runtime"),
-            subtitle: contextsObject.version
-              ? (contextsObject.version as string)
-              : "Unknown",
-            key: "Version",
-          });
-        }
-        if (key === "os" || key === "client_os") {
-          contextsArray.unshift({
-            type: key,
-            icon: contextsObject.name
-              ? generateIconPath(contextsObject.name as string)
-              : null,
-            matIcon: "computer",
-            title: this.checkContextName(contextsObject, "Operating System"),
-            subtitle: contextsObject.version
-              ? (contextsObject.version as string)
-              : contextsObject.kernel_version
-                ? (contextsObject.kernel_version as string)
-                : "Unknown",
-            key: contextsObject.version
-              ? "Version"
-              : contextsObject.kernel_version
-                ? "Kernel"
-                : "Version",
-          });
-        }
-        if (key === "device") {
-          contextsArray.unshift({
-            type: key,
-            icon: contextsObject.model
-              ? generateIconPath(contextsObject.model as string)
-              : null,
-            matIcon: "devices_other",
-            title: contextsObject.model
-              ? (contextsObject.model as string)
-              : "Unknown Device",
-            subtitle: contextsObject.arch
-              ? (contextsObject.arch as string)
-              : contextsObject.model_id
-                ? (contextsObject.model_id as string)
-                : null,
-            key: contextsObject.arch
-              ? "Arch"
-              : contextsObject.model_id
-                ? "Model"
-                : null,
-          });
-        }
-        if (key === "gpu") {
-          contextsArray.unshift({
-            type: key,
-            icon: contextsObject.name
-              ? generateIconPath(contextsObject.name as string)
-              : null,
-            matIcon: "memory",
-            title: this.checkContextName(contextsObject, "GPU"),
-            subtitle: contextsObject.vendor_name
-              ? (contextsObject.vendor_name as string)
-              : "Unknown",
-            key: "Vendor",
-          });
-        }
-      }
-    }
-
-    if (user) {
-      let userTitle = user.email
-        ? user.email
-        : user.ip_address || user.id || user.username;
-      if (!userTitle) {
-        userTitle = "Unknown User";
-      }
-      let newKey = "";
-      let newSubtitle = "";
-      if (user.id && user.id !== userTitle) {
-        newKey = "ID";
-        newSubtitle = user.id;
-      } else if (user.username && user.username !== userTitle) {
-        newKey = "Username";
-        newSubtitle = user.username;
-      }
-      contextsArray.unshift({
-        type: "user",
-        icon: null,
-        matIcon: "account_circle",
-        title: userTitle,
-        subtitle: newSubtitle,
-        key: newKey,
-      });
-    }
-
-    return contextsArray;
   }
 
   /**

@@ -62,24 +62,6 @@ export interface EventDetail extends Event {
   sdkUpdates?: [];
 }
 
-export interface AnnotatedContexts {
-  type: ContextsType;
-  icon: string | null;
-  matIcon: string | null;
-  title: string;
-  subtitle: string | null;
-  key: string | null;
-}
-
-type ContextsType =
-  | "user"
-  | "browser"
-  | "runtime"
-  | "os"
-  | "client_os"
-  | "device"
-  | "gpu";
-
 interface Errors {
   data: { [key: string]: string };
   message: string;
