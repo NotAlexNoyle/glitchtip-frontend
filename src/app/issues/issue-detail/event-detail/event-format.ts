@@ -289,3 +289,123 @@ export function toggled<T>(set: ReadonlySet<T>, key: T): Set<T> {
   if (!next.delete(key)) next.add(key);
   return next;
 }
+
+export type EventContext = { [key: string]: unknown } | null | undefined;
+export type EventContexts = { [key: string]: EventContext };
+
+/** Context kinds that describe a tag, for its logo and the details tags lack. */
+export const CONTEXT_OF: { [tag: string]: string } = {
+  browser: "browser",
+  "browser.name": "browser",
+  "os.name": "os",
+  os: "os",
+  device: "device",
+  runtime: "runtime",
+  gpu: "gpu",
+};
+
+function str(value: unknown): string {
+  return typeof value === "string" || typeof value === "number"
+    ? String(value).trim()
+    : "";
+}
+
+/** A context by kind; older SDKs send the OS as client_os. */
+export function contextFor(
+  contexts: EventContexts,
+  kind: string,
+): EventContext {
+  return contexts[kind] ?? (kind === "os" ? contexts["client_os"] : undefined);
+}
+
+/** The name a context is known (and its logo looked up) by; device: its model. */
+export function contextName(kind: string, ctx: EventContext): string {
+  if (!ctx) return "";
+  return kind === "device" ? str(ctx["model"]) : str(ctx["name"]);
+}
+
+/** What a context adds to a fact: OS version or kernel, device arch, GPU vendor. */
+export function contextDetail(
+  kind: string,
+  ctx: EventContext,
+  value: string,
+): string {
+  if (!ctx) return "";
+  const first = (...keys: string[]) =>
+    keys.map((k) => str(ctx[k])).find(Boolean) ?? "";
+  let detail = "";
+  if (kind === "os") detail = first("version", "kernel_version");
+  if (kind === "device") detail = first("arch", "model_id");
+  if (kind === "gpu") detail = first("vendor_name");
+  return detail && !value.includes(detail) ? detail : "";
+}
+
+/**
+ * A fact from a context alone: its name and version. Null for "Other", a
+ * nameless context, or a browser's runtime (that is the browser).
+ */
+export function contextFact(
+  kind: string,
+  ctx: EventContext,
+): { name: string; value: string; detail: string } | null {
+  const name = contextName(kind, ctx);
+  if (!ctx || !name || name === "Other") return null;
+  if (kind === "runtime" && name.toLowerCase() === "browser") return null;
+  const version = kind === "device" || kind === "os" ? "" : str(ctx["version"]);
+  const value = [name, version].filter(Boolean).join(" ");
+  return { name, value, detail: contextDetail(kind, ctx, value) };
+}
+
+/** The user as one value (email first), its tag key and the other ids. */
+export function eventUser(
+  user: { [key: string]: unknown } | null | undefined,
+): { value: string; key: string; others: string[] } | null {
+  if (!user) return null;
+  const keys: [string, string][] = [
+    ["email", "user.email"],
+    ["username", "user.username"],
+    ["id", "user.id"],
+    ["ip_address", "user.ip"],
+  ];
+  const hit = keys.find(([field]) => str(user[field]));
+  if (!hit) return null;
+  const value = str(user[hit[0]]);
+  const others = [str(user["id"]), str(user["username"])].filter(
+    (v) => v && v !== value,
+  );
+  return { value, key: hit[1], others: [...new Set(others)] };
+}
+
+/** "City, Region, CC · ip" from the user's geo and IP. */
+export function userLocation(
+  user: { [key: string]: unknown } | null | undefined,
+): string {
+  if (!user) return "";
+  const geo = (user["geo"] ?? {}) as { [key: string]: unknown };
+  const place = [geo["city"], geo["region"], geo["country_code"]]
+    .map(str)
+    .filter(Boolean)
+    .join(", ");
+  return [place, str(user["ip_address"])].filter(Boolean).join(" · ");
+}
+
+/** The trace id shortened to 8, with id, op and status for the tooltip. */
+export function traceSummary(
+  trace: EventContext,
+): { short: string; full: string } | null {
+  const id = trace ? str(trace["trace_id"]) : "";
+  if (!trace || !id) return null;
+  const full = [id, str(trace["op"]), str(trace["status"])]
+    .filter(Boolean)
+    .join(" · ");
+  return { short: id.slice(0, 8), full };
+}
+
+/** The server got the event more than a minute after the client sent it. */
+export function arrivedLate(
+  sent: string,
+  received: string | null | undefined,
+): boolean {
+  if (!received) return false;
+  return Math.abs(Date.parse(received) - Date.parse(sent)) > 60_000;
+}

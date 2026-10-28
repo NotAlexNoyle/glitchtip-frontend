@@ -1,7 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { Breadcrumb, Frame, Values } from "../../interfaces";
 import {
+  arrivedLate,
+  contextFact,
+  contextFor,
   crumbSummary,
+  eventUser,
+  traceSummary,
+  userLocation,
   formatValue,
   frameDisplay,
   frameLineCol,
@@ -288,5 +294,71 @@ describe("toggled", () => {
     expect([...toggled(set, "b")]).toEqual(["a", "b"]);
     expect([...toggled(set, "a")]).toEqual([]);
     expect([...set]).toEqual(["a"]);
+  });
+});
+
+describe("event payload facts", () => {
+  it("falls back to client_os for the OS context", () => {
+    const os = { name: "Windows" };
+    expect(contextFor({ client_os: os }, "os")).toBe(os);
+    expect(contextFor({ client_os: os }, "gpu")).toBeUndefined();
+  });
+
+  it("builds a context fact, skipping Other and a browser's runtime", () => {
+    expect(
+      contextFact("runtime", { name: "CPython", version: "3.12.4" }),
+    ).toEqual({ name: "CPython", value: "CPython 3.12.4", detail: "" });
+    expect(contextFact("os", { name: "macOS", version: "15.5" })).toEqual({
+      name: "macOS",
+      value: "macOS",
+      detail: "15.5",
+    });
+    expect(
+      contextFact("device", { model: "iPhone15,2", arch: "arm64" }),
+    ).toEqual({ name: "iPhone15,2", value: "iPhone15,2", detail: "arm64" });
+    expect(contextFact("os", { name: "Other" })).toBeNull();
+    expect(contextFact("runtime", { name: "browser" })).toBeNull();
+    expect(contextFact("gpu", null)).toBeNull();
+  });
+
+  it("names the user by email first and lists the other ids", () => {
+    expect(
+      eventUser({
+        email: "a@b.c",
+        id: "u-1",
+        username: "ab",
+        ip_address: "1.2.3.4",
+      }),
+    ).toEqual({ value: "a@b.c", key: "user.email", others: ["u-1", "ab"] });
+    expect(eventUser({ ip_address: "1.2.3.4" })).toEqual({
+      value: "1.2.3.4",
+      key: "user.ip",
+      others: [],
+    });
+    expect(eventUser({})).toBeNull();
+  });
+
+  it("formats location and trace", () => {
+    expect(
+      userLocation({
+        geo: { city: "Bengaluru", country_code: "IN" },
+        ip_address: "1.2.3.4",
+      }),
+    ).toBe("Bengaluru, IN · 1.2.3.4");
+    expect(userLocation(null)).toBe("");
+    expect(
+      traceSummary({ trace_id: "825b377e1234", op: "http", status: "ok" }),
+    ).toEqual({ short: "825b377e", full: "825b377e1234 · http · ok" });
+    expect(traceSummary({})).toBeNull();
+  });
+
+  it("flags events that arrived over a minute late", () => {
+    expect(arrivedLate("2026-10-01T10:00:00Z", "2026-10-01T10:05:00Z")).toBe(
+      true,
+    );
+    expect(arrivedLate("2026-10-01T10:00:00Z", "2026-10-01T10:00:30Z")).toBe(
+      false,
+    );
+    expect(arrivedLate("2026-10-01T10:00:00Z", null)).toBe(false);
   });
 });

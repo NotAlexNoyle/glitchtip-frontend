@@ -3,9 +3,11 @@ import {
   Component,
   computed,
   inject,
+  LOCALE_ID,
   output,
   signal,
 } from "@angular/core";
+import { formatDate } from "@angular/common";
 import { Params, RouterLink } from "@angular/router";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
@@ -15,7 +17,19 @@ import { OrganizationsService } from "src/app/api/organizations.service";
 import { generateIconPath } from "src/app/shared/shared.utils";
 import { IssueDetailService } from "../../issue-detail.service";
 import { injectTagFilter, isSpreadTag } from "../../tag-filters";
-import { isHttpUrl } from "../event-format";
+import {
+  CONTEXT_OF,
+  EventContexts,
+  arrivedLate,
+  contextDetail,
+  contextFact,
+  contextFor,
+  contextName,
+  eventUser,
+  isHttpUrl,
+  traceSummary,
+  userLocation,
+} from "../event-format";
 
 interface Fact {
   label: string;
@@ -43,45 +57,8 @@ interface TagChip {
   order: number;
 }
 
-type Context = { [key: string]: unknown } | null | undefined;
-
-/** Which context describes a tag, for its logo and the details tags lack. */
-const CONTEXT_OF: { [tag: string]: string } = {
-  browser: "browser",
-  "browser.name": "browser",
-  "os.name": "os",
-  os: "os",
-  device: "device",
-  runtime: "runtime",
-  gpu: "gpu",
-};
-
-function str(value: unknown): string {
-  return typeof value === "string" || typeof value === "number"
-    ? String(value).trim()
-    : "";
-}
-
-/** The name a context's logo is looked up by (device: its model). */
-function logoName(kind: string, ctx: Context): string {
-  if (!ctx) return "";
-  return kind === "device" ? str(ctx["model"]) : str(ctx["name"]);
-}
-
 function logo(name: string): string | undefined {
   return name ? generateIconPath(name) : undefined;
-}
-
-/** What a context adds to its fact: OS version or kernel, device arch, GPU vendor. */
-function contextDetail(kind: string, ctx: Context, value: string): string {
-  if (!ctx) return "";
-  const first = (...keys: string[]) =>
-    keys.map((k) => str(ctx[k])).find(Boolean) ?? "";
-  let detail = "";
-  if (kind === "os") detail = first("version", "kernel_version");
-  if (kind === "device") detail = first("arch", "model_id");
-  if (kind === "gpu") detail = first("vendor_name");
-  return detail && !value.includes(detail) ? detail : "";
 }
 
 /** Known facts (environment, browser, OS, device...) before custom tags. */
@@ -92,8 +69,6 @@ function rank(key: string): number {
 
 const byRank = (a: { order?: number }, b: { order?: number }) =>
   (a.order ?? 100) - (b.order ?? 100);
-
-/** Outliers first, then known tags before custom ones. */
 
 /** Tags that stay their own row: environment, release and the logo rows. */
 function isFactTag(key: string, keys: string[]): boolean {
@@ -141,6 +116,7 @@ const TIME_ORDER = 50;
 })
 export class EventFactsPanelComponent {
   private issueService = inject(IssueDetailService);
+  private locale = inject(LOCALE_ID);
   readonly orgSlug = inject(OrganizationsService).activeOrganizationSlug;
   private readonly tagFilter = injectTagFilter();
   readonly showRequest = output<void>();
@@ -178,37 +154,20 @@ export class EventFactsPanelComponent {
     const lead: Fact[] = [];
     const rest: Fact[] = [];
     const tags = event.tags ?? [];
-    const contexts = (event.contexts ?? {}) as { [key: string]: Context };
-    const contextFor = (kind: string): Context =>
-      contexts[kind] ?? (kind === "os" ? contexts["client_os"] : undefined);
+    const contexts = (event.contexts ?? {}) as EventContexts;
 
     const user = event.user as { [key: string]: unknown } | null;
-    if (user) {
-      const value =
-        user["email"] || user["username"] || user["id"] || user["ip_address"];
-      if (value) {
-        const key = user["email"]
-          ? "user.email"
-          : user["username"]
-            ? "user.username"
-            : user["id"]
-              ? "user.id"
-              : "user.ip";
-        const others = [user["id"], user["username"]]
-          .map((v) => str(v))
-          .filter((v) => v && v !== String(value));
-        lead.push({
-          label: $localize`User`,
-          value: String(value),
-          secondary: [...new Set(others)].join(" · "),
-          // Filterable only when the event carries it as a tag.
-          query: (event.tags ?? []).some(
-            (t) => t.key === key && String(t.value) === String(value),
-          )
-            ? this.tagFilter(key, String(value))
-            : undefined,
-        });
-      }
+    const who = eventUser(user);
+    if (who) {
+      lead.push({
+        label: $localize`User`,
+        value: who.value,
+        secondary: who.others.join(" · "),
+        // Filterable only when the event carries it as a tag.
+        query: tags.some((t) => t.key === who.key && t.value === who.value)
+          ? this.tagFilter(who.key, who.value)
+          : undefined,
+      });
     }
 
     const request = this.issueService.eventEntryRequest();
@@ -230,14 +189,14 @@ export class EventFactsPanelComponent {
       if (kind) kindsWithTag.add(kind);
       if (!isFactTag(tag.key, keys)) continue;
       if (tag.key === "url" && request?.url) continue;
-      const ctx = kind ? contextFor(kind) : undefined;
+      const ctx = kind ? contextFor(contexts, kind) : undefined;
       const fact: Fact = {
         label: LABELS[tag.key] ?? tag.key,
         value: tag.value,
         query: this.tagFilter(tag.key, tag.value),
         href: isHttpUrl(tag.value) ? tag.value : undefined,
         icon: kind
-          ? logo(logoName(kind, ctx)) || logo(tag.value.trim())
+          ? logo(contextName(kind, ctx)) || logo(tag.value.trim())
           : undefined,
         secondary: kind ? contextDetail(kind, ctx, tag.value) : undefined,
       };
@@ -253,62 +212,38 @@ export class EventFactsPanelComponent {
       ["gpu", LABELS["gpu"]],
     ]) {
       if (kindsWithTag.has(kind)) continue;
-      const ctx = contextFor(kind);
-      const name = logoName(kind, ctx);
-      if (!ctx || !name || name === "Other") continue;
-      // A browser's runtime is the browser, already listed.
-      if (kind === "runtime" && name.toLowerCase() === "browser") continue;
-      const version = kind === "device" ? "" : str(ctx["version"]);
-      const value = [name, kind === "os" ? "" : version]
-        .filter(Boolean)
-        .join(" ");
+      const fact = contextFact(kind, contextFor(contexts, kind));
+      if (!fact) continue;
       rest.push({
         label,
-        value,
-        icon: logo(name),
-        secondary: contextDetail(kind, ctx, value),
+        value: fact.value,
+        icon: logo(fact.name),
+        secondary: fact.detail,
         order: rank(kind),
       });
     }
 
-    if (user) {
-      const geo = user["geo"] as { [key: string]: string } | undefined;
-      const place = geo
-        ? [geo["city"], geo["region"], geo["country_code"]]
-            .filter(Boolean)
-            .join(", ")
-        : "";
-      const where = [place, user["ip_address"]].filter(Boolean).join(" · ");
-      if (where) rest.push({ label: $localize`Location`, value: where });
-    }
+    const where = userLocation(user);
+    if (where) rest.push({ label: $localize`Location`, value: where });
 
-    const trace = contexts["trace"] as { [key: string]: unknown } | undefined;
-    if (trace?.["trace_id"]) {
+    const trace = traceSummary(contexts["trace"]);
+    if (trace) {
       rest.push({
         label: $localize`Trace`,
-        value: String(trace["trace_id"]).slice(0, 8),
-        tooltip: [trace["trace_id"], trace["op"], trace["status"]]
-          .filter(Boolean)
-          .join(" · "),
+        value: trace.short,
+        tooltip: trace.full,
       });
     }
 
     // Absolute time, also for the latest event; the tip notes a late arrival.
     if (event.dateCreated) {
-      const sent = new Date(event.dateCreated);
-      const received = event.dateReceived ? new Date(event.dateReceived) : sent;
-      const fmt = (d: Date) =>
-        d.toLocaleString(undefined, {
-          dateStyle: "medium",
-          timeStyle: "medium",
-        });
+      const fmt = (d: string) => formatDate(d, "medium", this.locale);
       rest.push({
         label: $localize`Time`,
-        value: fmt(sent),
-        tooltip:
-          Math.abs(received.getTime() - sent.getTime()) > 60_000
-            ? $localize`Client time. Received ${fmt(received)}`
-            : undefined,
+        value: fmt(event.dateCreated),
+        tooltip: arrivedLate(event.dateCreated, event.dateReceived)
+          ? $localize`Client time. Received ${fmt(event.dateReceived)}:received:`
+          : undefined,
         order: TIME_ORDER,
       });
     }
