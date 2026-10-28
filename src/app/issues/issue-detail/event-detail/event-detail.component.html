@@ -19,44 +19,49 @@
     <div class="event-bar" [class.event-bar--stuck]="stuck()">
       <div class="event-bar__switch">
         @let latest = nextEvent() === false;
-        <span gtSelectGhost class="event-switch">
-          <mat-select
-            #switcher
-            i18n-aria-label
-            aria-label="Event"
-            [panelWidth]="null"
-            [value]="event.id"
-            (valueChange)="onPickEvent($event, switcher)"
-            (openedChange)="onSwitcherOpened($event)"
+        <button
+          type="button"
+          class="gt-select-ghost event-switch"
+          i18n-aria-label
+          aria-label="Event"
+          [matMenuTriggerFor]="eventMenu"
+          (menuOpened)="onSwitcherOpened()"
+        >
+          <span class="gt-select-ghost__value event-switch__value"
+            ><span class="event-switch__name">
+              @if (latest) {
+                <span class="event-switch__long" i18n>Latest event</span>
+                <span class="event-switch__short" i18n>Latest</span>
+              } @else {
+                <span class="event-switch__long" i18n>Event</span>
+                <span class="gt-mono">{{ event.eventID.slice(0, 8) }}</span>
+              }
+            </span>
+            @if (event.dateCreated && !latest) {
+              <span class="event-switch__fact">{{
+                event.dateCreated | daysAgo
+              }}</span>
+            }
+            @if (environment(); as env) {
+              <span class="event-switch__fact">{{ env }}</span>
+            }
+            @if (showRelease()) {
+              <span class="event-switch__fact">{{ release() }}</span>
+            }
+          </span>
+          <mat-icon class="event-switch__arrow" aria-hidden="true"
+            >arrow_drop_down</mat-icon
           >
-            <mat-select-trigger
-              ><span class="gt-select-ghost__value event-switch__value"
-                ><span class="event-switch__name">
-                  @if (latest) {
-                    <span class="event-switch__long" i18n>Latest event</span>
-                    <span class="event-switch__short" i18n>Latest</span>
-                  } @else {
-                    <span class="event-switch__long" i18n>Event</span>
-                    <span class="gt-mono">{{ event.eventID.slice(0, 8) }}</span>
-                  }
-                </span>
-                @if (event.dateCreated && !latest) {
-                  <span
-                    class="event-switch__fact"
-                    [matTooltip]="event.dateCreated | date: 'medium'"
-                    >{{ event.dateCreated | daysAgo }}</span
-                  >
-                }
-                @if (environment(); as env) {
-                  <span class="event-switch__fact">{{ env }}</span>
-                }
-                @if (showRelease()) {
-                  <span class="event-switch__fact">{{ release() }}</span>
-                }
-              </span></mat-select-trigger
-            >
+        </button>
+        <mat-menu #eventMenu="matMenu">
+          <ng-template matMenuContent>
             @for (o of switcherOptions(); track o.id) {
-              <mat-option class="event-option" [value]="o.id">
+              <a
+                mat-menu-item
+                class="event-option"
+                [routerLink]="o.url"
+                [attr.aria-current]="o.current ? 'page' : null"
+              >
                 <span class="event-option__line">
                   <span [matTooltip]="o.date | date: 'medium'">{{
                     o.date | daysAgo
@@ -65,29 +70,35 @@
                   @if (o.latest) {
                     <span class="event-option__muted" i18n>latest</span>
                   }
+                  @if (o.current) {
+                    <span class="event-option__muted" i18n>current</span>
+                  }
                 </span>
                 @if (o.details) {
                   <span class="event-option__details">{{ o.details }}</span>
                 }
-              </mat-option>
+              </a>
             }
             @if (recentLoading()) {
-              <mat-option disabled class="event-option" [value]="null">
-                <span class="event-option__muted" i18n>Loading events</span>
-              </mat-option>
+              <p class="event-option__note" role="status" i18n>
+                Loading events
+              </p>
             } @else if (recentFailed()) {
-              <mat-option disabled class="event-option" [value]="null">
-                <span class="event-option__muted" i18n
-                  >Could not load events. Open again to retry.</span
-                >
-              </mat-option>
+              <p class="event-option__note" role="status" i18n>
+                Could not load events. Open again to retry.
+              </p>
             } @else if (hasMoreEvents()) {
-              <mat-option class="event-option" [value]="showMoreValue">
-                <span i18n>Show more</span>
-              </mat-option>
+              <button
+                mat-menu-item
+                type="button"
+                (click)="$event.stopPropagation(); loadMore()"
+                i18n
+              >
+                Show more
+              </button>
             }
-          </mat-select>
-        </span>
+          </ng-template>
+        </mat-menu>
         @if (eventCount()) {
           <span
             class="event-bar__count"

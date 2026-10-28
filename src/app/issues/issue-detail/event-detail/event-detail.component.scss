@@ -70,9 +70,30 @@
   min-width: 0;
 }
 
+// A menu trigger in the ghost select look (.gt-select-ghost owns hover).
 .event-switch {
   min-width: 0;
   max-width: 100%;
+  border: 0;
+  color: inherit;
+
+  &:focus-visible,
+  &[aria-expanded="true"] {
+    @include controls.state-layer(focus);
+    outline: none;
+  }
+}
+
+// Zero specificity, so the ghost hover layer still wins.
+:where(.event-switch) {
+  background-color: transparent;
+}
+
+.event-switch__arrow {
+  @include controls.icon-size(24px);
+  flex: none;
+  margin-inline: calc(var(--gt-space-1, 4px) * -1);
+  color: var(--mat-sys-on-surface-variant);
 }
 
 .event-switch__value {
@@ -130,10 +151,7 @@
   }
 }
 
-.event-option {
-  min-width: 240px;
-}
-
+// Two lines per event; the menu caps its width, so details truncate.
 .event-option__line,
 .event-option__details {
   display: block;
@@ -154,11 +172,21 @@
   color: var(--mat-sys-on-surface-variant);
 }
 
+// Zero width, full stretch: the long line never widens the item, it truncates.
 .event-option__details {
-  max-width: 320px;
+  width: 0;
+  min-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   font: var(--mat-sys-body-small);
+}
+
+// Loading and error lines; not items, so the keyboard skips them.
+.event-option__note {
+  margin: 0;
+  padding: var(--gt-space-2, 8px) var(--gt-space-3, 12px);
+  font: var(--mat-sys-body-medium);
+  color: var(--mat-sys-on-surface-variant);
 }
 
 .event-bar__actions {

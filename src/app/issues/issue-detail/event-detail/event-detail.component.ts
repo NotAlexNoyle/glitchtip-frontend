@@ -10,15 +10,15 @@ import {
   ElementRef,
   afterNextRender,
   Injector,
+  viewChildren,
 } from "@angular/core";
 import { OverlayContainer } from "@angular/cdk/overlay";
 import { Router, RouterLink } from "@angular/router";
 import { Clipboard, ClipboardModule } from "@angular/cdk/clipboard";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { MatDialog } from "@angular/material/dialog";
-import { MatMenuModule } from "@angular/material/menu";
+import { MatMenuItem, MatMenuModule } from "@angular/material/menu";
 import { MatTooltipModule } from "@angular/material/tooltip";
-import { MatSelect, MatSelectModule } from "@angular/material/select";
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 import { DatePipe, DecimalPipe } from "@angular/common";
@@ -28,7 +28,6 @@ import { DaysAgoPipe } from "src/app/shared/days-ago.pipe";
 import { PanelComponent } from "src/app/shared/panel/panel.component";
 import { EmptyStateComponent } from "src/app/shared/empty-state/empty-state.component";
 import { SplitButtonComponent } from "src/app/shared/split-button/split-button.component";
-import { SelectGhostDirective } from "src/app/shared/select-ghost.directive";
 import { EntryRequestComponent } from "./entry-request/entry-request.component";
 import { EntryBreadcrumbsComponent } from "./entry-breadcrumbs/entry-breadcrumbs.component";
 import { EntryCSPComponent } from "./entry-csp/entry-csp.component";
@@ -37,9 +36,6 @@ import { EntryMessageComponent } from "./entry-message/entry-message.component";
 import { EventFactsPanelComponent } from "./event-facts-panel/event-facts-panel.component";
 import { EventMoreDataComponent } from "./event-more-data/event-more-data.component";
 
-/** The switcher option that loads the next page of events. */
-const SHOW_MORE = "__more";
-
 interface EventOption {
   id: string;
   short: string;
@@ -47,6 +43,9 @@ interface EventOption {
   /** Muted second line: environment, release, user. */
   details: string;
   latest: boolean;
+  /** The event on screen. */
+  current: boolean;
+  url: string | null;
 }
 
 type EventTags = { key?: string | null; value?: string | null }[] | null;
@@ -63,7 +62,12 @@ function userOf(user: unknown, tags: EventTags | undefined) {
   return tag ? tag.replace(/^(id|email|username|ip):/, "") : null;
 }
 
-function toOption(e: RecentEvent, latest: boolean): EventOption {
+function toOption(
+  e: RecentEvent,
+  latest: boolean,
+  current: boolean,
+  url: string | null,
+): EventOption {
   const details = [
     tagOf(e.tags, "environment"),
     tagOf(e.tags, "release"),
@@ -75,6 +79,8 @@ function toOption(e: RecentEvent, latest: boolean): EventOption {
     date: e.dateCreated,
     details: details.join(" · "),
     latest,
+    current,
+    url,
   };
 }
 
@@ -100,7 +106,6 @@ function readHintSeen(): boolean {
     MatIconModule,
     MatMenuModule,
     MatTooltipModule,
-    MatSelectModule,
     RouterLink,
     ClipboardModule,
     EntryMessageComponent,
@@ -116,7 +121,6 @@ function readHintSeen(): boolean {
     PanelComponent,
     EmptyStateComponent,
     SplitButtonComponent,
-    SelectGhostDirective,
   ],
 })
 export class EventDetailComponent {
@@ -207,7 +211,6 @@ export class EventDetailComponent {
   previousEventUrl = this.issueService.previousEventUrl;
 
   eventCount = computed(() => +(this.issueService.issue()?.count ?? 0));
-  readonly showMoreValue = SHOW_MORE;
   private recent = computed(() => {
     const r = this.issueService.recentEvents();
     return r && r.issueID === this.issueID() ? r : null;
@@ -219,15 +222,19 @@ export class EventDetailComponent {
   switcherOptions = computed<EventOption[]>(() => {
     const event = this.event();
     if (!event) return [];
+    const url = (e: RecentEvent, latest: boolean) =>
+      latest ? this.latestUrl() : this.issueService.eventUrlFor(e.id);
     const options = (this.recent()?.events ?? []).map((e, i) =>
-      toOption(e, i === 0),
+      toOption(e, i === 0, e.id === event.id, url(e, i === 0)),
     );
-    if (!options.some((o) => o.id === event.id)) {
-      options.push(toOption(event, this.nextEvent() === false));
+    if (!options.some((o) => o.current)) {
+      const latest = this.nextEvent() === false;
+      options.push(toOption(event, latest, true, url(event, latest)));
     }
     return options;
   });
 
+  private readonly menuItems = viewChildren(MatMenuItem);
   private readonly zoneBody = viewChild<ElementRef<HTMLElement>>("zoneBody");
   /** The event on screen, to tell a step to another event from a reload. */
   private shown: { issueID: string; eventID: string } | null = null;
@@ -286,39 +293,19 @@ export class EventDetailComponent {
     }
   }
 
-  onSwitcherOpened(open: boolean) {
-    if (open) {
-      this.issueService.loadRecentEvents();
-    }
+  onSwitcherOpened() {
+    this.issueService.loadRecentEvents();
   }
 
-  async onPickEvent(value: string, select: MatSelect) {
-    const event = this.event();
-    if (!event || value === event.id) return;
-    if (value !== SHOW_MORE) {
-      const url = this.issueService.eventUrlFor(value);
-      if (url) this.router.navigateByUrl(url);
-      return;
-    }
-    // Show more closed the panel: reopen it scrolled to the first new event.
-    select.value = event.id;
+  /** Show more keeps the menu open and moves focus to the first new event. */
+  async loadMore() {
     const known = new Set(this.switcherOptions().map((o) => o.id));
     await this.issueService.loadRecentEvents(true);
     const index = this.switcherOptions().findIndex((o) => !known.has(o.id));
-    select.open();
-    if (index >= 0) {
-      afterNextRender(
-        () => {
-          const option = select.options.get(index);
-          if (option) {
-            document
-              .getElementById(option.id)
-              ?.scrollIntoView({ block: "nearest" });
-          }
-        },
-        { injector: this.injector },
-      );
-    }
+    if (index < 0) return;
+    afterNextRender(() => this.menuItems()[index]?.focus("keyboard"), {
+      injector: this.injector,
+    });
   }
 
   /** A short neutral tint that fades out, so the step reads as this event's. */
