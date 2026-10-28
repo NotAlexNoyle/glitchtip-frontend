@@ -35,6 +35,7 @@ import { EntryExceptionComponent } from "./entry-exception/entry-exception.compo
 import { EntryMessageComponent } from "./entry-message/entry-message.component";
 import { EventFactsPanelComponent } from "./event-facts-panel/event-facts-panel.component";
 import { EventMoreDataComponent } from "./event-more-data/event-more-data.component";
+import { shortEventId } from "./event-format";
 
 interface EventOption {
   id: string;
@@ -75,7 +76,7 @@ function toOption(
   ].filter((v): v is string => !!v);
   return {
     id: e.id,
-    short: e.eventID.slice(0, 8),
+    short: shortEventId(e.id),
     date: e.dateCreated,
     details: details.join(" · "),
     latest,
@@ -210,6 +211,7 @@ export class EventDetailComponent {
   nextEventUrl = this.issueService.nextEventUrl;
   previousEventUrl = this.issueService.previousEventUrl;
 
+  shortId = computed(() => shortEventId(this.event()?.id ?? ""));
   eventCount = computed(() => +(this.issueService.issue()?.count ?? 0));
   private recent = computed(() => {
     const r = this.issueService.recentEvents();

@@ -119,6 +119,13 @@
   display: none;
 }
 
+// "Latest event · 01a183a0": the id follows the name after a dot.
+.event-switch__id::before {
+  content: "\00B7";
+  margin-inline-end: var(--gt-space-1, 4px);
+  font-family: var(--mat-sys-label-large-font);
+}
+
 // Facts the header does not already show.
 .event-switch__fact {
   overflow: hidden;

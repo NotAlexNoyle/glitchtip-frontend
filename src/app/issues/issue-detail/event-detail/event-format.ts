@@ -449,3 +449,12 @@ export function arrivedLate(
   if (!received) return false;
   return Math.abs(Date.parse(received) - Date.parse(sent)) > 60_000;
 }
+
+/**
+ * The event id as shown in the bar and the switcher. Ids are time-ordered
+ * (UUIDv7), so events of one issue share their first characters; the last
+ * eight tell them apart and still appear in the URL.
+ */
+export function shortEventId(id: string): string {
+  return id.slice(-8);
+}

@@ -183,8 +183,9 @@ export class EventMoreDataComponent {
       });
     }
 
-    const sdk = event.sdk as { [key: string]: Json } | null;
-    if (sdk) {
+    // The SDK's own event id, so app logs can be matched.
+    const sdk = (event.sdk ?? {}) as { [key: string]: Json };
+    if (Object.keys(sdk).length || event.eventID) {
       const integrations = Array.isArray(sdk["integrations"])
         ? (sdk["integrations"] as string[])
         : [];
@@ -198,6 +199,9 @@ export class EventMoreDataComponent {
         integrations: integrations.length,
         groups: () => {
           const rows = toRows(sdk, ["packages", "integrations"]);
+          if (event.eventID) {
+            rows.unshift({ key: "event_id", value: event.eventID, long: true });
+          }
           if (Array.isArray(sdk["packages"])) {
             const packages = sdk["packages"] as {
               name: string;

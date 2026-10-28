@@ -24,6 +24,7 @@
           class="gt-select-ghost event-switch"
           i18n-aria-label
           aria-label="Event"
+          [matTooltip]="event.id"
           [matMenuTriggerFor]="eventMenu"
           (menuOpened)="onSwitcherOpened()"
         >
@@ -32,9 +33,12 @@
               @if (latest) {
                 <span class="event-switch__long" i18n>Latest event</span>
                 <span class="event-switch__short" i18n>Latest</span>
+                <span class="gt-mono event-switch__long event-switch__id">{{
+                  shortId()
+                }}</span>
               } @else {
                 <span class="event-switch__long" i18n>Event</span>
-                <span class="gt-mono">{{ event.eventID.slice(0, 8) }}</span>
+                <span class="gt-mono">{{ shortId() }}</span>
               }
             </span>
             @if (event.dateCreated && !latest) {
@@ -130,7 +134,7 @@
             <button
               mat-menu-item
               type="button"
-              [cdkCopyToClipboard]="event.eventID"
+              [cdkCopyToClipboard]="event.id"
               (cdkCopyToClipboardCopied)="onCopiedId()"
             >
               <span i18n>Copy event ID</span>

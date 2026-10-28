@@ -16,6 +16,7 @@ import {
   hideFunctionName,
   packageOf,
   rawTrace,
+  shortEventId,
   stackFrames,
   toRows,
   toggled,
@@ -390,5 +391,11 @@ describe("event payload facts", () => {
       false,
     );
     expect(arrivedLate("2026-10-01T10:00:00Z", null)).toBe(false);
+  });
+});
+
+describe("shortEventId", () => {
+  it("keeps the random tail of a time-ordered id", () => {
+    expect(shortEventId("01a17bf2ef077dbbb1f68e98afd7db42")).toBe("afd7db42");
   });
 });
