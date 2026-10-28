@@ -1,109 +1,84 @@
-@if (eventEntryRequest(); as request) {
-  <section class="mat-typography">
-    <mat-divider></mat-divider>
-    <section class="location">
-      <span class="method mat-body-strong">{{
-        request?.method ? request?.method : "GET"
-      }}</span>
-      <a
-        [matTooltip]="request.url"
-        matTooltipPosition="above"
-        color="primary"
-        target="_blank"
-        [href]="$safeNavigationMigration(request?.url)"
-        >{{ request?.path }}</a
-      >
-      <span class="domain">{{ request?.domainName }}</span>
-    </section>
-    <section>
-      @if (request.data) {
-        <div>
-          <mat-divider></mat-divider>
-          <div class="title-bar">
-            <h3 i18n>Body</h3>
-            <mat-button-toggle-group i18n-aria-label
-              #group="matButtonToggleGroup"
-              [value]="viewMode()"
-              (change)="viewMode.set(group.value)"
-              aria-label="Request Body View"
-            >
-              <mat-button-toggle i18n value="structured"
-                >Structured</mat-button-toggle
+@if (request(); as r) {
+  <gt-panel flush i18n-title title="Request" [subtitle]="subtitle()">
+    <gt-ghost-select
+      slot="actions"
+      i18n-label
+      label="Request format"
+      [width]="124"
+      [options]="formats"
+      [(value)]="format"
+    />
+    @if (format() === "raw") {
+      <pre class="gt-raw gt-raw--wrap">{{ raw() }}</pre>
+    } @else {
+      <div class="gt-kv">
+        <div class="gt-kv__row">
+          <span class="gt-kv__k" i18n>URL</span>
+          <span class="gt-kv__v gt-break">
+            @if (urlIsHttp()) {
+              <a
+                class="gt-prose-link"
+                target="_blank"
+                rel="noopener noreferrer"
+                [href]="r.url"
+                [matTooltip]="r.url"
+                >{{ url() }}</a
               >
-              <mat-button-toggle i18n value="raw">Raw</mat-button-toggle>
-            </mat-button-toggle-group>
-          </div>
-          @if (viewMode() === "structured") {
-            <dl>
-              @for (requestData of request.data | keyvalue; track requestData) {
-                <gt-entry-data
-                  [key]="requestData.key"
-                  [value]="requestData.value"
-                ></gt-entry-data>
-              }
-            </dl>
-          } @else {
-            <div class="json-container">
-              @if (rawBody()) {
-                <button i18n-aria-label i18n-matTooltip
-                  mat-icon-button
-                  class="copy-button"
-                  [class.copied]="copied()"
-                  [cdkCopyToClipboard]="rawBody()!"
-                  (cdkCopyToClipboardCopied)="copy()"
-                  matTooltip="Copy JSON to clipboard"
-                  aria-label="Copy JSON to clipboard"
-                >
-                  <mat-icon>file_copy</mat-icon>
-                </button>
-              }
-              <pre
-                class="line-numbers"
-              ><code gtPrism [language]="'json'">{{ rawBody() }}</code></pre>
-            </div>
-          }
+            } @else {
+              {{ url() }}
+            }
+          </span>
         </div>
-      }
-      @if (request?.query) {
-        <section>
-          <h3 i18n>Query String</h3>
-          <dl>
-            @for (query of request?.query; track query) {
-              <gt-entry-data
-                [key]="query[0]"
-                [value]="query[1]"
-              ></gt-entry-data>
+        @for (s of sections(); track s.key) {
+          @let isOpen = opened().has(s.key);
+          <div class="gt-kv__group">
+            <button
+              type="button"
+              class="gt-kv__row gt-expandable-row"
+              [attr.aria-expanded]="isOpen"
+              (click)="toggle(s.key)"
+            >
+              <span class="gt-kv__k">{{ s.label }}</span>
+              <span class="gt-kv__v gt-truncate">{{ s.summary }}</span>
+              <mat-icon class="gt-chev" aria-hidden="true">{{
+                isOpen ? "keyboard_arrow_down" : "keyboard_arrow_right"
+              }}</mat-icon>
+            </button>
+            @if (isOpen) {
+              @if (s.pre !== undefined) {
+                <div class="body">
+                  <pre class="gt-raw gt-raw--nested">{{ s.pre }}</pre>
+                  <button
+                    mat-icon-button
+                    type="button"
+                    class="body__copy"
+                    i18n-aria-label
+                    aria-label="Copy body"
+                    i18n-matTooltip
+                    matTooltip="Copy body"
+                    [cdkCopyToClipboard]="s.pre"
+                    (cdkCopyToClipboardCopied)="onCopiedBody()"
+                  >
+                    <mat-icon class="gt-icon-sm">content_copy</mat-icon>
+                  </button>
+                </div>
+              } @else {
+                <dl class="gt-property-list gt-property-list--nested">
+                  @for (kv of s.rows; track $index) {
+                    <div
+                      class="gt-property-list__row"
+                      [class.gt-property-list__row--long]="kv.long"
+                    >
+                      <dt class="gt-mono">{{ kv.key }}</dt>
+                      <dd class="gt-mono">{{ kv.value }}</dd>
+                    </div>
+                  }
+                </dl>
+              }
             }
-          </dl>
-        </section>
-      }
-      @if (request?.headers) {
-        <section>
-          <h3 i18n>Headers</h3>
-          <dl>
-            @for (header of request?.headers; track header) {
-              <gt-entry-data
-                [key]="header[0]"
-                [value]="header[1]"
-              ></gt-entry-data>
-            }
-          </dl>
-        </section>
-      }
-      @if (request?.env) {
-        <section>
-          <mat-divider></mat-divider>
-          <h3 i18n>Environment</h3>
-          <dl>
-            @for (env of request.env | keyvalue; track env) {
-              <gt-entry-data
-                [key]="env.key"
-                [value]="env.value"
-              ></gt-entry-data>
-            }
-          </dl>
-        </section>
-      }
-    </section>
-  </section>
+          </div>
+        }
+      </div>
+    }
+  </gt-panel>
 }

@@ -42,13 +42,11 @@ const RECENT_EVENTS_PAGE = 20;
 interface IssueDetailState {
   tags: IssueTags[] | null;
   isReversed: boolean;
-  showShowMore: boolean;
 }
 
 const initialState: IssueDetailState = {
   tags: null,
   isReversed: true,
-  showShowMore: false,
 };
 
 /** localStorage: "false" when the reader wants frames oldest first. */
@@ -101,7 +99,6 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
     this.#eventResource.hasValue(),
   );
   readonly isReversed = computed(() => this.state().isReversed);
-  readonly showShowMore = computed(() => this.state().showShowMore);
   readonly hasNextEvent = computed(
     () => this.event() && this.event()?.nextEventID !== null,
   );
@@ -282,10 +279,6 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
     if (data) {
       this.setTags(data as any);
     }
-  }
-
-  setShowShowMore(value: boolean) {
-    this.setState({ showShowMore: value });
   }
 
   async setStatus(

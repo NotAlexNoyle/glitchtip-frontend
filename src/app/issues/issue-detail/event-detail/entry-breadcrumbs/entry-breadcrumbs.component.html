@@ -1,104 +1,129 @@
-@if (breadcrumbs(); as breadcrumbs) {
-  <section class="mat-typography">
-    <mat-divider></mat-divider>
-    <div class="breadcrumbs-header">
-      <h3 i18n>Breadcrumbs</h3>
-      @if (availableCategories().length > 1) {
-        <mat-form-field appearance="outline" subscriptSizing="dynamic">
-          <mat-label i18n>Filter by category</mat-label>
-          <mat-select
-            multiple
-            [ngModel]="selectedCategories()"
-            (ngModelChange)="selectedCategories.set($event)"
-          >
-            @for (category of availableCategories(); track category) {
-              <mat-option [value]="category">{{ category }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-      }
-    </div>
-    <div
-      #breadBox
-      class="wrapper"
-      [ngClass]="showShowMore() ? 'bread-box' : 'bread-box--expanded'"
-      [class.bread-box--expanded]="showShowMore() === false"
-    >
-      @if (showShowMore()) {
-        <button
-          class="expand-button"
-          mat-button
-          color="primary"
-          (click)="expandBreadcrumbs()"
+@if (total()) {
+  <gt-panel flush i18n-title title="Breadcrumbs" [subtitle]="subtitle()">
+    @if (categories().length > 1) {
+      <span
+        slot="actions"
+        class="gt-select-ghost"
+        [class.gt-select-ghost--open]="selectOpen()"
+        (click)="$event.target === $event.currentTarget && select.open()"
+      >
+        <span
+          class="gt-select-ghost__label"
+          aria-hidden="true"
+          (click)="select.open()"
+          i18n
+          >Categories</span
         >
-          <mat-icon>more_horiz</mat-icon> <ng-container i18n>Show All
-          {{ breadcrumbs?.values?.length }} Breadcrumbs</ng-container>
-        </button>
-      }
-      <ul>
-        @for (
-          value of filteredBreadcrumbs()?.values;
-          track value;
-          let i = $index
-        ) {
-          <li>
-            <ng-container>
-              @if (i !== 0) {
-                <mat-divider></mat-divider>
-              }
-              <div
-                class="table-wrapper"
-                [class.error]="value.level === 'error'"
-              >
-                <table cdk-table>
-                  <ng-container>
-                    <tr>
-                      <td class="column-one">
-                        @if (value.level === "error") {
-                          <mat-icon class="error">warning</mat-icon>
-                        } @else {
-                          @switch (value.category) {
-                            @case ("ui.click") {
-                              <mat-icon class="ui">person</mat-icon>
-                            }
-                            @case ("xhr") {
-                              <mat-icon class="xhr">cached</mat-icon>
-                            }
-                            @default {
-                              <mat-icon>code</mat-icon>
-                            }
-                          }
-                        }
-                      </td>
-                      <td class="column-two category">
-                        {{ value.category }}
-                      </td>
-                      <td class="column-three">{{ value.message }}</td>
-                      <td class="column-four">
-                        {{ value.timestamp | date: "HH:mm:ss.SSS" }}
-                      </td>
-                    </tr>
-                    <ng-container>
-                      @for (
-                        data of value.data | keyvalue: keepOrder;
-                        track data
-                      ) {
-                        <tr>
-                          <td class="column-one"></td>
-                          <td class="column-two">{{ data.key }}</td>
-                          <td class="column-three">
-                            {{ data.value | json }}
-                          </td>
-                        </tr>
-                      }
-                    </ng-container>
-                  </ng-container>
-                </table>
-              </div></ng-container
-            >
-          </li>
+        @if (!category().length) {
+          <span class="gt-select-ghost__value" (click)="select.open()" i18n
+            >All</span
+          >
         }
-      </ul>
+        <mat-select
+          #select
+          multiple
+          i18n-aria-label
+          aria-label="Breadcrumb categories"
+          [panelWidth]="null"
+          [value]="category()"
+          (valueChange)="category.set($event)"
+          (openedChange)="selectOpen.set($event)"
+        >
+          <mat-select-trigger
+            ><span class="gt-select-ghost__value">{{
+              categoryLabel()
+            }}</span></mat-select-trigger
+          >
+          @for (c of categories(); track c) {
+            <mat-option [value]="c">{{ c }}</mat-option>
+          }
+        </mat-select>
+      </span>
+    }
+    <div class="crumbs" role="table" i18n-aria-label aria-label="Breadcrumbs">
+      <div class="crumbs__row crumbs__row--head table-header" role="row">
+        <span role="columnheader" i18n>Time</span>
+        <span role="columnheader" i18n>Level</span>
+        <span role="columnheader" i18n>Category</span>
+        <span role="columnheader" i18n>Message</span>
+        <span role="columnheader" class="crumbs__end"></span>
+      </div>
+      @if (hiddenCount()) {
+        <div class="crumbs__more" role="row">
+          <button mat-button type="button" (click)="showEarlier.set(true)" i18n>
+            Show {{ hiddenCount() }} earlier
+          </button>
+        </div>
+      }
+      @for (c of rows(); track c.key) {
+        @let isOpen = opened().has(c.key);
+        <div class="crumbs__group" role="rowgroup">
+          <button
+            type="button"
+            class="crumbs__row gt-expandable-row"
+            role="row"
+            [attr.aria-expanded]="c.data.length ? isOpen : null"
+            [disabled]="!c.data.length"
+            (click)="toggle(c.key)"
+          >
+            <span class="crumbs__time" role="cell"
+              ><span class="wide-only">{{ c.time }}</span
+              ><span class="narrow-only">{{ c.short }}</span></span
+            >
+            <span
+              class="crumbs__level"
+              role="cell"
+              [class.crumbs__level--error]="c.tone === 'error'"
+              [class.crumbs__level--warning]="c.tone === 'warning'"
+            >
+              @if (c.level) {
+                <span [class]="c.levelClass"></span>{{ c.level }}
+              }
+            </span>
+            <span class="crumbs__cat" role="cell"
+              ><mat-icon class="crumbs__icon" aria-hidden="true">{{
+                c.icon
+              }}</mat-icon
+              >{{ c.category }}</span
+            >
+            <span class="crumbs__msg" role="cell">{{ c.message }}</span>
+            <span class="crumbs__end" role="cell">
+              @if (c.data.length) {
+                <mat-icon class="gt-chev" aria-hidden="true">{{
+                  isOpen ? "keyboard_arrow_down" : "keyboard_arrow_right"
+                }}</mat-icon>
+              }
+            </span>
+          </button>
+          @if (isOpen) {
+            <dl class="gt-property-list crumbs__data">
+              @for (d of c.data; track d.key) {
+                <div
+                  class="gt-property-list__row"
+                  [class.gt-property-list__row--long]="d.long"
+                >
+                  <dt class="gt-mono">{{ d.key }}</dt>
+                  <dd class="gt-mono">{{ d.value }}</dd>
+                </div>
+              }
+            </dl>
+          }
+        </div>
+      }
+      @if (eventRow(); as e) {
+        <div class="crumbs__row crumbs__row--marker" role="row">
+          <span class="crumbs__time" role="cell"
+            ><span class="wide-only">{{ e.time }}</span
+            ><span class="narrow-only">{{ e.short }}</span></span
+          >
+          <span class="crumbs__level" role="cell"></span>
+          <span class="crumbs__cat crumbs__this" role="cell" i18n
+            >This event</span
+          >
+          <span class="crumbs__msg" role="cell">{{ e.message }}</span>
+          <span class="crumbs__end" role="cell"></span>
+        </div>
+      }
     </div>
-  </section>
+  </gt-panel>
 }
