@@ -4,14 +4,16 @@
   container: issue-body / inline-size;
 }
 
-// The Tags line sits 12px under the header's meta line (the header keeps 24px).
+// The header keeps 24px under it: the Tags line pulls up to sit 12px under
+// the meta line, and the tabs to sit 16px under the header without it.
 .issue-summary {
   margin-top: calc(var(--gt-space-3, 12px) - var(--gt-space-5, 24px));
-  margin-bottom: var(--gt-space-2, 8px);
+  margin-bottom: var(--gt-space-4, 16px);
 }
 
 // The tab bar scrolls sideways when the labels do not fit; no chevrons.
 .issue-tabs {
+  margin-top: calc(var(--gt-space-4, 16px) - var(--gt-space-5, 24px));
   overflow-x: auto;
   scrollbar-width: none;
   border-bottom: 1px solid var(--mat-sys-outline-variant);

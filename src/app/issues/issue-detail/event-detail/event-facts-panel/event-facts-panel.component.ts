@@ -193,7 +193,7 @@ export class EventFactsPanelComponent {
     const contextFor = (kind: string): Context =>
       contexts[kind] ?? (kind === "os" ? contexts["client_os"] : undefined);
 
-    const user = event.user as { [key: string]: any } | null;
+    const user = event.user as { [key: string]: unknown } | null;
     if (user) {
       const value =
         user["email"] || user["username"] || user["id"] || user["ip_address"];
@@ -302,7 +302,7 @@ export class EventFactsPanelComponent {
       if (where) rest.push({ label: $localize`Location`, value: where });
     }
 
-    const trace = contexts["trace"] as { [key: string]: any } | undefined;
+    const trace = contexts["trace"] as { [key: string]: unknown } | undefined;
     if (trace?.["trace_id"]) {
       rest.push({
         label: $localize`Trace`,
