@@ -82,12 +82,6 @@
                         [matTooltip]="v.tip"
                       >
                         <span class="spread-value__name">{{ v.value }}</span>
-                        <span class="spread__track" aria-hidden="true"
-                          ><span
-                            class="spread__fill"
-                            [style.width.%]="v.percent"
-                          ></span
-                        ></span>
                         <span class="spread-value__pct">{{ v.percent }}%</span>
                       </a>
                     </li>
@@ -95,12 +89,6 @@
                   @if (t.other) {
                     <li class="spread-value spread-value--other">
                       <span class="spread-value__name" i18n>Other values</span>
-                      <span class="spread__track" aria-hidden="true"
-                        ><span
-                          class="spread__fill"
-                          [style.width.%]="t.other"
-                        ></span
-                      ></span>
                       <span class="spread-value__pct">{{ t.other }}%</span>
                     </li>
                   }

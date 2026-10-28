@@ -132,10 +132,6 @@ $spread-columns: 104px minmax(0, 1fr) 64px 40px 32px;
   color: var(--mat-sys-on-surface);
   text-decoration: none;
 
-  .spread__track {
-    grid-area: track;
-  }
-
   &:is(a):hover,
   &:is(a):focus-visible {
     background-color: color-mix(
