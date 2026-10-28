@@ -46,6 +46,7 @@ export class ProjectListComponent implements OnInit {
   orgsAndProjects = computed(() =>
     this.organizations().map((organization) => ({
       ...organization,
+      newProjectLabel: $localize`Create new project in ${organization.name}:INTERPOLATION:`,
       projects: this.projects().filter(
         (project) => project.organization.id.toString() === organization.id,
       ),
