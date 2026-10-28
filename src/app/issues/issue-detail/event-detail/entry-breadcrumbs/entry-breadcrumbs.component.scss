@@ -15,11 +15,6 @@ $stack-below: 559px;
   display: block;
 }
 
-// Clicks on the filter's label and "All" fall through to the gtSelectGhost wrapper.
-.crumbs-filter > :is(.gt-select-ghost__label, .gt-select-ghost__value) {
-  pointer-events: none;
-}
-
 :host:empty {
   display: none;
 }
