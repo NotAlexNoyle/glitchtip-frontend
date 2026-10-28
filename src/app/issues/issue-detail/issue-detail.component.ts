@@ -6,7 +6,6 @@ import {
   computed,
   input,
   effect,
-  untracked,
 } from "@angular/core";
 import { ActivatedRoute, RouterModule } from "@angular/router";
 import { MatTabsModule } from "@angular/material/tabs";
@@ -139,7 +138,7 @@ export class IssueDetailComponent implements OnInit {
       dateStyle: "medium",
       timeStyle: "short",
     });
-    return $localize`First seen ${date}`;
+    return $localize`First seen ${date}:date:`;
   });
 
   backLinkText = computed(() => {
@@ -170,11 +169,7 @@ export class IssueDetailComponent implements OnInit {
 
   constructor() {
     effect(() => {
-      const id = this.issueID();
-      this.issueService.issueID.set(id);
-      untracked(() => {
-        if (+id) this.issueService.retrieveTags(+id);
-      });
+      this.issueService.issueID.set(this.issueID());
     });
   }
 

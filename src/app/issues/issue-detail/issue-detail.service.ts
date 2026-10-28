@@ -52,12 +52,10 @@ export interface RecentEvents {
 const RECENT_EVENTS_PAGE = 20;
 
 interface IssueDetailState {
-  tags: IssueTags[] | null;
   isReversed: boolean;
 }
 
 const initialState: IssueDetailState = {
-  tags: null,
   isReversed: true,
 };
 
@@ -132,9 +130,12 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
     computation: (next, prev) => holdWhileLoading(next, prev),
   });
   readonly event = this.#shownEvent.asReadonly();
+  private readonly rawTags = computed(() =>
+    this.#tagsResource.hasValue() ? this.#tagsResource.value() : null,
+  );
   readonly tags = computed(() => {
-    const state = this.state();
-    return state.tags && this.tagsWithPercent(state.tags);
+    const tags = this.rawTags();
+    return tags && this.tagsWithPercent(tags);
   });
   readonly eventInitialLoadComplete = computed(() =>
     this.#eventResource.hasValue(),
@@ -196,7 +197,7 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
 
   /** Distinct users from the issue's user tag (the API userCount is unfilled). */
   readonly userCount = computed(() => {
-    const tags = this.state().tags;
+    const tags = this.rawTags();
     if (!tags) return null;
     for (const key of USER_TAG_KEYS) {
       const tag = tags.find((t) => t.key === key);
@@ -244,8 +245,10 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
         },
       );
       page = data ? data.map(toRecentEvent) : null;
-      // getCursor throws without pagination headers: the page is then the last.
-      next = data?.length ? getCursor(response) : null;
+      // No Link header means no further pages.
+      if (data?.length && response.headers.has("link")) {
+        next = getCursor(response);
+      }
     } catch {
       // A network error leaves page null, so the switcher offers a retry.
     }
@@ -281,6 +284,16 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
       });
       // null, not undefined: a missing issue is a loaded value (not found).
       return data ?? null;
+    },
+  });
+  #tagsResource = resource({
+    params: () => ({ issueID: this.issueID() }),
+    loader: async ({ params }) => {
+      if (!+params.issueID) return null;
+      const { data } = await client.GET("/api/0/issues/{issue_id}/tags/", {
+        params: { path: { issue_id: +params.issueID } },
+      });
+      return (data as IssueTags[] | undefined) ?? null;
     },
   });
   #eventResource = resource({
@@ -330,16 +343,6 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
       localStorage.setItem(NEWEST_FIRST_KEY, String(newestFirst));
     } catch {
       // The order still applies for this visit.
-    }
-  }
-
-  async retrieveTags(id: number, query?: string) {
-    const queryParams: any = query ? { query: query } : {};
-    const { data } = await client.GET("/api/0/issues/{issue_id}/tags/", {
-      params: { path: { issue_id: id }, query: queryParams },
-    });
-    if (data) {
-      this.setTags(data as any);
     }
   }
 
@@ -450,10 +453,6 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
       ...issue!,
       numComments: issue!.numComments + num,
     }));
-  }
-
-  setTags(tags: IssueTags[]) {
-    this.setState({ tags });
   }
 
   /* Return the message entry type for an event */
