@@ -1,21 +1,16 @@
 @if (total()) {
   <gt-panel flush i18n-title title="Breadcrumbs" [subtitle]="subtitle()">
     @if (categories().length > 1) {
-      <span slot="actions" gtSelectGhost>
-        <span
-          class="gt-select-ghost__label"
-          aria-hidden="true"
-          (click)="select.open()"
-          i18n
+      <span slot="actions" gtSelectGhost class="crumbs-filter">
+        <span class="gt-select-ghost__label" aria-hidden="true" i18n
           >Categories</span
         >
         @if (!category().length) {
-          <span class="gt-select-ghost__value" (click)="select.open()" i18n
+          <span class="gt-select-ghost__value" aria-hidden="true" i18n
             >All</span
           >
         }
         <mat-select
-          #select
           multiple
           i18n-aria-label
           aria-label="Breadcrumb categories"

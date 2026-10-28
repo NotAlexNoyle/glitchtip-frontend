@@ -38,6 +38,13 @@ interface CrumbRow {
 /** Messages longer than this open in full. */
 const LONG_MESSAGE = 80;
 
+/** Level words for the levels the list marks; the rest stay blank. */
+const LEVELS: { [level: string]: string } = {
+  warning: $localize`Warning`,
+  error: $localize`Error`,
+  fatal: $localize`Fatal`,
+};
+
 /** Glyphs for clicks, network requests and the rest. */
 function crumbIcon(category: string | null | undefined): string {
   if (category === "ui.click") return "person";
@@ -120,17 +127,14 @@ export class EntryBreadcrumbsComponent {
       .map((c, i) => ({ c, i }))
       .filter(({ c }) => !picked.size || picked.has(c.category))
       .map(({ c, i }) => {
-        const level =
-          c.level === "warning" || c.level === "error" || c.level === "fatal"
-            ? c.level
-            : "";
+        const level = c.level in LEVELS ? c.level : "";
         const message = crumbSummary(c);
         const long = message.length > LONG_MESSAGE || message.includes("\n");
         const hasData = !!c.data && Object.keys(c.data).length > 0;
         return {
           key: `b${i}`,
           ...clock(c.timestamp),
-          level: level ? level[0].toUpperCase() + level.slice(1) : "",
+          level: level ? LEVELS[level] : "",
           levelClass: level ? `gt-dot gt-dot--${level}` : "",
           tone: level === "warning" ? "warning" : level ? "error" : "",
           category: c.category || c.type,

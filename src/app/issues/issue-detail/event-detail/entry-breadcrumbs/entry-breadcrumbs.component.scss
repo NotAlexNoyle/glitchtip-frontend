@@ -1,12 +1,23 @@
+@use "controls";
 @use "variables" as vars;
 @use "row-mixins" as rows;
 
 // A grid table that restacks under 560px, ending at the "This event" row.
 
 $chev-slot: 32px;
+$time-w: 112px;
+$level-w: 80px;
+$cat-w: 112px;
+// Under this the row stacks: time, level and category, then the message.
+$stack-below: 559px;
 
 :host {
   display: block;
+}
+
+// Clicks on the filter's label and "All" fall through to the gtSelectGhost wrapper.
+.crumbs-filter > :is(.gt-select-ghost__label, .gt-select-ghost__value) {
+  pointer-events: none;
 }
 
 :host:empty {
@@ -15,7 +26,7 @@ $chev-slot: 32px;
 
 .crumbs__row {
   display: grid;
-  grid-template-columns: 112px 80px 112px minmax(0, 1fr) $chev-slot;
+  grid-template-columns: $time-w $level-w $cat-w minmax(0, 1fr) $chev-slot;
   grid-template-areas: "time level cat msg end";
   align-items: center;
   column-gap: var(--gt-space-4, 16px);
@@ -111,11 +122,8 @@ $chev-slot: 32px;
 
 // 16px, neutral: colour stays with the level.
 .crumbs__icon {
-  width: 16px;
-  height: 16px;
+  @include controls.icon-size(16px);
   margin-inline-end: var(--gt-space-1, 4px);
-  font-size: 16px;
-  line-height: 16px;
   vertical-align: -3px;
   color: var(--mat-sys-on-surface-variant);
 }
@@ -148,7 +156,7 @@ $chev-slot: 32px;
 .crumbs__full {
   margin: 0;
   padding: 0 var(--gt-space-4, 16px) var(--gt-space-2, 8px)
-    calc(var(--gt-space-4, 16px) * 4 + 112px + 80px + 112px);
+    calc(var(--gt-space-4, 16px) * 4 + #{$time-w + $level-w + $cat-w});
   font: var(--mat-sys-body-medium);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -159,9 +167,9 @@ $chev-slot: 32px;
   padding-block: 0 var(--gt-space-2, 8px);
 
   .gt-property-list__row {
-    --gt-label-w: calc(80px + 112px + var(--gt-space-4, 16px));
+    --gt-label-w: calc(#{$level-w + $cat-w} + var(--gt-space-4, 16px));
     min-height: 28px;
-    padding-inline-start: calc(var(--gt-space-4, 16px) * 2 + 112px);
+    padding-inline-start: calc(var(--gt-space-4, 16px) * 2 + #{$time-w});
   }
 }
 
@@ -169,7 +177,7 @@ $chev-slot: 32px;
   display: none;
 }
 
-@container gt-panel (max-width: 559px) {
+@container gt-panel (max-width: #{$stack-below}) {
   .crumbs__row--head {
     display: none;
   }
@@ -207,7 +215,7 @@ $chev-slot: 32px;
   }
 
   .crumbs__data .gt-property-list__row {
-    --gt-label-w: 112px;
+    --gt-label-w: #{$cat-w};
     padding-inline-start: calc(var(--gt-space-4, 16px) * 2);
   }
 
