@@ -2,6 +2,8 @@
 @use "row-mixins" as rows;
 
 $spread-columns: 104px minmax(0, 1fr) 64px 40px 32px;
+// Below this the key and bar columns shrink.
+$spread-narrow: 419px;
 
 :host {
   display: block;
@@ -73,7 +75,7 @@ $spread-columns: 104px minmax(0, 1fr) 64px 40px 32px;
 }
 
 // Narrow: label and All tags on the first line, then two chips that wrap.
-@container tags-summary (max-width: 599px) {
+@container tags-summary (max-width: #{controls.$narrow-bar}) {
   .tags-summary__line {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
@@ -134,11 +136,7 @@ $spread-columns: 104px minmax(0, 1fr) 64px 40px 32px;
 
   &:is(a):hover,
   &:is(a):focus-visible {
-    background-color: color-mix(
-      in srgb,
-      var(--mat-sys-on-surface) 4%,
-      transparent
-    );
+    @include controls.state-layer(hover);
 
     .spread-value__name {
       text-decoration: underline;
@@ -202,7 +200,7 @@ $spread-columns: 104px minmax(0, 1fr) 64px 40px 32px;
   background-color: var(--mat-sys-on-surface-variant);
 }
 
-@container gt-panel (max-width: 419px) {
+@container gt-panel (max-width: #{$spread-narrow}) {
   .spread-row,
   .spread-value {
     grid-template-columns: 88px minmax(0, 1fr) 40px 40px 32px;

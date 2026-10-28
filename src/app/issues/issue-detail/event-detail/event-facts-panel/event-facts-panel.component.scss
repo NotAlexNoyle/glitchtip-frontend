@@ -11,7 +11,7 @@
 
 // Full width in the event zone: the facts run in two columns so the
 // panel stays short.
-@container gt-panel (min-width: 720px) {
+@include controls.wide-panel {
   .gt-property-list--facts {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));

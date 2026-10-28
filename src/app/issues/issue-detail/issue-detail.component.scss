@@ -1,3 +1,4 @@
+@use "controls";
 @use "@angular/material" as mat;
 @use "issue-level";
 
@@ -42,7 +43,7 @@
 
 // Narrow: the right edge fades while tabs sit off screen; with scroll
 // timelines the fade goes once the row is scrolled to its end.
-@container issue-body (max-width: 599px) {
+@container issue-body (max-width: #{controls.$narrow-bar}) {
   .issue-tabs {
     mask-image: linear-gradient(to right, black calc(100% - 64px), transparent);
   }

@@ -1,3 +1,4 @@
+@use "controls";
 @use "row-mixins" as rows;
 
 $chev-slot: 32px;
@@ -248,7 +249,7 @@ $chev-slot: 32px;
   }
 }
 
-@container gt-panel (max-width: 719px) {
+@include controls.below-wide-panel {
   .chain__head {
     grid-template-columns: 96px minmax(0, 1fr) $chev-slot;
     grid-template-areas:
@@ -263,7 +264,7 @@ $chev-slot: 32px;
   }
 }
 
-@container gt-panel (max-width: 479px) {
+@include controls.narrow-panel {
   .chain__head {
     grid-template-columns: auto minmax(0, 1fr) $chev-slot;
     grid-template-areas:
