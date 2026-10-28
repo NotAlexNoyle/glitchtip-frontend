@@ -31,6 +31,7 @@ import { TopAppBar } from "src/app/shared/top-app-bar/top-app-bar";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { OrganizationsService } from "src/app/api/organizations.service";
 import { FormErrorComponent } from "src/app/shared/forms/form-error/form-error.component";
+import { PanelComponent } from "src/app/shared/panel/panel.component";
 
 @Component({
   templateUrl: "./new-project.html",
@@ -52,6 +53,7 @@ import { FormErrorComponent } from "src/app/shared/forms/form-error/form-error.c
     MatIconModule,
     LoadingButtonComponent,
     FormErrorComponent,
+    PanelComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [NewProjectService],

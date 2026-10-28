@@ -6,86 +6,87 @@
 <section class="l-body">
   <gt-page-header i18n-title title="Invite members" />
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <gt-settings-section #emailSection i18n-title title="Emails">
-      <span slot="description">
-        @if (enableUserRegistration()) {
-          <ng-container i18n
-            >Separate several with commas. People without an account are asked
-            to create one.</ng-container
-          >
-        } @else {
-          <ng-container i18n
-            >Separate several with commas. Only people who already have an
-            account can be invited.</ng-container
-          >
-        }
-      </span>
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
-        <input
-          matInput
-          type="email"
-          formControlName="email"
-          [attr.aria-labelledby]="emailSection.titleId"
-        />
-        @if (form.get("email")?.errors) {
-          <mat-error>
-            @if (form.get("email")?.errors?.invalidEmails) {
-              <span i18n>Enter a valid email</span>
-            }
-            @if (form.get("email")?.errors?.required) {
-              <span i18n>Enter at least one email</span>
-            }
-          </mat-error>
-        }
-      </mat-form-field>
-    </gt-settings-section>
-
-    <gt-settings-section #roleSection i18n-title title="Role">
-      <span slot="description">{{ roleDescription(formRole.value) }}</span>
-      <mat-radio-group
-        formControlName="role"
-        class="gt-radio-column"
-        [attr.aria-labelledby]="roleSection.titleId"
-      >
-        @for (role of roles; track role) {
-          <mat-radio-button [value]="role">{{
-            roleName(role)
-          }}</mat-radio-button>
-        }
-      </mat-radio-group>
-    </gt-settings-section>
-
-    <gt-settings-section #teamsSection i18n-title title="Teams">
-      <span slot="description" i18n
-        >Optional. Members of a team get email alerts for the team's
-        projects.</span
-      >
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
-        <mat-select
-          multiple
-          formControlName="teams"
-          disableOptionCentering
-          [aria-labelledby]="teamsSection.titleId"
-        >
-          @if (organizationTeams().length) {
-            @for (team of organizationTeams(); track team.id) {
-              <mat-option [value]="team.slug">#{{ team.slug }}</mat-option>
-            }
+    <gt-panel class="gt-form-panel">
+      <gt-settings-section #emailSection i18n-title title="Emails">
+        <span slot="description">
+          @if (enableUserRegistration()) {
+            <ng-container i18n
+              >Separate several with commas. People without an account are asked
+              to create one.</ng-container
+            >
           } @else {
-            <mat-option i18n disabled>No teams yet</mat-option>
+            <ng-container i18n
+              >Separate several with commas. Only people who already have an
+              account can be invited.</ng-container
+            >
           }
-        </mat-select>
-      </mat-form-field>
-    </gt-settings-section>
+        </span>
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <input
+            matInput
+            type="email"
+            formControlName="email"
+            [attr.aria-labelledby]="emailSection.titleId"
+          />
+          @if (form.get("email")?.errors) {
+            <mat-error>
+              @if (form.get("email")?.errors?.invalidEmails) {
+                <span i18n>Enter a valid email</span>
+              }
+              @if (form.get("email")?.errors?.required) {
+                <span i18n>Enter at least one email</span>
+              }
+            </mat-error>
+          }
+        </mat-form-field>
+      </gt-settings-section>
 
-    <gt-form-error [errors]="errors().addOrganizationMembers" />
-    <div class="gt-form-actions">
+      <gt-settings-section #roleSection i18n-title title="Role">
+        <span slot="description">{{ roleDescription(formRole.value) }}</span>
+        <mat-radio-group
+          formControlName="role"
+          class="gt-radio-column"
+          [attr.aria-labelledby]="roleSection.titleId"
+        >
+          @for (role of roles; track role) {
+            <mat-radio-button [value]="role">{{
+              roleName(role)
+            }}</mat-radio-button>
+          }
+        </mat-radio-group>
+      </gt-settings-section>
+
+      <gt-settings-section #teamsSection i18n-title title="Teams">
+        <span slot="description" i18n
+          >Optional. Members of a team get email alerts for the team's
+          projects.</span
+        >
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-select
+            multiple
+            formControlName="teams"
+            disableOptionCentering
+            [aria-labelledby]="teamsSection.titleId"
+          >
+            @if (organizationTeams().length) {
+              @for (team of organizationTeams(); track team.id) {
+                <mat-option [value]="team.slug">#{{ team.slug }}</mat-option>
+              }
+            } @else {
+              <mat-option i18n disabled>No teams yet</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </gt-settings-section>
+
+      <gt-form-error [errors]="errors().addOrganizationMembers" />
+      <a slot="footer" mat-button [routerLink]="['..']" i18n>Cancel</a>
       <gt-loading-button
+        slot="footer"
         i18n-buttonText
         buttonText="Send invites"
         [loading]="loading().addOrganizationMembers"
       />
-      <a mat-button [routerLink]="['..']" i18n>Cancel</a>
-    </div>
+    </gt-panel>
   </form>
 </section>

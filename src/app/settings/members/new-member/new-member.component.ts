@@ -30,6 +30,7 @@ import { BackLinkComponent } from "src/app/shared/detail/back-link/back-link.com
 import { TopAppBar } from "src/app/shared/top-app-bar/top-app-bar";
 import { FormErrorComponent } from "src/app/shared/forms/form-error/form-error.component";
 import { MEMBER_ROLES, roleDescription, roleName } from "../member-roles";
+import { PanelComponent } from "src/app/shared/panel/panel.component";
 
 /** Custom validator to vaildate emails separated by commas */
 function validateEmails(emails: string) {
@@ -71,6 +72,7 @@ function emailsValidator(control: AbstractControl): ValidationErrors | null {
     MatOptionModule,
     LoadingButtonComponent,
     FormErrorComponent,
+    PanelComponent,
   ],
 })
 export class NewMemberComponent implements OnInit, OnDestroy {
