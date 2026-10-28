@@ -40,7 +40,6 @@ import { FoundationsAccessibilityPreview } from "./previews/foundations-accessib
 import { OverviewPreview } from "./previews/overview.preview";
 import { PaginationPreview } from "./previews/pagination.preview";
 import { IconUsagePreview } from "./previews/icon-usage.preview";
-import { EntryDataPreview } from "./previews/entry-data.preview";
 import { SummaryCardPreview } from "./previews/summary-card.preview";
 import { TokensCatalogPreview } from "./previews/tokens-catalog.preview";
 import { TabsPreview } from "./previews/tabs.preview";
@@ -194,13 +193,6 @@ export const PREVIEWS: PreviewEntry[] = [
     label: "Loading overlay",
     group: "Components",
     component: LoadingOverlayPreview,
-    status: "stable",
-  },
-  {
-    id: "entry-data",
-    label: "Entry data",
-    group: "Components",
-    component: EntryDataPreview,
     status: "stable",
   },
   {
