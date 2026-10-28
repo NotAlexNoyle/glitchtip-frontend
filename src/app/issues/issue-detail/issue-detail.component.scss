@@ -1,101 +1,73 @@
-@use "variables" as vars;
+@use "@angular/material" as mat;
 
-.issue-404 {
-  h1 {
-    text-align: left;
-  }
+.issue-body {
+  container: issue-body / inline-size;
+}
 
-  p {
-    margin: 16px 0;
+// The Tags line sits 12px under the header's meta line (the header keeps 24px).
+.issue-summary {
+  margin-top: calc(var(--gt-space-3, 12px) - var(--gt-space-5, 24px));
+  margin-bottom: var(--gt-space-2, 8px);
+}
+
+// The tab bar scrolls sideways when the labels do not fit; no chevrons.
+.issue-tabs {
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  @include mat.tabs-overrides(
+    (
+      divider-height: 0,
+    )
+  );
+
+  nav {
+    width: max-content;
+    min-width: 100%;
   }
 }
 
-dl {
-  margin-top: 0;
-
-  > div {
-    margin-bottom: 15px;
-  }
-
-  // this was done to mimic a table I removed, design preferences
-  // aren't set in stone here
-  dt {
-    font-weight: 500;
-    opacity: 0.54;
-    margin: 2px 0;
-  }
-
-  dd {
-    margin: 0;
-  }
+.culprit {
+  overflow-wrap: anywhere;
+  color: var(--mat-sys-on-surface);
 }
 
-.event-detail-card {
-  margin-right: 16px;
-
-  .tab-nav-container {
-    margin-bottom: 16px;
-    border-bottom: 1px solid var(--mat-sys-outline-variant);
+// Narrow: the right edge fades while tabs sit off screen; with scroll
+// timelines the fade goes once the row is scrolled to its end.
+@container issue-body (max-width: 599px) {
+  .issue-tabs {
+    mask-image: linear-gradient(to right, black calc(100% - 64px), transparent);
   }
 
-  @media screen and (max-width: vars.$medium - 1) {
-    margin-right: 0;
-  }
-
-  > .tabbed-nav {
-    margin: -16px -16px 16px;
-  }
-}
-
-mat-grid-list {
-  height: 90vh;
-}
-
-.tags {
-  display: flex;
-  justify-content: space-between;
-}
-
-.row {
-  display: flex;
-  align-items: flex-start;
-  margin-bottom: 30px;
-
-  @media screen and (max-width: vars.$medium - 1) {
-    flex-direction: column-reverse;
-  }
-
-  .left {
-    flex: 75%;
-    overflow: hidden;
-
-    @media screen and (max-width: vars.$medium - 1) {
-      width: 100%;
-    }
-  }
-
-  .right {
-    flex: 25%;
-
-    @media screen and (max-width: vars.$medium - 1) {
-      width: 100%;
-      margin-bottom: 30px;
+  @supports (animation-timeline: scroll()) {
+    .issue-tabs {
+      mask-image: none;
+      animation: tabs-edge-fade linear both;
+      animation-timeline: scroll(self inline);
     }
   }
 }
 
-table.mat-table {
-  background: none;
+@keyframes tabs-edge-fade {
+  from,
+  98% {
+    mask-image: linear-gradient(to right, black calc(100% - 64px), transparent);
+  }
+
+  to {
+    mask-image: none;
+  }
 }
 
-.report-badge > span {
-  text-overflow: initial;
+.issue-tab-panel {
+  display: block;
+  padding-top: var(--gt-space-3, 12px);
+  padding-bottom: var(--gt-space-6, 32px);
 }
 
 .top-bar-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
 }
 
 .level-tag {

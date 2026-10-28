@@ -16,6 +16,7 @@ import { StatusPillComponent } from "../../status-pill/status-pill.component";
   host: {
     "[attr.title]": "null",
     "[class.page-header--compact]": "compact()",
+    "[class.page-header--full-subtitle]": "fullSubtitle()",
   },
 })
 export class PageHeaderComponent {
@@ -26,4 +27,6 @@ export class PageHeaderComponent {
   readonly statusColor = input("var(--mat-sys-outline)");
   /** One line for a settings page; data pages keep the full header. */
   readonly compact = input(false, { transform: booleanAttribute });
+  /** Show the whole subtitle, not two lines, when it is the record itself. */
+  readonly fullSubtitle = input(false, { transform: booleanAttribute });
 }

@@ -1,0 +1,206 @@
+@use "@angular/material" as mat;
+@use "row-mixins" as rows;
+
+$spread-columns: 104px minmax(0, 1fr) 64px 40px 32px;
+
+:host {
+  display: block;
+  min-width: 0;
+}
+
+:host:empty {
+  display: none;
+}
+
+.tags-summary {
+  container: tags-summary / inline-size;
+}
+
+.tags-summary__line {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: "label top toggle";
+  align-items: center;
+  column-gap: var(--gt-space-4, 16px);
+  min-height: 36px;
+  font: var(--mat-sys-body-medium);
+}
+
+.tags-summary__label {
+  grid-area: label;
+  color: var(--mat-sys-on-surface-variant);
+  white-space: nowrap;
+}
+
+.tags-summary__top {
+  grid-area: top;
+
+  > li {
+    max-width: 320px;
+  }
+}
+
+.tags-summary__toggle {
+  grid-area: toggle;
+  @include mat.button-overrides(
+    (
+      text-container-height: 32px,
+    )
+  );
+}
+
+.tags-summary__panel {
+  margin-top: var(--gt-space-1, 4px);
+}
+
+// Narrow: label and All tags on the first line, then two chips that wrap.
+@container tags-summary (max-width: 599px) {
+  .tags-summary__line {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "label toggle"
+      "top top";
+  }
+
+  .tags-summary__top {
+    padding-bottom: var(--gt-space-1, 4px);
+
+    > li {
+      max-width: 100%;
+    }
+
+    > li:nth-child(n + 3) {
+      display: none;
+    }
+  }
+}
+
+.spread-list {
+  padding-block: var(--gt-space-1, 4px);
+}
+
+.spread-row {
+  display: grid;
+  grid-template-columns: $spread-columns;
+  align-items: center;
+  column-gap: var(--gt-space-3, 12px);
+  box-sizing: border-box;
+  min-height: 32px;
+  padding: var(--gt-space-1, 4px) var(--gt-space-2, 8px) var(--gt-space-1, 4px)
+    var(--gt-space-4, 16px);
+  color: var(--mat-sys-on-surface);
+}
+
+// An open row's values: same columns, the key column left empty.
+.spread-values {
+  margin: 0;
+  padding: 0 0 var(--gt-space-1, 4px);
+  list-style: none;
+}
+
+.spread-value {
+  display: grid;
+  grid-template-columns: $spread-columns;
+  grid-template-areas: ". name track pct .";
+  align-items: center;
+  column-gap: var(--gt-space-3, 12px);
+  box-sizing: border-box;
+  min-height: 28px;
+  padding: 2px var(--gt-space-2, 8px) 2px var(--gt-space-4, 16px);
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-on-surface);
+  text-decoration: none;
+
+  .spread__track {
+    grid-area: track;
+  }
+
+  &:is(a):hover,
+  &:is(a):focus-visible {
+    background-color: color-mix(
+      in srgb,
+      var(--mat-sys-on-surface) 4%,
+      transparent
+    );
+
+    .spread-value__name {
+      text-decoration: underline;
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--mat-sys-on-surface);
+    outline-offset: -2px;
+  }
+}
+
+.spread-value__name {
+  grid-area: name;
+  @include rows.truncate;
+}
+
+.spread-value__pct {
+  grid-area: pct;
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.spread-value--other {
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.spread-row__key {
+  @include rows.truncate;
+  font: var(--mat-sys-body-medium);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.spread-row__value {
+  @include rows.truncate;
+  font: var(--mat-sys-body-medium);
+  font-weight: 500;
+}
+
+// The share is the number to read; the bar stays neutral.
+.spread-row__pct {
+  font: var(--mat-sys-body-medium);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+  color: var(--mat-sys-on-surface);
+}
+
+.spread__track {
+  display: block;
+  height: 4px;
+  border-radius: 2px;
+  overflow: hidden;
+  background-color: var(--mat-sys-outline-variant);
+}
+
+.spread__fill {
+  display: block;
+  height: 100%;
+  background-color: var(--mat-sys-on-surface-variant);
+}
+
+.same {
+  flex: 1 1 240px;
+  min-width: 0;
+  padding-block: var(--gt-space-1, 4px);
+  text-align: end;
+  overflow-wrap: anywhere;
+}
+
+.same__item {
+  margin-block: 2px;
+  margin-inline-start: var(--gt-space-2, 8px);
+}
+
+@container gt-panel (max-width: 419px) {
+  .spread-row,
+  .spread-value {
+    grid-template-columns: 88px minmax(0, 1fr) 40px 40px 32px;
+  }
+}

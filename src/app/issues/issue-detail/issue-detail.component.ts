@@ -6,16 +6,16 @@ import {
   computed,
   input,
   effect,
+  untracked,
 } from "@angular/core";
-import { FormControl, FormGroup } from "@angular/forms";
 import { ActivatedRoute, RouterModule } from "@angular/router";
-import { MatBadgeModule } from "@angular/material/badge";
 import { MatTabsModule } from "@angular/material/tabs";
-import { MatCardModule } from "@angular/material/card";
+import { toSignal } from "@angular/core/rxjs-interop";
+import { BreakpointObserver } from "@angular/cdk/layout";
+import { map } from "rxjs";
 import { PageHeaderComponent } from "src/app/shared/detail/page-header/page-header.component";
 import { IssueDetailService } from "./issue-detail.service";
 import { DaysAgoPipe } from "../../shared/days-ago.pipe";
-import { IssueDetailTagsComponent } from "./issue-detail-tags/issue-detail-tags.component";
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 import { MatTooltipModule } from "@angular/material/tooltip";
@@ -27,6 +27,9 @@ import { IssueStatusUpdateDropdownComponent } from "src/app/shared/issue-status-
 import { IssueStatus } from "../interfaces";
 import { ConfirmDialogComponent } from "src/app/shared/confirm-dialog/confirm-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
+import { PanelComponent } from "src/app/shared/panel/panel.component";
+import { EmptyStateComponent } from "src/app/shared/empty-state/empty-state.component";
+import { IssueTagsSummaryComponent } from "./issue-tags-summary/issue-tags-summary.component";
 
 const ISSUE_STATUS: Record<IssueStatus, { label: string; color: string }> = {
   unresolved: { label: $localize`Unresolved`, color: "var(--info-color)" },
@@ -40,14 +43,11 @@ const ISSUE_STATUS: Record<IssueStatus, { label: string; color: string }> = {
   styleUrls: ["./issue-detail.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    MatCardModule,
     RouterModule,
     MatTabsModule,
-    MatBadgeModule,
     MatIconModule,
     MatButtonModule,
     MatTooltipModule,
-    IssueDetailTagsComponent,
     TitleCasePipe,
     DatePipe,
     DecimalPipe,
@@ -56,6 +56,9 @@ const ISSUE_STATUS: Record<IssueStatus, { label: string; color: string }> = {
     BackLinkComponent,
     TopAppBar,
     IssueStatusUpdateDropdownComponent,
+    PanelComponent,
+    EmptyStateComponent,
+    IssueTagsSummaryComponent,
   ],
 })
 export class IssueDetailComponent implements OnInit {
@@ -63,6 +66,18 @@ export class IssueDetailComponent implements OnInit {
   private organizationsService = inject(OrganizationsService);
   private route = inject(ActivatedRoute);
   private dialog = inject(MatDialog);
+
+  /** Narrow screens keep the back link short. */
+  private readonly narrow = toSignal(
+    inject(BreakpointObserver)
+      .observe("(max-width: 599.98px)")
+      .pipe(map((r) => r.matches)),
+    { initialValue: false },
+  );
+  readonly issueNotFoundMessage =
+    $localize`This may be because the URL is pointing to an issue that doesn't exist or was deleted.` +
+    " " +
+    $localize`It's also possible that this issue was reported to a project that you are not able to access.`;
 
   issue = this.issueService.issue;
   issueTitle = computed(() => {
@@ -115,6 +130,32 @@ export class IssueDetailComponent implements OnInit {
     }
   });
 
+  userCount = this.issueService.userCount;
+
+  firstSeenTip = computed(() => {
+    const issue = this.issue();
+    if (!issue) return "";
+    const date = new Date(issue.firstSeen).toLocaleString(undefined, {
+      dateStyle: "medium",
+      timeStyle: "short",
+    });
+    return $localize`First seen ${date}`;
+  });
+
+  backLinkText = computed(() => {
+    const project = this.issue()?.project.name;
+    return this.narrow() || !project
+      ? $localize`Issues`
+      : $localize`All issues for ${project}:project:`;
+  });
+
+  backLinkParams = computed(() => {
+    const projectId = this.issue()?.project.id;
+    return projectId
+      ? { ...this.route.snapshot.queryParams, project: projectId }
+      : {};
+  });
+
   status = computed(() => ISSUE_STATUS[this.issue()?.status ?? "unresolved"]);
 
   resolvedInRelease = computed(() => {
@@ -124,20 +165,16 @@ export class IssueDetailComponent implements OnInit {
   });
 
   initialLoadComplete = this.issueService.issueInitialLoadComplete;
-  form = new FormGroup({
-    assignee: new FormControl(""),
-  });
   issueID = input.required<string>({ alias: "issue-id" });
   organization = this.organizationsService.activeOrganization;
-  participantCountPluralMapping: { [k: string]: string } = {
-    "=0": "No Participants",
-    "=1": "1 Participant",
-    other: "# Participants",
-  };
 
   constructor() {
     effect(() => {
-      this.issueService.issueID.set(this.issueID());
+      const id = this.issueID();
+      this.issueService.issueID.set(id);
+      untracked(() => {
+        if (+id) this.issueService.retrieveTags(+id);
+      });
     });
   }
 
@@ -170,12 +207,5 @@ export class IssueDetailComponent implements OnInit {
         this.issueService.deleteIssue(id.toString());
       }
     });
-  }
-
-  generateBackLink(projectId: string) {
-    return {
-      ...this.route.snapshot.queryParams,
-      project: projectId,
-    };
   }
 }

@@ -1,37 +1,33 @@
 @if (initialLoadComplete() && issue() === null) {
-  <gt-top-app-bar />
-  <section class="l-body l-body--full-width">
-    @if (organization(); as organization) {
-      <mat-card class="auth-form issue-404">
-        <mat-card-content>
-          <h1 class="section-header-text" i18n>Issue not found</h1>
-          <p class="body-text" i18n
-            >This may be because the URL is pointing to an issue that doesn't
-            exist or was deleted.</p
-          >
-          <p class="body-text" i18n
-            >It's also possible that this issue was reported to a project that
-            you are not able to access.</p
-          >
-          <a
-            mat-stroked-button
-            class="project-issues-link"
-            i18n
-            [routerLink]="['..']"
+  <gt-top-app-bar>
+    <ng-container slot="left">
+      <gt-back-link i18n-backLinkText backLinkText="Issues" />
+    </ng-container>
+  </gt-top-app-bar>
+  <section class="l-body l-body--full-width issue-body">
+    <gt-panel>
+      <gt-empty-state
+        icon="search"
+        i18n-title
+        title="Issue not found"
+        [headingLevel]="1"
+        [message]="issueNotFoundMessage"
+      >
+        @if (organization(); as organization) {
+          <a mat-button [routerLink]="['..']" i18n
             >View all issues in {{ organization.name }}</a
           >
-        </mat-card-content>
-      </mat-card>
-    }
+        }
+      </gt-empty-state>
+    </gt-panel>
   </section>
 }
 @if (issue(); as issue) {
   <gt-top-app-bar>
     <ng-container slot="left">
       <gt-back-link
-        i18n-backLinkText
-        backLinkText="Issues"
-        [backLinkParams]="generateBackLink(issue.project.id)"
+        [backLinkText]="backLinkText()"
+        [backLinkParams]="backLinkParams()"
       />
     </ng-container>
     <ng-container slot="right">
@@ -58,8 +54,9 @@
       </div>
     </ng-container>
   </gt-top-app-bar>
-  <section class="l-body l-body--full-width">
+  <section class="l-body l-body--full-width issue-body">
     <gt-page-header
+      fullSubtitle
       [title]="issueTitle()[0]"
       [subtitle]="issueSubtitle()"
       [status]="status().label"
@@ -75,157 +72,108 @@
           ><span class="chip">{{ issue.shortId }}</span></span
         >
         @if (issueTitle()[1]; as culprit) {
-          <span
-            ><span class="chip">{{ culprit }}</span></span
-          >
+          <span class="gt-mono culprit" [title]="culprit">{{ culprit }}</span>
         }
         <span i18n>{+issue.count, plural,
           =1 {<b>1</b> event}
           other {<b>{{ +issue.count | number }}</b> events}
         }</span>
-        <span [title]="issue.firstSeen | date: 'long'" i18n
-          >First seen {{ issue.firstSeen | daysAgo }}</span
-        >
-        <span [title]="issue.lastSeen | date: 'long'" i18n
-          >Last seen {{ issue.lastSeen | daysAgo }}</span
-        >
+        @if (userCount(); as users) {
+          @if (users.count > 0) {
+            <span
+              class="gt-has-tip"
+              tabindex="0"
+              i18n-matTooltip
+              matTooltip="Distinct {{ users.key }} values across all events ({{
+                users.tagged
+              }} tagged)"
+              i18n
+              >{users.count, plural,
+                =1 {<b>1</b> user}
+                other {<b>{{ users.count | number }}</b> users}
+              }</span
+            >
+          }
+        }
         @if (issue.firstRelease?.shortVersion; as release) {
-          <span i18n
-            >First release <span class="chip">{{ release }}</span></span
+          <span
+            class="gt-has-tip"
+            tabindex="0"
+            [matTooltip]="firstSeenTip()"
+            i18n
+            >first seen in {{ release }}</span
+          >
+        } @else {
+          <span
+            class="gt-has-tip"
+            tabindex="0"
+            [matTooltip]="firstSeenTip()"
+            i18n
+            >first seen {{ issue.firstSeen | daysAgo }}</span
           >
         }
+        <span
+          class="gt-has-tip"
+          tabindex="0"
+          [matTooltip]="issue.lastSeen | date: 'medium'"
+          i18n
+          >last seen {{ issue.lastSeen | daysAgo }}</span
+        >
         @if (resolvedInRelease(); as release) {
           <span i18n
-            >Resolved in <span class="chip">{{ release }}</span></span
+            >resolved in <span class="chip">{{ release }}</span></span
           >
         }
       </span>
     </gt-page-header>
 
-    <div class="row">
-      <mat-card class="event-detail-card left">
-        <div class="tab-nav-container">
-          <nav
-            mat-tab-nav-bar
-            class="tabbed-nav"
-            mat-stretch-tabs="false"
-            [tabPanel]="tabPanel"
-          >
-            <a
-              mat-tab-link
-              [routerLink]="['./']"
-              routerLinkActive
-              [active]="details.isActive"
-              [routerLinkActiveOptions]="{ exact: true }"
-              #details="routerLinkActive"
-              i18n
-              >Event Details</a
-            >
-            <a
-              mat-tab-link
-              [routerLink]="['user-reports']"
-              routerLinkActive
-              [active]="reports.isActive"
-              #reports="routerLinkActive"
-            >
-              @if (issue.userReportCount > 0) {
-                <span
-                  [matBadge]="
-                    issue.userReportCount < 100
-                      ? issue.userReportCount.toString()
-                      : '99+'
-                  "
-                  matBadgeOverlap="false"
-                  class="report-badge"
-                  i18n
-                  >User Reports</span
-                >
-              }
-              @if (issue.userReportCount === 0) {
-                <ng-container i18n>User Reports</ng-container>
-              }
-            </a>
-            <a
-              mat-tab-link
-              [routerLink]="['comments']"
-              routerLinkActive
-              [active]="comments.isActive"
-              #comments="routerLinkActive"
-            >
-              @if (issue.numComments > 0) {
-                <span
-                  [matBadge]="
-                    issue.numComments < 100 ? issue.numComments : '99+'
-                  "
-                  matBadgeOverlap="false"
-                  class="report-badge"
-                  i18n
-                  >Comments
-                </span>
-              } @else {
-                <span i18n>Comments</span>
-              }
-            </a>
-            <a
-              mat-tab-link
-              [routerLink]="['merged']"
-              routerLinkActive
-              [active]="merged.isActive"
-              #merged="routerLinkActive"
-              i18n
-              >Merged</a
-            >
-          </nav>
-        </div>
-        <mat-card-content>
-          <mat-tab-nav-panel #tabPanel>
-            <router-outlet></router-outlet>
-          </mat-tab-nav-panel>
-        </mat-card-content>
-      </mat-card>
-      <aside class="right">
-        <mat-card appearance="outlined">
-          <mat-card-content>
-            <dl>
-              <div>
-                <dt i18n class="caption-text">Issue #</dt>
-                <dd class="body-text">{{ issue?.shortId }}</dd>
-              </div>
-              <div>
-                <dt i18n class="caption-text">Events</dt>
-                <dd class="body-text">{{ issue?.count }}</dd>
-              </div>
-              <div>
-                <dt i18n class="caption-text">Level</dt>
-                <dd class="body-text">{{ issue.level | titlecase }}</dd>
-              </div>
-              @if (resolvedInRelease(); as release) {
-                <div>
-                  <dt class="caption-text" i18n>Resolved in</dt>
-                  <dd class="body-text">{{ release }}</dd>
-                </div>
-              }
-              <div>
-                <dt i18n class="caption-text">First Seen</dt>
-                <dd class="body-text">{{ issue.firstSeen | daysAgo }}</dd>
-                <dd class="caption-text">
-                  {{
-                    $safeNavigationMigration(issue?.firstSeen) | date: "long"
-                  }}
-                </dd>
-              </div>
-              <div>
-                <dt i18n class="caption-text">Last Seen</dt>
-                <dd class="body-text">{{ issue.lastSeen | daysAgo }}</dd>
-                <dd class="caption-text">
-                  {{ $safeNavigationMigration(issue?.lastSeen) | date: "long" }}
-                </dd>
-              </div>
-            </dl>
-          </mat-card-content>
-        </mat-card>
-        <gt-issue-detail-tags [issueID]="issueID()"></gt-issue-detail-tags>
-      </aside>
+    <gt-issue-tags-summary class="issue-summary" />
+
+    <div class="issue-tabs">
+      <nav
+        mat-tab-nav-bar
+        mat-stretch-tabs="false"
+        disablePagination
+        [tabPanel]="tabPanel"
+      >
+        <a
+          mat-tab-link
+          [routerLink]="['./']"
+          [active]="!reports.isActive && !comments.isActive && !merged.isActive"
+          i18n
+          >Event details</a
+        >
+        <a
+          mat-tab-link
+          [routerLink]="['user-reports']"
+          routerLinkActive
+          [active]="reports.isActive"
+          #reports="routerLinkActive"
+          ><span i18n>User reports</span>
+          <span class="tab-count">{{ issue.userReportCount | number }}</span></a
+        >
+        <a
+          mat-tab-link
+          [routerLink]="['comments']"
+          routerLinkActive
+          [active]="comments.isActive"
+          #comments="routerLinkActive"
+          ><span i18n>Comments</span>
+          <span class="tab-count">{{ issue.numComments | number }}</span></a
+        >
+        <a
+          mat-tab-link
+          [routerLink]="['merged']"
+          routerLinkActive
+          [active]="merged.isActive"
+          #merged="routerLinkActive"
+          i18n
+          >Merged</a
+        >
+      </nav>
     </div>
+    <mat-tab-nav-panel #tabPanel class="issue-tab-panel">
+      <router-outlet></router-outlet>
+    </mat-tab-nav-panel>
   </section>
 }

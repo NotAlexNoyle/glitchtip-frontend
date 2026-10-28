@@ -1,0 +1,124 @@
+@if (ranked().length || same().length) {
+  <div class="tags-summary">
+    <div class="tags-summary__line">
+      <span class="tags-summary__label" [id]="panelId + '-label'" i18n
+        >Tags</span
+      >
+      <ul
+        class="tags-summary__top gt-tag-chips"
+        [attr.aria-labelledby]="panelId + '-label'"
+      >
+        @for (t of top(); track t.key) {
+          <li>
+            <a
+              class="gt-tag-chip gt-tag-chip--compact"
+              [routerLink]="['/', orgSlug(), 'issues']"
+              [queryParams]="t.top.query"
+              [matTooltip]="t.tip"
+              ><span class="gt-tag-chip__key">{{ t.key }}</span
+              ><span class="gt-tag-chip__value">{{ t.top.value }}</span
+              ><span class="gt-tag-chip__share">{{ t.top.percent }}%</span></a
+            >
+          </li>
+        }
+      </ul>
+      <button
+        mat-button
+        type="button"
+        class="tags-summary__toggle"
+        [attr.aria-expanded]="open()"
+        [attr.aria-controls]="panelId"
+        (click)="open.set(!open())"
+      >
+        @if (open()) {
+          <ng-container i18n>Hide</ng-container>
+        } @else {
+          <ng-container i18n>All tags</ng-container>
+        }
+      </button>
+    </div>
+
+    @if (open()) {
+      <gt-panel flush class="tags-summary__panel" [attr.id]="panelId">
+        @if (ranked().length) {
+          <div class="spread-list">
+            @for (t of ranked(); track t.key) {
+              @let isOpen = opened().has(t.key);
+              <button
+                type="button"
+                class="spread-row gt-expandable-row"
+                [attr.aria-expanded]="isOpen"
+                (click)="toggle(t.key)"
+              >
+                <span class="spread-row__key">{{ t.key }}</span>
+                <span class="spread-row__value">{{ t.top.value }}</span>
+                <span class="spread__track" aria-hidden="true"
+                  ><span
+                    class="spread__fill"
+                    [style.width.%]="t.top.percent"
+                  ></span
+                ></span>
+                <span class="spread-row__pct">{{ t.top.percent }}%</span>
+                <mat-icon class="gt-chev" aria-hidden="true">{{
+                  isOpen ? "keyboard_arrow_down" : "keyboard_arrow_right"
+                }}</mat-icon>
+              </button>
+              @if (isOpen) {
+                <ul class="spread-values" [attr.aria-label]="t.key">
+                  @for (v of t.values; track v.value) {
+                    <li>
+                      <a
+                        class="spread-value"
+                        [routerLink]="['/', orgSlug(), 'issues']"
+                        [queryParams]="v.query"
+                        [matTooltip]="v.tip"
+                      >
+                        <span class="spread-value__name">{{ v.value }}</span>
+                        <span class="spread__track" aria-hidden="true"
+                          ><span
+                            class="spread__fill"
+                            [style.width.%]="v.percent"
+                          ></span
+                        ></span>
+                        <span class="spread-value__pct">{{ v.percent }}%</span>
+                      </a>
+                    </li>
+                  }
+                  @if (t.other) {
+                    <li class="spread-value spread-value--other">
+                      <span class="spread-value__name" i18n>Other values</span>
+                      <span class="spread__track" aria-hidden="true"
+                        ><span
+                          class="spread__fill"
+                          [style.width.%]="t.other"
+                        ></span
+                      ></span>
+                      <span class="spread-value__pct">{{ t.other }}%</span>
+                    </li>
+                  }
+                </ul>
+              }
+            }
+          </div>
+        }
+        <div class="gt-panel-row gt-panel-row--split">
+          <span class="gt-muted">{{ shareOf() }}</span>
+          @if (same().length) {
+            <span class="gt-muted same"
+              ><ng-container i18n>Same on all:</ng-container>
+              @for (s of same(); track s.key) {
+                <a
+                  class="gt-tag-chip same__item"
+                  [routerLink]="['/', orgSlug(), 'issues']"
+                  [queryParams]="s.query"
+                  ><span class="gt-tag-chip__key">{{ s.key }}</span
+                  ><span class="gt-tag-chip__value">{{ s.value }}</span></a
+                >
+              }
+            </span>
+          }
+        </div>
+      </gt-panel>
+    }
+  </div>
+}
