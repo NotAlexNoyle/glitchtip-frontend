@@ -5,7 +5,10 @@ import { cleanIosPath, isIosPlatform, isSwiftNameMangled } from "../../utils";
 /** Objects longer than this on one line are indented instead. */
 const INLINE_MAX = 160;
 
-/** A value as row text: null as a word, objects on one line until long. */
+/**
+ * A value as row text: null as a word, objects on one line until long, then
+ * indented; strings inside keep their real line breaks.
+ */
 export function formatValue(value: Json | undefined): string {
   if (value === null || value === undefined) return "null";
   if (typeof value === "string") return value;
@@ -13,9 +16,44 @@ export function formatValue(value: Json | undefined): string {
     return String(value);
   }
   const line = inline(value);
-  return line !== null && line.length <= INLINE_MAX
-    ? line
-    : JSON.stringify(value, null, 2);
+  return line !== null && line.length <= INLINE_MAX ? line : pretty(value, "");
+}
+
+/** A block of text for a body: objects always indented, strings as sent. */
+export function formatBlock(value: Json | undefined): string {
+  return value !== null && typeof value === "object"
+    ? pretty(value, "")
+    : formatValue(value);
+}
+
+/** Indented form like JSON.stringify(v, null, 2), but multi-line strings stay readable. */
+function pretty(value: Json | undefined, indent: string): string {
+  const inner = indent + "  ";
+  const text = (s: string) => s.split("\n").join("\n" + indent);
+  if (value === null || value === undefined) return "null";
+  if (typeof value === "string") {
+    return value.includes("\n") ? text(value) : JSON.stringify(value);
+  }
+  if (typeof value !== "object") return String(value);
+  if (Array.isArray(value)) {
+    if (!value.length) return "[]";
+    // Console arguments and the like: strings read as the text they are.
+    const strings = value.every((v) => typeof v === "string");
+    if (
+      strings &&
+      (value.length === 1 || value.some((v) => v.includes("\n")))
+    ) {
+      return (value as string[]).map(text).join("\n" + indent);
+    }
+    const items = value.map((v) => inner + pretty(v, inner));
+    return `[\n${items.join(",\n")}\n${indent}]`;
+  }
+  const entries = Object.entries(value);
+  if (!entries.length) return "{}";
+  const items = entries.map(
+    ([k, v]) => `${inner}${JSON.stringify(k)}: ${pretty(v, inner)}`,
+  );
+  return `{\n${items.join(",\n")}\n${indent}}`;
 }
 
 const IDENT = /^[A-Za-z_$][\w$]*$/;
@@ -27,6 +65,8 @@ function inline(
 ): string | null {
   if (value === null || value === undefined) return spend("null", budget);
   if (typeof value !== "object") {
+    // A line break needs the indented form.
+    if (typeof value === "string" && value.includes("\n")) return null;
     const text =
       typeof value === "string" ? JSON.stringify(value) : String(value);
     return spend(text, budget);

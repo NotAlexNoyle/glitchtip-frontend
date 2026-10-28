@@ -20,6 +20,7 @@ import { IssueDetailService } from "../../issue-detail.service";
 import { Json } from "src/app/interface-primitives";
 import {
   PropertyRow,
+  formatBlock,
   formatValue,
   isHttpUrl,
   isLongValue,
@@ -31,8 +32,10 @@ interface Section {
   label: string;
   summary: string;
   rows: PropertyRow[];
-  /** Body: shown as indented JSON instead of rows. */
+  /** Body: shown as an indented block instead of rows. */
   pre?: string;
+  /** Body as JSON for Copy body. */
+  copy?: string;
 }
 
 function pairs(value: unknown): PropertyRow[] {
@@ -116,7 +119,8 @@ export class EntryRequestComponent {
               .join(" · ")
           : String(body),
         rows: [],
-        pre:
+        pre: formatBlock(body as Json),
+        copy:
           typeof body === "object"
             ? JSON.stringify(body, null, 2)
             : String(body),

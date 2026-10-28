@@ -5,6 +5,7 @@ import {
   contextFact,
   contextFor,
   crumbSummary,
+  formatBlock,
   eventUser,
   traceSummary,
   userLocation,
@@ -86,6 +87,35 @@ describe("formatValue", () => {
       '{ sku: "SKU-1", "x-y": null, n: [1, true] }',
     );
     expect(formatValue({})).toBe("{}");
+  });
+
+  it("keeps real line breaks in strings inside arrays and objects", () => {
+    const stack = "Warning: bad prop\n    at Cart\n    at App";
+    expect(formatValue([stack])).toBe(stack);
+    expect(formatValue(["%s", stack])).toBe(`%s\n${stack}`);
+    expect(formatValue({ args: [1, stack], ok: true })).toBe(
+      [
+        "{",
+        '  "args": [',
+        "    1,",
+        "    Warning: bad prop",
+        "        at Cart",
+        "        at App",
+        "  ],",
+        '  "ok": true',
+        "}",
+      ].join("\n"),
+    );
+  });
+
+  it("formats a body as an indented block", () => {
+    expect(formatBlock({ a: 1 })).toBe('{\n  "a": 1\n}');
+    expect(formatBlock("raw body")).toBe("raw body");
+  });
+
+  it("keeps short values on one line", () => {
+    expect(formatValue(["a", "b"])).toBe('["a", "b"]');
+    expect(formatValue({ msg: "short" })).toBe('{ msg: "short" }');
   });
 
   it("indents objects longer than 160 characters", () => {
