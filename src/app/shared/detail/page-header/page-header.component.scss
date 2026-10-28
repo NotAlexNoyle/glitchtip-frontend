@@ -1,10 +1,17 @@
 @use "object-header";
 
+// The space under the header is on the host, so a page can set its own.
+:host {
+  display: block;
+  margin-bottom: var(--gt-space-5, 24px);
+}
+
 .page-header {
   display: flex;
   align-items: center;
   gap: var(--gt-space-4, 16px);
-  margin-bottom: var(--gt-space-5, 24px);
+  // Outranks the legacy global header.page-header margin.
+  margin: 0;
 }
 
 .page-header__icon {
@@ -51,9 +58,10 @@
 
 // Settings pages: one line, with the facts wrapping under the title.
 :host(.page-header--compact) {
+  margin-bottom: var(--gt-space-4, 16px);
+
   .page-header {
     gap: var(--gt-space-3, 12px);
-    margin-bottom: var(--gt-space-4, 16px);
   }
 
   .page-header__icon {

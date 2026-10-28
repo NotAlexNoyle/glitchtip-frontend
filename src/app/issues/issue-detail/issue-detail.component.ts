@@ -74,10 +74,10 @@ export class IssueDetailComponent implements OnInit {
       .pipe(map((r) => r.matches)),
     { initialValue: false },
   );
-  readonly issueNotFoundMessage =
-    $localize`This may be because the URL is pointing to an issue that doesn't exist or was deleted.` +
-    " " +
-    $localize`It's also possible that this issue was reported to a project that you are not able to access.`;
+  readonly issueNotFoundMessage = [
+    $localize`This may be because the URL is pointing to an issue that doesn't exist or was deleted.`,
+    $localize`It's also possible that this issue was reported to a project that you are not able to access.`,
+  ];
 
   issue = this.issueService.issue;
   issueTitle = computed(() => {
