@@ -15,7 +15,8 @@
 
 @if (event(); as event) {
   <section class="event-zone" i18n-aria-label aria-label="This event">
-    <div class="event-bar">
+    <div class="event-bar__sentinel" #barSentinel aria-hidden="true"></div>
+    <div class="event-bar" [class.event-bar--stuck]="stuck()">
       <div class="event-bar__switch">
         @let latest = nextEvent() === false;
         <span gtSelectGhost class="event-switch">

@@ -6,6 +6,8 @@ import {
   computed,
   effect,
   signal,
+  viewChild,
+  ElementRef,
 } from "@angular/core";
 import { Router, RouterLink } from "@angular/router";
 import { Clipboard, ClipboardModule } from "@angular/cdk/clipboard";
@@ -227,9 +229,25 @@ export class EventDetailComponent {
   /** Alternates two classes so each Older or Newer step restarts the tint. */
   readonly flash = signal<0 | 1 | 2>(0);
 
+  /** True while the event bar is stuck to the top of the scroll area. */
+  readonly stuck = signal(false);
+  private readonly sentinel = viewChild<ElementRef<HTMLElement>>("barSentinel");
+
   constructor() {
     effect(() => {
       this.issueService.eventID.set(this.eventID());
+    });
+    // The sentinel marks the zone's top: once it scrolls out, the bar is stuck.
+    effect((onCleanup) => {
+      const el = this.sentinel()?.nativeElement;
+      if (!el) return;
+      const observer = new IntersectionObserver(([entry]) =>
+        this.stuck.set(
+          !entry.isIntersecting && entry.boundingClientRect.top < 0,
+        ),
+      );
+      observer.observe(el);
+      onCleanup(() => observer.disconnect());
     });
     effect(() => {
       const event = this.event();

@@ -1,4 +1,11 @@
-import { Injectable, computed, inject, resource, signal } from "@angular/core";
+import {
+  Injectable,
+  computed,
+  inject,
+  linkedSignal,
+  resource,
+  signal,
+} from "@angular/core";
 import { Router } from "@angular/router";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import {
@@ -83,6 +90,24 @@ function toRecentEvent(e: IssueEventSummary): RecentEvent {
   };
 }
 
+export interface LoadedEvent<T> {
+  value: T | null | undefined;
+  loading: boolean;
+  issueID: string | null;
+}
+
+/** Keeps the shown event while the next one of the same issue loads, so Older and Newer do not blank the page. */
+export function holdWhileLoading<T>(
+  next: LoadedEvent<T>,
+  prev: { source: LoadedEvent<T>; value: T | null | undefined } | undefined,
+): T | null | undefined {
+  return next.value === undefined &&
+    next.loading &&
+    prev?.source.issueID === next.issueID
+    ? prev.value
+    : next.value;
+}
+
 @Injectable({
   providedIn: "root",
 })
@@ -95,7 +120,18 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
   readonly issueInitialLoadComplete = computed(() =>
     this.#issueResource.hasValue(),
   );
-  readonly event = computed(() => this.#eventResource.value());
+  readonly #shownEvent = linkedSignal<
+    LoadedEvent<EventDetail>,
+    EventDetail | null | undefined
+  >({
+    source: () => ({
+      value: this.#eventResource.value(),
+      loading: this.#eventResource.isLoading(),
+      issueID: this.issueID(),
+    }),
+    computation: (next, prev) => holdWhileLoading(next, prev),
+  });
+  readonly event = this.#shownEvent.asReadonly();
   readonly tags = computed(() => {
     const state = this.state();
     return state.tags && this.tagsWithPercent(state.tags);
