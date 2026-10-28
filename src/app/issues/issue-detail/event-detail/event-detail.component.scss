@@ -151,6 +151,11 @@
   }
 }
 
+// A menu item, not an inline link: no hover underline from the global a:hover rule.
+.event-option:hover {
+  text-decoration: none;
+}
+
 // Two lines per event; the menu caps its width, so details truncate.
 .event-option__line,
 .event-option__details {
