@@ -25,8 +25,14 @@ $chev-slot: 32px;
   font: var(--mat-sys-body-medium);
 }
 
-.crumbs > :not(:first-child) {
-  border-top: 1px solid var(--mat-sys-outline-variant);
+.crumbs__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  > li {
+    border-top: 1px solid var(--mat-sys-outline-variant);
+  }
 }
 
 .crumbs__row--head {
@@ -122,7 +128,6 @@ $chev-slot: 32px;
 
 .crumbs__end {
   grid-area: end;
-  display: grid;
 }
 
 .crumbs__this {
@@ -137,6 +142,16 @@ $chev-slot: 32px;
 
 .crumbs__more {
   padding: 0 var(--gt-space-1, 4px);
+}
+
+// A long message in full, under the Message column.
+.crumbs__full {
+  margin: 0;
+  padding: 0 var(--gt-space-4, 16px) var(--gt-space-2, 8px)
+    calc(var(--gt-space-4, 16px) * 4 + 112px + 80px + 112px);
+  font: var(--mat-sys-body-medium);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 // Keys under Level and Category, values under Message.
@@ -183,8 +198,12 @@ $chev-slot: 32px;
   }
 
   // The hairline above "Show 20 earlier" is the panel header line.
-  .crumbs__row--head + .crumbs__more {
+  .crumbs__list > .crumbs__more:first-child {
     border-top: 0;
+  }
+
+  .crumbs__full {
+    padding-inline-start: calc(var(--gt-space-4, 16px) * 2);
   }
 
   .crumbs__data .gt-property-list__row {

@@ -34,90 +34,106 @@
         </mat-select>
       </span>
     }
-    <div class="crumbs" role="table" i18n-aria-label aria-label="Breadcrumbs">
-      <div class="crumbs__row crumbs__row--head table-header" role="row">
-        <span role="columnheader" i18n>Time</span>
-        <span role="columnheader" i18n>Level</span>
-        <span role="columnheader" i18n>Category</span>
-        <span role="columnheader" i18n>Message</span>
-        <span role="columnheader" class="crumbs__end"></span>
+    <div class="crumbs">
+      <div
+        class="crumbs__row crumbs__row--head table-header"
+        aria-hidden="true"
+      >
+        <span i18n>Time</span>
+        <span i18n>Level</span>
+        <span i18n>Category</span>
+        <span i18n>Message</span>
       </div>
-      @if (hiddenCount()) {
-        <div class="crumbs__more" role="row">
-          <button mat-button type="button" (click)="showEarlier.set(true)" i18n>
-            Show {{ hiddenCount() }} earlier
-          </button>
-        </div>
-      }
-      @for (c of rows(); track c.key) {
-        @let isOpen = opened().has(c.key);
-        <div class="crumbs__group" role="rowgroup">
-          <button
-            type="button"
-            class="crumbs__row gt-expandable-row"
-            role="row"
-            [attr.aria-expanded]="c.data.length ? isOpen : null"
-            [disabled]="!c.data.length"
-            (click)="toggle(c.key)"
-          >
-            <span class="crumbs__time" role="cell"
-              ><span class="wide-only">{{ c.time }}</span
-              ><span class="narrow-only">{{ c.short }}</span></span
+      <ol class="crumbs__list" i18n-aria-label aria-label="Breadcrumbs">
+        @if (hiddenCount()) {
+          <li class="crumbs__more">
+            <button
+              mat-button
+              type="button"
+              (click)="showEarlier.set(true)"
+              i18n
             >
-            <span
-              class="crumbs__level"
-              role="cell"
-              [class.crumbs__level--error]="c.tone === 'error'"
-              [class.crumbs__level--warning]="c.tone === 'warning'"
-            >
-              @if (c.level) {
-                <span [class]="c.levelClass"></span>{{ c.level }}
-              }
-            </span>
-            <span class="crumbs__cat" role="cell"
-              ><mat-icon class="crumbs__icon" aria-hidden="true">{{
-                c.icon
-              }}</mat-icon
-              >{{ c.category }}</span
-            >
-            <span class="crumbs__msg" role="cell">{{ c.message }}</span>
-            <span class="crumbs__end" role="cell">
-              @if (c.data.length) {
-                <mat-icon class="gt-chev" aria-hidden="true">{{
+              Show {{ hiddenCount() }} earlier
+            </button>
+          </li>
+        }
+        @for (c of rows(); track c.key) {
+          @let isOpen = opened().has(c.key);
+          <li>
+            @if (c.expandable) {
+              <button
+                type="button"
+                class="crumbs__row gt-expandable-row"
+                [attr.aria-expanded]="isOpen"
+                (click)="toggle(c.key)"
+              >
+                <ng-container
+                  *ngTemplateOutlet="cells; context: { $implicit: c }"
+                />
+                <mat-icon class="gt-chev crumbs__end" aria-hidden="true">{{
                   isOpen ? "keyboard_arrow_down" : "keyboard_arrow_right"
                 }}</mat-icon>
+              </button>
+            } @else {
+              <div class="crumbs__row">
+                <ng-container
+                  *ngTemplateOutlet="cells; context: { $implicit: c }"
+                />
+              </div>
+            }
+            @if (isOpen) {
+              @if (c.long) {
+                <p class="crumbs__full">{{ c.message }}</p>
               }
-            </span>
-          </button>
-          @if (isOpen) {
-            <dl class="gt-property-list crumbs__data">
-              @for (d of c.data; track d.key) {
-                <div
-                  class="gt-property-list__row"
-                  [class.gt-property-list__row--long]="d.long"
-                >
-                  <dt class="gt-mono">{{ d.key }}</dt>
-                  <dd class="gt-mono">{{ d.value }}</dd>
-                </div>
+              @if (openedData().get(c.key); as data) {
+                <dl class="gt-property-list crumbs__data">
+                  @for (d of data; track d.key) {
+                    <div
+                      class="gt-property-list__row"
+                      [class.gt-property-list__row--long]="d.long"
+                    >
+                      <dt class="gt-mono">{{ d.key }}</dt>
+                      <dd class="gt-mono">{{ d.value }}</dd>
+                    </div>
+                  }
+                </dl>
               }
-            </dl>
-          }
-        </div>
-      }
-      @if (eventRow(); as e) {
-        <div class="crumbs__row crumbs__row--marker" role="row">
-          <span class="crumbs__time" role="cell"
-            ><span class="wide-only">{{ e.time }}</span
-            ><span class="narrow-only">{{ e.short }}</span></span
-          >
-          <span class="crumbs__level" role="cell"></span>
-          <span class="crumbs__cat crumbs__this" role="cell" i18n
-            >This event</span
-          >
-          <span class="crumbs__msg" role="cell">{{ e.message }}</span>
-          <span class="crumbs__end" role="cell"></span>
-        </div>
-      }
+            }
+          </li>
+        }
+        @if (eventRow(); as e) {
+          <li class="crumbs__row crumbs__row--marker">
+            <span class="crumbs__time"
+              ><span class="wide-only">{{ e.time }}</span
+              ><span class="narrow-only">{{ e.short }}</span></span
+            >
+            <span class="crumbs__level"></span>
+            <span class="crumbs__cat crumbs__this" i18n>This event</span>
+            <span class="crumbs__msg">{{ e.message }}</span>
+          </li>
+        }
+      </ol>
     </div>
   </gt-panel>
 }
+
+<ng-template #cells let-c>
+  <span class="crumbs__time"
+    ><span class="wide-only">{{ c.time }}</span
+    ><span class="narrow-only">{{ c.short }}</span></span
+  >
+  <span
+    class="crumbs__level"
+    [class.crumbs__level--error]="c.tone === 'error'"
+    [class.crumbs__level--warning]="c.tone === 'warning'"
+  >
+    @if (c.level) {
+      <span [class]="c.levelClass"></span>{{ c.level }}
+    }
+  </span>
+  <span class="crumbs__cat"
+    ><mat-icon class="crumbs__icon" aria-hidden="true">{{ c.icon }}</mat-icon
+    >{{ c.category }}</span
+  >
+  <span class="crumbs__msg">{{ c.message }}</span>
+</ng-template>

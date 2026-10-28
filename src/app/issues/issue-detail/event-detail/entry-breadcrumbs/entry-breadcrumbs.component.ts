@@ -5,12 +5,14 @@ import {
   inject,
   linkedSignal,
 } from "@angular/core";
+import { NgTemplateOutlet } from "@angular/common";
 import { MatSelectModule } from "@angular/material/select";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { PanelComponent } from "src/app/shared/panel/panel.component";
 import { SelectGhostDirective } from "src/app/shared/select-ghost.directive";
 import { IssueDetailService } from "../../issue-detail.service";
+import { Breadcrumb } from "../../../interfaces";
 import { PropertyRow, crumbSummary, toRows, toggled } from "../event-format";
 
 /** Breadcrumbs shown before "Show N earlier". */
@@ -27,8 +29,14 @@ interface CrumbRow {
   /** Neutral glyph for the category. */
   icon: string;
   message: string;
-  data: PropertyRow[];
+  /** Too long for its one line; opening the row shows it in full. */
+  long: boolean;
+  expandable: boolean;
+  crumb: Breadcrumb;
 }
+
+/** Messages longer than this open in full. */
+const LONG_MESSAGE = 80;
 
 /** Glyphs for clicks, network requests and the rest. */
 function crumbIcon(category: string | null | undefined): string {
@@ -63,6 +71,7 @@ function clock(iso: string): { time: string; short: string } {
     MatSelectModule,
     MatButtonModule,
     MatIconModule,
+    NgTemplateOutlet,
   ],
 })
 export class EntryBreadcrumbsComponent {
@@ -115,6 +124,9 @@ export class EntryBreadcrumbsComponent {
           c.level === "warning" || c.level === "error" || c.level === "fatal"
             ? c.level
             : "";
+        const message = crumbSummary(c);
+        const long = message.length > LONG_MESSAGE || message.includes("\n");
+        const hasData = !!c.data && Object.keys(c.data).length > 0;
         return {
           key: `b${i}`,
           ...clock(c.timestamp),
@@ -123,8 +135,10 @@ export class EntryBreadcrumbsComponent {
           tone: level === "warning" ? "warning" : level ? "error" : "",
           category: c.category || c.type,
           icon: crumbIcon(c.category),
-          message: crumbSummary(c),
-          data: toRows(c.data),
+          message,
+          long,
+          expandable: long || hasData,
+          crumb: c,
         };
       });
   });
@@ -136,6 +150,18 @@ export class EntryBreadcrumbsComponent {
   readonly rows = computed(() => {
     const rows = this.filtered();
     return this.hiddenCount() ? rows.slice(-RECENT) : rows;
+  });
+
+  /** Data rows, formatted only for the crumbs that are open. */
+  readonly openedData = computed(() => {
+    const opened = this.opened();
+    const data = new Map<string, PropertyRow[]>();
+    for (const row of this.rows()) {
+      if (opened.has(row.key) && row.crumb.data) {
+        data.set(row.key, toRows(row.crumb.data));
+      }
+    }
+    return data;
   });
 
   /** The marker row the UI adds where the event happened. */

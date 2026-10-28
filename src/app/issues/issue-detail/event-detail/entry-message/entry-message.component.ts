@@ -20,7 +20,7 @@ export class EntryMessageComponent {
 
   eventEntryMessage = this.issueService.eventEntryMessage;
 
-  private params = computed(() => {
+  params = computed(() => {
     const params = this.eventEntryMessage()?.params;
     if (!params) return [];
     return Array.isArray(params)
@@ -29,12 +29,6 @@ export class EntryMessageComponent {
   });
 
   paramsText = computed(() => this.params().join(" · "));
-
-  subtitle = computed(() => {
-    const n = this.params().length;
-    if (!n) return "";
-    return n === 1 ? $localize`1 param` : $localize`${n} params`;
-  });
 
   /** The template only adds something when it differs from the message. */
   template = computed(() => {

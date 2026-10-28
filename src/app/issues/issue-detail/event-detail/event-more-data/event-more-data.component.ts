@@ -21,7 +21,16 @@ interface Source {
   label: string;
   count: number | null;
   summary: string;
-  groups: Group[];
+  /** SDK only: how many integrations it runs. */
+  integrations?: number;
+  /** Formatted on first open. */
+  groups: () => Group[];
+}
+
+function scalar(value: Json | undefined): string {
+  return typeof value === "string" || typeof value === "number"
+    ? String(value)
+    : "";
 }
 
 /** User, contexts, additional data and SDK as collapsed rows: the raw sources. */
@@ -54,18 +63,29 @@ interface Source {
                     <span class="gt-kv__count">{{ s.count }}</span>
                   }
                 </span>
-                <span class="gt-kv__v gt-truncate gt-muted">{{
-                  s.summary
-                }}</span>
+                <span class="gt-kv__v gt-truncate gt-muted"
+                  >{{ s.summary }}
+                  @if (s.integrations) {
+                    <span
+                      class="integrations"
+                      [class.integrations--after]="!!s.summary"
+                      i18n
+                      >{s.integrations, plural,
+                        =1 {1 integration}
+                        other {{{ s.integrations }} integrations}
+                      }</span
+                    >
+                  }
+                </span>
                 <mat-icon class="gt-chev" aria-hidden="true">{{
                   isOpen ? "keyboard_arrow_down" : "keyboard_arrow_right"
                 }}</mat-icon>
               </button>
-              @if (isOpen) {
+              @if (openedGroups().get(s.key); as groups) {
                 <div class="gt-groups">
-                  @for (g of s.groups; track g.label) {
+                  @for (g of groups; track g.label) {
                     <div class="gt-group">
-                      @if (s.groups.length > 1) {
+                      @if (groups.length > 1) {
                         <div class="gt-group__label">{{ g.label }}</div>
                       }
                       <dl class="gt-property-list gt-property-list--group">
@@ -101,6 +121,11 @@ interface Source {
     .gt-groups {
       padding-top: var(--gt-space-1, 4px);
     }
+
+    .integrations--after::before {
+      content: "\\00B7";
+      margin-inline: var(--gt-space-1, 4px);
+    }
   `,
 })
 export class EventMoreDataComponent {
@@ -113,16 +138,12 @@ export class EventMoreDataComponent {
 
     const user = event.user as { [key: string]: Json } | null;
     if (user && Object.keys(user).length) {
-      const rows = toRows(user);
       out.push({
         key: "user",
         label: $localize`User`,
         count: null,
-        summary: rows
-          .filter((r) => !r.value.startsWith("{"))
-          .map((r) => r.value)
-          .join(" · "),
-        groups: [{ label: $localize`User`, rows }],
+        summary: Object.values(user).map(scalar).filter(Boolean).join(" · "),
+        groups: () => [{ label: $localize`User`, rows: toRows(user) }],
       });
     }
 
@@ -136,14 +157,15 @@ export class EventMoreDataComponent {
         label: $localize`Contexts`,
         count: names.length,
         summary: names.join(", "),
-        groups: names.map((name) => {
-          const ctx = contexts[name];
-          const type = ctx?.["type"];
-          return {
-            label: type && type !== name ? `${name} (${type})` : name,
-            rows: toRows(ctx, ["type"]),
-          };
-        }),
+        groups: () =>
+          names.map((name) => {
+            const ctx = contexts[name];
+            const type = ctx?.["type"];
+            return {
+              label: type && type !== name ? `${name} (${type})` : name,
+              rows: toRows(ctx, ["type"]),
+            };
+          }),
       });
     }
 
@@ -155,44 +177,47 @@ export class EventMoreDataComponent {
         label: $localize`Additional data`,
         count: keys.length,
         summary: keys.join(", "),
-        groups: [{ label: $localize`Additional data`, rows: toRows(extra) }],
+        groups: () => [
+          { label: $localize`Additional data`, rows: toRows(extra) },
+        ],
       });
     }
 
     const sdk = event.sdk as { [key: string]: Json } | null;
     if (sdk) {
       const integrations = Array.isArray(sdk["integrations"])
-        ? sdk["integrations"].length
-        : 0;
-      const packages = Array.isArray(sdk["packages"])
-        ? (sdk["packages"] as { name: string; version: string }[])
-            .map((p) => `${p.name} ${p.version}`)
-            .join(", ")
-        : null;
-      const rows = toRows(sdk, ["packages", "integrations"]);
-      if (packages) rows.push({ key: "packages", value: packages, long: true });
-      if (integrations) {
-        rows.push({
-          key: "integrations",
-          value: (sdk["integrations"] as string[]).join(", "),
-          long: true,
-        });
-      }
+        ? (sdk["integrations"] as string[])
+        : [];
       out.push({
         key: "sdk",
         label: "SDK",
         count: null,
-        summary: [
-          [sdk["name"], sdk["version"]].filter(Boolean).join(" "),
-          integrations
-            ? integrations === 1
-              ? $localize`1 integration`
-              : $localize`${integrations} integrations`
-            : "",
-        ]
+        summary: [scalar(sdk["name"]), scalar(sdk["version"])]
           .filter(Boolean)
-          .join(" · "),
-        groups: [{ label: "SDK", rows }],
+          .join(" "),
+        integrations: integrations.length,
+        groups: () => {
+          const rows = toRows(sdk, ["packages", "integrations"]);
+          if (Array.isArray(sdk["packages"])) {
+            const packages = sdk["packages"] as {
+              name: string;
+              version: string;
+            }[];
+            rows.push({
+              key: "packages",
+              value: packages.map((p) => `${p.name} ${p.version}`).join(", "),
+              long: true,
+            });
+          }
+          if (integrations.length) {
+            rows.push({
+              key: "integrations",
+              value: integrations.join(", "),
+              long: true,
+            });
+          }
+          return [{ label: "SDK", rows }];
+        },
       });
     }
     return out;
@@ -201,6 +226,15 @@ export class EventMoreDataComponent {
   readonly opened = linkedSignal(() => {
     this.sources();
     return new Set<string>();
+  });
+
+  readonly openedGroups = computed(() => {
+    const opened = this.opened();
+    const groups = new Map<string, Group[]>();
+    for (const s of this.sources()) {
+      if (opened.has(s.key)) groups.set(s.key, s.groups());
+    }
+    return groups;
   });
 
   toggle(key: string) {
