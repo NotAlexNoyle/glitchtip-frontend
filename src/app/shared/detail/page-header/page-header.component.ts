@@ -17,6 +17,7 @@ import { StatusPillComponent } from "../../status-pill/status-pill.component";
     "[attr.title]": "null",
     "[class.gt-page-header--compact]": "compact()",
     "[class.gt-page-header--full-subtitle]": "fullSubtitle()",
+    "[class.gt-page-header--inline-subtitle]": "inlineSubtitle()",
   },
 })
 export class PageHeaderComponent {
@@ -29,4 +30,6 @@ export class PageHeaderComponent {
   readonly compact = input(false, { transform: booleanAttribute });
   /** Show the whole subtitle, not two lines, when it is the record itself. */
   readonly fullSubtitle = input(false, { transform: booleanAttribute });
+  /** Run the subtitle on after the title, wrapping under it only when it must. */
+  readonly inlineSubtitle = input(false, { transform: booleanAttribute });
 }

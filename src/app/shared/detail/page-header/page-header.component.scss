@@ -1,9 +1,9 @@
 @use "object-header";
 
-// The space under the header is on the host, so a page can set its own.
+// The space under the header is on the host; a record band sets the gap to 0.
 :host {
   display: block;
-  margin-bottom: var(--gt-space-5, 24px);
+  margin-bottom: var(--gt-page-header-gap, var(--gt-space-5, 24px));
 }
 
 .gt-page-header {
@@ -40,6 +40,18 @@
   display: block;
   overflow: visible;
   -webkit-line-clamp: unset;
+}
+
+// Title and subtitle flow as one run of text, so a short message shares the title's line.
+:host(.gt-page-header--inline-subtitle) {
+  .gt-page-header__title,
+  .gt-page-header__subtitle {
+    display: inline;
+  }
+
+  .gt-page-header__subtitle {
+    margin: 0 0 0 var(--gt-space-3, 12px);
+  }
 }
 
 .gt-page-header__meta {
