@@ -55,124 +55,146 @@
     </ng-container>
   </gt-top-app-bar>
   <section class="l-body l-body--full-width issue-body">
-    <gt-page-header
-      class="issue-header"
-      fullSubtitle
-      [title]="issueTitle()[0]"
-      [subtitle]="issueSubtitle()"
-      [status]="status().label"
-      [statusColor]="status().color"
-    >
-      <span slot="meta">
-        <span class="no-sep">
-          <span class="level-tag level--{{ issue.level }}">{{
-            issue.level | titlecase
-          }}</span>
-        </span>
-        <span
-          ><span class="chip">{{ issue.shortId }}</span></span
-        >
-        @if (issueTitle()[1]; as culprit) {
-          <span class="gt-mono culprit" [title]="culprit">{{ culprit }}</span>
-        }
-        <span i18n>{+issue.count, plural,
-          =1 {<b>1</b> event}
-          other {<b>{{ +issue.count | number }}</b> events}
-        }</span>
-        @if (userCount(); as users) {
-          @if (users.count > 0) {
+    <gt-record-band>
+      <gt-page-header
+        fullSubtitle
+        inlineSubtitle
+        [title]="issueTitle()[0]"
+        [subtitle]="issueSubtitle()"
+      >
+        <span slot="meta">
+          <span>
+            <span class="level-tag level--{{ issue.level }}">{{
+              issue.level | titlecase
+            }}</span>
+          </span>
+          <span
+            ><span class="chip">{{ issue.shortId }}</span></span
+          >
+          @if (issueTitle()[1]; as culprit) {
+            <span class="gt-mono culprit" [title]="culprit">{{ culprit }}</span>
+          }
+          <span class="gt-band-narrow-only" i18n>{+issue.count, plural,
+            =1 {<b>1</b> event}
+            other {<b>{{ +issue.count | number }}</b> events}
+          }</span>
+          @if (userCount(); as users) {
+            @if (users.count > 0) {
+              <span
+                class="gt-has-tip gt-band-narrow-only"
+                tabindex="0"
+                i18n-matTooltip
+                matTooltip="Distinct {{
+                  users.key
+                }} values across all events ({{ users.tagged }} tagged)"
+                i18n
+                >{users.count, plural,
+                  =1 {<b>1</b> user}
+                  other {<b>{{ users.count | number }}</b> users}
+                }</span
+              >
+            }
+          }
+          @if (issue.firstRelease?.shortVersion; as release) {
             <span
               class="gt-has-tip"
               tabindex="0"
-              i18n-matTooltip
-              matTooltip="Distinct {{ users.key }} values across all events ({{
-                users.tagged
-              }} tagged)"
+              [matTooltip]="firstSeenTip()"
               i18n
-              >{users.count, plural,
-                =1 {<b>1</b> user}
-                other {<b>{{ users.count | number }}</b> users}
-              }</span
+              >first seen in {{ release }}</span
+            >
+          } @else {
+            <span
+              class="gt-has-tip"
+              tabindex="0"
+              [matTooltip]="firstSeenTip()"
+              i18n
+              >first seen {{ issue.firstSeen | daysAgo }}</span
             >
           }
-        }
-        @if (issue.firstRelease?.shortVersion; as release) {
           <span
             class="gt-has-tip"
             tabindex="0"
-            [matTooltip]="firstSeenTip()"
+            [matTooltip]="issue.lastSeen | date: 'medium'"
             i18n
-            >first seen in {{ release }}</span
+            >last seen {{ issue.lastSeen | daysAgo }}</span
           >
-        } @else {
+          @if (resolvedInRelease(); as release) {
+            <span i18n
+              >resolved in <span class="chip">{{ release }}</span></span
+            >
+          }
+        </span>
+      </gt-page-header>
+      <div slot="stats" class="gt-stat">
+        <span class="gt-stat__label" i18n>Events</span>
+        <span class="gt-stat__value">{{ +issue.count | number }}</span>
+      </div>
+      @let users = userCount();
+      @if (users && users.count > 0) {
+        <div slot="stats" class="gt-stat">
           <span
-            class="gt-has-tip"
+            class="gt-stat__label gt-has-tip"
             tabindex="0"
-            [matTooltip]="firstSeenTip()"
+            i18n-matTooltip
+            matTooltip="Distinct {{ users.key }} values across all events ({{
+              users.tagged
+            }} tagged)"
             i18n
-            >first seen {{ issue.firstSeen | daysAgo }}</span
+            >Users</span
           >
-        }
-        <span
-          class="gt-has-tip"
-          tabindex="0"
-          [matTooltip]="issue.lastSeen | date: 'medium'"
-          i18n
-          >last seen {{ issue.lastSeen | daysAgo }}</span
+          <span class="gt-stat__value">{{ users.count | number }}</span>
+        </div>
+      }
+      <gt-issue-tags-summary slot="summary" />
+      <div slot="tabs" class="issue-tabs">
+        <nav
+          mat-tab-nav-bar
+          mat-stretch-tabs="false"
+          disablePagination
+          [tabPanel]="tabPanel"
         >
-        @if (resolvedInRelease(); as release) {
-          <span i18n
-            >resolved in <span class="chip">{{ release }}</span></span
+          <a
+            mat-tab-link
+            [routerLink]="['./']"
+            [active]="
+              !reports.isActive && !comments.isActive && !merged.isActive
+            "
+            i18n
+            >Event details</a
           >
-        }
-      </span>
-    </gt-page-header>
-
-    <gt-issue-tags-summary class="issue-summary" />
-
-    <div class="issue-tabs">
-      <nav
-        mat-tab-nav-bar
-        mat-stretch-tabs="false"
-        disablePagination
-        [tabPanel]="tabPanel"
-      >
-        <a
-          mat-tab-link
-          [routerLink]="['./']"
-          [active]="!reports.isActive && !comments.isActive && !merged.isActive"
-          i18n
-          >Event details</a
-        >
-        <a
-          mat-tab-link
-          [routerLink]="['user-reports']"
-          routerLinkActive
-          [active]="reports.isActive"
-          #reports="routerLinkActive"
-          ><span i18n>User reports</span>
-          <span class="tab-count">{{ issue.userReportCount | number }}</span></a
-        >
-        <a
-          mat-tab-link
-          [routerLink]="['comments']"
-          routerLinkActive
-          [active]="comments.isActive"
-          #comments="routerLinkActive"
-          ><span i18n>Comments</span>
-          <span class="tab-count">{{ issue.numComments | number }}</span></a
-        >
-        <a
-          mat-tab-link
-          [routerLink]="['merged']"
-          routerLinkActive
-          [active]="merged.isActive"
-          #merged="routerLinkActive"
-          i18n
-          >Merged</a
-        >
-      </nav>
-    </div>
+          <a
+            mat-tab-link
+            [routerLink]="['user-reports']"
+            routerLinkActive
+            [active]="reports.isActive"
+            #reports="routerLinkActive"
+            ><span i18n>User reports</span>
+            <span class="tab-count">{{
+              issue.userReportCount | number
+            }}</span></a
+          >
+          <a
+            mat-tab-link
+            [routerLink]="['comments']"
+            routerLinkActive
+            [active]="comments.isActive"
+            #comments="routerLinkActive"
+            ><span i18n>Comments</span>
+            <span class="tab-count">{{ issue.numComments | number }}</span></a
+          >
+          <a
+            mat-tab-link
+            [routerLink]="['merged']"
+            routerLinkActive
+            [active]="merged.isActive"
+            #merged="routerLinkActive"
+            i18n
+            >Merged</a
+          >
+        </nav>
+      </div>
+    </gt-record-band>
     <mat-tab-nav-panel #tabPanel class="issue-tab-panel">
       <router-outlet></router-outlet>
     </mat-tab-nav-panel>

@@ -21,6 +21,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
 import { OrganizationsService } from "src/app/api/organizations.service";
 import { DatePipe, DecimalPipe, TitleCasePipe } from "@angular/common";
 import { BackLinkComponent } from "src/app/shared/detail/back-link/back-link.component";
+import { RecordBandComponent } from "src/app/shared/record-band/record-band.component";
 import { TopAppBar } from "src/app/shared/top-app-bar/top-app-bar";
 import { IssueStatusUpdateDropdownComponent } from "src/app/shared/issue-status-update-dropdown/issue-status-update-dropdown";
 import { IssueStatus } from "../interfaces";
@@ -52,6 +53,7 @@ const ISSUE_STATUS: Record<IssueStatus, { label: string; color: string }> = {
     DecimalPipe,
     DaysAgoPipe,
     PageHeaderComponent,
+    RecordBandComponent,
     BackLinkComponent,
     TopAppBar,
     IssueStatusUpdateDropdownComponent,

@@ -1,34 +1,14 @@
 @use "controls";
-@use "@angular/material" as mat;
 @use "issue-level";
 
-// A column, so margins add up (no collapsing): 16px between the header,
-// the Tags line and the tabs, with or without the Tags line.
 .issue-body {
   container: issue-body / inline-size;
-  display: flex;
-  flex-direction: column;
-}
-
-.issue-header {
-  margin-bottom: var(--gt-space-3, 12px);
-}
-
-.issue-summary {
-  margin-block: var(--gt-space-1, 4px) var(--gt-space-3, 12px);
 }
 
 // The tab bar scrolls sideways when the labels do not fit; no chevrons.
 .issue-tabs {
-  margin-top: var(--gt-space-1, 4px);
   overflow-x: auto;
   scrollbar-width: none;
-  border-bottom: 1px solid var(--mat-sys-outline-variant);
-  @include mat.tabs-overrides(
-    (
-      divider-height: 0,
-    )
-  );
 
   nav {
     width: max-content;
