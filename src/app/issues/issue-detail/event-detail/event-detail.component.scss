@@ -37,9 +37,9 @@
 
 // Stuck, it becomes a second app bar: edge to edge over the page inset, square, one hairline.
 .event-bar--stuck {
-  margin-inline: calc(var(--gt-page-inset, 24px) * -1);
-  padding-inline: calc(var(--gt-page-inset, 24px) + var(--gt-space-2, 8px))
-    calc(var(--gt-page-inset, 24px) + var(--gt-space-1, 4px));
+  margin-inline: calc(var(--gt-page-inset) * -1);
+  padding-inline: calc(var(--gt-page-inset) + var(--gt-space-2, 8px))
+    calc(var(--gt-page-inset) + var(--gt-space-1, 4px));
   border-width: 0 0 1px;
   border-radius: 0;
 }
@@ -58,37 +58,8 @@
   flex-direction: column;
   gap: var(--gt-space-4, 16px);
   border-radius: vars.$shape-radius;
-}
-
-// Older or Newer: a short neutral tint that fades out.
-@media (prefers-reduced-motion: no-preference) {
-  .event-zone__body--flash-a {
-    animation: event-zone-flash-a 300ms ease-out;
-  }
-
-  .event-zone__body--flash-b {
-    animation: event-zone-flash-b 300ms ease-out;
-  }
-}
-
-@keyframes event-zone-flash-a {
-  from {
-    background-color: color-mix(
-      in srgb,
-      var(--mat-sys-on-surface) 8%,
-      transparent
-    );
-  }
-}
-
-@keyframes event-zone-flash-b {
-  from {
-    background-color: color-mix(
-      in srgb,
-      var(--mat-sys-on-surface) 8%,
-      transparent
-    );
-  }
+  // Read by the step tint (element.animate) when the event changes.
+  --gt-step-tint: #{controls.state-layer-color(hover)};
 }
 
 .event-bar__switch {

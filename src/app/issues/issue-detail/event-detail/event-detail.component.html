@@ -165,11 +165,7 @@
       </div>
     </div>
 
-    <div
-      class="event-zone__body"
-      [class.event-zone__body--flash-a]="flash() === 1"
-      [class.event-zone__body--flash-b]="flash() === 2"
-    >
+    <div class="event-zone__body" #zoneBody>
       <gt-entry-exception />
       <gt-entry-message />
       <gt-entry-csp />

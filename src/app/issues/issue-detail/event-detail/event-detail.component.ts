@@ -8,7 +8,10 @@ import {
   signal,
   viewChild,
   ElementRef,
+  afterNextRender,
+  Injector,
 } from "@angular/core";
+import { OverlayContainer } from "@angular/cdk/overlay";
 import { Router, RouterLink } from "@angular/router";
 import { Clipboard, ClipboardModule } from "@angular/cdk/clipboard";
 import { MatSnackBar } from "@angular/material/snack-bar";
@@ -33,9 +36,6 @@ import { EntryExceptionComponent } from "./entry-exception/entry-exception.compo
 import { EntryMessageComponent } from "./entry-message/entry-message.component";
 import { EventFactsPanelComponent } from "./event-facts-panel/event-facts-panel.component";
 import { EventMoreDataComponent } from "./event-more-data/event-more-data.component";
-
-/** Latest to older swaps the routed component, so the last event lives here. */
-let lastShown: { issueID: string; eventID: string } | null = null;
 
 /** The switcher option that loads the next page of events. */
 const SHOW_MORE = "__more";
@@ -126,6 +126,8 @@ export class EventDetailComponent {
   private router = inject(Router);
   private clipboard = inject(Clipboard);
   private dialog = inject(MatDialog);
+  private overlay = inject(OverlayContainer);
+  private injector = inject(Injector);
   orgSlug = input.required<string>({ alias: "org-slug" });
   issueID = input.required<string>({ alias: "issue-id" });
   eventID = input<string | null>(null, { alias: "event-id" });
@@ -226,8 +228,9 @@ export class EventDetailComponent {
     return options;
   });
 
-  /** Alternates two classes so each Older or Newer step restarts the tint. */
-  readonly flash = signal<0 | 1 | 2>(0);
+  private readonly zoneBody = viewChild<ElementRef<HTMLElement>>("zoneBody");
+  /** The event on screen, to tell a step to another event from a reload. */
+  private shown: { issueID: string; eventID: string } | null = null;
 
   /** True while the event bar is stuck to the top of the scroll area. */
   readonly stuck = signal(false);
@@ -253,10 +256,10 @@ export class EventDetailComponent {
       const event = this.event();
       if (!event) return;
       const issueID = this.issueID();
-      const prev = lastShown;
-      lastShown = { issueID, eventID: event.eventID };
+      const prev = this.shown;
+      this.shown = { issueID, eventID: event.eventID };
       if (prev && prev.issueID === issueID && prev.eventID !== event.eventID) {
-        this.flash.update((f) => (f === 1 ? 2 : 1));
+        this.tintZone();
       }
     });
   }
@@ -271,7 +274,8 @@ export class EventDetailComponent {
       target &&
       (target.isContentEditable ||
         ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName) ||
-        target.closest("mat-select, .cdk-overlay-container"))
+        target.closest("mat-select") ||
+        this.overlay.getContainerElement().contains(target))
     ) {
       return;
     }
@@ -303,15 +307,32 @@ export class EventDetailComponent {
     const index = this.switcherOptions().findIndex((o) => !known.has(o.id));
     select.open();
     if (index >= 0) {
-      setTimeout(() => {
-        const option = select.options.get(index);
-        if (option) {
-          document
-            .getElementById(option.id)
-            ?.scrollIntoView({ block: "nearest" });
-        }
-      });
+      afterNextRender(
+        () => {
+          const option = select.options.get(index);
+          if (option) {
+            document
+              .getElementById(option.id)
+              ?.scrollIntoView({ block: "nearest" });
+          }
+        },
+        { injector: this.injector },
+      );
     }
+  }
+
+  /** A short neutral tint that fades out, so the step reads as this event's. */
+  private tintZone() {
+    const el = this.zoneBody()?.nativeElement;
+    if (!el || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const tint = getComputedStyle(el).getPropertyValue("--gt-step-tint");
+    el.animate(
+      [{ backgroundColor: tint }, { backgroundColor: "transparent" }],
+      {
+        duration: 300,
+        easing: "ease-out",
+      },
+    );
   }
 
   scrollToRequest() {
