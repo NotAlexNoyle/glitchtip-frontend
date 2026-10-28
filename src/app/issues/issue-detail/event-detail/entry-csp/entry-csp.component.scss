@@ -1,18 +1,12 @@
-.csp {
-  &__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 16px;
-  }
-
-  &__code {
-    display: block;
-    margin-left: 24px;
-  }
+:host {
+  display: block;
 }
 
-pre {
-  overflow-x: scroll;
-  margin-top: 0;
+:host:empty {
+  display: none;
+}
+
+// Object values print as indented JSON.
+.csp-value {
+  white-space: pre-wrap;
 }

@@ -1,12 +1,12 @@
-@use "variables" as vars;
-
-h3 {
-  padding-top: 16px;
+:host {
+  display: block;
 }
 
-.formatted-message {
-  font-family: vars.$font-mono;
+:host:empty {
+  display: none;
+}
+
+// Multi-line messages keep their line breaks.
+.message {
   white-space: pre-wrap;
-  word-wrap: normal;
-  word-break: break-all;
 }

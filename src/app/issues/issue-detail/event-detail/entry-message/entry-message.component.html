@@ -1,22 +1,24 @@
 @if (eventEntryMessage(); as message) {
-  <section class="mat-typography">
-    <div>
-      <mat-divider></mat-divider>
-      <h3 i18n>Message</h3>
-      <pre class="formatted-message">{{
-        message?.formatted ?? message?.message
-      }}</pre>
-      @if (message?.params) {
-        <dl>
-          @for (
-            param of $safeNavigationMigration(message?.params) | keyvalue;
-            track param
-          ) {
-            <gt-entry-data [key]="param.key" [value]="param.value">
-            </gt-entry-data>
-          }
-        </dl>
+  <gt-panel flush i18n-title title="Message" [subtitle]="subtitle()">
+    <div class="gt-kv">
+      <div class="gt-kv__row">
+        <span class="gt-kv__k" i18n>Message</span>
+        <span class="gt-kv__v gt-break message">{{
+          message.formatted || message.message
+        }}</span>
+      </div>
+      @if (template(); as template) {
+        <div class="gt-kv__row">
+          <span class="gt-kv__k" i18n>Template</span>
+          <span class="gt-kv__v gt-mono gt-break message">{{ template }}</span>
+        </div>
+      }
+      @if (paramsText(); as params) {
+        <div class="gt-kv__row">
+          <span class="gt-kv__k" i18n>Params</span>
+          <span class="gt-kv__v gt-mono gt-break">{{ params }}</span>
+        </div>
       }
     </div>
-  </section>
+  </gt-panel>
 }

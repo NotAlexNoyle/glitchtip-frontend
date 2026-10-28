@@ -3,12 +3,10 @@ import { Router } from "@angular/router";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import {
   IssueStatus,
-  ExceptionValueData,
   Request,
   AnnotatedRequest,
   CSP,
   Message,
-  Values,
   EntryType,
   BreadcrumbValueData,
   IssueTags,
@@ -129,16 +127,6 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
       return this.eventUrl(orgSlug, issue!, event.previousEventID);
     }
     return null;
-  });
-  readonly eventEntryException = computed(() => {
-    const event = this.event();
-    const isReversed = this.isReversed();
-
-    return event ? this.reverseFrames(event, isReversed) : undefined;
-  });
-  readonly rawStacktraceValues = computed(() => {
-    const event = this.event();
-    return event ? this.getRawStacktraceValues(event) : undefined;
   });
   readonly eventEntryRequest = computed(() => {
     const event = this.event();
@@ -296,10 +284,6 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
     }
   }
 
-  getReversedFrames() {
-    this.toggleIsReversed();
-  }
-
   setShowShowMore(value: boolean) {
     this.setState({ showShowMore: value });
   }
@@ -417,10 +401,6 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
     this.setState({ tags });
   }
 
-  private toggleIsReversed() {
-    this.setNewestFirst(!this.state().isReversed);
-  }
-
   /* Return the message entry type for an event */
   private getEventEntryMessage(event: EventDetail): Message | undefined {
     const eventMessage = this.getMessageEntryData(event);
@@ -472,61 +452,6 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
     return;
   }
 
-  /* Reverse frame array, nested in the event object */
-  private reverseFrames(
-    event: EventDetail,
-    isReversed: boolean,
-  ): ExceptionValueData | undefined {
-    const eventException = this.getExceptionEntryData(event);
-
-    if (eventException) {
-      if (isReversed) {
-        const reversedFrames = eventException.values.map((value) => {
-          if (value.stacktrace && "frames" in value.stacktrace) {
-            const frameReverse = [...value.stacktrace.frames].reverse();
-            return {
-              ...value,
-              stacktrace: { ...value.stacktrace, frames: [...frameReverse] },
-            };
-          }
-          return value;
-        });
-        return {
-          ...eventException,
-          values: reversedFrames,
-        };
-      } else {
-        return { ...eventException };
-      }
-    }
-    return;
-  }
-
-  getRawStacktraceValues(event: EventDetail): Values[] | undefined {
-    const platform = event.platform;
-    const eventException = this.getExceptionEntryData(event);
-
-    if (eventException) {
-      const values = eventException.values.map((value) => {
-        if (
-          platform !== "python" &&
-          value.stacktrace &&
-          "frames" in value.stacktrace
-        ) {
-          const reverseFrames = [...value.stacktrace.frames].reverse();
-          return {
-            ...value,
-            stacktrace: { ...value.stacktrace, frames: reverseFrames },
-          };
-        } else {
-          return { ...value };
-        }
-      });
-      return [...values];
-    }
-    return;
-  }
-
   /**
    * We had some methods above that looked a bit daunting; one way to make them
    * less daunting was to get the ugly-looking typecasting out of the way.
@@ -534,12 +459,6 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
    * So here are a few helper functions that funnel into getEntryData and return
    * data which is typed the way we want.
    */
-  private getExceptionEntryData(event: EventDetail) {
-    return this.getEntryData(event, "exception") as
-      | ExceptionValueData
-      | undefined;
-  }
-
   private getMessageEntryData(event: EventDetail) {
     return this.getEntryData(event, "message") as Message | undefined;
   }

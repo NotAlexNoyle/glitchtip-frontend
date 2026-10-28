@@ -1,91 +1,287 @@
-@use "@angular/material" as mat;
-@use "variables" as vars;
+@use "row-mixins" as rows;
 
-.exception {
-  margin-bottom: 16px;
+$chev-slot: 32px;
 
-  .header-wrapper {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
+:host {
+  display: block;
+}
 
-    @media screen and (max-width: vars.$small - 1) {
-      flex-direction: column;
-    }
-  }
-  .text-wrapper {
-    display: flex;
-    align-items: center;
+:host:empty {
+  display: none;
+}
 
-    h3 {
-      margin-bottom: 0px;
-    }
-  }
+.chain + .chain {
+  border-top: 1px solid var(--mat-sys-outline-variant);
+}
 
-  .spacer {
-    margin-left: 8px;
-    display: flex;
-    justify-content: center;
-  }
+.chain__head {
+  display: grid;
+  grid-template-columns: 96px minmax(160px, 1fr) minmax(0, auto) $chev-slot;
+  grid-template-areas:
+    "role what frame chev"
+    ". mech mech chev";
+  align-items: center;
+  column-gap: var(--gt-space-4, 16px);
+  box-sizing: border-box;
+  min-height: 40px;
+  padding: var(--gt-space-2, 8px) var(--gt-space-4, 16px);
 
-  button {
-    margin-top: 18px;
-  }
-
-  .subtitle {
-    margin-bottom: 24px;
-  }
-
-  .yes {
-    border: 2px solid green;
-  }
-
-  .no {
-    border: 2px solid red;
-  }
-
-  .raw {
-    margin-top: 0;
-    margin-bottom: 0;
-  }
-
-  .full {
-    h2 {
-      margin-top: 0;
-      margin-bottom: 0;
-    }
-  }
-
-  mat-chip-set {
-    display: block;
-    margin-bottom: 24px;
-  }
-
-  mat-accordion::ng-deep .mat-expansion-panel-body {
-    padding-top: 16px;
-  }
-
-  mat-expansion-panel:not(:last-child) mat-expansion-panel-header {
-    margin-bottom: -1px;
-  }
-
-  mat-expansion-panel-header {
-    padding-top: 8px;
-    padding-bottom: 8px;
-    border: 1px solid mat.m2-get-color-from-palette(mat.$m2-gray-palette, 300);
-
-    gt-frame-title {
-      padding-right: 16px;
-    }
-  }
-
-  .disabled-panel {
-    color: var(--mat-expansion-container-text-color);
+  > .gt-chev {
+    grid-area: chev;
   }
 }
 
-// TODO: Adjust color for focus interactions
-.highlighted {
-  background-color: var(--mat-sys-surface-container);
+.chain__role {
+  grid-area: role;
+  font: var(--mat-sys-label-medium);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.chain__what {
+  grid-area: what;
+  display: -webkit-box;
+  min-width: 0;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font: var(--mat-sys-body-medium);
+  overflow-wrap: anywhere;
+}
+
+.chain__type {
+  font-weight: 500;
+  color: var(--mat-sys-on-surface);
+}
+
+// The root cause is the row to read first: error bar and a heavier type.
+.chain--root .chain__head {
+  box-shadow: inset 2px 0 0 var(--mat-sys-error);
+
+  .chain__type {
+    font-weight: 600;
+  }
+}
+
+.chain__pill {
+  margin-inline-start: var(--gt-space-2, 8px);
+  vertical-align: 1px;
+}
+
+.chain__msg {
+  margin-inline-start: var(--gt-space-1, 4px);
+  color: var(--mat-sys-on-surface);
+}
+
+// Mechanism, handled and function: one muted line under the link.
+.chain__mech {
+  grid-area: mech;
+  min-width: 0;
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-on-surface-variant);
+  overflow-wrap: anywhere;
+}
+
+.mech {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gt-space-1, 4px) var(--gt-space-2, 8px);
+  margin: 0;
+  padding: var(--gt-space-2, 8px) var(--gt-space-4, 16px);
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.chain__frame {
+  grid-area: frame;
+  display: flex;
+  align-items: baseline;
+  gap: var(--gt-space-3, 12px);
+  min-width: 0;
+  max-width: 440px;
+
+  .gt-path {
+    flex: 0 1 auto;
+  }
+}
+
+.chain__fn {
+  flex: none;
+  color: var(--mat-sys-on-surface);
+}
+
+.frames {
+  padding-bottom: var(--gt-space-1, 4px);
+}
+
+.frame__head {
+  @include rows.inset-hairline(32px);
+  display: grid;
+  grid-template-columns: minmax(0, max-content) minmax(0, 1fr) auto $chev-slot;
+  grid-template-areas: "fn file lc chev";
+  align-items: center;
+  column-gap: var(--gt-space-3, 12px);
+  box-sizing: border-box;
+  min-height: 36px;
+  padding: var(--gt-space-1, 4px) var(--gt-space-4, 16px) var(--gt-space-1, 4px)
+    calc(var(--gt-space-4, 16px) * 2);
+
+  > .gt-chev {
+    grid-area: chev;
+  }
+
+  .gt-lc {
+    grid-area: lc;
+  }
+}
+
+.frame__fn {
+  grid-area: fn;
+  @include rows.truncate;
+  font-weight: 500;
+  color: var(--mat-sys-on-surface);
+}
+
+.frame__file {
+  grid-area: file;
+}
+
+.frame__head--run {
+  grid-template-columns: minmax(0, 1fr) $chev-slot;
+  grid-template-areas: "run chev";
+}
+
+.frame__run {
+  grid-area: run;
+  @include rows.truncate;
+  font: var(--mat-sys-body-medium);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+// Library frames are muted by colour, not opacity.
+.frame--muted .frame__fn {
+  font-weight: 400;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.frame__body {
+  padding: 0 var(--gt-space-4, 16px) var(--gt-space-3, 12px)
+    calc(var(--gt-space-4, 16px) * 2);
+}
+
+// absPath, the file behind a module name, the package: one muted line.
+.frame__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--gt-space-3, 12px);
+  margin: 0;
+  padding-bottom: var(--gt-space-2, 8px);
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-on-surface-variant);
+
+  .gt-mono {
+    font-size: 0.75rem;
+  }
+}
+
+.frame__abs {
+  @include rows.truncate;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.frame__none {
+  margin: 0;
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.frames__more {
+  @include rows.inset-hairline(32px);
+  padding: var(--gt-space-1, 4px) var(--gt-space-4, 16px) var(--gt-space-1, 4px)
+    calc(var(--gt-space-4, 16px) * 2 - var(--gt-space-3, 12px));
+}
+
+// A single exception: frames start right under the panel header.
+.frames--top {
+  .frame__head {
+    padding-inline-start: var(--gt-space-4, 16px);
+    @include rows.inset-hairline(16px);
+  }
+
+  > :first-child,
+  > .frame:first-child .frame__head {
+    background-image: none;
+  }
+
+  .frame__body {
+    padding-inline-start: var(--gt-space-4, 16px);
+  }
+}
+
+@container gt-panel (max-width: 719px) {
+  .chain__head {
+    grid-template-columns: 96px minmax(0, 1fr) $chev-slot;
+    grid-template-areas:
+      "role what chev"
+      ". frame chev"
+      ". mech chev";
+    row-gap: 2px;
+  }
+
+  .chain__frame {
+    max-width: none;
+  }
+}
+
+@container gt-panel (max-width: 479px) {
+  .chain__head {
+    grid-template-columns: auto minmax(0, 1fr) $chev-slot;
+    grid-template-areas:
+      "role what chev"
+      "frame frame chev"
+      "mech mech chev";
+    column-gap: var(--gt-space-3, 12px);
+    align-items: start;
+  }
+
+  .chain__role {
+    line-height: 20px;
+  }
+
+  .chain__what {
+    display: block;
+  }
+
+  // Message on its own line under the type.
+  .chain__msg {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    margin-inline-start: 0;
+  }
+
+  .frame__head {
+    grid-template-columns: minmax(0, 1fr) auto $chev-slot;
+    grid-template-areas:
+      "fn lc chev"
+      "file file chev";
+    row-gap: 2px;
+    padding-block: var(--gt-space-2, 8px);
+  }
+
+  .frame__head--run {
+    grid-template-columns: minmax(0, 1fr) $chev-slot;
+    grid-template-areas: "run chev";
+  }
+
+  .frame__body {
+    padding-inline-start: var(--gt-space-4, 16px);
+  }
+
+  .frames--top .frame__head {
+    padding-inline-start: var(--gt-space-4, 16px);
+  }
 }

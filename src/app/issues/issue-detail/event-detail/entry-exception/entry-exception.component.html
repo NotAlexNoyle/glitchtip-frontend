@@ -1,111 +1,258 @@
-@if (eventEntryException(); as exception) {
-  <section class="mat-typography">
-    <section class="exception">
-      <div class="header-wrapper">
-        <div class="text-wrapper">
-          <h3 i18n>Exception</h3>
-          @if (group.value === "full-data") {
-            <div class="spacer">
-              <button mat-button (click)="getFlippedFrames()">
-                <ng-container i18n>(most recent call</ng-container>
-                @if (isReversed()) {
-                  <span i18n>first</span>
-                }
-                @if (isReversed() === false) {
-                  <span i18n>last</span>
-                }
-                )
-              </button>
-            </div>
+@if (chain().length) {
+  <gt-panel
+    flush
+    [title]="title()"
+    [hideSubtitleNarrow]="!single()"
+    [subtitle]="subtitle()"
+  >
+    <gt-ghost-select
+      slot="actions"
+      i18n-label
+      label="Frames"
+      [options]="modes"
+      [shortLabel]="modeShort()"
+      [(value)]="mode"
+    />
+    @if (mode() !== "raw") {
+      <gt-ghost-select
+        slot="actions"
+        i18n-label
+        label="Frame order"
+        [options]="orders"
+        [shortLabel]="orderShort()"
+        [value]="order()"
+        (valueChange)="setOrder($event)"
+      />
+    }
+    <button
+      slot="actions"
+      mat-icon-button
+      type="button"
+      i18n-aria-label
+      aria-label="Copy trace"
+      i18n-matTooltip
+      matTooltip="Copy trace"
+      [cdkCopyToClipboard]="raw()"
+      (cdkCopyToClipboardCopied)="onCopied()"
+    >
+      <mat-icon class="gt-icon-sm">content_copy</mat-icon>
+    </button>
+
+    @if (mode() === "raw") {
+      <pre class="gt-raw">{{ raw() }}</pre>
+    } @else if (single()) {
+      @let link = chain()[0];
+      @if (link.unhandled || link.mechanism) {
+        <p class="mech mech--top">
+          @if (link.unhandled) {
+            <gt-status-pill
+              class="mech__pill"
+              [label]="unhandledLabel"
+              color="var(--mat-sys-error)"
+            />
           }
-        </div>
-        <mat-button-toggle-group #group="matButtonToggleGroup">
-          <mat-button-toggle i18n i18n-aria-label
-            [checked]="true"
-            value="full-data"
-            aria-label="full data"
-          >
-            Full
-          </mat-button-toggle>
-          <mat-button-toggle i18n i18n-aria-label value="raw" aria-label="raw data">
-            Raw
-          </mat-button-toggle>
-        </mat-button-toggle-group>
+          {{ link.mechanism }}
+        </p>
+      }
+      <div class="frames frames--top">
+        <ng-container
+          *ngTemplateOutlet="frameList; context: { $implicit: link }"
+        />
       </div>
-      @if (group.value === "full-data" && exception.values) {
-        <div class="full">
-          @for (value of exception.values; track value) {
-            <div>
-              <h2>{{ value.type }}</h2>
-              <p class="subtitle">{{ value.value }}</p>
-              @if (value.mechanism) {
-                <mat-chip-set role="list">
-                  <mat-chip disabled role="listitem"
-                    >mechanism: {{ value.mechanism.type }}</mat-chip
-                  >
-                  <mat-chip color="accent" highlighted disabled role="listitem"
-                    >handled:
-                    {{ value.mechanism.handled ? "yes" : "no" }}</mat-chip
-                  >
-                  @if (value.mechanism.data) {
-                    <mat-chip disabled role="listitem"
-                      >function: {{ value.mechanism.data.function }}</mat-chip
-                    >
-                  }
-                </mat-chip-set>
+    } @else {
+      @for (link of chain(); track link.key) {
+        @let isOpen = opened().has(link.key);
+        <div
+          class="chain"
+          [class.chain--open]="isOpen"
+          [class.chain--root]="link.root"
+        >
+          <button
+            type="button"
+            class="chain__head gt-expandable-row"
+            [attr.aria-expanded]="link.frames.length ? isOpen : null"
+            [disabled]="!link.frames.length"
+            (click)="toggle(link.key)"
+          >
+            <span class="chain__role">{{ link.role }}</span>
+            <span class="chain__what">
+              <span class="chain__type"
+                >{{ link.type }}{{ link.value ? ":" : "" }}</span
+              >
+              @if (link.value) {
+                <span class="chain__msg">{{ link.value }}</span>
               }
-              @if (checkStacktraceInterface(value.stacktrace)) {
-                <mat-accordion [multi]="true" displayMode="flat">
-                  <!-- TODO:  Add additional conditions for non expandable frames
-                          https://gitlab.com/glitchtip/sentry-open-source/sentry/-/blob/master/src/sentry/static/sentry/app/components/events/interfaces/frame.jsx#L107-->
-                  @for (
-                    frame of value.stacktrace.frames;
-                    track frame;
-                    let i = $index
-                  ) {
-                    <mat-expansion-panel
-                      [disabled]="
-                        (!frame.context || !frame.context.length) && !frame.vars
-                      "
-                      [expanded]="frame.context?.length ? i === 0 : undefined"
-                      class="mat-elevation-z0"
-                    >
-                      <mat-expansion-panel-header
-                        collapsedHeight="auto"
-                        expandedHeight="auto"
-                        [class.disabled-panel]="
-                          !frame.context?.length && !frame.vars
-                        "
-                        [class.highlighted]="frame.inApp"
-                      >
-                        <gt-frame-title
-                          [frame]="frame"
-                          [eventPlatform]="eventPlatform()"
-                        ></gt-frame-title>
-                      </mat-expansion-panel-header>
-                      @if (frame.context) {
-                        <gt-frame-expanded
-                          [lineNo]="frame.lineNo"
-                          [context]="frame.context"
-                          [vars]="frame.vars"
-                          [eventPlatform]="eventPlatform()"
-                        ></gt-frame-expanded>
-                      }
-                    </mat-expansion-panel>
-                  }
-                </mat-accordion>
+              @if (link.unhandled) {
+                <gt-status-pill
+                  class="chain__pill"
+                  [label]="unhandledLabel"
+                  color="var(--mat-sys-error)"
+                />
               }
+            </span>
+            @if (link.mechanism) {
+              <span class="chain__mech">{{ link.mechanism }}</span>
+            }
+            @if (!isOpen && link.top; as top) {
+              <span class="chain__frame">
+                <span class="gt-mono chain__fn">{{ top.fn }}</span>
+                <span class="gt-path gt-mono"
+                  ><bdi>{{ top.file }}</bdi></span
+                >
+                <span class="gt-lc">{{ top.lc }}</span>
+              </span>
+            }
+            @if (link.frames.length) {
+              <mat-icon class="gt-chev" aria-hidden="true">{{
+                isOpen ? "keyboard_arrow_down" : "keyboard_arrow_right"
+              }}</mat-icon>
+            }
+          </button>
+          @if (isOpen) {
+            <div class="frames">
+              <ng-container
+                *ngTemplateOutlet="frameList; context: { $implicit: link }"
+              />
             </div>
           }
         </div>
       }
-      @if (group.value === "raw" && exception.values) {
-        <div>
-          <gt-raw-stacktrace
-            [eventPlatform]="eventPlatform()"
-          ></gt-raw-stacktrace>
-        </div>
-      }
-    </section>
-  </section>
+    }
+  </gt-panel>
 }
+
+<ng-template #frameList let-link>
+  @let view = views().get(link.key)!;
+  @for (item of view.list; track item.key) {
+    @if (item.kind === "run") {
+      @let runOpen = opened().has(item.key);
+      <button
+        type="button"
+        class="frame__head frame__head--run gt-expandable-row"
+        [attr.aria-expanded]="runOpen"
+        (click)="toggle(item.key)"
+      >
+        <span class="frame__run">{{ item.label }}</span>
+        <mat-icon class="gt-chev" aria-hidden="true">{{
+          runOpen ? "keyboard_arrow_down" : "keyboard_arrow_right"
+        }}</mat-icon>
+      </button>
+      @if (runOpen) {
+        @for (f of item.frames; track f.key) {
+          <ng-container
+            *ngTemplateOutlet="frameRow; context: { $implicit: f }"
+          />
+        }
+      }
+    } @else {
+      <ng-container
+        *ngTemplateOutlet="frameRow; context: { $implicit: item }"
+      />
+    }
+  }
+  @if (view.hidden) {
+    <div class="frames__more">
+      <button mat-button type="button" (click)="showMore(link.key)" i18n>
+        Show {{ view.hidden }} more frames
+      </button>
+    </div>
+  }
+</ng-template>
+
+<ng-template #frameRow let-item>
+  @let f = item.frame;
+  @let isOpen = opened().has(item.key);
+  <div class="frame" [class.frame--muted]="item.muted">
+    <button
+      type="button"
+      class="frame__head gt-expandable-row"
+      [attr.aria-expanded]="isOpen"
+      (click)="toggle(item.key)"
+    >
+      <span class="gt-mono frame__fn">{{ item.fn }}</span>
+      <span
+        class="gt-path gt-mono frame__file"
+        [matTooltip]="item.fileTip"
+        [matTooltipDisabled]="!item.fileTip"
+        ><bdi>{{ item.file }}</bdi></span
+      >
+      <span class="gt-lc">{{ item.lc }}</span>
+      <mat-icon class="gt-chev" aria-hidden="true">{{
+        isOpen ? "keyboard_arrow_down" : "keyboard_arrow_right"
+      }}</mat-icon>
+    </button>
+    @if (isOpen) {
+      <div class="frame__body">
+        @if (item.abs || item.filename || item.pkg) {
+          <p class="frame__meta">
+            @if (item.abs) {
+              @if (item.absIsUrl) {
+                <a
+                  class="gt-prose-link gt-mono frame__abs"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  [href]="item.abs"
+                  [matTooltip]="item.abs"
+                  >{{ item.abs }}</a
+                >
+              } @else {
+                <span class="gt-mono frame__abs" [title]="item.abs">{{
+                  item.abs
+                }}</span>
+              }
+            }
+            @if (item.filename) {
+              <span i18n
+                >file <span class="gt-mono">{{ item.filename }}</span></span
+              >
+            }
+            @if (item.pkg) {
+              <span i18n
+                >within <span class="gt-mono">{{ item.pkg }}</span></span
+              >
+            }
+          </p>
+        }
+        @if (f.context?.length) {
+          <div
+            class="gt-code"
+            tabindex="0"
+            i18n-aria-label
+            aria-label="Source context"
+          >
+            <div class="gt-code__lines">
+              @for (l of f.context; track l[0]; let i = $index) {
+                <div
+                  class="gt-code__line"
+                  [class.gt-code__line--hl]="l[0] === f.lineNo"
+                >
+                  <span class="gt-code__n">{{ l[0] }}</span>
+                  @if (item.code) {
+                    <span class="gt-code__t" [innerHTML]="item.code[i]"></span>
+                  } @else {
+                    <span class="gt-code__t">{{ l[1] }}</span>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        } @else {
+          <p class="frame__none" i18n>No source context for this frame.</p>
+        }
+        @if (item.vars.length) {
+          <dl class="gt-property-list gt-property-list--vars">
+            @for (v of item.vars; track v.key) {
+              <div
+                class="gt-property-list__row"
+                [class.gt-property-list__row--long]="v.long"
+              >
+                <dt class="gt-mono">{{ v.key }}</dt>
+                <dd class="gt-mono">{{ v.value }}</dd>
+              </div>
+            }
+          </dl>
+        }
+      </div>
+    }
+  </div>
+</ng-template>
