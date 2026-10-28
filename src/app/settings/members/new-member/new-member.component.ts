@@ -82,8 +82,6 @@ export class NewMemberComponent implements OnInit, OnDestroy {
 
   enableUserRegistration = this.settingsService.enableUserRegistration;
   organizationTeams = this.organizationsService.organizationTeams;
-  filteredOrganizationTeams =
-    this.organizationsService.filteredOrganizationTeams;
   errors = this.organizationsService.errors;
   loading = this.organizationsService.loading;
   form = new FormGroup({

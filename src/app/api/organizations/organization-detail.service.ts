@@ -102,14 +102,6 @@ export class OrganizationDetailService extends StatefulService<OrganizationsStat
 
   readonly organizationTeams = computed(() => this.state().organizationTeams);
 
-  readonly selectedOrganizationTeams = computed(() => this.organizationTeams());
-
-  readonly filteredOrganizationTeams = computed(() => {
-    const orgTeams = this.organizationTeams();
-    const selectedOrgTeams = this.selectedOrganizationTeams();
-    return orgTeams === selectedOrgTeams;
-  });
-
   readonly errors = computed(() => this.state().errors);
   readonly loading = computed(() => this.state().loading);
 
