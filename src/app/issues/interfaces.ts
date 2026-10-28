@@ -272,6 +272,8 @@ interface Mechanism {
   data?: { function: string };
   type: string;
   handled: boolean;
+  /** How a chained exception links to its parent ("__cause__", "__context__"). */
+  source?: string;
 }
 
 export interface Stacktrace {

@@ -20,10 +20,29 @@ import { Json } from "src/app/interface-primitives";
 import { OrganizationsService } from "src/app/api/organizations.service";
 import { StatefulService } from "src/app/shared/stateful-service/signal-state.service";
 import { client } from "src/app/shared/api/api";
+import { getCursor } from "src/app/shared/pagination.utils";
 import { components } from "src/app/api/api-schema";
 
 type EventDetail = components["schemas"]["IssueEventDetailSchema"];
 type IssueDetail = components["schemas"]["IssueDetailSchema"];
+type IssueEventSummary = components["schemas"]["IssueEventSchema"];
+
+/** One of an issue's events, as the event switcher lists it. */
+export type RecentEvent = Pick<
+  IssueEventSummary,
+  "id" | "eventID" | "dateCreated" | "tags" | "user"
+>;
+
+/** Recent events of one issue, newest first. */
+export interface RecentEvents {
+  issueID: string;
+  events: RecentEvent[];
+  /** Next page cursor; null once every event is loaded. */
+  cursor: string | null;
+  loading: boolean;
+}
+
+const RECENT_EVENTS_PAGE = 20;
 
 interface IssueDetailState {
   tags: IssueTags[] | null;
@@ -36,6 +55,35 @@ const initialState: IssueDetailState = {
   isReversed: true,
   showShowMore: false,
 };
+
+/** localStorage: "false" when the reader wants frames oldest first. */
+const NEWEST_FIRST_KEY = "issueFramesNewestFirst";
+
+function readNewestFirst(): boolean {
+  try {
+    return localStorage.getItem(NEWEST_FIRST_KEY) !== "false";
+  } catch {
+    return true;
+  }
+}
+
+/** Tag keys that identify a user, in order of preference. */
+const USER_TAG_KEYS = ["user.id", "user.email", "user.username", "user.ip"];
+
+/** The events list sends snake_case keys although its schema says camelCase. */
+function toRecentEvent(e: IssueEventSummary): RecentEvent {
+  const raw = e as IssueEventSummary & {
+    event_id?: string;
+    date_created?: string;
+  };
+  return {
+    id: e.id,
+    eventID: e.eventID ?? raw.event_id ?? e.id,
+    dateCreated: e.dateCreated ?? raw.date_created,
+    tags: e.tags,
+    user: e.user,
+  };
+}
 
 @Injectable({
   providedIn: "root",
@@ -116,8 +164,72 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
     return event ? this.eventEntryBreadcrumbs(event) : undefined;
   });
 
+  /** Distinct users from the issue's user tag (the API userCount is unfilled). */
+  readonly userCount = computed(() => {
+    const tags = this.state().tags;
+    if (!tags) return null;
+    for (const key of USER_TAG_KEYS) {
+      const tag = tags.find((t) => t.key === key);
+      if (tag) {
+        return { count: tag.uniqueValues, key, tagged: tag.totalValues };
+      }
+    }
+    return null;
+  });
+
   issueID = signal("");
   eventID = signal<string | null>(null);
+
+  /** Loaded when the event switcher first opens; kept while the issue is open. */
+  readonly recentEvents = signal<RecentEvents | null>(null);
+
+  /** Loads the first page, or the next one when `more` is set. */
+  async loadRecentEvents(more = false) {
+    const issueID = this.issueID();
+    const current = this.recentEvents();
+    const same = current?.issueID === issueID;
+    if (!issueID || current?.loading || (same && !more)) return;
+    const cursor = more && same ? current.cursor : null;
+    if (more && !cursor) return;
+    const kept = more && same ? current.events : [];
+    this.recentEvents.set({ issueID, events: kept, cursor, loading: true });
+    const { data, response } = await client.GET(
+      "/api/0/issues/{issue_id}/events/",
+      {
+        params: {
+          path: { issue_id: parseInt(issueID) },
+          query: { limit: RECENT_EVENTS_PAGE, cursor },
+        },
+      },
+    );
+    if (this.issueID() !== issueID) return;
+    let next: string | null = null;
+    try {
+      next = data?.length ? getCursor(response) : null;
+    } catch {
+      // No pagination headers: treat this page as the last.
+    }
+    const seen = new Set(kept.map((e) => e.id));
+    this.recentEvents.set({
+      issueID,
+      events: [
+        ...kept,
+        ...(data ?? []).filter((e) => !seen.has(e.id)).map(toRecentEvent),
+      ],
+      cursor: next,
+      loading: false,
+    });
+  }
+
+  /** The route of one of this issue's events, as Older and Newer use. */
+  eventUrlFor(eventID: string) {
+    return this.eventUrl(
+      this.organization.activeOrganizationSlug(),
+      this.issue() ?? null,
+      eventID,
+    );
+  }
+
   #issueResource = resource({
     params: () => ({ issueID: this.issueID() }),
     loader: async ({ params }) => {
@@ -127,7 +239,8 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
       const { data } = await client.GET("/api/0/issues/{issue_id}/", {
         params: { path: { issue_id: parseInt(params.issueID) } },
       });
-      return data;
+      // null, not undefined: a missing issue is a loaded value (not found).
+      return data ?? null;
     },
   });
   #eventResource = resource({
@@ -147,7 +260,7 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
             },
           },
         );
-        return data;
+        return data ?? null;
       }
       const { data } = await client.GET(
         "/api/0/issues/{issue_id}/events/latest/",
@@ -155,12 +268,29 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
           params: { path: { issue_id: issueID } },
         },
       );
-      return data;
+      return data ?? null;
     },
   });
 
   constructor() {
     super(initialState);
+    this.setState({ isReversed: readNewestFirst() });
+  }
+
+  /** The frame order is the reader's choice, so it survives a new issue. */
+  override clearState() {
+    super.clearState();
+    this.setState({ isReversed: readNewestFirst() });
+    this.recentEvents.set(null);
+  }
+
+  setNewestFirst(newestFirst: boolean) {
+    this.setState({ isReversed: newestFirst });
+    try {
+      localStorage.setItem(NEWEST_FIRST_KEY, String(newestFirst));
+    } catch {
+      // The order still applies for this visit.
+    }
   }
 
   async retrieveTags(id: number, query?: string) {
@@ -295,8 +425,7 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
   }
 
   private toggleIsReversed() {
-    const isReversed = this.state().isReversed;
-    this.setState({ isReversed: !isReversed });
+    this.setNewestFirst(!this.state().isReversed);
   }
 
   /* Return the message entry type for an event */
