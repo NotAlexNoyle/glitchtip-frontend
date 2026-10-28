@@ -22,6 +22,7 @@ import { DaysAgoPipe } from "src/app/shared/days-ago.pipe";
 import { PanelComponent } from "src/app/shared/panel/panel.component";
 import { EmptyStateComponent } from "src/app/shared/empty-state/empty-state.component";
 import { SplitButtonComponent } from "src/app/shared/split-button/split-button.component";
+import { SelectGhostDirective } from "src/app/shared/select-ghost.directive";
 import { ExceptionValueData } from "../../interfaces";
 import { EntryRequestComponent } from "./entry-request/entry-request.component";
 import { EntryBreadcrumbsComponent } from "./entry-breadcrumbs/entry-breadcrumbs.component";
@@ -106,6 +107,7 @@ const MCP_COPY_HINT_SEEN_KEY = "mcpCopyHintSeen";
     PanelComponent,
     EmptyStateComponent,
     SplitButtonComponent,
+    SelectGhostDirective,
   ],
 })
 export class EventDetailComponent {
@@ -204,7 +206,6 @@ export class EventDetailComponent {
 
   eventCount = computed(() => +(this.issueService.issue()?.count ?? 0));
   readonly showMoreValue = SHOW_MORE;
-  readonly switcherOpen = signal(false);
   private recent = computed(() => {
     const r = this.issueService.recentEvents();
     return r && r.issueID === this.issueID() ? r : null;
@@ -264,7 +265,6 @@ export class EventDetailComponent {
   }
 
   onSwitcherOpened(open: boolean) {
-    this.switcherOpen.set(open);
     if (open) {
       this.issueService.loadRecentEvents();
     }

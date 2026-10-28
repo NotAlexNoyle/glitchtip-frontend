@@ -4,12 +4,12 @@ import {
   computed,
   inject,
   linkedSignal,
-  signal,
 } from "@angular/core";
 import { MatSelectModule } from "@angular/material/select";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { PanelComponent } from "src/app/shared/panel/panel.component";
+import { SelectGhostDirective } from "src/app/shared/select-ghost.directive";
 import { IssueDetailService } from "../../issue-detail.service";
 import { PropertyRow, crumbSummary, toRows, toggled } from "../event-format";
 
@@ -57,7 +57,13 @@ function clock(iso: string): { time: string; short: string } {
   templateUrl: "./entry-breadcrumbs.component.html",
   styleUrls: ["./entry-breadcrumbs.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [PanelComponent, MatSelectModule, MatButtonModule, MatIconModule],
+  imports: [
+    PanelComponent,
+    SelectGhostDirective,
+    MatSelectModule,
+    MatButtonModule,
+    MatIconModule,
+  ],
 })
 export class EntryBreadcrumbsComponent {
   private issueService = inject(IssueDetailService);
@@ -73,7 +79,6 @@ export class EntryBreadcrumbsComponent {
     this.crumbs();
     return [];
   });
-  readonly selectOpen = signal(false);
   readonly showEarlier = linkedSignal(() => {
     this.crumbs();
     return false;

@@ -1,3 +1,4 @@
+@use "controls";
 @use "variables" as vars;
 
 // Everything that changes with Older and Newer.
@@ -9,6 +10,7 @@
 
 // Opaque, so panels scroll under it; the app bar is not sticky.
 .event-bar {
+  container: gt-bar / inline-size;
   position: sticky;
   top: 0;
   z-index: 2;
@@ -121,7 +123,7 @@
 }
 
 // Narrow: "Latest of 17" or the short id; the facts are in the panels.
-@container issue-body (max-width: 599px) {
+@include controls.narrow-bar {
   .event-switch__fact,
   .event-switch__long {
     display: none;

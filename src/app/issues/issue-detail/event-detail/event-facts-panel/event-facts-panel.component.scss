@@ -1,4 +1,4 @@
-@use "@angular/material" as mat;
+@use "controls";
 
 :host {
   display: block;
@@ -77,14 +77,10 @@
   color: var(--mat-sys-on-surface-variant);
 }
 
-// 32px, ghost; the row keeps its height.
+// Ghost and compact; the row keeps its height.
 .fact__open {
   flex: none;
   margin-block: calc(-1 * var(--gt-space-1, 4px));
   color: var(--mat-sys-on-surface-variant);
-  @include mat.icon-button-overrides(
-    (
-      state-layer-size: 32px,
-    )
-  );
+  @include controls.compact-buttons;
 }

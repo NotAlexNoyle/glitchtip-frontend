@@ -1,4 +1,4 @@
-@use "@angular/material" as mat;
+@use "controls";
 
 :host {
   display: block;
@@ -18,10 +18,6 @@
   position: absolute;
   top: var(--gt-space-1, 4px);
   right: var(--gt-space-2, 8px);
-  @include mat.icon-button-overrides(
-    (
-      state-layer-size: 32px,
-    )
-  );
+  @include controls.compact-buttons;
   color: var(--mat-sys-on-surface-variant);
 }

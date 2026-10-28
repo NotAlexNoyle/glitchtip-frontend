@@ -18,11 +18,7 @@
     <div class="event-bar">
       <div class="event-bar__switch">
         @let latest = nextEvent() === false;
-        <span
-          class="gt-select-ghost event-switch"
-          [class.gt-select-ghost--open]="switcherOpen()"
-          (click)="$event.target === $event.currentTarget && switcher.open()"
-        >
+        <span gtSelectGhost class="event-switch">
           <mat-select
             #switcher
             i18n-aria-label

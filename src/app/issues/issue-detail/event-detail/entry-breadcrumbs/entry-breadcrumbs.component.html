@@ -1,12 +1,7 @@
 @if (total()) {
   <gt-panel flush i18n-title title="Breadcrumbs" [subtitle]="subtitle()">
     @if (categories().length > 1) {
-      <span
-        slot="actions"
-        class="gt-select-ghost"
-        [class.gt-select-ghost--open]="selectOpen()"
-        (click)="$event.target === $event.currentTarget && select.open()"
-      >
+      <span slot="actions" gtSelectGhost>
         <span
           class="gt-select-ghost__label"
           aria-hidden="true"
@@ -27,7 +22,6 @@
           [panelWidth]="null"
           [value]="category()"
           (valueChange)="category.set($event)"
-          (openedChange)="selectOpen.set($event)"
         >
           <mat-select-trigger
             ><span class="gt-select-ghost__value">{{

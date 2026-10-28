@@ -7,8 +7,8 @@
   >
     <gt-ghost-select
       slot="actions"
-      i18n-label
-      label="Frames"
+      i18n-ariaLabel
+      ariaLabel="Frames"
       [options]="modes"
       [shortLabel]="modeShort()"
       [(value)]="mode"
@@ -16,8 +16,8 @@
     @if (mode() !== "raw") {
       <gt-ghost-select
         slot="actions"
-        i18n-label
-        label="Frame order"
+        i18n-ariaLabel
+        ariaLabel="Frame order"
         [options]="orders"
         [shortLabel]="orderShort()"
         [value]="order()"

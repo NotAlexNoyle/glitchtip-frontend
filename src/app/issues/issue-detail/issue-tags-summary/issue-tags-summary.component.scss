@@ -1,4 +1,4 @@
-@use "@angular/material" as mat;
+@use "controls";
 @use "row-mixins" as rows;
 
 $spread-columns: 104px minmax(0, 1fr) 64px 40px 32px;
@@ -42,11 +42,7 @@ $spread-columns: 104px minmax(0, 1fr) 64px 40px 32px;
 
 .tags-summary__toggle {
   grid-area: toggle;
-  @include mat.button-overrides(
-    (
-      text-container-height: 32px,
-    )
-  );
+  @include controls.compact-buttons;
 }
 
 .tags-summary__panel {
