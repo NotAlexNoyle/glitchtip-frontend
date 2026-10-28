@@ -2,8 +2,8 @@
 @use "@angular/material" as mat;
 @use "issue-level";
 
-// A column, so margins add up: 12px to the Tags line, 8px from it to the
-// tabs, 16px from the header to the tabs when there are no tags.
+// A column, so margins add up (no collapsing): 16px between the header,
+// the Tags line and the tabs, with or without the Tags line.
 .issue-body {
   container: issue-body / inline-size;
   display: flex;
