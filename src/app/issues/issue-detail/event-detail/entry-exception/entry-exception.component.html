@@ -5,15 +5,22 @@
     [hideSubtitleNarrow]="!single()"
     [subtitle]="subtitle()"
   >
-    <gt-ghost-select
-      slot="actions"
-      i18n-ariaLabel
-      ariaLabel="Frames"
-      [options]="modes"
-      [shortLabel]="modeShort()"
-      [(value)]="mode"
-    />
-    @if (mode() !== "raw") {
+    @if (hasFrames()) {
+      <mat-button-toggle-group
+        slot="actions"
+        class="gt-segmented"
+        hideSingleSelectionIndicator
+        i18n-aria-label
+        aria-label="Frames"
+        [value]="mode()"
+        (change)="mode.set($event.value)"
+      >
+        <mat-button-toggle value="app" i18n>App</mat-button-toggle>
+        <mat-button-toggle value="all" i18n> Full </mat-button-toggle>
+        <mat-button-toggle value="raw" i18n> Raw </mat-button-toggle>
+      </mat-button-toggle-group>
+    }
+    @if (hasFrames() && view() !== "raw") {
       <gt-ghost-select
         slot="actions"
         i18n-ariaLabel
@@ -24,21 +31,23 @@
         (valueChange)="setOrder($event)"
       />
     }
-    <button
-      slot="actions"
-      mat-icon-button
-      type="button"
-      i18n-aria-label
-      aria-label="Copy trace"
-      i18n-matTooltip
-      matTooltip="Copy trace"
-      [cdkCopyToClipboard]="raw()"
-      (cdkCopyToClipboardCopied)="onCopied()"
-    >
-      <mat-icon class="gt-icon-sm">content_copy</mat-icon>
-    </button>
+    @if (raw()) {
+      <button
+        slot="actions"
+        mat-icon-button
+        type="button"
+        i18n-aria-label
+        aria-label="Copy trace"
+        i18n-matTooltip
+        matTooltip="Copy trace"
+        [cdkCopyToClipboard]="raw()"
+        (cdkCopyToClipboardCopied)="onCopied()"
+      >
+        <mat-icon class="gt-icon-sm">content_copy</mat-icon>
+      </button>
+    }
 
-    @if (mode() === "raw") {
+    @if (view() === "raw") {
       <pre class="gt-raw">{{ raw() }}</pre>
     } @else if (single()) {
       @let link = chain()[0];

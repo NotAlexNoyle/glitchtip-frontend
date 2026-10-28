@@ -9,6 +9,7 @@ import {
 import { NgTemplateOutlet } from "@angular/common";
 import { ClipboardModule } from "@angular/cdk/clipboard";
 import { MatButtonModule } from "@angular/material/button";
+import { MatButtonToggleModule } from "@angular/material/button-toggle";
 import { MatIconModule } from "@angular/material/icon";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatSnackBar } from "@angular/material/snack-bar";
@@ -93,9 +94,6 @@ interface ChainLink {
 /** Items shown before "Show N more frames". */
 const FRAME_CAP = 10;
 
-const FULL = $localize`Full`;
-const RAW = $localize`Raw`;
-
 const linkKey = (i: number) => `l${i}`;
 const frameKey = (link: number, frame: number) => `f${link}-${frame}`;
 
@@ -128,21 +126,14 @@ function mechanismOf(mech: Values["mechanism"]): Mechanism | null {
     MatTooltipModule,
     ClipboardModule,
     NgTemplateOutlet,
+    MatButtonToggleModule,
   ],
 })
 export class EntryExceptionComponent {
   private issueService = inject(IssueDetailService);
   private snackBar = inject(MatSnackBar);
 
-  readonly modes: GhostSelectOption[] = [
-    { value: "app", label: $localize`App frames` },
-    { value: "all", label: FULL },
-    { value: "raw", label: RAW },
-  ];
-  readonly mode = signal("app");
-  readonly modeShort = computed(
-    () => ({ app: $localize`App`, all: FULL, raw: RAW })[this.mode()] ?? "",
-  );
+  readonly mode = signal<"app" | "all" | "raw">("app");
   readonly unhandledLabel = $localize`unhandled`;
 
   readonly orders: GhostSelectOption[] = [
@@ -159,6 +150,12 @@ export class EntryExceptionComponent {
   private readonly values = this.issueService.exceptionChain;
   readonly raw = this.issueService.exceptionTrace;
   readonly single = computed(() => this.values().length === 1);
+  /** Without frames there is nothing to filter, order or show raw. */
+  readonly hasFrames = computed(() =>
+    this.values().some((v) => stackFrames(v).length),
+  );
+  /** The view on screen; a frameless exception always shows its links. */
+  readonly view = computed(() => (this.hasFrames() ? this.mode() : "app"));
 
   /** Frames keep their stack index as key, so reordering keeps them open. */
   readonly chain = computed<ChainLink[]>(() => {
@@ -224,7 +221,7 @@ export class EntryExceptionComponent {
    * into one row; Full (or a link with no app frames) lists every frame.
    */
   readonly views = computed(() => {
-    const full = this.mode() === "all";
+    const full = this.view() === "all";
     const showAll = this.showAllFrames();
     const views = new Map<string, FrameView>();
     for (const link of this.chain()) {
