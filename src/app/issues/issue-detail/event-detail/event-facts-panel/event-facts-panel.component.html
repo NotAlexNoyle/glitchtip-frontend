@@ -3,7 +3,6 @@
     flush
     i18n-title
     title="This event"
-    [subtitle]="hasShares() ? subtitle : ''"
   >
     <dl class="gt-property-list gt-property-list--facts">
       @for (p of shown(); track p.label) {
@@ -42,9 +41,6 @@
               @if (p.secondary) {
                 <span class="fact__secondary">{{ p.secondary }}</span>
               }
-              @if (p.share) {
-                <span class="gt-share">{{ p.share }}</span>
-              }
             </span>
             @if (p.href) {
               <a
@@ -76,9 +72,6 @@
                     [queryParams]="c.query"
                     ><span class="gt-tag-chip__key">{{ c.key }}</span
                     ><span class="gt-tag-chip__value">{{ c.value }}</span>
-                    @if (c.share) {
-                      <span class="gt-tag-chip__share">{{ c.share }}</span>
-                    }
                   </a>
                   @if (c.href) {
                     <a

@@ -20,7 +20,6 @@ import { isHttpUrl } from "../event-format";
 interface Fact {
   label: string;
   value: string;
-  share?: string;
   tooltip?: string;
   /** Scrolls to the Request panel. */
   request?: boolean;
@@ -39,7 +38,6 @@ interface Fact {
 interface TagChip {
   key: string;
   value: string;
-  share?: string;
   query: Params;
   href?: string;
   order: number;
@@ -96,8 +94,6 @@ const byRank = (a: { order?: number }, b: { order?: number }) =>
   (a.order ?? 100) - (b.order ?? 100);
 
 /** Outliers first, then known tags before custom ones. */
-const byShareThenRank = (a: TagChip, b: TagChip) =>
-  Number(!!b.share) - Number(!!a.share) || byRank(a, b);
 
 /** Tags that stay their own row: environment, release and the logo rows. */
 function isFactTag(key: string, keys: string[]): boolean {
@@ -128,7 +124,7 @@ const TIME_ORDER = 50;
 
 /**
  * This event: User, URL, Environment and the logo rows first, then the other
- * facts; every other tag is a chip in one Tags row, outliers first.
+ * facts; every other tag is a chip in one Tags row.
  */
 @Component({
   selector: "gt-event-facts-panel",
@@ -150,18 +146,7 @@ export class EventFactsPanelComponent {
   readonly showRequest = output<void>();
   readonly expanded = signal(false);
   readonly cap = CAP;
-  readonly subtitle = $localize`outliers show their share`;
   readonly filterTip = $localize`Show issues with this value`;
-
-  /** "2 of 15" when the value is not the issue's most common one. */
-  private share(key: string, value: string): string | undefined {
-    const tag = this.issueService.tags()?.find((t) => t.key === key);
-    if (!tag || tag.uniqueValues <= 1) return undefined;
-    const top = tag.topValues[0];
-    const mine = tag.topValues.find((v) => v.value === value);
-    if (!mine || mine.value === top?.value) return undefined;
-    return $localize`${mine.count}:count: of ${tag.totalValues}:total:`;
-  }
 
   /** This event's tags that are not their own fact row. */
   readonly chips = computed<TagChip[]>(() => {
@@ -179,20 +164,18 @@ export class EventFactsPanelComponent {
       chips.push({
         key: t.key,
         value,
-        share: this.share(t.key, value),
         query: this.tagFilter(t.key, value),
         href: isHttpUrl(value) ? value : undefined,
         order: rank(t.key),
       });
     }
-    return chips.sort(byShareThenRank);
+    return chips.sort(byRank);
   });
 
   readonly facts = computed<Fact[]>(() => {
     const event = this.issueService.event();
     if (!event) return [];
     const lead: Fact[] = [];
-    const outliers: Fact[] = [];
     const rest: Fact[] = [];
     const tags = event.tags ?? [];
     const contexts = (event.contexts ?? {}) as { [key: string]: Context };
@@ -218,7 +201,6 @@ export class EventFactsPanelComponent {
           label: $localize`User`,
           value: String(value),
           secondary: [...new Set(others)].join(" · "),
-          share: this.share(key, String(value)),
           // Filterable only when the event carries it as a tag.
           query: (event.tags ?? []).some(
             (t) => t.key === key && String(t.value) === String(value),
@@ -248,12 +230,10 @@ export class EventFactsPanelComponent {
       if (kind) kindsWithTag.add(kind);
       if (!isFactTag(tag.key, keys)) continue;
       if (tag.key === "url" && request?.url) continue;
-      const share = this.share(tag.key, tag.value);
       const ctx = kind ? contextFor(kind) : undefined;
       const fact: Fact = {
         label: LABELS[tag.key] ?? tag.key,
         value: tag.value,
-        share,
         query: this.tagFilter(tag.key, tag.value),
         href: isHttpUrl(tag.value) ? tag.value : undefined,
         icon: kind
@@ -261,7 +241,7 @@ export class EventFactsPanelComponent {
           : undefined,
         secondary: kind ? contextDetail(kind, ctx, tag.value) : undefined,
       };
-      (share ? outliers : rest).push({ ...fact, order: rank(tag.key) });
+      rest.push({ ...fact, order: rank(tag.key) });
     }
 
     // Contexts no tag covers: runtime, GPU, device, OS, browser.
@@ -333,13 +313,8 @@ export class EventFactsPanelComponent {
       });
     }
 
-    return [...lead, ...outliers.sort(byRank), ...rest.sort(byRank)];
+    return [...lead, ...rest.sort(byRank)];
   });
-
-  readonly hasShares = computed(
-    () =>
-      this.facts().some((f) => f.share) || this.chips().some((c) => c.share),
-  );
 
   readonly shown = computed(() =>
     this.expanded() ? this.facts() : this.facts().slice(0, CAP),
