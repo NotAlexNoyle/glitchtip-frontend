@@ -135,7 +135,7 @@ export interface Request {
 }
 
 export interface AnnotatedRequest extends Request {
-  domainName: string;
+  /** The URL's path, or the URL itself when it is not absolute. */
   path: string;
 }
 

@@ -20,17 +20,16 @@ import {
 } from "src/app/shared/ghost-select/ghost-select.component";
 import { codeLanguage, highlightLines } from "src/app/prismjs/highlight-lines";
 import { IssueDetailService } from "../../issue-detail.service";
-import { ExceptionValueData, Frame, Values } from "../../../interfaces";
+import { Frame, Values } from "../../../interfaces";
 import {
   PropertyRow,
   frameDisplay,
   frameLineCol,
   framePackage,
-  framesInOrder,
   hideFunctionName,
   isHttpUrl,
   packageOf,
-  rawTrace,
+  stackFrames,
   toRows,
   toggled,
 } from "../event-format";
@@ -51,15 +50,19 @@ interface FrameItem {
   filename: string;
   pkg: string;
   muted: boolean;
-  vars: PropertyRow[];
+}
+
+/** What an open frame shows; built on first open. */
+interface FrameBody {
   /** Context lines as token HTML; null shows plain text. */
   code: string[] | null;
+  vars: PropertyRow[];
 }
 
 interface RunItem {
   kind: "run";
   key: string;
-  label: string;
+  packages: string;
   frames: FrameItem[];
 }
 
@@ -68,14 +71,20 @@ interface FrameView {
   hidden: number;
 }
 
+interface Mechanism {
+  type: string;
+  handled: boolean;
+  fn: string;
+}
+
 interface ChainLink {
   key: string;
   role: string;
   type: string;
   value: string;
   unhandled: boolean;
-  /** "mechanism X · handled no · function Y", or empty. */
-  mechanism: string;
+  /** Null when it says nothing new (a plain chained link). */
+  mechanism: Mechanism | null;
   root: boolean;
   top: FrameItem | undefined;
   frames: FrameItem[];
@@ -87,28 +96,22 @@ const FRAME_CAP = 10;
 const FULL = $localize`Full`;
 const RAW = $localize`Raw`;
 
-/** A plain chained link says nothing new, so it gets no mechanism line. */
-function mechanismLine(mech: Values["mechanism"]): string {
-  if (!mech) return "";
-  const fn = mech.data?.function;
-  if (mech.type === "chained" && mech.handled !== false && !fn) return "";
-  return [
-    mech.type ? $localize`mechanism ${mech.type}` : "",
-    mech.handled === false ? $localize`handled no` : $localize`handled yes`,
-    fn ? $localize`function ${fn}` : "",
-  ]
-    .filter(Boolean)
-    .join(" · ");
+const linkKey = (i: number) => `l${i}`;
+const frameKey = (link: number, frame: number) => `f${link}-${frame}`;
+
+/** The most recent app frame, else the most recent frame (API index). */
+function topFrameIndex(frames: Frame[]): number {
+  for (let i = frames.length - 1; i >= 0; i--) {
+    if (frames[i].inApp) return i;
+  }
+  return frames.length - 1;
 }
 
-function runLabel(frames: FrameItem[]): string {
-  const pkgs = [
-    ...new Set(frames.map((f) => packageOf(f.frame)).filter(Boolean)),
-  ];
-  const n = frames.length;
-  const count =
-    n === 1 ? $localize`1 library frame` : $localize`${n} library frames`;
-  return pkgs.length ? `${count} · ${pkgs.join(", ")}` : count;
+function mechanismOf(mech: Values["mechanism"]): Mechanism | null {
+  if (!mech) return null;
+  const fn = mech.data?.function ?? "";
+  if (mech.type === "chained" && mech.handled !== false && !fn) return null;
+  return { type: mech.type ?? "", handled: mech.handled !== false, fn };
 }
 
 @Component({
@@ -153,28 +156,23 @@ export class EntryExceptionComponent {
     this.order() === "newest" ? $localize`Newest` : $localize`Oldest`,
   );
 
-  /** Thrown exception first, its causes under it, root cause last. */
-  private readonly values = computed<Values[]>(() => {
-    const event = this.issueService.event();
-    const entry = event?.entries?.find((e) => e.type === "exception");
-    const values = (entry?.data as ExceptionValueData | undefined)?.values;
-    return [...(values ?? [])].reverse();
-  });
-
+  private readonly values = this.issueService.exceptionChain;
+  readonly raw = this.issueService.exceptionTrace;
   readonly single = computed(() => this.values().length === 1);
 
+  /** Frames keep their stack index as key, so reordering keeps them open. */
   readonly chain = computed<ChainLink[]>(() => {
     const values = this.values();
     const last = values.length - 1;
     const platform = this.issueService.event()?.platform;
     const newestFirst = this.issueService.isReversed();
     return values.map((value, i) => {
-      const frames = framesInOrder(value, newestFirst).map((frame, fi) =>
-        this.frameItem(frame, `f${i}-${fi}`, platform),
+      const stack = stackFrames(value);
+      const items = stack.map((frame, fi) =>
+        this.frameItem(frame, frameKey(i, fi), platform),
       );
-      const mech = value.mechanism;
       return {
-        key: `l${i}`,
+        key: linkKey(i),
         role:
           i === 0
             ? $localize`Thrown`
@@ -183,41 +181,41 @@ export class EntryExceptionComponent {
               : $localize`Caused by`,
         type: value.type,
         value: value.value || "",
-        unhandled: !!mech && mech.handled === false,
-        mechanism: mechanismLine(mech),
+        unhandled: value.mechanism?.handled === false,
+        mechanism: mechanismOf(value.mechanism),
         root: i === last && last > 0,
-        top: frames.find((f) => f.frame.inApp) ?? frames[0],
-        frames,
+        top: items[topFrameIndex(stack)],
+        frames: newestFirst ? [...items].reverse() : items,
       };
     });
   });
 
-  /** One exception puts its type and value in the panel header. */
+  /** One exception names its type in the header and its value in the body. */
   readonly title = computed(() =>
     this.single()
-      ? this.chain()[0]?.type || $localize`Exception`
+      ? this.values()[0].type || $localize`Exception`
       : $localize`Exception`,
   );
 
   readonly subtitle = computed(() => {
     const n = this.values().length;
-    if (n === 1) return this.chain()[0].value;
-    return n ? $localize`${n} in chain, thrown first` : "";
+    return n > 1 ? $localize`${n}:count: in chain, thrown first` : "";
   });
 
   /** The root cause opens on its top app frame. */
   private readonly defaultOpen = computed(() => {
-    const chain = this.chain();
-    const root = chain[chain.length - 1];
+    const values = this.values();
+    const last = values.length - 1;
     const open = new Set<string>();
-    if (!root) return open;
-    if (chain.length > 1) open.add(root.key);
-    if (root.top) open.add(root.top.key);
+    if (last < 0) return open;
+    if (last > 0) open.add(linkKey(last));
+    const stack = stackFrames(values[last]);
+    if (stack.length) open.add(frameKey(last, topFrameIndex(stack)));
     return open;
   });
   readonly opened = linkedSignal(() => this.defaultOpen());
   private readonly showAllFrames = linkedSignal(() => {
-    this.defaultOpen();
+    this.values();
     return new Set<string>();
   });
 
@@ -242,13 +240,16 @@ export class EntryExceptionComponent {
           list.push({
             kind: "run",
             key: "r" + item.key,
-            label: "",
+            packages: "",
             frames: [item],
           });
         }
       }
       for (const it of list) {
-        if (it.kind === "run") it.label = runLabel(it.frames);
+        if (it.kind === "run") {
+          const pkgs = it.frames.map((f) => packageOf(f.frame));
+          it.packages = [...new Set(pkgs.filter(Boolean))].join(", ");
+        }
       }
       const capped = list.length > FRAME_CAP + 2 && !showAll.has(link.key);
       views.set(
@@ -261,9 +262,26 @@ export class EntryExceptionComponent {
     return views;
   });
 
-  readonly raw = computed(() =>
-    rawTrace(this.values(), this.issueService.event()?.platform),
-  );
+  private readonly frameItems = computed(() => {
+    const byKey = new Map<string, FrameItem>();
+    for (const link of this.chain()) {
+      for (const f of link.frames) byKey.set(f.key, f);
+    }
+    return byKey;
+  });
+  private readonly bodyCache = new WeakMap<Frame, FrameBody>();
+
+  /** Source highlighting and vars only for the frames that are open. */
+  readonly bodies = computed(() => {
+    const platform = this.issueService.event()?.platform;
+    const items = this.frameItems();
+    const bodies = new Map<string, FrameBody>();
+    for (const key of this.opened()) {
+      const item = items.get(key);
+      if (item) bodies.set(key, this.frameBody(item.frame, platform));
+    }
+    return bodies;
+  });
 
   toggle(key: string) {
     this.opened.set(toggled(this.opened(), key));
@@ -281,14 +299,32 @@ export class EntryExceptionComponent {
     this.snackBar.open($localize`Trace copied`);
   }
 
+  private frameBody(
+    frame: Frame,
+    platform: string | null | undefined,
+  ): FrameBody {
+    let body = this.bodyCache.get(frame);
+    if (!body) {
+      const lines = (frame.context ?? []).map((l) =>
+        String(l[1] ?? "").replace(/\r?\n$/, ""),
+      );
+      body = {
+        code: highlightLines(
+          lines,
+          codeLanguage(frame.filename || frame.absPath, platform),
+        ),
+        vars: toRows(frame.vars),
+      };
+      this.bodyCache.set(frame, body);
+    }
+    return body;
+  }
+
   private frameItem(
     frame: Frame,
     key: string,
     platform: string | null | undefined,
   ): FrameItem {
-    const lines = (frame.context ?? []).map((l) =>
-      String(l[1] ?? "").replace(/\r?\n$/, ""),
-    );
     const file = frameDisplay(frame, platform);
     const showsModule = !!frame.module && file === frame.module;
     const abs = frame.absPath && frame.absPath !== file ? frame.absPath : "";
@@ -310,11 +346,6 @@ export class EntryExceptionComponent {
           : "",
       pkg: framePackage(frame, platform),
       muted: !frame.inApp,
-      vars: toRows(frame.vars),
-      code: highlightLines(
-        lines,
-        codeLanguage(frame.filename || frame.absPath, platform),
-      ),
     };
   }
 }

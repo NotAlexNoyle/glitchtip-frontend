@@ -6,10 +6,10 @@ import {
   frameDisplay,
   frameLineCol,
   framePackage,
-  framesInOrder,
   hideFunctionName,
   packageOf,
   rawTrace,
+  stackFrames,
   toRows,
   toggled,
 } from "./event-format";
@@ -85,6 +85,10 @@ describe("formatValue", () => {
   it("indents objects longer than 160 characters", () => {
     const long = { text: "a".repeat(170) };
     expect(formatValue(long)).toBe(JSON.stringify(long, null, 2));
+    const many = Object.fromEntries(
+      Array.from({ length: 40 }, (_, i) => [`k${i}`, i]),
+    );
+    expect(formatValue(many)).toBe(JSON.stringify(many, null, 2));
   });
 });
 
@@ -146,19 +150,16 @@ describe("frame display", () => {
     expect(frameLineCol(frame({}))).toBe("");
   });
 
-  it("orders frames newest first or as sent", () => {
+  it("reads frames in API order and tolerates a missing stacktrace", () => {
     const value = exception("E", "", [
       frame({ function: "outer" }),
       frame({ function: "inner" }),
     ]);
-    expect(framesInOrder(value, true).map((f) => f.function)).toEqual([
-      "inner",
-      "outer",
-    ]);
-    expect(framesInOrder(value, false).map((f) => f.function)).toEqual([
+    expect(stackFrames(value).map((f) => f.function)).toEqual([
       "outer",
       "inner",
     ]);
+    expect(stackFrames({ type: "E", value: "", stacktrace: {} })).toEqual([]);
   });
 });
 
@@ -243,6 +244,15 @@ describe("rawTrace", () => {
     );
   });
 
+  it("leaves out a missing type or value", () => {
+    expect(rawTrace([exception("", "only a message", [])], "node")).toBe(
+      "only a message",
+    );
+    expect(rawTrace([exception("TypeError", "", [])], "node")).toBe(
+      "TypeError",
+    );
+  });
+
   it("falls back to File and Module lines", () => {
     expect(rawTrace([exception("E", "", [inner])], "elixir")).toBe(
       'E\n  File "app/pay.js", line 20, col 5, in pay\n    throw err;',
@@ -264,6 +274,9 @@ describe("crumbSummary", () => {
     expect(crumbSummary(crumb({ data: { from: "/cart", to: "/pay" } }))).toBe(
       "/cart → /pay",
     );
+    expect(
+      crumbSummary(crumb({ data: { url: { href: "/a" }, status_code: 0 } })),
+    ).toBe('{ href: "/a" } · 0');
     expect(crumbSummary(crumb({ data: { a: 1, b: 2 } }))).toBe("a, b");
     expect(crumbSummary(crumb({}))).toBe("");
   });

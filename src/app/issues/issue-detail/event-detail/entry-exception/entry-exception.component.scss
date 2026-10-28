@@ -72,6 +72,19 @@ $chev-slot: 32px;
   color: var(--mat-sys-on-surface);
 }
 
+// Closed links clamp to two lines; an open link shows its value in full.
+.chain--open .chain__what,
+.chain--open .chain__msg {
+  display: inline;
+  overflow: visible;
+  -webkit-line-clamp: unset;
+  white-space: pre-wrap;
+}
+
+.chain--open .chain__what {
+  display: block;
+}
+
 // Mechanism, handled and function: one muted line under the link.
 .chain__mech {
   grid-area: mech;
@@ -81,16 +94,26 @@ $chev-slot: 32px;
   overflow-wrap: anywhere;
 }
 
-.mech {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--gt-space-1, 4px) var(--gt-space-2, 8px);
-  margin: 0;
+// Separators are drawn, never typed into a translated string.
+.mech-line > span + span::before {
+  content: "\00B7";
+  margin-inline: var(--gt-space-1, 4px);
+}
+
+// A single exception: its value in full, then the mechanism line.
+.single-head {
   padding: var(--gt-space-2, 8px) var(--gt-space-4, 16px);
   border-bottom: 1px solid var(--mat-sys-outline-variant);
   font: var(--mat-sys-body-small);
   color: var(--mat-sys-on-surface-variant);
+}
+
+.single-head__value {
+  margin: 0 0 2px;
+  font: var(--mat-sys-body-medium);
+  color: var(--mat-sys-on-surface);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .chain__frame {
@@ -157,6 +180,11 @@ $chev-slot: 32px;
   @include rows.truncate;
   font: var(--mat-sys-body-medium);
   color: var(--mat-sys-on-surface-variant);
+}
+
+.frame__run-pkgs::before {
+  content: "\00B7";
+  margin-inline: var(--gt-space-1, 4px);
 }
 
 // Library frames are muted by colour, not opacity.
@@ -261,6 +289,10 @@ $chev-slot: 32px;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
     margin-inline-start: 0;
+  }
+
+  .chain--open .chain__msg {
+    display: block;
   }
 
   .frame__head {

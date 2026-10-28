@@ -10,6 +10,7 @@ import {
 import { Router, RouterLink } from "@angular/router";
 import { Clipboard, ClipboardModule } from "@angular/cdk/clipboard";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatDialog } from "@angular/material/dialog";
 import { MatMenuModule } from "@angular/material/menu";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatSelect, MatSelectModule } from "@angular/material/select";
@@ -23,7 +24,6 @@ import { PanelComponent } from "src/app/shared/panel/panel.component";
 import { EmptyStateComponent } from "src/app/shared/empty-state/empty-state.component";
 import { SplitButtonComponent } from "src/app/shared/split-button/split-button.component";
 import { SelectGhostDirective } from "src/app/shared/select-ghost.directive";
-import { ExceptionValueData } from "../../interfaces";
 import { EntryRequestComponent } from "./entry-request/entry-request.component";
 import { EntryBreadcrumbsComponent } from "./entry-breadcrumbs/entry-breadcrumbs.component";
 import { EntryCSPComponent } from "./entry-csp/entry-csp.component";
@@ -31,7 +31,6 @@ import { EntryExceptionComponent } from "./entry-exception/entry-exception.compo
 import { EntryMessageComponent } from "./entry-message/entry-message.component";
 import { EventFactsPanelComponent } from "./event-facts-panel/event-facts-panel.component";
 import { EventMoreDataComponent } from "./event-more-data/event-more-data.component";
-import { rawTrace } from "./event-format";
 
 /** Latest to older swaps the routed component, so the last event lives here. */
 let lastShown: { issueID: string; eventID: string } | null = null;
@@ -80,6 +79,14 @@ function toOption(e: RecentEvent, latest: boolean): EventOption {
 /** localStorage flag: the one-time "connect your agent via MCP" tip has been shown. */
 const MCP_COPY_HINT_SEEN_KEY = "mcpCopyHintSeen";
 
+function readHintSeen(): boolean {
+  try {
+    return localStorage.getItem(MCP_COPY_HINT_SEEN_KEY) === "true";
+  } catch {
+    return false;
+  }
+}
+
 @Component({
   selector: "gt-event-detail",
   templateUrl: "./event-detail.component.html",
@@ -116,6 +123,7 @@ export class EventDetailComponent {
   private snackBar = inject(MatSnackBar);
   private router = inject(Router);
   private clipboard = inject(Clipboard);
+  private dialog = inject(MatDialog);
   orgSlug = input.required<string>({ alias: "org-slug" });
   issueID = input.required<string>({ alias: "issue-id" });
   eventID = input<string | null>(null, { alias: "event-id" });
@@ -132,9 +140,7 @@ export class EventDetailComponent {
   );
 
   /** Frontend-only dismiss flag for the one-time MCP hint. */
-  private mcpHintSeen = signal(
-    localStorage.getItem(MCP_COPY_HINT_SEEN_KEY) === "true",
-  );
+  private mcpHintSeen = signal(readHintSeen());
 
   /**
    * The event as a payload tuned for pasting into an LLM agent: a marker that
@@ -188,15 +194,7 @@ export class EventDetailComponent {
     if (!event) return "";
     return `${window.location.origin}/${this.orgSlug()}/issues/${this.issueID()}/events/${event.id}`;
   });
-  /** The same text as the Exception panel's Copy trace. */
-  trace = computed(() => {
-    const event = this.event();
-    const entry = event?.entries?.find((e) => e.type === "exception");
-    const values = (entry?.data as ExceptionValueData | undefined)?.values;
-    return values?.length
-      ? rawTrace([...values].reverse(), event?.platform)
-      : "";
-  });
+  trace = this.issueService.exceptionTrace;
   readonly eventNotFoundMessage = $localize`This may be because the URL is pointing to an event that doesn't exist or was deleted.`;
   initialLoadComplete = this.issueService.eventInitialLoadComplete;
   nextEvent = this.issueService.hasNextEvent;
@@ -211,6 +209,7 @@ export class EventDetailComponent {
     return r && r.issueID === this.issueID() ? r : null;
   });
   recentLoading = computed(() => !!this.recent()?.loading);
+  recentFailed = computed(() => !!this.recent()?.failed);
   hasMoreEvents = computed(() => !!this.recent()?.cursor);
   /** Newest first; the current event is always an option, last if older. */
   switcherOptions = computed<EventOption[]>(() => {
@@ -244,16 +243,17 @@ export class EventDetailComponent {
     });
   }
 
-  /** [ and ] step to the older and newer event, outside text fields. */
+  /** [ and ] step to the older and newer event, outside fields and overlays. */
   onKeydown(e: KeyboardEvent) {
     if (e.key !== "[" && e.key !== "]") return;
     if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (this.dialog.openDialogs.length) return;
     const target = e.target as HTMLElement | null;
     if (
       target &&
       (target.isContentEditable ||
         ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName) ||
-        target.closest("mat-select, [role=listbox], [role=menu]"))
+        target.closest("mat-select, .cdk-overlay-container"))
     ) {
       return;
     }
@@ -278,14 +278,21 @@ export class EventDetailComponent {
       if (url) this.router.navigateByUrl(url);
       return;
     }
-    // Show more closed the panel: reopen it on the first new event.
+    // Show more closed the panel: reopen it scrolled to the first new event.
     select.value = event.id;
     const known = new Set(this.switcherOptions().map((o) => o.id));
     await this.issueService.loadRecentEvents(true);
     const index = this.switcherOptions().findIndex((o) => !known.has(o.id));
     select.open();
     if (index >= 0) {
-      setTimeout(() => select._keyManager?.setActiveItem(index));
+      setTimeout(() => {
+        const option = select.options.get(index);
+        if (option) {
+          document
+            .getElementById(option.id)
+            ?.scrollIntoView({ block: "nearest" });
+        }
+      });
     }
   }
 
@@ -325,7 +332,11 @@ export class EventDetailComponent {
   onCopiedForAI() {
     if (this.mcpEnabled() && !this.mcpHintSeen()) {
       this.mcpHintSeen.set(true);
-      localStorage.setItem(MCP_COPY_HINT_SEEN_KEY, "true");
+      try {
+        localStorage.setItem(MCP_COPY_HINT_SEEN_KEY, "true");
+      } catch {
+        // The hint may show again next visit.
+      }
       const ref = this.snackBar.open(
         $localize`Copied. You can also connect your agent directly via MCP to pull this event, its related logs, and traces live instead of pasting.`,
         $localize`Set up MCP`,

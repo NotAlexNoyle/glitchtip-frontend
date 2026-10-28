@@ -42,17 +42,26 @@
       <pre class="gt-raw">{{ raw() }}</pre>
     } @else if (single()) {
       @let link = chain()[0];
-      @if (link.unhandled || link.mechanism) {
-        <p class="mech mech--top">
-          @if (link.unhandled) {
-            <gt-status-pill
-              class="mech__pill"
-              [label]="unhandledLabel"
-              color="var(--mat-sys-error)"
+      @if (link.value || link.unhandled || link.mechanism) {
+        <div class="single-head">
+          @if (link.value || link.unhandled) {
+            <p class="single-head__value">
+              {{ link.value }}
+              @if (link.unhandled) {
+                <gt-status-pill
+                  class="chain__pill"
+                  [label]="unhandledLabel"
+                  color="var(--mat-sys-error)"
+                />
+              }
+            </p>
+          }
+          @if (link.mechanism; as m) {
+            <ng-container
+              *ngTemplateOutlet="mechLine; context: { $implicit: m }"
             />
           }
-          {{ link.mechanism }}
-        </p>
+        </div>
       }
       <div class="frames frames--top">
         <ng-container
@@ -90,8 +99,12 @@
                 />
               }
             </span>
-            @if (link.mechanism) {
-              <span class="chain__mech">{{ link.mechanism }}</span>
+            @if (link.mechanism; as m) {
+              <span class="chain__mech">
+                <ng-container
+                  *ngTemplateOutlet="mechLine; context: { $implicit: m }"
+                />
+              </span>
             }
             @if (!isOpen && link.top; as top) {
               <span class="chain__frame">
@@ -132,7 +145,15 @@
         [attr.aria-expanded]="runOpen"
         (click)="toggle(item.key)"
       >
-        <span class="frame__run">{{ item.label }}</span>
+        <span class="frame__run">
+          <span i18n>{item.frames.length, plural,
+            =1 {1 library frame}
+            other {{{ item.frames.length }} library frames}
+          }</span>
+          @if (item.packages) {
+            <span class="frame__run-pkgs">{{ item.packages }}</span>
+          }
+        </span>
         <mat-icon class="gt-chev" aria-hidden="true">{{
           runOpen ? "keyboard_arrow_down" : "keyboard_arrow_right"
         }}</mat-icon>
@@ -182,6 +203,7 @@
       }}</mat-icon>
     </button>
     @if (isOpen) {
+      @let body = bodies().get(item.key);
       <div class="frame__body">
         @if (item.abs || item.filename || item.pkg) {
           <p class="frame__meta">
@@ -227,8 +249,8 @@
                   [class.gt-code__line--hl]="l[0] === f.lineNo"
                 >
                   <span class="gt-code__n">{{ l[0] }}</span>
-                  @if (item.code) {
-                    <span class="gt-code__t" [innerHTML]="item.code[i]"></span>
+                  @if (body?.code; as code) {
+                    <span class="gt-code__t" [innerHTML]="code[i]"></span>
                   } @else {
                     <span class="gt-code__t">{{ l[1] }}</span>
                   }
@@ -239,9 +261,9 @@
         } @else {
           <p class="frame__none" i18n>No source context for this frame.</p>
         }
-        @if (item.vars.length) {
+        @if (body?.vars?.length) {
           <dl class="gt-property-list gt-property-list--vars">
-            @for (v of item.vars; track v.key) {
+            @for (v of body!.vars; track v.key) {
               <div
                 class="gt-property-list__row"
                 [class.gt-property-list__row--long]="v.long"
@@ -255,4 +277,20 @@
       </div>
     }
   </div>
+</ng-template>
+
+<ng-template #mechLine let-m>
+  <span class="mech-line">
+    @if (m.type) {
+      <span i18n>mechanism {{ m.type }}</span>
+    }
+    @if (m.handled) {
+      <span i18n>handled yes</span>
+    } @else {
+      <span i18n>handled no</span>
+    }
+    @if (m.fn) {
+      <span i18n>function {{ m.fn }}</span>
+    }
+  </span>
 </ng-template>

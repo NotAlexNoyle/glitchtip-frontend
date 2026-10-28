@@ -2,6 +2,9 @@ import { Json } from "src/app/interface-primitives";
 import { Breadcrumb, Frame, Values } from "../../interfaces";
 import { cleanIosPath, isIosPlatform, isSwiftNameMangled } from "../../utils";
 
+/** Objects longer than this on one line are indented instead. */
+const INLINE_MAX = 160;
+
 /** A value as row text: null as a word, objects on one line until long. */
 export function formatValue(value: Json | undefined): string {
   if (value === null || value === undefined) return "null";
@@ -10,22 +13,39 @@ export function formatValue(value: Json | undefined): string {
     return String(value);
   }
   const line = inline(value);
-  return line.length > 160 ? JSON.stringify(value, null, 2) : line;
+  return line !== null && line.length <= INLINE_MAX
+    ? line
+    : JSON.stringify(value, null, 2);
 }
 
 const IDENT = /^[A-Za-z_$][\w$]*$/;
 
-function inline(value: Json | undefined): string {
-  if (value === null || value === undefined) return "null";
-  if (typeof value === "string") return JSON.stringify(value);
-  if (typeof value !== "object") return String(value);
-  if (Array.isArray(value)) return `[${value.map(inline).join(", ")}]`;
-  const entries = Object.entries(value);
-  if (!entries.length) return "{}";
-  const body = entries
-    .map(([k, v]) => `${IDENT.test(k) ? k : JSON.stringify(k)}: ${inline(v)}`)
-    .join(", ");
-  return `{ ${body} }`;
+/** One-line form; null as soon as it passes the budget. */
+function inline(
+  value: Json | undefined,
+  budget = { left: INLINE_MAX },
+): string | null {
+  if (value === null || value === undefined) return spend("null", budget);
+  if (typeof value !== "object") {
+    const text =
+      typeof value === "string" ? JSON.stringify(value) : String(value);
+    return spend(text, budget);
+  }
+  const isArray = Array.isArray(value);
+  const parts: string[] = [];
+  for (const [k, v] of Object.entries(value)) {
+    const key = isArray ? "" : `${IDENT.test(k) ? k : JSON.stringify(k)}: `;
+    const text = inline(v, budget);
+    if (text === null || spend(key, budget) === null) return null;
+    parts.push(key + text);
+  }
+  if (isArray) return `[${parts.join(", ")}]`;
+  return parts.length ? `{ ${parts.join(", ")} }` : "{}";
+}
+
+function spend(text: string, budget: { left: number }): string | null {
+  budget.left -= text.length;
+  return budget.left < 0 ? null : text;
 }
 
 /** A long or multi-line value goes under its label on narrow panels. */
@@ -112,20 +132,11 @@ export function frameLineCol(frame: Frame): string {
   return frame.colNo ? `${frame.lineNo}:${frame.colNo}` : `${frame.lineNo}`;
 }
 
-function frameFrames(value: Values): Frame[] {
+/** Frames as the API sends them: oldest first, the crash point last. */
+export function stackFrames(value: Values): Frame[] {
   const st = value.stacktrace;
   if (st && "frames" in st && Array.isArray(st.frames)) return st.frames;
   return [];
-}
-
-/** Frames most recent first (the API sends the crash point last). */
-function framesNewestFirst(value: Values): Frame[] {
-  return [...frameFrames(value)].reverse();
-}
-
-/** Frames in the order the reader picked. */
-export function framesInOrder(value: Values, newestFirst: boolean): Frame[] {
-  return newestFirst ? framesNewestFirst(value) : [...frameFrames(value)];
 }
 
 /**
@@ -142,9 +153,9 @@ export function rawTrace(
   return chainThrownFirst
     .map((value, i) => {
       const head = `${i ? "Caused by: " : ""}${exceptionLine(value, platform)}`;
-      const frames = framesNewestFirst(value).map((f, fi) =>
-        rawFrame(f, f.platform || platform, fi),
-      );
+      const frames = [...stackFrames(value)]
+        .reverse()
+        .map((f, fi) => rawFrame(f, f.platform || platform, fi));
       return [head, ...frames].join("\n");
     })
     .join("\n\n");
@@ -155,7 +166,8 @@ function exceptionLine(
   platform: string | null | undefined,
 ): string {
   const mod = platform === "java" && value.module ? value.module + "." : "";
-  return `${mod}${value.type}${value.value ? ": " + value.value : ""}`;
+  const type = value.type ? mod + value.type : "";
+  return [type, value.value].filter(Boolean).join(": ");
 }
 
 function pythonTrace(rootFirst: Values[]): string {
@@ -170,7 +182,7 @@ function pythonTrace(rootFirst: Values[]): string {
           "",
         );
       }
-      const frames = frameFrames(value);
+      const frames = stackFrames(value);
       if (frames.length) {
         lines.push("Traceback (most recent call last):");
         frames.forEach((f, fi) => lines.push(rawFrame(f, "python", fi)));
@@ -255,8 +267,14 @@ export function crumbSummary(crumb: Breadcrumb): string {
   if (crumb.message) return crumb.message;
   const d = (crumb.data ?? {}) as { [key: string]: Json };
   if (d["url"] || d["method"]) {
-    const parts = [d["method"], d["url"]].filter(Boolean).join(" ");
-    return d["status_code"] ? `${parts} · ${d["status_code"]}` : parts;
+    const parts = [d["method"], d["url"]]
+      .filter((v) => v !== null && v !== undefined && v !== "")
+      .map((v) => formatValue(v))
+      .join(" ");
+    const status = d["status_code"];
+    return status !== null && status !== undefined && status !== ""
+      ? `${parts} · ${formatValue(status)}`
+      : parts;
   }
   if (d["from"] !== undefined || d["to"] !== undefined) {
     return `${formatValue(d["from"] ?? "")} → ${formatValue(d["to"] ?? "")}`;

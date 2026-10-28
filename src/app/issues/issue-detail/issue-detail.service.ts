@@ -9,6 +9,8 @@ import {
   Message,
   EntryType,
   BreadcrumbValueData,
+  ExceptionValueData,
+  Values,
   IssueTags,
   IssueTagsAdjusted,
 } from "../interfaces";
@@ -17,6 +19,7 @@ import { StatefulService } from "src/app/shared/stateful-service/signal-state.se
 import { client } from "src/app/shared/api/api";
 import { getCursor } from "src/app/shared/pagination.utils";
 import { components } from "src/app/api/api-schema";
+import { rawTrace } from "./event-detail/event-format";
 
 type EventDetail = components["schemas"]["IssueEventDetailSchema"];
 type IssueDetail = components["schemas"]["IssueDetailSchema"];
@@ -35,6 +38,8 @@ export interface RecentEvents {
   /** Next page cursor; null once every event is loaded. */
   cursor: string | null;
   loading: boolean;
+  /** The last page failed to load; opening the switcher again retries. */
+  failed: boolean;
 }
 
 const RECENT_EVENTS_PAGE = 20;
@@ -125,6 +130,17 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
     }
     return null;
   });
+  /** Thrown exception first, its causes under it, root cause last. */
+  readonly exceptionChain = computed<Values[]>(() => {
+    const entry = this.event()?.entries?.find((e) => e.type === "exception");
+    const values = (entry?.data as ExceptionValueData | undefined)?.values;
+    return [...(values ?? [])].reverse();
+  });
+  /** Raw view, Copy trace and the event menu share this text. */
+  readonly exceptionTrace = computed(() => {
+    const chain = this.exceptionChain();
+    return chain.length ? rawTrace(chain, this.event()?.platform) : "";
+  });
   readonly eventEntryRequest = computed(() => {
     const event = this.event();
     return event ? this.getEntryRequestData(event) : undefined;
@@ -166,36 +182,46 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
     const issueID = this.issueID();
     const current = this.recentEvents();
     const same = current?.issueID === issueID;
-    if (!issueID || current?.loading || (same && !more)) return;
+    if (!issueID || (same && current.loading)) return;
+    if (same && !more && !current.failed) return;
     const cursor = more && same ? current.cursor : null;
     if (more && !cursor) return;
     const kept = more && same ? current.events : [];
-    this.recentEvents.set({ issueID, events: kept, cursor, loading: true });
-    const { data, response } = await client.GET(
-      "/api/0/issues/{issue_id}/events/",
-      {
-        params: {
-          path: { issue_id: parseInt(issueID) },
-          query: { limit: RECENT_EVENTS_PAGE, cursor },
-        },
-      },
-    );
-    if (this.issueID() !== issueID) return;
+    const state = {
+      issueID,
+      events: kept,
+      cursor,
+      loading: true,
+      failed: false,
+    };
+    this.recentEvents.set(state);
+    let page: RecentEvent[] | null = null;
     let next: string | null = null;
     try {
+      const { data, response } = await client.GET(
+        "/api/0/issues/{issue_id}/events/",
+        {
+          params: {
+            path: { issue_id: parseInt(issueID) },
+            query: { limit: RECENT_EVENTS_PAGE, cursor },
+          },
+        },
+      );
+      page = data ? data.map(toRecentEvent) : null;
+      // getCursor throws without pagination headers: the page is then the last.
       next = data?.length ? getCursor(response) : null;
     } catch {
-      // No pagination headers: treat this page as the last.
+      // A network error leaves page null, so the switcher offers a retry.
     }
+    // A newer load or another issue took over meanwhile.
+    if (this.recentEvents() !== state) return;
     const seen = new Set(kept.map((e) => e.id));
     this.recentEvents.set({
       issueID,
-      events: [
-        ...kept,
-        ...(data ?? []).filter((e) => !seen.has(e.id)).map(toRecentEvent),
-      ],
-      cursor: next,
+      events: [...kept, ...(page ?? []).filter((e) => !seen.has(e.id))],
+      cursor: page ? next : cursor,
       loading: false,
+      failed: !page,
     });
   }
 
@@ -430,19 +456,14 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
     event: EventDetail,
   ): AnnotatedRequest | undefined {
     const eventRequest = this.getRequestEntryData(event);
-    if (eventRequest) {
-      let urlDomainName = "";
-      let urlPath = "";
-      try {
-        urlDomainName = new URL(eventRequest.url).hostname;
-        const path = new URL(eventRequest.url).pathname;
-        urlPath = path === "/" ? eventRequest.url : path;
-      } catch (_) {
-        urlPath = eventRequest.url;
-      }
-      return { ...eventRequest, domainName: urlDomainName, path: urlPath };
+    if (!eventRequest) return;
+    let path = eventRequest.url;
+    try {
+      path = new URL(eventRequest.url).pathname;
+    } catch {
+      // Not an absolute URL: show it as sent.
     }
-    return;
+    return { ...eventRequest, path };
   }
 
   /**
