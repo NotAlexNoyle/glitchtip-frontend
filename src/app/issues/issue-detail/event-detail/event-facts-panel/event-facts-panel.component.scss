@@ -1,0 +1,90 @@
+@use "@angular/material" as mat;
+
+:host {
+  display: block;
+  min-width: 0;
+}
+
+:host:empty {
+  display: none;
+}
+
+// Full width in the event zone: the facts run in two columns so the
+// panel stays short.
+@container gt-panel (min-width: 720px) {
+  .gt-property-list--facts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--gt-space-4, 16px);
+  }
+}
+
+// Chips need the full panel width, under both columns.
+.tags-row {
+  grid-column: 1 / -1;
+  align-items: start;
+
+  dt {
+    padding-block-start: 3px;
+  }
+
+  dd {
+    padding-block: 2px;
+  }
+}
+
+.fact {
+  display: flex;
+  align-items: center;
+  gap: var(--gt-space-2, 8px);
+  min-width: 0;
+}
+
+.fact__logo {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.fact__text {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+// A filterable value (it comes from a tag) stays plain text, so a field
+// looks the same on every event; it underlines on hover and focus.
+.fact__filter {
+  font-weight: inherit;
+  color: inherit;
+  text-decoration: none;
+  border-radius: 2px;
+
+  &:hover,
+  &:focus-visible {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--mat-sys-on-surface);
+    outline-offset: 2px;
+  }
+}
+
+.fact__secondary {
+  margin-inline-start: var(--gt-space-2, 8px);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+// 32px, ghost; the row keeps its height.
+.fact__open {
+  flex: none;
+  margin-block: calc(-1 * var(--gt-space-1, 4px));
+  color: var(--mat-sys-on-surface-variant);
+  @include mat.icon-button-overrides(
+    (
+      state-layer-size: 32px,
+    )
+  );
+}

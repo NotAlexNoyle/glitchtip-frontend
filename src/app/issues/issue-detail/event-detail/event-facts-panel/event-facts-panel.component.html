@@ -1,0 +1,116 @@
+@if (facts().length || chips().length) {
+  <gt-panel
+    flush
+    i18n-title
+    title="This event"
+    [subtitle]="hasShares() ? subtitle : ''"
+  >
+    <dl class="gt-property-list gt-property-list--facts">
+      @for (p of shown(); track p.label) {
+        <div class="gt-property-list__row">
+          <dt>{{ p.label }}</dt>
+          <dd class="fact">
+            @if (p.icon) {
+              <img class="fact__logo" alt="" [src]="p.icon" />
+            }
+            <span class="fact__text">
+              @if (p.request) {
+                <a
+                  class="gt-prose-link"
+                  href="#request"
+                  (click)="$event.preventDefault(); showRequest.emit()"
+                  >{{ p.value }}</a
+                >
+              } @else if (p.query) {
+                <a
+                  class="fact__filter"
+                  [routerLink]="['/', orgSlug(), 'issues']"
+                  [queryParams]="p.query"
+                  [matTooltip]="filterTip"
+                  >{{ p.value }}</a
+                >
+              } @else if (p.tooltip) {
+                <span
+                  class="gt-has-tip"
+                  tabindex="0"
+                  [matTooltip]="p.tooltip"
+                  >{{ p.value }}</span
+                >
+              } @else {
+                {{ p.value }}
+              }
+              @if (p.secondary) {
+                <span class="fact__secondary">{{ p.secondary }}</span>
+              }
+              @if (p.share) {
+                <span class="gt-share">{{ p.share }}</span>
+              }
+            </span>
+            @if (p.href) {
+              <a
+                mat-icon-button
+                class="fact__open"
+                target="_blank"
+                rel="noopener noreferrer"
+                [href]="p.href"
+                i18n-aria-label
+                aria-label="Open in a new tab"
+                [matTooltip]="p.href"
+              >
+                <mat-icon class="gt-icon-sm">open_in_new</mat-icon>
+              </a>
+            }
+          </dd>
+        </div>
+      }
+      @if (chips().length) {
+        <div class="gt-property-list__row tags-row">
+          <dt i18n>Tags</dt>
+          <dd>
+            <ul class="gt-tag-chips">
+              @for (c of chips(); track c.key) {
+                <li>
+                  <a
+                    class="gt-tag-chip"
+                    [routerLink]="['/', orgSlug(), 'issues']"
+                    [queryParams]="c.query"
+                    ><span class="gt-tag-chip__key">{{ c.key }}</span
+                    ><span class="gt-tag-chip__value">{{ c.value }}</span>
+                    @if (c.share) {
+                      <span class="gt-tag-chip__share">{{ c.share }}</span>
+                    }
+                  </a>
+                  @if (c.href) {
+                    <a
+                      mat-icon-button
+                      class="fact__open"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      [href]="c.href"
+                      i18n-aria-label
+                      aria-label="Open in a new tab"
+                      [matTooltip]="c.href"
+                    >
+                      <mat-icon class="gt-icon-sm">open_in_new</mat-icon>
+                    </a>
+                  }
+                </li>
+              }
+            </ul>
+          </dd>
+        </div>
+      }
+    </dl>
+    @if (facts().length > cap) {
+      <div class="gt-panel-row">
+        <button mat-button type="button" (click)="expanded.set(!expanded())">
+          @if (expanded()) {
+            <ng-container i18n>Show fewer</ng-container>
+          } @else {
+            <ng-container i18n>Show all {{ facts().length }}</ng-container>
+          }
+        </button>
+      </div>
+    }
+  </gt-panel>
+}

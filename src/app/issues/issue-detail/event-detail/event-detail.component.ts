@@ -28,6 +28,8 @@ import { EntryBreadcrumbsComponent } from "./entry-breadcrumbs/entry-breadcrumbs
 import { EntryCSPComponent } from "./entry-csp/entry-csp.component";
 import { EntryExceptionComponent } from "./entry-exception/entry-exception.component";
 import { EntryMessageComponent } from "./entry-message/entry-message.component";
+import { EventFactsPanelComponent } from "./event-facts-panel/event-facts-panel.component";
+import { EventMoreDataComponent } from "./event-more-data/event-more-data.component";
 import { rawTrace } from "./event-format";
 
 /** Latest to older swaps the routed component, so the last event lives here. */
@@ -96,6 +98,8 @@ const MCP_COPY_HINT_SEEN_KEY = "mcpCopyHintSeen";
     EntryCSPComponent,
     EntryBreadcrumbsComponent,
     EntryRequestComponent,
+    EventFactsPanelComponent,
+    EventMoreDataComponent,
     DatePipe,
     DecimalPipe,
     DaysAgoPipe,
@@ -283,6 +287,12 @@ export class EventDetailComponent {
     if (index >= 0) {
       setTimeout(() => select._keyManager?.setActiveItem(index));
     }
+  }
+
+  scrollToRequest() {
+    document
+      .getElementById("request")
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   copyForAI() {
