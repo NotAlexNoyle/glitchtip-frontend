@@ -6,7 +6,7 @@ import {
   linkedSignal,
   signal,
 } from "@angular/core";
-import { RouterLink } from "@angular/router";
+import { Params, RouterLink } from "@angular/router";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { MatTooltipModule } from "@angular/material/tooltip";
@@ -15,7 +15,7 @@ import { OrganizationsService } from "src/app/api/organizations.service";
 import { IssueTagsAdjusted } from "../../interfaces";
 import { IssueDetailService } from "../issue-detail.service";
 import { toggled } from "../event-detail/event-format";
-import { isSpreadTag, tagQuery } from "../tag-filters";
+import { injectTagFilter, isSpreadTag, isUserTag } from "../tag-filters";
 
 /** The user tag the full ranking shows: the most readable one present. */
 const USER_DISPLAY_KEYS = ["user.email", "user.username", "user.id", "user.ip"];
@@ -32,26 +32,16 @@ const TOP = 4;
 /** The ranking also splits by release and by one user tag. */
 function isRankedTag(key: string, keys: string[]): boolean {
   if (key === "release") return true;
-  if (key.startsWith("user")) {
+  if (isUserTag(key)) {
     return key === USER_DISPLAY_KEYS.find((k) => keys.includes(k));
   }
   return isSpreadTag(key, keys);
 }
 
-function isUserTag(key: string): boolean {
-  return key === "user" || key.startsWith("user.");
-}
-
-function countTip(count: number, total: number) {
-  return total === 1
-    ? $localize`${count} of 1 tagged event`
-    : $localize`${count} of ${total} tagged events`;
-}
-
 interface TagValue {
   value: string;
   percent: number;
-  query: { [param: string]: string };
+  query: Params;
   tip: string;
 }
 
@@ -84,6 +74,7 @@ let nextId = 0;
 export class IssueTagsSummaryComponent {
   private issueService = inject(IssueDetailService);
   readonly orgSlug = inject(OrganizationsService).activeOrganizationSlug;
+  private readonly tagFilter = injectTagFilter();
 
   readonly open = signal(false);
   readonly panelId = `gt-issue-tags-${nextId++}`;
@@ -119,7 +110,7 @@ export class IssueTagsSummaryComponent {
           .filter((t) => t.uniqueValues <= 1)
           .map((t) => {
             const value = t.topValues[0].value;
-            return { key: t.key, value, query: tagQuery(t.key, value) };
+            return { key: t.key, value, query: this.tagFilter(t.key, value) };
           })
       : [],
   );
@@ -138,12 +129,9 @@ export class IssueTagsSummaryComponent {
       .map((t) => ({ ...t, tip: `${t.key}: ${t.top.tip}` }));
   });
 
-  readonly shareOf = computed(() => {
-    const n = Math.max(0, ...this.tags().map((t) => t.totalValues));
-    return n === 1
-      ? $localize`Share of the 1 tagged event`
-      : $localize`Share of ${n} tagged events`;
-  });
+  readonly tagged = computed(() =>
+    Math.max(0, ...this.tags().map((t) => t.totalValues)),
+  );
 
   toggle(key: string) {
     this.opened.set(toggled(this.opened(), key));
@@ -153,8 +141,8 @@ export class IssueTagsSummaryComponent {
     const values = tag.topValues.map((v) => ({
       value: v.value,
       percent: v.percentRounded,
-      query: tagQuery(tag.key, v.value),
-      tip: countTip(v.count, tag.totalValues),
+      query: this.tagFilter(tag.key, v.value),
+      tip: $localize`${v.count}:count: of ${tag.totalValues}:total:`,
     }));
     return { key: tag.key, top: values[0], values, other: tag.other ?? 0 };
   }

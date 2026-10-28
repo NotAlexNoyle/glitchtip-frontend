@@ -102,7 +102,10 @@
           </div>
         }
         <div class="gt-panel-row gt-panel-row--split">
-          <span class="gt-muted">{{ shareOf() }}</span>
+          <span class="gt-muted" i18n>{tagged(), plural,
+            =1 {Share of the 1 tagged event}
+            other {Share of {{ tagged() }} tagged events}
+          }</span>
           @if (same().length) {
             <span class="gt-muted same"
               ><ng-container i18n>Same on all:</ng-container>
