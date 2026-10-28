@@ -27,7 +27,7 @@ const LINE_USER_KEYS = ["user.email", "user.username", "user.id"];
 const USER_CONCENTRATION_MIN = 50;
 
 /** Chips on the line before All tags. */
-const TOP = 4;
+const TOP = 3;
 
 /** The ranking also splits by release and by one user tag. */
 function isRankedTag(key: string, keys: string[]): boolean {
@@ -89,30 +89,14 @@ export class IssueTagsSummaryComponent {
     return tags.filter((t) => t.topValues.length && isRankedTag(t.key, keys));
   });
 
-  private readonly varied = computed(() =>
-    this.tags().filter((t) => t.uniqueValues > 1),
-  );
-
-  /** Most concentrated first; when no tag varies, every tag is a row. */
+  /** Every tag, most concentrated first; a tag with one value shows 100%. */
   readonly ranked = computed<RankedTag[]>(() =>
-    [...(this.varied().length ? this.varied() : this.tags())]
+    [...this.tags()]
       .sort(
         (a, b) =>
           (b.topValues[0]?.percent ?? 0) - (a.topValues[0]?.percent ?? 0),
       )
       .map((t) => this.toRanked(t)),
-  );
-
-  /** Tags with one value on every event, listed once in the end row. */
-  readonly same = computed(() =>
-    this.varied().length
-      ? this.tags()
-          .filter((t) => t.uniqueValues <= 1)
-          .map((t) => {
-            const value = t.topValues[0].value;
-            return { key: t.key, value, query: this.tagFilter(t.key, value) };
-          })
-      : [],
   );
 
   /** At most one user tag, and only when one user dominates. */

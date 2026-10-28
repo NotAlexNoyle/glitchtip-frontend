@@ -18,9 +18,9 @@ $spread-columns: 104px minmax(0, 1fr) 64px 40px 32px;
 
 .tags-summary__line {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  grid-template-areas: "label top toggle";
-  align-items: center;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas: "label top";
+  align-items: baseline;
   column-gap: var(--gt-space-4, 16px);
   min-height: 36px;
   font: var(--mat-sys-body-medium);
@@ -40,9 +40,32 @@ $spread-columns: 104px minmax(0, 1fr) 64px 40px 32px;
   }
 }
 
+// One line at full width: the chips shrink (values ellipsize) before wrapping.
+.tags-summary__top {
+  flex-wrap: nowrap;
+  align-items: center;
+  min-width: 0;
+
+  > li {
+    min-width: 0;
+  }
+
+  > li.tags-summary__more {
+    flex: none;
+  }
+
+  .gt-tag-chip {
+    max-width: 100%;
+  }
+}
+
+// Trails the chips so it reads as part of them, wherever they wrap.
 .tags-summary__toggle {
-  grid-area: toggle;
   @include controls.compact-buttons;
+
+  &[aria-expanded="true"] .tags-summary__chev {
+    transform: rotate(180deg);
+  }
 }
 
 .tags-summary__panel {
@@ -52,20 +75,22 @@ $spread-columns: 104px minmax(0, 1fr) 64px 40px 32px;
 // Narrow: label and All tags on the first line, then two chips that wrap.
 @container tags-summary (max-width: 599px) {
   .tags-summary__line {
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
-      "label toggle"
-      "top top";
+      "label"
+      "top";
+    row-gap: var(--gt-space-1, 4px);
   }
 
   .tags-summary__top {
+    flex-wrap: wrap;
     padding-bottom: var(--gt-space-1, 4px);
 
     > li {
       max-width: 100%;
     }
 
-    > li:nth-child(n + 3) {
+    > li:nth-child(n + 3):not(.tags-summary__more) {
       display: none;
     }
   }
@@ -179,19 +204,6 @@ $spread-columns: 104px minmax(0, 1fr) 64px 40px 32px;
   display: block;
   height: 100%;
   background-color: var(--mat-sys-on-surface-variant);
-}
-
-.same {
-  flex: 1 1 240px;
-  min-width: 0;
-  padding-block: var(--gt-space-1, 4px);
-  text-align: end;
-  overflow-wrap: anywhere;
-}
-
-.same__item {
-  margin-block: 2px;
-  margin-inline-start: var(--gt-space-2, 8px);
 }
 
 @container gt-panel (max-width: 419px) {

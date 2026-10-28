@@ -14,7 +14,7 @@
 }
 
 .issue-summary {
-  margin-bottom: var(--gt-space-1, 4px);
+  margin-block: var(--gt-space-1, 4px) var(--gt-space-3, 12px);
 }
 
 // The tab bar scrolls sideways when the labels do not fit; no chevrons.

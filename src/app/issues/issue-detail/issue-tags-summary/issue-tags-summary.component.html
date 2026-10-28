@@ -1,4 +1,4 @@
-@if (ranked().length || same().length) {
+@if (ranked().length) {
   <div class="tags-summary">
     <div class="tags-summary__line">
       <span class="tags-summary__label" [id]="panelId + '-label'" i18n
@@ -21,27 +21,35 @@
             >
           </li>
         }
+        <li class="tags-summary__more">
+          @let count = ranked().length;
+          <button
+            mat-button
+            type="button"
+            class="tags-summary__toggle"
+            [attr.aria-expanded]="open()"
+            [attr.aria-controls]="panelId"
+            (click)="open.set(!open())"
+          >
+            @if (open()) {
+              <ng-container i18n>Hide tags</ng-container>
+            } @else {
+              <ng-container i18n>{count, plural,
+                =1 {All 1 tag}
+                other {All {{ count }} tags}
+              }</ng-container>
+            }
+            <mat-icon iconPositionEnd class="tags-summary__chev"
+              >keyboard_arrow_down</mat-icon
+            >
+          </button>
+        </li>
       </ul>
-      <button
-        mat-button
-        type="button"
-        class="tags-summary__toggle"
-        [attr.aria-expanded]="open()"
-        [attr.aria-controls]="panelId"
-        (click)="open.set(!open())"
-      >
-        @if (open()) {
-          <ng-container i18n>Hide</ng-container>
-        } @else {
-          <ng-container i18n>All tags</ng-container>
-        }
-      </button>
     </div>
 
     @if (open()) {
       <gt-panel flush class="tags-summary__panel" [attr.id]="panelId">
-        @if (ranked().length) {
-          <div class="spread-list">
+        <div class="spread-list">
             @for (t of ranked(); track t.key) {
               @let isOpen = opened().has(t.key);
               <button
@@ -99,27 +107,12 @@
                 </ul>
               }
             }
-          </div>
-        }
-        <div class="gt-panel-row gt-panel-row--split">
+        </div>
+        <div class="gt-panel-row">
           <span class="gt-muted" i18n>{tagged(), plural,
             =1 {Share of the 1 tagged event}
             other {Share of {{ tagged() }} tagged events}
           }</span>
-          @if (same().length) {
-            <span class="gt-muted same"
-              ><ng-container i18n>Same on all:</ng-container>
-              @for (s of same(); track s.key) {
-                <a
-                  class="gt-tag-chip same__item"
-                  [routerLink]="['/', orgSlug(), 'issues']"
-                  [queryParams]="s.query"
-                  ><span class="gt-tag-chip__key">{{ s.key }}</span
-                  ><span class="gt-tag-chip__value">{{ s.value }}</span></a
-                >
-              }
-            </span>
-          }
         </div>
       </gt-panel>
     }
