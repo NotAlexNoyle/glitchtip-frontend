@@ -137,6 +137,19 @@ A collection of records with a name and a few actions is a `gt-list` of `gt-list
 
 - Tags always render as tag chips (`.gt-tag-chip` in `.gt-tag-chips`): key muted, value bold, in a hairline pill with no shadow. A share ("93%", "2 of 15") sits inside the chip, muted, after a middle dot. `.gt-tag-chip--compact` (24px, label-medium) is the size for a summary line.
 
+### Record pages with occurrences
+
+A record seen through one occurrence at a time (an issue and its events) is laid out in two zones, so it is clear what Older and Newer change.
+
+- Issue zone, at the top and static: the page header, then a one-line summary of all occurrences ("Tags", the most concentrated values as compact tag chips that filter, each with its share inside, and "All tags" to open the full ranking inline; the header already shows the count). A user tag joins the line only when one user has at least half of the tagged events (one user key at most); the header's user count cannot say that. The line sits 12px under the header's meta line and wraps rather than truncates on narrow screens.
+- The tabs sit between the zones.
+- Occurrence zone: its header is a standalone section bar (a rounded, tinted strip in the panel header token) that sticks to the top of the scroll container while the zone is in view, starting with an occurrence switcher followed by a muted "of N" (the record's occurrence count), with its actions and Older/Newer on the right. The switcher is a ghost select named for the occurrence ("Event", aria-label included) whose trigger reads "Latest event" or "Event bd34a06e" plus only the facts the header does not already show (time when not the latest, environment, release when it differs from first seen); under 600px it shortens to "Latest" or the short id. It lists recent occurrences, newest first, loaded when first opened: two lines each (relative time with the absolute time in a tooltip and the short id, then muted environment, release and user), the current one checked, and a last "Show more" option that loads the next page. Picking one opens its own route. The panels follow it at the usual spacing. Never wrap the zone's panels in another box: no box inside a box.
+- Aggregate summaries live in the issue zone, never inside the occurrence zone. Scope words follow: issue-level labels say "all events"; the occurrence's facts panel is "This event".
+- Stepping to another occurrence briefly tints the zone (300ms fade, none with reduced motion); the issue zone stays still.
+- The stack trace stays above the fold: the issue zone stays compact, and the exception comes first in the occurrence zone.
+- The occurrence's facts panel keeps User, URL, Environment and the logo rows as rows and puts its other tags in one "Tags" row of chips; a tag shown as a fact row is not repeated there.
+- Tag chips appear in Tags rows. Fact rows stay plain text so a field looks the same on every event; a filterable value is a quiet link.
+
 ## Accessibility
 
 - Color pairings must meet WCAG contrast; the preview app shows on-color pairings for a quick check.

@@ -1,4 +1,3 @@
-@use "sass:meta";
 @use "sass:map";
 @use "@angular/material" as mat;
 @use "./assets/styles/theme-colors" as custom-theme;
@@ -64,15 +63,6 @@ html {
   --gt-level-warning: var(--warning-color);
   --gt-level-error: var(--mat-sys-error);
   --gt-level-fatal: var(--mat-sys-error);
-}
-
-// Colours come from _code.scss; gtPrism blocks still use these two plugins.
-.light,
-.dark {
-  @include meta.load-css("prismjs/plugins/line-numbers/prism-line-numbers.css");
-  @include meta.load-css(
-    "prismjs/plugins/line-highlight/prism-line-highlight.css"
-  );
 }
 
 a {
