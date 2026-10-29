@@ -135,7 +135,9 @@ export class EntryBreadcrumbsComponent {
           key: `b${i}`,
           ...clock(c.timestamp),
           level: level ? LEVELS[level] : "",
-          levelClass: level ? `gt-dot gt-dot--${level}` : "",
+          levelClass: level
+            ? `crumbs__level-bar crumbs__level-bar--${level}`
+            : "",
           tone: level === "warning" ? "warning" : level ? "error" : "",
           category: c.category || c.type,
           icon: crumbIcon(c.category),
