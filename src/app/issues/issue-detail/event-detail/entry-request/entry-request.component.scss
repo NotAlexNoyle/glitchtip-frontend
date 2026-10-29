@@ -1,12 +1,8 @@
 @use "controls";
+@use "row-mixins" as rows;
 
 :host {
-  display: block;
   scroll-margin-top: 64px;
-}
-
-:host:empty {
-  display: none;
 }
 
 // The copy button sits in the body block's top right corner.
@@ -20,4 +16,14 @@
   right: var(--gt-space-2, 8px);
   @include controls.compact-buttons;
   color: var(--mat-sys-on-surface-variant);
+}
+
+// A nested body block lines up with the values, not the labels.
+.gt-raw--nested {
+  padding-block: 0 var(--gt-space-3, 12px);
+  padding-inline-start: calc(var(--gt-space-4, 16px) * 2 + #{rows.$label-w});
+
+  @include controls.narrow-panel {
+    padding-inline-start: var(--gt-space-4, 16px);
+  }
 }

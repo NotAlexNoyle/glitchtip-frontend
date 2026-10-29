@@ -1,11 +1,3 @@
-:host {
-  display: block;
-}
-
-:host:empty {
-  display: none;
-}
-
 // Object values print as indented JSON.
 .csp-value {
   white-space: pre-wrap;

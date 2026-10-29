@@ -62,6 +62,11 @@
   --gt-step-tint: #{controls.state-layer-color(hover)};
 }
 
+// A data panel with nothing to show leaves no gap in the zone.
+.event-zone__body > :empty {
+  display: none;
+}
+
 .event-bar__switch {
   display: flex;
   flex: 1;

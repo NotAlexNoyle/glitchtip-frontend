@@ -3,14 +3,6 @@
 
 $chev-slot: rows.$chev-slot;
 
-:host {
-  display: block;
-}
-
-:host:empty {
-  display: none;
-}
-
 .chain + .chain {
   border-top: 1px solid var(--mat-sys-outline-variant);
 }
@@ -198,6 +190,15 @@ $chev-slot: rows.$chev-slot;
 .frame__body {
   padding: 0 var(--gt-space-4, 16px) var(--gt-space-3, 12px)
     calc(var(--gt-space-4, 16px) * 2);
+}
+
+// Frame variables sit inside the body's padding.
+.gt-property-list--vars {
+  padding-block: var(--gt-space-2, 8px) 0;
+
+  .gt-property-list__row {
+    padding-inline: 0;
+  }
 }
 
 // absPath, the file behind a module name, the package: one muted line.

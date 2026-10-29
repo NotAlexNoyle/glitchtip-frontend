@@ -10,14 +10,6 @@ $cat-w: 112px;
 // Under this the row stacks: time, level and category, then the message.
 $stack-below: 559px;
 
-:host {
-  display: block;
-}
-
-:host:empty {
-  display: none;
-}
-
 .crumbs__row {
   display: grid;
   grid-template-columns: $time-w $level-w $cat-w minmax(0, 1fr) rows.$chev-slot;

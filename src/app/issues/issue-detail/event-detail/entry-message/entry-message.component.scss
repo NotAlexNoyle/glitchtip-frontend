@@ -1,11 +1,3 @@
-:host {
-  display: block;
-}
-
-:host:empty {
-  display: none;
-}
-
 // Multi-line messages keep their line breaks.
 .message {
   white-space: pre-wrap;

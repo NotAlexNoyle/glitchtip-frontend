@@ -34,30 +34,17 @@ $spread-narrow: 419px;
   white-space: nowrap;
 }
 
+// One line at full width: the chips shrink (values ellipsize) before wrapping.
 .tags-summary__top {
   grid-area: top;
+  flex-wrap: nowrap;
 
   > li {
     max-width: 320px;
   }
-}
-
-// One line at full width: the chips shrink (values ellipsize) before wrapping.
-.tags-summary__top {
-  flex-wrap: nowrap;
-  align-items: center;
-  min-width: 0;
-
-  > li {
-    min-width: 0;
-  }
 
   > li.tags-summary__more {
     flex: none;
-  }
-
-  .gt-tag-chip {
-    max-width: 100%;
   }
 }
 

@@ -1,12 +1,7 @@
 @use "controls";
 
 :host {
-  display: block;
   min-width: 0;
-}
-
-:host:empty {
-  display: none;
 }
 
 // Full width in the event zone: the facts run in two columns so the
