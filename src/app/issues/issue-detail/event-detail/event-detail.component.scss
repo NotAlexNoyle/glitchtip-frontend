@@ -128,8 +128,7 @@
 
 // "Latest event · 01a183a0": the id follows the name after a dot.
 .event-switch__id::before {
-  content: "\00B7";
-  margin-inline-end: var(--gt-space-1, 4px);
+  @include controls.middot(var(--gt-space-1, 4px), 0);
   font-family: var(--mat-sys-label-large-font);
 }
 
@@ -141,8 +140,7 @@
   font: var(--mat-sys-body-medium);
 
   &::before {
-    content: "\00B7";
-    margin-inline: var(--gt-space-2, 8px);
+    @include controls.middot;
   }
 }
 

@@ -4,7 +4,6 @@
 
 // A grid table that restacks under 560px, ending at the "This event" row.
 
-$chev-slot: 32px;
 $time-w: 112px;
 $level-w: 80px;
 $cat-w: 112px;
@@ -21,7 +20,7 @@ $stack-below: 559px;
 
 .crumbs__row {
   display: grid;
-  grid-template-columns: $time-w $level-w $cat-w minmax(0, 1fr) $chev-slot;
+  grid-template-columns: $time-w $level-w $cat-w minmax(0, 1fr) rows.$chev-slot;
   grid-template-areas: "time level cat msg end";
   align-items: center;
   column-gap: var(--gt-space-4, 16px);
@@ -179,7 +178,7 @@ $stack-below: 559px;
   }
 
   .crumbs__row {
-    grid-template-columns: auto auto minmax(0, 1fr) $chev-slot;
+    grid-template-columns: auto auto minmax(0, 1fr) rows.$chev-slot;
     grid-template-areas:
       "time level cat end"
       "msg msg msg end";
@@ -191,8 +190,7 @@ $stack-below: 559px;
 
   .crumbs__level:not(:empty)::before,
   .crumbs__cat::before {
-    content: "\00B7";
-    margin-inline: var(--gt-space-2, 8px);
+    @include controls.middot;
     color: var(--mat-sys-on-surface-variant);
   }
 

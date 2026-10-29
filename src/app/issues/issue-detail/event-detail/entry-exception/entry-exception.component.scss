@@ -1,7 +1,7 @@
 @use "controls";
 @use "row-mixins" as rows;
 
-$chev-slot: 32px;
+$chev-slot: rows.$chev-slot;
 
 :host {
   display: block;
@@ -97,8 +97,7 @@ $chev-slot: 32px;
 
 // Separators are drawn, never typed into a translated string.
 .mech-line > span + span::before {
-  content: "\00B7";
-  margin-inline: var(--gt-space-1, 4px);
+  @include controls.middot(var(--gt-space-1, 4px));
 }
 
 // A single exception: its value in full, then the mechanism line.
@@ -187,8 +186,7 @@ $chev-slot: 32px;
 }
 
 .frame__run-pkgs::before {
-  content: "\00B7";
-  margin-inline: var(--gt-space-1, 4px);
+  @include controls.middot(var(--gt-space-1, 4px));
 }
 
 // Library frames are muted by colour, not opacity.

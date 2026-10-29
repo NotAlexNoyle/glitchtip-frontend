@@ -110,6 +110,8 @@ function scalar(value: Json | undefined): string {
     }
   `,
   styles: `
+    @use "controls";
+
     :host {
       display: block;
     }
@@ -123,8 +125,7 @@ function scalar(value: Json | undefined): string {
     }
 
     .integrations--after::before {
-      content: "\\00B7";
-      margin-inline: var(--gt-space-1, 4px);
+      @include controls.middot(var(--gt-space-1, 4px));
     }
   `,
 })

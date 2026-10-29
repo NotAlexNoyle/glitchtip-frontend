@@ -1,7 +1,7 @@
 @use "controls";
 @use "row-mixins" as rows;
 
-$spread-columns: 104px minmax(0, 1fr) 64px 40px 32px;
+$spread-columns: 104px minmax(0, 1fr) 64px 40px rows.$chev-slot;
 // Below this the key and bar columns shrink.
 $spread-narrow: 419px;
 
@@ -150,8 +150,7 @@ $spread-narrow: 419px;
   }
 
   &:focus-visible {
-    outline: 2px solid var(--mat-sys-on-surface);
-    outline-offset: -2px;
+    @include controls.focus-ring(-2px);
   }
 }
 
@@ -209,6 +208,6 @@ $spread-narrow: 419px;
 @container gt-panel (max-width: #{$spread-narrow}) {
   .spread-row,
   .spread-value {
-    grid-template-columns: 88px minmax(0, 1fr) 40px 40px 32px;
+    grid-template-columns: 88px minmax(0, 1fr) 40px 40px rows.$chev-slot;
   }
 }

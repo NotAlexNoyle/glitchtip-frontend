@@ -67,8 +67,7 @@
   }
 
   &:focus-visible {
-    outline: 2px solid var(--mat-sys-on-surface);
-    outline-offset: 2px;
+    @include controls.focus-ring;
   }
 }
 
