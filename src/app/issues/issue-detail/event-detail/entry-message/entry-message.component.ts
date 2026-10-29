@@ -20,6 +20,11 @@ export class EntryMessageComponent {
 
   eventEntryMessage = this.issueService.eventEntryMessage;
 
+  text = computed(() => {
+    const m = this.eventEntryMessage();
+    return m?.formatted || m?.message || "";
+  });
+
   params = computed(() => {
     const params = this.eventEntryMessage()?.params;
     if (!params) return [];
@@ -35,4 +40,9 @@ export class EntryMessageComponent {
     const m = this.eventEntryMessage();
     return m?.message && m.message !== m.formatted ? m.message : null;
   });
+
+  /** A message entry with no text, template or params has nothing to show. */
+  hasContent = computed(
+    () => !!(this.text() || this.template() || this.paramsText()),
+  );
 }

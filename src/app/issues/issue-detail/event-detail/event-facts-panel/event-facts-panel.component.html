@@ -1,9 +1,5 @@
 @if (facts().length || chips().length) {
-  <gt-panel
-    flush
-    i18n-title
-    title="This event"
-  >
+  <gt-panel flush i18n-title title="This event">
     <dl class="gt-property-list gt-property-list--facts">
       @for (p of shown(); track p.label) {
         <div class="gt-property-list__row">
@@ -94,7 +90,7 @@
         </div>
       }
     </dl>
-    @if (facts().length > cap) {
+    @if (capped()) {
       <div class="gt-panel-row">
         <button mat-button type="button" (click)="expanded.set(!expanded())">
           @if (expanded()) {

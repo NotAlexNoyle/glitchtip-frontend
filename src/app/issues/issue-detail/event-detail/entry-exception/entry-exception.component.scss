@@ -104,7 +104,6 @@ $chev-slot: 32px;
 // A single exception: its value in full, then the mechanism line.
 .single-head {
   padding: var(--gt-space-2, 8px) var(--gt-space-4, 16px);
-  border-bottom: 1px solid var(--mat-sys-outline-variant);
   font: var(--mat-sys-body-small);
   color: var(--mat-sys-on-surface-variant);
 }
@@ -113,8 +112,12 @@ $chev-slot: 32px;
   margin: 0 0 2px;
   font: var(--mat-sys-body-medium);
   color: var(--mat-sys-on-surface);
-  white-space: pre-wrap;
   overflow-wrap: anywhere;
+}
+
+// The message keeps its own line breaks.
+.single-head__text {
+  white-space: pre-wrap;
 }
 
 .chain__frame {
@@ -233,6 +236,11 @@ $chev-slot: 32px;
 }
 
 // A single exception: frames start right under the panel header.
+// A line only between the head and its frames, so a head with no frames ends clean.
+.single-head + .frames--top {
+  border-top: 1px solid var(--mat-sys-outline-variant);
+}
+
 .frames--top {
   .frame__head {
     padding-inline-start: var(--gt-space-4, 16px);

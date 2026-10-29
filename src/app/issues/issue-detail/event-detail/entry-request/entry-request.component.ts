@@ -104,8 +104,12 @@ export class EntryRequestComponent {
       });
     }
     const body: unknown = r.data;
-    if (body !== null && body !== undefined && body !== "") {
-      const rows = typeof body === "object" ? pairs(body) : [];
+    const rows = typeof body === "object" && body !== null ? pairs(body) : [];
+    // An empty object or array has nothing to show either.
+    if (
+      rows.length ||
+      (typeof body !== "object" && body !== undefined && body !== "")
+    ) {
       out.push({
         key: "body",
         label: $localize`Body`,

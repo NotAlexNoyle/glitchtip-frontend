@@ -15,7 +15,7 @@ import { IssueDetailService } from "../../issue-detail.service";
 import { Breadcrumb } from "../../../interfaces";
 import { PropertyRow, crumbSummary, toRows, toggled } from "../event-format";
 
-/** Breadcrumbs shown before "Show N earlier". */
+/** Breadcrumbs shown before "Show N earlier", never for just one. */
 const RECENT = 5;
 
 interface CrumbRow {
@@ -147,9 +147,10 @@ export class EntryBreadcrumbsComponent {
       });
   });
 
-  readonly hiddenCount = computed(() =>
-    this.showEarlier() ? 0 : Math.max(0, this.filtered().length - RECENT),
-  );
+  readonly hiddenCount = computed(() => {
+    const hidden = this.filtered().length - RECENT;
+    return this.showEarlier() || hidden < 2 ? 0 : hidden;
+  });
 
   readonly rows = computed(() => {
     const rows = this.filtered();

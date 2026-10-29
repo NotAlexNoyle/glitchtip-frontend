@@ -19,15 +19,7 @@
     <div class="event-bar" [class.event-bar--stuck]="stuck()">
       <div class="event-bar__switch">
         @let latest = nextEvent() === false;
-        <button
-          type="button"
-          class="gt-select-ghost event-switch"
-          i18n-aria-label
-          aria-label="Event"
-          [matTooltip]="event.id"
-          [matMenuTriggerFor]="eventMenu"
-          (menuOpened)="onSwitcherOpened()"
-        >
+        <ng-template #eventName>
           <span class="gt-select-ghost__value event-switch__value"
             ><span class="event-switch__name">
               @if (latest) {
@@ -53,10 +45,30 @@
               <span class="event-switch__fact">{{ release() }}</span>
             }
           </span>
-          <mat-icon class="event-switch__arrow" aria-hidden="true"
-            >arrow_drop_down</mat-icon
+        </ng-template>
+        @if (canSwitch()) {
+          <button
+            type="button"
+            class="gt-select-ghost event-switch"
+            i18n-aria-label
+            aria-label="Event"
+            [matTooltip]="event.id"
+            [matMenuTriggerFor]="eventMenu"
+            (menuOpened)="onSwitcherOpened()"
           >
-        </button>
+            <ng-container *ngTemplateOutlet="eventName" />
+            <mat-icon class="event-switch__arrow" aria-hidden="true"
+              >arrow_drop_down</mat-icon
+            >
+          </button>
+        } @else {
+          <span
+            class="event-switch event-switch--static"
+            [matTooltip]="event.id"
+          >
+            <ng-container *ngTemplateOutlet="eventName" />
+          </span>
+        }
         <mat-menu #eventMenu="matMenu">
           <ng-template matMenuContent>
             @for (o of switcherOptions(); track o.id) {
@@ -103,7 +115,7 @@
             }
           </ng-template>
         </mat-menu>
-        @if (eventCount()) {
+        @if (canSwitch()) {
           <span
             class="event-bar__count"
             i18n="After the event switcher: the issue's event count"
@@ -139,7 +151,7 @@
             >
               <span i18n>Copy event ID</span>
             </button>
-            @if (trace()) {
+            @if (traceHasFrames()) {
               <button
                 mat-menu-item
                 type="button"
@@ -154,29 +166,31 @@
             </a>
           </ng-template>
         </mat-menu>
-        <span class="gt-bar-divider" aria-hidden="true"></span>
-        <a
-          mat-icon-button
-          i18n-aria-label
-          aria-label="Older event"
-          i18n-matTooltip
-          matTooltip="Older event"
-          [routerLink]="previousEventUrl() || null"
-          [disabled]="previousEvent() === false"
-        >
-          <mat-icon>keyboard_arrow_left</mat-icon>
-        </a>
-        <a
-          mat-icon-button
-          i18n-aria-label
-          aria-label="Newer event"
-          i18n-matTooltip
-          matTooltip="Newer event"
-          [routerLink]="nextEventUrl() || null"
-          [disabled]="nextEvent() === false"
-        >
-          <mat-icon>keyboard_arrow_right</mat-icon>
-        </a>
+        @if (canSwitch()) {
+          <span class="gt-bar-divider" aria-hidden="true"></span>
+          <a
+            mat-icon-button
+            i18n-aria-label
+            aria-label="Older event"
+            i18n-matTooltip
+            matTooltip="Older event"
+            [routerLink]="previousEventUrl() || null"
+            [disabled]="previousEvent() === false"
+          >
+            <mat-icon>keyboard_arrow_left</mat-icon>
+          </a>
+          <a
+            mat-icon-button
+            i18n-aria-label
+            aria-label="Newer event"
+            i18n-matTooltip
+            matTooltip="Newer event"
+            [routerLink]="nextEventUrl() || null"
+            [disabled]="nextEvent() === false"
+          >
+            <mat-icon>keyboard_arrow_right</mat-icon>
+          </a>
+        }
       </div>
     </div>
 

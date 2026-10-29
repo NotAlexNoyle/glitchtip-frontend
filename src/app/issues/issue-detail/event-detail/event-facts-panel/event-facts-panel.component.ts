@@ -57,6 +57,10 @@ interface TagChip {
   order: number;
 }
 
+function isBlank(value: unknown): boolean {
+  return value === null || value === undefined || String(value).trim() === "";
+}
+
 function logo(name: string): string | undefined {
   return name ? generateIconPath(name) : undefined;
 }
@@ -92,6 +96,7 @@ const LABELS: { [key: string]: string } = {
   handled: $localize`Handled`,
 };
 
+/** Facts shown before "Show all", never for just one more. */
 const CAP = 6;
 
 /** Time sorts after the tag and context facts, before custom tags. */
@@ -121,7 +126,6 @@ export class EventFactsPanelComponent {
   private readonly tagFilter = injectTagFilter();
   readonly showRequest = output<void>();
   readonly expanded = signal(false);
-  readonly cap = CAP;
   readonly filterTip = $localize`Show issues with this value`;
 
   /** This event's tags that are not their own fact row. */
@@ -133,7 +137,7 @@ export class EventFactsPanelComponent {
     const requestUrl = this.issueService.eventEntryRequest()?.url;
     const chips: TagChip[] = [];
     for (const t of tags) {
-      if (!t.key || t.value === null || t.value === undefined) continue;
+      if (!t.key || isBlank(t.value)) continue;
       if (isFactTag(t.key, keys) || !isSpreadTag(t.key, keys)) continue;
       if (t.key === "url" && requestUrl) continue;
       const value = String(t.value);
@@ -183,7 +187,7 @@ export class EventFactsPanelComponent {
     const keys = tags.map((t) => t.key ?? "");
     const kindsWithTag = new Set<string>();
     for (const t of tags) {
-      if (!t.key || t.value === null || t.value === undefined) continue;
+      if (!t.key || isBlank(t.value)) continue;
       const tag = { key: t.key, value: String(t.value) };
       const kind = CONTEXT_OF[tag.key];
       if (kind) kindsWithTag.add(kind);
@@ -251,7 +255,10 @@ export class EventFactsPanelComponent {
     return [...lead, ...rest.sort(byRank)];
   });
 
+  readonly capped = computed(() => this.facts().length > CAP + 1);
   readonly shown = computed(() =>
-    this.expanded() ? this.facts() : this.facts().slice(0, CAP),
+    this.expanded() || !this.capped()
+      ? this.facts()
+      : this.facts().slice(0, CAP),
   );
 }

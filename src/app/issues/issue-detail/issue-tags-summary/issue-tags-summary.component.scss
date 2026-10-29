@@ -121,6 +121,12 @@ $spread-narrow: 419px;
   list-style: none;
 }
 
+// A row with one value links straight to its filter.
+.spread-row--link {
+  @include rows.row-button;
+  text-decoration: none;
+}
+
 .spread-value {
   display: grid;
   grid-template-columns: $spread-columns;

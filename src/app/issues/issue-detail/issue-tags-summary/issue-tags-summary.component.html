@@ -24,80 +24,96 @@
             </a>
           </li>
         }
-        <li class="tags-summary__more">
-          @let count = ranked().length;
-          <button
-            mat-button
-            type="button"
-            class="tags-summary__toggle"
-            [attr.aria-expanded]="open()"
-            [attr.aria-controls]="panelId"
-            (click)="open.set(!open())"
-          >
-            @if (open()) {
-              <ng-container i18n>Hide tags</ng-container>
-            } @else {
-              <ng-container i18n>{count, plural,
-                =1 {All 1 tag}
-                other {All {{ count }} tags}
-              }</ng-container>
-            }
-            <mat-icon iconPositionEnd class="tags-summary__chev"
-              >keyboard_arrow_down</mat-icon
+        @if (hasMore()) {
+          <li class="tags-summary__more">
+            @let count = ranked().length;
+            <button
+              mat-button
+              type="button"
+              class="tags-summary__toggle"
+              [attr.aria-expanded]="open()"
+              [attr.aria-controls]="panelId"
+              (click)="open.set(!open())"
             >
-          </button>
-        </li>
+              @if (open()) {
+                <ng-container i18n>Hide tags</ng-container>
+              } @else {
+                <ng-container i18n>{count, plural,
+                  =1 {All 1 tag}
+                  other {All {{ count }} tags}
+                }</ng-container>
+              }
+              <mat-icon iconPositionEnd class="tags-summary__chev"
+                >keyboard_arrow_down</mat-icon
+              >
+            </button>
+          </li>
+        }
       </ul>
     </div>
 
     @if (open()) {
       <gt-panel flush class="tags-summary__panel" [attr.id]="panelId">
         <div class="spread-list">
-            @for (t of ranked(); track t.key) {
-              @let isOpen = opened().has(t.key);
+          @for (t of ranked(); track t.key) {
+            @let isOpen = opened().has(t.key);
+            <ng-template #rowContent>
+              <span class="spread-row__key">{{ t.key }}</span>
+              <span class="spread-row__value">{{ t.top.value }}</span>
+              <span class="spread__track" aria-hidden="true"
+                ><span
+                  class="spread__fill"
+                  [style.width.%]="t.top.percent"
+                ></span
+              ></span>
+              <span class="spread-row__pct">{{ t.top.percent }}%</span>
+            </ng-template>
+            @if (t.expandable) {
               <button
                 type="button"
                 class="spread-row gt-expandable-row"
                 [attr.aria-expanded]="isOpen"
                 (click)="toggle(t.key)"
               >
-                <span class="spread-row__key">{{ t.key }}</span>
-                <span class="spread-row__value">{{ t.top.value }}</span>
-                <span class="spread__track" aria-hidden="true"
-                  ><span
-                    class="spread__fill"
-                    [style.width.%]="t.top.percent"
-                  ></span
-                ></span>
-                <span class="spread-row__pct">{{ t.top.percent }}%</span>
+                <ng-container *ngTemplateOutlet="rowContent" />
                 <mat-icon class="gt-chev" aria-hidden="true">{{
                   isOpen ? "keyboard_arrow_down" : "keyboard_arrow_right"
                 }}</mat-icon>
               </button>
-              @if (isOpen) {
-                <ul class="spread-values" [attr.aria-label]="t.key">
-                  @for (v of t.values; track v.value) {
-                    <li>
-                      <a
-                        class="spread-value"
-                        [routerLink]="['/', orgSlug(), 'issues']"
-                        [queryParams]="v.query"
-                        [matTooltip]="v.tip"
-                      >
-                        <span class="spread-value__name">{{ v.value }}</span>
-                        <span class="spread-value__pct">{{ v.percent }}%</span>
-                      </a>
-                    </li>
-                  }
-                  @if (t.other) {
-                    <li class="spread-value spread-value--other">
-                      <span class="spread-value__name" i18n>Other values</span>
-                      <span class="spread-value__pct">{{ t.other }}%</span>
-                    </li>
-                  }
-                </ul>
-              }
+            } @else {
+              <a
+                class="spread-row spread-row--link"
+                [routerLink]="['/', orgSlug(), 'issues']"
+                [queryParams]="t.top.query"
+                [matTooltip]="t.top.tip"
+              >
+                <ng-container *ngTemplateOutlet="rowContent" />
+              </a>
             }
+            @if (isOpen) {
+              <ul class="spread-values" [attr.aria-label]="t.key">
+                @for (v of t.values; track v.value) {
+                  <li>
+                    <a
+                      class="spread-value"
+                      [routerLink]="['/', orgSlug(), 'issues']"
+                      [queryParams]="v.query"
+                      [matTooltip]="v.tip"
+                    >
+                      <span class="spread-value__name">{{ v.value }}</span>
+                      <span class="spread-value__pct">{{ v.percent }}%</span>
+                    </a>
+                  </li>
+                }
+                @if (t.other) {
+                  <li class="spread-value spread-value--other">
+                    <span class="spread-value__name" i18n>Other values</span>
+                    <span class="spread-value__pct">{{ t.other }}%</span>
+                  </li>
+                }
+              </ul>
+            }
+          }
         </div>
         <div class="gt-panel-row">
           <span class="gt-muted" i18n>{tagged(), plural,

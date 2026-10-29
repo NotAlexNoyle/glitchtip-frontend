@@ -12,15 +12,19 @@
         hideSingleSelectionIndicator
         i18n-aria-label
         aria-label="Frames"
-        [value]="mode()"
+        [value]="view()"
         (change)="mode.set($event.value)"
       >
-        <mat-button-toggle value="app" i18n>App</mat-button-toggle>
-        <mat-button-toggle value="all" i18n> Full </mat-button-toggle>
+        @if (hasLibraryRuns()) {
+          <mat-button-toggle value="app" i18n>App</mat-button-toggle>
+          <mat-button-toggle value="all" i18n> Full </mat-button-toggle>
+        } @else {
+          <mat-button-toggle value="app" i18n>Formatted</mat-button-toggle>
+        }
         <mat-button-toggle value="raw" i18n> Raw </mat-button-toggle>
       </mat-button-toggle-group>
     }
-    @if (hasFrames() && view() !== "raw") {
+    @if (canReorder() && view() !== "raw") {
       <gt-ghost-select
         slot="actions"
         i18n-ariaLabel
@@ -31,7 +35,7 @@
         (valueChange)="setOrder($event)"
       />
     }
-    @if (raw()) {
+    @if (hasFrames()) {
       <button
         slot="actions"
         mat-icon-button
@@ -55,7 +59,7 @@
         <div class="single-head">
           @if (link.value || link.unhandled) {
             <p class="single-head__value">
-              {{ link.value }}
+              <span class="single-head__text">{{ link.value }}</span>
               @if (link.unhandled) {
                 <gt-status-pill
                   class="chain__pill"
@@ -72,11 +76,13 @@
           }
         </div>
       }
-      <div class="frames frames--top">
-        <ng-container
-          *ngTemplateOutlet="frameList; context: { $implicit: link }"
-        />
-      </div>
+      @if (link.frames.length) {
+        <div class="frames frames--top">
+          <ng-container
+            *ngTemplateOutlet="frameList; context: { $implicit: link }"
+          />
+        </div>
+      }
     } @else {
       @for (link of chain(); track link.key) {
         @let isOpen = opened().has(link.key);

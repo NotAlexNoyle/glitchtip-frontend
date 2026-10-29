@@ -150,7 +150,9 @@ export class EventMoreDataComponent {
     const contexts = (event.contexts ?? {}) as {
       [key: string]: { [key: string]: Json } | null;
     };
-    const names = Object.keys(contexts).sort();
+    const names = Object.keys(contexts)
+      .filter((name) => toRows(contexts[name], ["type"]).length)
+      .sort();
     if (names.length) {
       out.push({
         key: "contexts",

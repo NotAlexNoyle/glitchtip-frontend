@@ -26,7 +26,7 @@ import { StatefulService } from "src/app/shared/stateful-service/signal-state.se
 import { client } from "src/app/shared/api/api";
 import { getCursor } from "src/app/shared/pagination.utils";
 import { components } from "src/app/api/api-schema";
-import { rawTrace } from "./event-detail/event-format";
+import { rawTrace, stackFrames } from "./event-detail/event-format";
 
 type EventDetail = components["schemas"]["IssueEventDetailSchema"];
 type IssueDetail = components["schemas"]["IssueDetailSchema"];
@@ -174,6 +174,10 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
     return [...(values ?? [])].reverse();
   });
   /** Raw view, Copy trace and the event menu share this text. */
+  /** Without frames there is nothing to filter, order, show raw or copy. */
+  readonly exceptionHasFrames = computed(() =>
+    this.exceptionChain().some((v) => stackFrames(v).length),
+  );
   readonly exceptionTrace = computed(() => {
     const chain = this.exceptionChain();
     return chain.length ? rawTrace(chain, this.event()?.platform) : "";

@@ -1,12 +1,12 @@
-@if (eventEntryMessage(); as message) {
+@if (hasContent()) {
   <gt-panel flush i18n-title title="Message">
     <div class="gt-kv">
-      <div class="gt-kv__row">
-        <span class="gt-kv__k" i18n>Message</span>
-        <span class="gt-kv__v gt-break message">{{
-          message.formatted || message.message
-        }}</span>
-      </div>
+      @if (text(); as text) {
+        <div class="gt-kv__row">
+          <span class="gt-kv__k" i18n>Message</span>
+          <span class="gt-kv__v gt-break message">{{ text }}</span>
+        </div>
+      }
       @if (template(); as template) {
         <div class="gt-kv__row">
           <span class="gt-kv__k" i18n>Template</span>

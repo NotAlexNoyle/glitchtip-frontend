@@ -89,6 +89,13 @@
   background-color: transparent;
 }
 
+// One event: the same name, with nothing to open.
+.event-switch--static {
+  display: inline-flex;
+  align-items: center;
+  padding-inline: var(--gt-space-2, 8px);
+}
+
 .event-switch__arrow {
   @include controls.icon-size(24px);
   flex: none;

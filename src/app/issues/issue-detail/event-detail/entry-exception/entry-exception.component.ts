@@ -150,12 +150,25 @@ export class EntryExceptionComponent {
   private readonly values = this.issueService.exceptionChain;
   readonly raw = this.issueService.exceptionTrace;
   readonly single = computed(() => this.values().length === 1);
-  /** Without frames there is nothing to filter, order or show raw. */
-  readonly hasFrames = computed(() =>
-    this.values().some((v) => stackFrames(v).length),
+  readonly hasFrames = this.issueService.exceptionHasFrames;
+  /** App and Full differ only when a link mixes app and library frames. */
+  readonly hasLibraryRuns = computed(() =>
+    this.chain().some(
+      (link) =>
+        link.frames.some((f) => f.frame.inApp) &&
+        link.frames.some((f) => !f.frame.inApp),
+    ),
+  );
+  /** Order only matters when a link has more than one frame. */
+  readonly canReorder = computed(() =>
+    this.chain().some((link) => link.frames.length > 1),
   );
   /** The view on screen; a frameless exception always shows its links. */
-  readonly view = computed(() => (this.hasFrames() ? this.mode() : "app"));
+  readonly view = computed(() => {
+    const mode = this.mode();
+    if (!this.hasFrames()) return "app";
+    return mode === "all" && !this.hasLibraryRuns() ? "app" : mode;
+  });
 
   /** Frames keep their stack index as key, so reordering keeps them open. */
   readonly chain = computed<ChainLink[]>(() => {

@@ -21,7 +21,7 @@ import { MatMenuItem, MatMenuModule } from "@angular/material/menu";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
-import { DatePipe, DecimalPipe } from "@angular/common";
+import { DatePipe, DecimalPipe, NgTemplateOutlet } from "@angular/common";
 import { IssueDetailService, RecentEvent } from "../issue-detail.service";
 import { SettingsService } from "src/app/api/settings.service";
 import { DaysAgoPipe } from "src/app/shared/days-ago.pipe";
@@ -118,6 +118,7 @@ function readHintSeen(): boolean {
     EventMoreDataComponent,
     DatePipe,
     DecimalPipe,
+    NgTemplateOutlet,
     DaysAgoPipe,
     PanelComponent,
     EmptyStateComponent,
@@ -204,6 +205,7 @@ export class EventDetailComponent {
     return `${window.location.origin}/${this.orgSlug()}/issues/${this.issueID()}/events/${event.id}`;
   });
   trace = this.issueService.exceptionTrace;
+  traceHasFrames = this.issueService.exceptionHasFrames;
   readonly eventNotFoundMessage = $localize`This may be because the URL is pointing to an event that doesn't exist or was deleted.`;
   initialLoadComplete = this.issueService.eventInitialLoadComplete;
   nextEvent = this.issueService.hasNextEvent;
@@ -213,6 +215,8 @@ export class EventDetailComponent {
 
   shortId = computed(() => shortEventId(this.event()?.id ?? ""));
   eventCount = computed(() => +(this.issueService.issue()?.count ?? 0));
+  /** With one event there is nothing to switch or step to. */
+  canSwitch = computed(() => this.eventCount() > 1);
   private recent = computed(() => {
     const r = this.issueService.recentEvents();
     return r && r.issueID === this.issueID() ? r : null;

@@ -6,6 +6,7 @@ import {
   linkedSignal,
   signal,
 } from "@angular/core";
+import { NgTemplateOutlet } from "@angular/common";
 import { Params, RouterLink } from "@angular/router";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
@@ -50,6 +51,8 @@ interface RankedTag {
   top: TagValue;
   values: TagValue[];
   other: number;
+  /** One value and no others: the row itself filters, with nothing to open. */
+  expandable: boolean;
 }
 
 let nextId = 0;
@@ -61,6 +64,7 @@ let nextId = 0;
 @Component({
   selector: "gt-issue-tags-summary",
   imports: [
+    NgTemplateOutlet,
     PanelComponent,
     RouterLink,
     MatButtonModule,
@@ -113,6 +117,13 @@ export class IssueTagsSummaryComponent {
       .map((t) => ({ ...t, tip: `${t.key}: ${t.top.tip}` }));
   });
 
+  /** All tags adds something only when it shows more than the chips do. */
+  readonly hasMore = computed(
+    () =>
+      this.ranked().length > this.top().length ||
+      this.ranked().some((t) => t.expandable),
+  );
+
   /** When every top value is 100%, the shares say nothing. */
   readonly showShares = computed(() =>
     this.top().some((t) => t.top.percent < 100),
@@ -133,6 +144,13 @@ export class IssueTagsSummaryComponent {
       query: this.tagFilter(tag.key, v.value),
       tip: $localize`${v.count}:count: of ${tag.totalValues}:total:`,
     }));
-    return { key: tag.key, top: values[0], values, other: tag.other ?? 0 };
+    const other = tag.other ?? 0;
+    return {
+      key: tag.key,
+      top: values[0],
+      values,
+      other,
+      expandable: values.length > 1 || other > 0,
+    };
   }
 }
