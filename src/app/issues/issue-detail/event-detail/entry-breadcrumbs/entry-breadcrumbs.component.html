@@ -48,7 +48,10 @@
               (click)="showEarlier.set(true)"
               i18n
             >
-              Show {{ hiddenCount() }} earlier
+              {hiddenCount(), plural,
+                =1 {Show 1 earlier}
+                other {Show {{ hiddenCount() // i18n(ph="count") }} earlier}
+              }
             </button>
           </li>
         }
@@ -60,14 +63,14 @@
                 type="button"
                 class="crumbs__row gt-expandable-row"
                 [attr.aria-expanded]="isOpen"
-                (click)="toggle(c.key)"
+                (click)="opened.toggle(c.key)"
               >
                 <ng-container
                   *ngTemplateOutlet="cells; context: { $implicit: c }"
                 />
-                <mat-icon class="gt-chev crumbs__end" aria-hidden="true">{{
-                  isOpen ? "keyboard_arrow_down" : "keyboard_arrow_right"
-                }}</mat-icon>
+                <mat-icon class="gt-chev crumbs__end" aria-hidden="true"
+                  >keyboard_arrow_right</mat-icon
+                >
               </button>
             } @else {
               <div class="crumbs__row">

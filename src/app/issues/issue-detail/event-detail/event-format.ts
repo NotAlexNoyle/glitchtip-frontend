@@ -99,13 +99,15 @@ export interface PropertyRow {
   long: boolean;
 }
 
-/** Object entries as property rows, in their own order. */
+export type Entries = { [key: string]: Json } | [string, Json][];
+
+/** Object entries or [key, value] pairs (headers, query) as property rows, in order. */
 export function toRows(
-  obj: { [key: string]: Json } | null | undefined,
+  obj: Entries | null | undefined,
   skip: string[] = [],
 ): PropertyRow[] {
   if (!obj) return [];
-  return Object.entries(obj)
+  return (Array.isArray(obj) ? obj : Object.entries(obj))
     .filter(([key]) => !skip.includes(key))
     .map(([key, v]) => {
       const value = formatValue(v);
@@ -323,13 +325,6 @@ export function crumbSummary(crumb: Breadcrumb): string {
   return keys.length ? keys.join(", ") : "";
 }
 
-/** A copy of the set with the key added or removed, for expandable rows. */
-export function toggled<T>(set: ReadonlySet<T>, key: T): Set<T> {
-  const next = new Set(set);
-  if (!next.delete(key)) next.add(key);
-  return next;
-}
-
 export type EventContext = { [key: string]: unknown } | null | undefined;
 export type EventContexts = { [key: string]: EventContext };
 
@@ -344,7 +339,7 @@ export const CONTEXT_OF: { [tag: string]: string } = {
   gpu: "gpu",
 };
 
-function str(value: unknown): string {
+export function str(value: unknown): string {
   return typeof value === "string" || typeof value === "number"
     ? String(value).trim()
     : "";

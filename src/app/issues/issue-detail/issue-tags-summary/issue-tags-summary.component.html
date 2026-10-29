@@ -40,7 +40,7 @@
               } @else {
                 <ng-container i18n>{count, plural,
                   =1 {All 1 tag}
-                  other {All {{ count }} tags}
+                  other {All {{ count // i18n(ph="count") }} tags}
                 }</ng-container>
               }
               <mat-icon iconPositionEnd class="tags-summary__chev"
@@ -73,12 +73,12 @@
                 type="button"
                 class="spread-row gt-expandable-row"
                 [attr.aria-expanded]="isOpen"
-                (click)="toggle(t.key)"
+                (click)="opened.toggle(t.key)"
               >
                 <ng-container *ngTemplateOutlet="rowContent" />
-                <mat-icon class="gt-chev" aria-hidden="true">{{
-                  isOpen ? "keyboard_arrow_down" : "keyboard_arrow_right"
-                }}</mat-icon>
+                <mat-icon class="gt-chev" aria-hidden="true"
+                  >keyboard_arrow_right</mat-icon
+                >
               </button>
             } @else {
               <a
@@ -118,7 +118,7 @@
         <div class="gt-panel-row">
           <span class="gt-muted" i18n>{tagged(), plural,
             =1 {Share of the 1 tagged event}
-            other {Share of {{ tagged() }} tagged events}
+            other {Share of {{ tagged() // i18n(ph="count") }} tagged events}
           }</span>
         </div>
       </gt-panel>

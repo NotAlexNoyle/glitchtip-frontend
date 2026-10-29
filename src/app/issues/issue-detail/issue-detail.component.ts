@@ -123,6 +123,13 @@ export class IssueDetailComponent implements OnInit {
 
   userCount = this.issueService.userCount;
 
+  usersTip = computed(() => {
+    const users = this.userCount();
+    return users
+      ? $localize`Distinct ${users.key}:key: values across all events (${users.tagged}:tagged: tagged)`
+      : "";
+  });
+
   firstSeenTip = computed(() => {
     const issue = this.issue();
     if (!issue) return "";

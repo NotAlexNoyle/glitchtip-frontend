@@ -3,7 +3,6 @@ import {
   Component,
   computed,
   inject,
-  linkedSignal,
   signal,
 } from "@angular/core";
 import { NgTemplateOutlet } from "@angular/common";
@@ -15,7 +14,7 @@ import { PanelComponent } from "src/app/shared/panel/panel.component";
 import { OrganizationsService } from "src/app/api/organizations.service";
 import { IssueTagsAdjusted } from "../../interfaces";
 import { IssueDetailService } from "../issue-detail.service";
-import { toggled } from "../event-detail/event-format";
+import { openKeys } from "src/app/shared/signal.utils";
 import { injectTagFilter, isSpreadTag, isUserTag } from "../tag-filters";
 
 /** The user tag the full ranking shows: the most readable one present. */
@@ -82,10 +81,7 @@ export class IssueTagsSummaryComponent {
 
   readonly open = signal(false);
   readonly panelId = `gt-issue-tags-${nextId++}`;
-  readonly opened = linkedSignal(() => {
-    this.issueService.tags();
-    return new Set<string>();
-  });
+  readonly opened = openKeys(this.issueService.tags);
 
   private readonly tags = computed(() => {
     const tags = this.issueService.tags() ?? [];
@@ -132,10 +128,6 @@ export class IssueTagsSummaryComponent {
   readonly tagged = computed(() =>
     Math.max(0, ...this.tags().map((t) => t.totalValues)),
   );
-
-  toggle(key: string) {
-    this.opened.set(toggled(this.opened(), key));
-  }
 
   private toRanked(tag: IssueTagsAdjusted): RankedTag {
     const values = tag.topValues.map((v) => ({

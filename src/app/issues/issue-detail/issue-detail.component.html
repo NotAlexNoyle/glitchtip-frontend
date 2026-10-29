@@ -75,21 +75,24 @@
           }
           <span class="gt-band-narrow-only" i18n>{+issue.count, plural,
             =1 {<b>1</b> event}
-            other {<b>{{ +issue.count | number }}</b> events}
+            other {
+              <b>{{ +issue.count | number // i18n(ph="count") }}</b>
+              events
+            }
           }</span>
           @if (userCount(); as users) {
             @if (users.count > 0) {
               <span
                 class="gt-has-tip gt-band-narrow-only"
                 tabindex="0"
-                i18n-matTooltip
-                matTooltip="Distinct {{
-                  users.key
-                }} values across all events ({{ users.tagged }} tagged)"
+                [matTooltip]="usersTip()"
                 i18n
                 >{users.count, plural,
                   =1 {<b>1</b> user}
-                  other {<b>{{ users.count | number }}</b> users}
+                  other {
+                    <b>{{ users.count | number // i18n(ph="count") }}</b>
+                    users
+                  }
                 }</span
               >
             }
@@ -100,7 +103,7 @@
               tabindex="0"
               [matTooltip]="firstSeenTip()"
               i18n
-              >first seen in {{ release }}</span
+              >first seen in {{ release // i18n(ph="release") }}</span
             >
           } @else {
             <span
@@ -108,7 +111,8 @@
               tabindex="0"
               [matTooltip]="firstSeenTip()"
               i18n
-              >first seen {{ issue.firstSeen | daysAgo }}</span
+              >first seen
+              {{ issue.firstSeen | daysAgo // i18n(ph="time") }}</span
             >
           }
           <span
@@ -116,11 +120,14 @@
             tabindex="0"
             [matTooltip]="issue.lastSeen | date: 'medium'"
             i18n
-            >last seen {{ issue.lastSeen | daysAgo }}</span
+            >last seen {{ issue.lastSeen | daysAgo // i18n(ph="time") }}</span
           >
           @if (resolvedInRelease(); as release) {
             <span i18n
-              >resolved in <span class="chip">{{ release }}</span></span
+              >resolved in
+              <span class="chip">{{
+                release // i18n(ph="release")
+              }}</span></span
             >
           }
         </span>
@@ -135,10 +142,7 @@
           slot="stats"
           class="gt-stat"
           tabindex="0"
-          i18n-matTooltip
-          matTooltip="Distinct {{ users.key }} values across all events ({{
-            users.tagged
-          }} tagged)"
+          [matTooltip]="usersTip()"
         >
           <span class="gt-stat__label" i18n>Users</span>
           <span class="gt-stat__value">{{ users.count | number }}</span>

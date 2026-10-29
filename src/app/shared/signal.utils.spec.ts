@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { signal } from "@angular/core";
-import { keepPreviousValue } from "./signal.utils";
+import { keepPreviousValue, openKeys } from "./signal.utils";
 
 /**
  * A resource in its error state throws from `.value()`, which callers pass in
@@ -64,5 +64,20 @@ describe("keepPreviousValue", () => {
     shouldThrow.set(false);
 
     expect(kept()).toBe("fresh");
+  });
+});
+
+describe("openKeys", () => {
+  it("toggles keys and resets when the source changes", () => {
+    const source = signal(1);
+    const open = openKeys(source, () => ["a"]);
+    expect([...open()]).toEqual(["a"]);
+
+    open.toggle("b");
+    open.toggle("a");
+    expect([...open()]).toEqual(["b"]);
+
+    source.set(2);
+    expect([...open()]).toEqual(["a"]);
   });
 });

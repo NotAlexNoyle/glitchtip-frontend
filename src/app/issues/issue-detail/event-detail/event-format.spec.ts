@@ -19,7 +19,6 @@ import {
   shortEventId,
   stackFrames,
   toRows,
-  toggled,
 } from "./event-format";
 
 function frame(overrides: Partial<Frame>): Frame {
@@ -138,6 +137,12 @@ describe("toRows", () => {
       ],
     );
     expect(toRows(null)).toEqual([]);
+  });
+
+  it("reads [key, value] pairs, as SDKs send headers", () => {
+    expect(toRows([["Accept", "*/*"]])).toEqual([
+      { key: "Accept", value: "*/*", long: false },
+    ]);
   });
 });
 
@@ -316,15 +321,6 @@ describe("crumbSummary", () => {
     ).toBe('{ href: "/a" } · 0');
     expect(crumbSummary(crumb({ data: { a: 1, b: 2 } }))).toBe("a, b");
     expect(crumbSummary(crumb({}))).toBe("");
-  });
-});
-
-describe("toggled", () => {
-  it("adds a missing key and removes a present one, without mutating", () => {
-    const set = new Set(["a"]);
-    expect([...toggled(set, "b")]).toEqual(["a", "b"]);
-    expect([...toggled(set, "a")]).toEqual([]);
-    expect([...set]).toEqual(["a"]);
   });
 });
 

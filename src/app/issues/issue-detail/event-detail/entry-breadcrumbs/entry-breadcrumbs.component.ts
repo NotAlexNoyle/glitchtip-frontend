@@ -13,7 +13,8 @@ import { PanelComponent } from "src/app/shared/panel/panel.component";
 import { SelectGhostDirective } from "src/app/shared/select-ghost.directive";
 import { IssueDetailService } from "../../issue-detail.service";
 import { Breadcrumb } from "../../../interfaces";
-import { PropertyRow, crumbSummary, toRows, toggled } from "../event-format";
+import { PropertyRow, crumbSummary, toRows } from "../event-format";
+import { openKeys } from "src/app/shared/signal.utils";
 
 /** Breadcrumbs shown before "Show N earlier", never for just one. */
 const RECENT = 5;
@@ -99,10 +100,7 @@ export class EntryBreadcrumbsComponent {
     this.crumbs();
     return false;
   });
-  readonly opened = linkedSignal(() => {
-    this.crumbs();
-    return new Set<string>();
-  });
+  readonly opened = openKeys(this.crumbs);
 
   readonly categories = computed(() =>
     [
@@ -177,8 +175,4 @@ export class EntryBreadcrumbsComponent {
     if (!event?.dateCreated) return null;
     return { ...clock(event.dateCreated), message: event.title || "" };
   });
-
-  toggle(key: string) {
-    this.opened.set(toggled(this.opened(), key));
-  }
 }

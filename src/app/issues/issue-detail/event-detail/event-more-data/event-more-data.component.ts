@@ -3,13 +3,13 @@ import {
   Component,
   computed,
   inject,
-  linkedSignal,
 } from "@angular/core";
 import { MatIconModule } from "@angular/material/icon";
 import { PanelComponent } from "src/app/shared/panel/panel.component";
 import { IssueDetailService } from "../../issue-detail.service";
 import { Json } from "src/app/interface-primitives";
-import { PropertyRow, toRows, toggled } from "../event-format";
+import { PropertyRow, str, toRows } from "../event-format";
+import { openKeys } from "src/app/shared/signal.utils";
 
 interface Group {
   label: string;
@@ -25,12 +25,6 @@ interface Source {
   integrations?: number;
   /** Formatted on first open. */
   groups: () => Group[];
-}
-
-function scalar(value: Json | undefined): string {
-  return typeof value === "string" || typeof value === "number"
-    ? String(value)
-    : "";
 }
 
 /** User, contexts, additional data and SDK as collapsed rows: the raw sources. */
@@ -55,7 +49,7 @@ function scalar(value: Json | undefined): string {
                 type="button"
                 class="gt-kv__row gt-expandable-row"
                 [attr.aria-expanded]="isOpen"
-                (click)="toggle(s.key)"
+                (click)="opened.toggle(s.key)"
               >
                 <span class="gt-kv__k"
                   >{{ s.label }}
@@ -72,14 +66,16 @@ function scalar(value: Json | undefined): string {
                       i18n
                       >{s.integrations, plural,
                         =1 {1 integration}
-                        other {{{ s.integrations }} integrations}
+                        other {
+                          {{ s.integrations // i18n(ph="count") }} integrations
+                        }
                       }</span
                     >
                   }
                 </span>
-                <mat-icon class="gt-chev" aria-hidden="true">{{
-                  isOpen ? "keyboard_arrow_down" : "keyboard_arrow_right"
-                }}</mat-icon>
+                <mat-icon class="gt-chev" aria-hidden="true"
+                  >keyboard_arrow_right</mat-icon
+                >
               </button>
               @if (openedGroups().get(s.key); as groups) {
                 <div class="gt-groups">
@@ -111,17 +107,35 @@ function scalar(value: Json | undefined): string {
   `,
   styles: `
     @use "controls";
-
-    :host {
-      display: block;
-    }
-
-    :host:empty {
-      display: none;
-    }
+    @use "row-mixins" as rows;
 
     .gt-groups {
-      padding-top: var(--gt-space-1, 4px);
+      padding-block: var(--gt-space-1, 4px);
+    }
+
+    .gt-group + .gt-group {
+      @include rows.inset-hairline(16px);
+    }
+
+    .gt-kv__group .gt-group + .gt-group {
+      @include rows.inset-hairline(32px);
+    }
+
+    .gt-group__label {
+      padding: var(--gt-space-2, 8px) var(--gt-space-4, 16px) 0
+        var(--gt-indent, var(--gt-space-4, 16px));
+      font: var(--mat-sys-label-medium);
+      font-weight: 600;
+      color: var(--mat-sys-on-surface-variant);
+    }
+
+    .gt-property-list--group {
+      padding-block: 0 var(--gt-space-2, 8px);
+
+      .gt-property-list__row {
+        min-height: 28px;
+        padding-inline-start: var(--gt-indent, var(--gt-space-4, 16px));
+      }
     }
 
     .integrations--after::before {
@@ -143,7 +157,7 @@ export class EventMoreDataComponent {
         key: "user",
         label: $localize`User`,
         count: null,
-        summary: Object.values(user).map(scalar).filter(Boolean).join(" · "),
+        summary: Object.values(user).map(str).filter(Boolean).join(" · "),
         groups: () => [{ label: $localize`User`, rows: toRows(user) }],
       });
     }
@@ -196,7 +210,7 @@ export class EventMoreDataComponent {
         key: "sdk",
         label: "SDK",
         count: null,
-        summary: [scalar(sdk["name"]), scalar(sdk["version"])]
+        summary: [str(sdk["name"]), str(sdk["version"])]
           .filter(Boolean)
           .join(" "),
         integrations: integrations.length,
@@ -230,10 +244,7 @@ export class EventMoreDataComponent {
     return out;
   });
 
-  readonly opened = linkedSignal(() => {
-    this.sources();
-    return new Set<string>();
-  });
+  readonly opened = openKeys(this.sources);
 
   readonly openedGroups = computed(() => {
     const opened = this.opened();
@@ -243,8 +254,4 @@ export class EventMoreDataComponent {
     }
     return groups;
   });
-
-  toggle(key: string) {
-    this.opened.set(toggled(this.opened(), key));
-  }
 }

@@ -96,7 +96,9 @@
           @if (expanded()) {
             <ng-container i18n>Show fewer</ng-container>
           } @else {
-            <ng-container i18n>Show all {{ facts().length }}</ng-container>
+            <ng-container i18n>{facts().length, plural,
+              other {Show all {{ facts().length // i18n(ph="count") }}}
+            }</ng-container>
           }
         </button>
       </div>

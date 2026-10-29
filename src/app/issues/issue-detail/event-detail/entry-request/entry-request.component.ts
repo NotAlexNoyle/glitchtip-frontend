@@ -3,7 +3,6 @@ import {
   Component,
   computed,
   inject,
-  linkedSignal,
   signal,
 } from "@angular/core";
 import { ClipboardModule } from "@angular/cdk/clipboard";
@@ -19,13 +18,13 @@ import {
 import { IssueDetailService } from "../../issue-detail.service";
 import { Json } from "src/app/interface-primitives";
 import {
+  Entries,
   PropertyRow,
   formatBlock,
-  formatValue,
   isHttpUrl,
-  isLongValue,
-  toggled,
+  toRows,
 } from "../event-format";
+import { openKeys } from "src/app/shared/signal.utils";
 
 interface Section {
   key: string;
@@ -38,16 +37,8 @@ interface Section {
   copy?: string;
 }
 
-function pairs(value: unknown): PropertyRow[] {
-  if (!value) return [];
-  const list: [string, Json][] = Array.isArray(value)
-    ? (value as [string, Json][])
-    : Object.entries(value as { [k: string]: Json });
-  return list.map(([key, v]) => {
-    const text = formatValue(v);
-    return { key, value: text, long: isLongValue(text) };
-  });
-}
+// SDKs send these as an object or as [key, value] pairs.
+const rowsOf = (value: unknown) => toRows(value as Entries);
 
 @Component({
   selector: "gt-entry-request",
@@ -74,10 +65,7 @@ export class EntryRequestComponent {
     { value: "raw", label: $localize`Raw` },
   ];
   readonly format = signal("formatted");
-  readonly opened = linkedSignal(() => {
-    this.request();
-    return new Set<string>();
-  });
+  readonly opened = openKeys(this.request);
 
   readonly subtitle = computed(() => {
     const r = this.request();
@@ -94,7 +82,7 @@ export class EntryRequestComponent {
     const r = this.request();
     if (!r) return [];
     const out: Section[] = [];
-    const query = pairs(r.query);
+    const query = rowsOf(r.query);
     if (query.length) {
       out.push({
         key: "query",
@@ -104,7 +92,7 @@ export class EntryRequestComponent {
       });
     }
     const body: unknown = r.data;
-    const rows = typeof body === "object" && body !== null ? pairs(body) : [];
+    const rows = typeof body === "object" && body !== null ? rowsOf(body) : [];
     // An empty object or array has nothing to show either.
     if (
       rows.length ||
@@ -135,7 +123,7 @@ export class EntryRequestComponent {
       ["cookies", $localize`Cookies`, r.cookies],
       ["env", $localize`Environment`, r.env],
     ] as [string, string, unknown][]) {
-      const rows = pairs(value);
+      const rows = rowsOf(value);
       if (rows.length) {
         out.push({ key, label, summary: String(rows.length), rows });
       }
@@ -154,8 +142,8 @@ export class EntryRequestComponent {
       // keep the raw url
     }
     const lines = [`${r.method ?? "GET"} ${target}`];
-    for (const p of pairs(r.headers)) lines.push(`${p.key}: ${p.value}`);
-    const cookies = pairs(r.cookies);
+    for (const p of rowsOf(r.headers)) lines.push(`${p.key}: ${p.value}`);
+    const cookies = rowsOf(r.cookies);
     if (cookies.length) {
       lines.push(
         "Cookie: " + cookies.map((c) => `${c.key}=${c.value}`).join("; "),
@@ -173,9 +161,5 @@ export class EntryRequestComponent {
 
   onCopiedBody() {
     this.snackBar.open($localize`Body copied`);
-  }
-
-  toggle(key: string) {
-    this.opened.set(toggled(this.opened(), key));
   }
 }

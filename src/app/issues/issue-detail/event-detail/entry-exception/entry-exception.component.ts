@@ -32,8 +32,8 @@ import {
   packageOf,
   stackFrames,
   toRows,
-  toggled,
 } from "../event-format";
+import { openKeys } from "src/app/shared/signal.utils";
 
 interface FrameItem {
   kind: "frame";
@@ -223,7 +223,7 @@ export class EntryExceptionComponent {
     if (stack.length) open.add(frameKey(last, topFrameIndex(stack)));
     return open;
   });
-  readonly opened = linkedSignal(() => this.defaultOpen());
+  readonly opened = openKeys(this.defaultOpen, (keys) => keys);
   private readonly showAllFrames = linkedSignal(() => {
     this.values();
     return new Set<string>();
@@ -292,10 +292,6 @@ export class EntryExceptionComponent {
     }
     return bodies;
   });
-
-  toggle(key: string) {
-    this.opened.set(toggled(this.opened(), key));
-  }
 
   showMore(linkKey: string) {
     this.showAllFrames.update((s) => new Set(s).add(linkKey));

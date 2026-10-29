@@ -96,7 +96,7 @@
             class="chain__head gt-expandable-row"
             [attr.aria-expanded]="link.frames.length ? isOpen : null"
             [disabled]="!link.frames.length"
-            (click)="toggle(link.key)"
+            (click)="opened.toggle(link.key)"
           >
             <span class="chain__role">{{ link.role }}</span>
             <span class="chain__what">
@@ -131,9 +131,9 @@
               </span>
             }
             @if (link.frames.length) {
-              <mat-icon class="gt-chev" aria-hidden="true">{{
-                isOpen ? "keyboard_arrow_down" : "keyboard_arrow_right"
-              }}</mat-icon>
+              <mat-icon class="gt-chev" aria-hidden="true"
+                >keyboard_arrow_right</mat-icon
+              >
             }
           </button>
           @if (isOpen) {
@@ -158,20 +158,20 @@
         type="button"
         class="frame__head frame__head--run gt-expandable-row"
         [attr.aria-expanded]="runOpen"
-        (click)="toggle(item.key)"
+        (click)="opened.toggle(item.key)"
       >
         <span class="frame__run">
           <span i18n>{item.frames.length, plural,
             =1 {1 library frame}
-            other {{{ item.frames.length }} library frames}
+            other {{{ item.frames.length // i18n(ph="count") }} library frames}
           }</span>
           @if (item.packages) {
             <span class="frame__run-pkgs">{{ item.packages }}</span>
           }
         </span>
-        <mat-icon class="gt-chev" aria-hidden="true">{{
-          runOpen ? "keyboard_arrow_down" : "keyboard_arrow_right"
-        }}</mat-icon>
+        <mat-icon class="gt-chev" aria-hidden="true"
+          >keyboard_arrow_right</mat-icon
+        >
       </button>
       @if (runOpen) {
         @for (f of item.frames; track f.key) {
@@ -189,7 +189,10 @@
   @if (view.hidden) {
     <div class="frames__more">
       <button mat-button type="button" (click)="showMore(link.key)" i18n>
-        Show {{ view.hidden }} more frames
+        {view.hidden, plural,
+          =1 {Show 1 more frame}
+          other {Show {{ view.hidden // i18n(ph="count") }} more frames}
+        }
       </button>
     </div>
   }
@@ -203,7 +206,7 @@
       type="button"
       class="frame__head gt-expandable-row"
       [attr.aria-expanded]="isOpen"
-      (click)="toggle(item.key)"
+      (click)="opened.toggle(item.key)"
     >
       <span class="gt-mono frame__fn">{{ item.fn }}</span>
       <span
@@ -213,9 +216,9 @@
         ><bdi>{{ item.file }}</bdi></span
       >
       <span class="gt-lc">{{ item.lc }}</span>
-      <mat-icon class="gt-chev" aria-hidden="true">{{
-        isOpen ? "keyboard_arrow_down" : "keyboard_arrow_right"
-      }}</mat-icon>
+      <mat-icon class="gt-chev" aria-hidden="true"
+        >keyboard_arrow_right</mat-icon
+      >
     </button>
     @if (isOpen) {
       @let body = bodies().get(item.key);
@@ -240,12 +243,18 @@
             }
             @if (item.filename) {
               <span i18n
-                >file <span class="gt-mono">{{ item.filename }}</span></span
+                >file
+                <span class="gt-mono">{{
+                  item.filename // i18n(ph="file")
+                }}</span></span
               >
             }
             @if (item.pkg) {
               <span i18n
-                >within <span class="gt-mono">{{ item.pkg }}</span></span
+                >within
+                <span class="gt-mono">{{
+                  item.pkg // i18n(ph="package")
+                }}</span></span
               >
             }
           </p>
@@ -297,7 +306,7 @@
 <ng-template #mechLine let-m>
   <span class="mech-line">
     @if (m.type) {
-      <span i18n>mechanism {{ m.type }}</span>
+      <span i18n>mechanism {{ m.type // i18n(ph="mechanism") }}</span>
     }
     @if (m.handled) {
       <span i18n>handled yes</span>
@@ -305,7 +314,7 @@
       <span i18n>handled no</span>
     }
     @if (m.fn) {
-      <span i18n>function {{ m.fn }}</span>
+      <span i18n>function {{ m.fn // i18n(ph="function") }}</span>
     }
   </span>
 </ng-template>

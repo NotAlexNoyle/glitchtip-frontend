@@ -35,7 +35,7 @@ import { EntryExceptionComponent } from "./entry-exception/entry-exception.compo
 import { EntryMessageComponent } from "./entry-message/entry-message.component";
 import { EventFactsPanelComponent } from "./event-facts-panel/event-facts-panel.component";
 import { EventMoreDataComponent } from "./event-more-data/event-more-data.component";
-import { shortEventId } from "./event-format";
+import { eventUser, shortEventId } from "./event-format";
 
 interface EventOption {
   id: string;
@@ -56,9 +56,8 @@ function tagOf(tags: EventTags | undefined, key: string) {
 }
 
 function userOf(user: unknown, tags: EventTags | undefined) {
-  const u = (user ?? {}) as Record<string, unknown>;
-  const name = u["email"] || u["username"] || u["id"] || u["ip_address"];
-  if (typeof name === "string" || typeof name === "number") return String(name);
+  const hit = eventUser(user as { [key: string]: unknown } | null);
+  if (hit) return hit.value;
   const tag = tagOf(tags, "user");
   return tag ? tag.replace(/^(id|email|username|ip):/, "") : null;
 }
