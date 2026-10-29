@@ -20,9 +20,20 @@ export class EntryMessageComponent {
 
   eventEntryMessage = this.issueService.eventEntryMessage;
 
+  /** The message, unless it only repeats the exception shown above it. */
   text = computed(() => {
     const m = this.eventEntryMessage();
-    return m?.formatted || m?.message || "";
+    const text = m?.formatted || m?.message || "";
+    // The stored message is cut short with "…", so a prefix counts too.
+    const head = text.endsWith("…") ? text.slice(0, -1) : text;
+    const repeats = this.issueService
+      .exceptionChain()
+      .some((v) =>
+        [v.value ?? "", `${v.type}: ${v.value}`].some((full) =>
+          head === text ? full === text : full.startsWith(head),
+        ),
+      );
+    return repeats ? "" : text;
   });
 
   params = computed(() => {

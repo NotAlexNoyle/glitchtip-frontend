@@ -9,9 +9,6 @@ import {
 } from "@angular/core";
 import { ActivatedRoute, RouterModule } from "@angular/router";
 import { MatTabsModule } from "@angular/material/tabs";
-import { toSignal } from "@angular/core/rxjs-interop";
-import { BreakpointObserver } from "@angular/cdk/layout";
-import { map } from "rxjs";
 import { PageHeaderComponent } from "src/app/shared/detail/page-header/page-header.component";
 import { IssueDetailService } from "./issue-detail.service";
 import { DaysAgoPipe } from "../../shared/days-ago.pipe";
@@ -68,13 +65,6 @@ export class IssueDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private dialog = inject(MatDialog);
 
-  /** Narrow screens keep the back link short. */
-  private readonly narrow = toSignal(
-    inject(BreakpointObserver)
-      .observe("(max-width: 599.98px)")
-      .pipe(map((r) => r.matches)),
-    { initialValue: false },
-  );
   readonly issueNotFoundMessage = [
     $localize`This may be because the URL is pointing to an issue that doesn't exist or was deleted.`,
     $localize`It's also possible that this issue was reported to a project that you are not able to access.`,
@@ -141,13 +131,6 @@ export class IssueDetailComponent implements OnInit {
       timeStyle: "short",
     });
     return $localize`First seen ${date}:date:`;
-  });
-
-  backLinkText = computed(() => {
-    const project = this.issue()?.project.name;
-    return this.narrow() || !project
-      ? $localize`Issues`
-      : $localize`All issues for ${project}:project:`;
   });
 
   backLinkParams = computed(() => {
