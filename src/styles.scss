@@ -19,7 +19,12 @@ html {
   );
 }
 
-// Brand color override
+// Brand color override. Light mode keeps the brand red, a touch deeper than
+// dark mode's so white labels and red text reach 4.5:1 on the light page.
+:root {
+  --mat-sys-primary: #cc3c52;
+}
+
 @mixin brand-dark {
   --mat-sys-primary: #d94a5f;
   --mat-sys-on-primary: #ffffff;
