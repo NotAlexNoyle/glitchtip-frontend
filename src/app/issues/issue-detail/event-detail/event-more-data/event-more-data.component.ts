@@ -60,15 +60,14 @@ interface Source {
                 <span class="gt-kv__v gt-truncate gt-muted"
                   >{{ s.summary }}
                   @if (s.integrations) {
+                    <!-- prettier-ignore -->
                     <span
                       class="integrations"
                       [class.integrations--after]="!!s.summary"
                       i18n
                       >{s.integrations, plural,
                         =1 {1 integration}
-                        other {
-                          {{ s.integrations // i18n(ph="count") }} integrations
-                        }
+                        other {{{ s.integrations // i18n(ph="count") }} integrations}
                       }</span
                     >
                   }
@@ -84,7 +83,7 @@ interface Source {
                       @if (groups.length > 1) {
                         <div class="gt-group__label">{{ g.label }}</div>
                       }
-                      <dl class="gt-property-list gt-property-list--group">
+                      <dl class="gt-property-list gt-property-list--nested">
                         @for (kv of g.rows; track kv.key) {
                           <div
                             class="gt-property-list__row"
@@ -114,10 +113,6 @@ interface Source {
     }
 
     .gt-group + .gt-group {
-      @include rows.inset-hairline(16px);
-    }
-
-    .gt-kv__group .gt-group + .gt-group {
       @include rows.inset-hairline(32px);
     }
 
@@ -127,15 +122,6 @@ interface Source {
       font: var(--mat-sys-label-medium);
       font-weight: 600;
       color: var(--mat-sys-on-surface-variant);
-    }
-
-    .gt-property-list--group {
-      padding-block: 0 var(--gt-space-2, 8px);
-
-      .gt-property-list__row {
-        min-height: 28px;
-        padding-inline-start: var(--gt-indent, var(--gt-space-4, 16px));
-      }
     }
 
     .integrations--after::before {

@@ -37,7 +37,6 @@ interface Section {
   copy?: string;
 }
 
-// SDKs send these as an object or as [key, value] pairs.
 const rowsOf = (value: unknown) => toRows(value as Entries);
 
 @Component({
