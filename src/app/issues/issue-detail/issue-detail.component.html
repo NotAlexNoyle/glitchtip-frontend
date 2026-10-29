@@ -55,6 +55,29 @@
     </ng-container>
   </gt-top-app-bar>
   <section class="l-body l-body--full-width issue-body">
+    <ng-template #facts>
+      <span class="gt-band-fact" i18n>{+issue.count, plural,
+        =1 {<b>1</b> event}
+        other {<b>{{ +issue.count | number // i18n(ph="count") }}</b> events}
+      }</span>
+      @if (userCount(); as users) {
+        @if (users.count > 0) {
+          <span
+            class="gt-has-tip gt-band-fact"
+            tabindex="0"
+            [matTooltip]="usersTip()"
+            i18n
+            >{users.count, plural,
+              =1 {<b>1</b> user}
+              other {
+                <b>{{ users.count | number // i18n(ph="count") }}</b>
+                users
+              }
+            }</span
+          >
+        }
+      }
+    </ng-template>
     <gt-record-band>
       <gt-page-header
         fullSubtitle
@@ -72,30 +95,6 @@
           >
           @if (issueTitle()[1]; as culprit) {
             <span class="gt-mono culprit" [title]="culprit">{{ culprit }}</span>
-          }
-          <span class="gt-band-narrow-only" i18n>{+issue.count, plural,
-            =1 {<b>1</b> event}
-            other {
-              <b>{{ +issue.count | number // i18n(ph="count") }}</b>
-              events
-            }
-          }</span>
-          @if (userCount(); as users) {
-            @if (users.count > 0) {
-              <span
-                class="gt-has-tip gt-band-narrow-only"
-                tabindex="0"
-                [matTooltip]="usersTip()"
-                i18n
-                >{users.count, plural,
-                  =1 {<b>1</b> user}
-                  other {
-                    <b>{{ users.count | number // i18n(ph="count") }}</b>
-                    users
-                  }
-                }</span
-              >
-            }
           }
           @if (issue.firstRelease?.shortVersion; as release) {
             <span
@@ -130,24 +129,12 @@
               }}</span></span
             >
           }
+          <ng-container [ngTemplateOutlet]="facts" />
         </span>
       </gt-page-header>
-      <div slot="stats" class="gt-stat">
-        <span class="gt-stat__label" i18n>Events</span>
-        <span class="gt-stat__value">{{ +issue.count | number }}</span>
-      </div>
-      @let users = userCount();
-      @if (users && users.count > 0) {
-        <div
-          slot="stats"
-          class="gt-stat"
-          tabindex="0"
-          [matTooltip]="usersTip()"
-        >
-          <span class="gt-stat__label" i18n>Users</span>
-          <span class="gt-stat__value">{{ users.count | number }}</span>
-        </div>
-      }
+      <span slot="stats" class="gt-band-facts"
+        ><ng-container [ngTemplateOutlet]="facts"
+      /></span>
       <gt-issue-tags-summary slot="summary" />
       <div slot="tabs" class="issue-tabs">
         <nav

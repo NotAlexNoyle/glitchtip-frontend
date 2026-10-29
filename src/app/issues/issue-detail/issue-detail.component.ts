@@ -16,7 +16,12 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { OrganizationsService } from "src/app/api/organizations.service";
-import { DatePipe, DecimalPipe, TitleCasePipe } from "@angular/common";
+import {
+  DatePipe,
+  DecimalPipe,
+  TitleCasePipe,
+  NgTemplateOutlet,
+} from "@angular/common";
 import { BackLinkComponent } from "src/app/shared/detail/back-link/back-link.component";
 import { RecordBandComponent } from "src/app/shared/record-band/record-band.component";
 import { TopAppBar } from "src/app/shared/top-app-bar/top-app-bar";
@@ -40,6 +45,7 @@ const ISSUE_STATUS: Record<IssueStatus, { label: string; color: string }> = {
   styleUrls: ["./issue-detail.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NgTemplateOutlet,
     RouterModule,
     MatTabsModule,
     MatIconModule,
