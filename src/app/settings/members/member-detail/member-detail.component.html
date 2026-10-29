@@ -13,7 +13,12 @@
     >
       <span slot="meta">
         <span>{{ roleName(member.role) ?? member.roleName }}</span>
-        <span i18n>Joined {{ member.dateCreated | date: "mediumDate" }}</span>
+        <span i18n
+          >Joined
+          {{
+            member.dateCreated | date: "mediumDate" // i18n(ph="date")
+          }}</span
+        >
       </span>
     </gt-page-header>
 
@@ -43,14 +48,13 @@
         @if (updateMemberError(); as error) {
           <gt-form-error slot="error" [errors]="error" />
         }
-        <!-- Its own @if: a slotted node only projects from a single-root block. -->
         @if (canEditRole()) {
           <gt-loading-button
             slot="actions"
             i18n-buttonText
             buttonText="Save role"
             buttonStyle="stroked"
-            [loading]="updateMemberLoading() === true"
+            [loading]="updateMemberLoading()"
           />
         }
       </gt-settings-section>
@@ -105,7 +109,7 @@
           i18n-buttonText
           buttonText="Transfer ownership"
           buttonStyle="stroked"
-          [loading]="transferOrgOwnershipLoading() === true"
+          [loading]="transferOrgOwnershipLoading()"
           (buttonClick)="transferOrgOwnership(member.email)"
         />
       </gt-settings-section>
