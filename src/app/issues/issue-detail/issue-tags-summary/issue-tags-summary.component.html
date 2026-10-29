@@ -15,12 +15,13 @@
               [routerLink]="['/', orgSlug(), 'issues']"
               [queryParams]="t.top.query"
               [matTooltip]="t.tip"
-              ><span class="gt-tag-chip__key">{{ t.key }}</span
-              ><span class="gt-tag-chip__value">{{ t.top.value }}</span
-              >@if (showShares()) {<span class="gt-tag-chip__share"
-                  >{{ t.top.percent }}%</span
-                >}</a
             >
+              <span class="gt-tag-chip__key">{{ t.key }}</span>
+              <span class="gt-tag-chip__value">{{ t.top.value }}</span>
+              @if (showShares()) {
+                <span class="gt-tag-chip__share">{{ t.top.percent }}%</span>
+              }
+            </a>
           </li>
         }
         <li class="tags-summary__more">
