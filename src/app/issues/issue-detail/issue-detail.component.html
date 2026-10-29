@@ -58,7 +58,6 @@
     <gt-record-band>
       <gt-page-header
         fullSubtitle
-        inlineSubtitle
         [title]="issueTitle()[0]"
         [subtitle]="issueSubtitle()"
       >
@@ -132,17 +131,16 @@
       </div>
       @let users = userCount();
       @if (users && users.count > 0) {
-        <div slot="stats" class="gt-stat">
-          <span
-            class="gt-stat__label gt-has-tip"
-            tabindex="0"
-            i18n-matTooltip
-            matTooltip="Distinct {{ users.key }} values across all events ({{
-              users.tagged
-            }} tagged)"
-            i18n
-            >Users</span
-          >
+        <div
+          slot="stats"
+          class="gt-stat"
+          tabindex="0"
+          i18n-matTooltip
+          matTooltip="Distinct {{ users.key }} values across all events ({{
+            users.tagged
+          }} tagged)"
+        >
+          <span class="gt-stat__label" i18n>Users</span>
           <span class="gt-stat__value">{{ users.count | number }}</span>
         </div>
       }

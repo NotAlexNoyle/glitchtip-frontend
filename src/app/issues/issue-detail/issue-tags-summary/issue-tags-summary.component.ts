@@ -113,6 +113,11 @@ export class IssueTagsSummaryComponent {
       .map((t) => ({ ...t, tip: `${t.key}: ${t.top.tip}` }));
   });
 
+  /** When every top value is 100%, the shares say nothing. */
+  readonly showShares = computed(() =>
+    this.top().some((t) => t.top.percent < 100),
+  );
+
   readonly tagged = computed(() =>
     Math.max(0, ...this.tags().map((t) => t.totalValues)),
   );

@@ -17,7 +17,9 @@
               [matTooltip]="t.tip"
               ><span class="gt-tag-chip__key">{{ t.key }}</span
               ><span class="gt-tag-chip__value">{{ t.top.value }}</span
-              ><span class="gt-tag-chip__share">{{ t.top.percent }}%</span></a
+              >@if (showShares()) {<span class="gt-tag-chip__share"
+                  >{{ t.top.percent }}%</span
+                >}</a
             >
           </li>
         }
