@@ -51,6 +51,22 @@ $spread-narrow: 419px;
       content: none;
     }
   }
+
+  // Keys stay whole; a value shortens only when it is long.
+  .gt-tag-chip__key {
+    flex: none;
+  }
+
+  .gt-tag-chip__value {
+    min-width: 8ch;
+  }
+}
+
+// Two whole tags where three would not fit; the rest are under All tags.
+@container tags-summary (max-width: 879px) {
+  .tags-summary__top > li:nth-child(n + 3):not(.tags-summary__more) {
+    display: none;
+  }
 }
 
 // Trails the chips so it reads as part of them, wherever they wrap.

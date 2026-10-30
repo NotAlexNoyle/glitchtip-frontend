@@ -115,9 +115,7 @@ export class IssueTagsSummaryComponent {
 
   /** All tags adds something only when it shows more than the chips do. */
   readonly hasMore = computed(
-    () =>
-      this.ranked().length > this.top().length ||
-      this.ranked().some((t) => t.expandable),
+    () => this.ranked().length > 1 || this.ranked().some((t) => t.expandable),
   );
 
   /** When every top value is 100%, the shares say nothing. */
