@@ -1,6 +1,16 @@
 <gt-top-app-bar>
   <ng-container slot="left">
-    <gt-back-link i18n-backLinkText backLinkText="View all transaction groups" />
+    <gt-back-link
+      i18n-backLinkText
+      backLinkText="View all transaction groups"
+      [backLinkParams]="backLinkParams()"
+    />
+  </ng-container>
+  <ng-container slot="right">
+    <gt-time-range-select
+      [queriedTimeRangeStart]="start()"
+      [queriedTimeRangeEnd]="end()"
+    />
   </ng-container>
 </gt-top-app-bar>
 @if ((initialLoadComplete()) && (transactionGroup()) === null) {
