@@ -44,12 +44,6 @@
   color: var(--mat-sys-on-surface-variant);
 }
 
-:host(.gt-page-header--full-subtitle) .gt-page-header__subtitle {
-  display: block;
-  overflow: visible;
-  -webkit-line-clamp: unset;
-}
-
 .gt-page-header__meta {
   @include object-header.meta;
 

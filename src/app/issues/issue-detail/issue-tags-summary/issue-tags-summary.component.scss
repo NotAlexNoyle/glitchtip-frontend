@@ -45,6 +45,11 @@ $spread-narrow: 419px;
 
   > li.tags-summary__more {
     flex: none;
+    margin-left: var(--gt-space-2, 8px);
+
+    &::before {
+      content: none;
+    }
   }
 }
 

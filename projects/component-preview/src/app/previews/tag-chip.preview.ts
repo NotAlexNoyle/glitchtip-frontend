@@ -41,11 +41,11 @@ interface Tag {
       </div>
 
       <div class="preview-section">
-        <div class="preview-section__title">Compact, for a summary line</div>
-        <ul class="gt-tag-chips">
+        <div class="preview-section__title">As text, for a summary line</div>
+        <ul class="gt-tag-chips gt-tag-chips--text">
           @for (t of summary; track t.key) {
             <li>
-              <a class="gt-tag-chip gt-tag-chip--compact" href="#">
+              <a class="gt-tag-chip" href="#">
                 <span class="gt-tag-chip__key">{{ t.key }}</span>
                 <span class="gt-tag-chip__value">{{ t.value }}</span>
                 <span class="gt-tag-chip__share">{{ t.share }}</span>
@@ -72,11 +72,11 @@ export class TagChipPreview {
   readonly dos = [
     "Wrap several chips in a .gt-tag-chips list",
     "Put a share inside the chip in .gt-tag-chip__share",
-    "Use --compact on a one-line summary",
+    "Add --text to the list on a one-line summary, so the tags read like the meta line",
   ];
   readonly donts = [
     "Type the middle dot into a translated string",
-    "Show a tag as plain key: value text",
+    "Write a tag as key: value text by hand; use the --text list",
     "Colour a chip; tags are neutral",
   ];
   readonly api: ApiRow[] = [
@@ -84,11 +84,6 @@ export class TagChipPreview {
       name: ".gt-tag-chip",
       type: "class",
       description: "The pill, on an a or span",
-    },
-    {
-      name: ".gt-tag-chip--compact",
-      type: "class",
-      description: "24px, label-medium",
     },
     {
       name: ".gt-tag-chip__key / __value / __share",
@@ -99,6 +94,12 @@ export class TagChipPreview {
       name: ".gt-tag-chips",
       type: "class",
       description: "Wrapping list of chips (ul > li)",
+    },
+    {
+      name: ".gt-tag-chips--text",
+      type: "class",
+      description:
+        "On the list: tags as text with dots between, for a summary line",
     },
   ];
   readonly code = `<ul class="gt-tag-chips">

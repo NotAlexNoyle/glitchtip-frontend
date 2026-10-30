@@ -5,13 +5,13 @@
         >Tags</span
       >
       <ul
-        class="tags-summary__top gt-tag-chips"
+        class="tags-summary__top gt-tag-chips gt-tag-chips--text"
         [attr.aria-labelledby]="panelId + '-label'"
       >
         @for (t of top(); track t.key) {
           <li>
             <a
-              class="gt-tag-chip gt-tag-chip--compact"
+              class="gt-tag-chip"
               [routerLink]="['/', orgSlug(), 'issues']"
               [queryParams]="t.top.query"
               [matTooltip]="t.tip"

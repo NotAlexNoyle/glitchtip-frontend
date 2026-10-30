@@ -178,13 +178,6 @@ export class PageHeaderPreview {
         "One line: 32px tile, title-large title, meta inline after it",
     },
     {
-      name: "fullSubtitle",
-      type: "boolean",
-      default: "false",
-      description:
-        "Show the whole subtitle when it is the record itself (an issue's message)",
-    },
-    {
       name: '[slot="meta"]',
       type: "projected",
       default: "",

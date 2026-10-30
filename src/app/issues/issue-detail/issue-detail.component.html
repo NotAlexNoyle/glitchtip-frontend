@@ -56,10 +56,21 @@
   </gt-top-app-bar>
   <section class="l-body l-body--full-width issue-body">
     <ng-template #facts>
-      <span class="gt-band-fact" i18n>{+issue.count, plural,
-        =1 {<b>1</b> event}
-        other {<b>{{ +issue.count | number // i18n(ph="count") }}</b> events}
-      }</span>
+      @let compacted = +issue.count >= 1000;
+      <span
+        class="gt-band-fact"
+        [class.gt-has-tip]="compacted"
+        [attr.tabindex]="compacted ? 0 : null"
+        [matTooltip]="compacted ? (+issue.count | number) : ''"
+        i18n
+        >{+issue.count, plural,
+          =1 {<b>1</b> event}
+          other {
+            <b>{{ +issue.count | compactNumber // i18n(ph="count") }}</b>
+            events
+          }
+        }</span
+      >
       @if (userCount(); as users) {
         @if (users.count > 0) {
           <span
@@ -70,7 +81,7 @@
             >{users.count, plural,
               =1 {<b>1</b> user}
               other {
-                <b>{{ users.count | number // i18n(ph="count") }}</b>
+                <b>{{ users.count | compactNumber // i18n(ph="count") }}</b>
                 users
               }
             }</span
@@ -78,9 +89,8 @@
         }
       }
     </ng-template>
-    <gt-record-band>
+    <gt-record-band summary="strip">
       <gt-page-header
-        fullSubtitle
         class="issue-header level--{{ issue.level }}"
         [title]="issueTitle()[0]"
         [subtitle]="issueSubtitle()"

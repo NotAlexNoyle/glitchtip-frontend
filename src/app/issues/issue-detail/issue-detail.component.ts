@@ -7,6 +7,7 @@ import {
   input,
   effect,
 } from "@angular/core";
+import { CompactNumberPipe } from "src/app/shared/compact-number.pipe";
 import { ActivatedRoute, RouterModule } from "@angular/router";
 import { MatTabsModule } from "@angular/material/tabs";
 import { PageHeaderComponent } from "src/app/shared/detail/page-header/page-header.component";
@@ -45,6 +46,7 @@ const ISSUE_STATUS: Record<IssueStatus, { label: string; color: string }> = {
   styleUrls: ["./issue-detail.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    CompactNumberPipe,
     NgTemplateOutlet,
     RouterModule,
     MatTabsModule,
