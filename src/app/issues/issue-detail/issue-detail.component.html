@@ -81,14 +81,13 @@
     <gt-record-band>
       <gt-page-header
         fullSubtitle
+        class="issue-header level--{{ issue.level }}"
         [title]="issueTitle()[0]"
         [subtitle]="issueSubtitle()"
       >
         <span slot="meta">
           <span>
-            <span class="level-tag level--{{ issue.level }}">{{
-              issue.level | titlecase
-            }}</span>
+            <span class="level-name">{{ issue.level | titlecase }}</span>
           </span>
           <span
             ><span class="chip">{{ issue.shortId }}</span></span
