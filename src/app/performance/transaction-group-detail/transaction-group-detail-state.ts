@@ -14,10 +14,7 @@ export class TransactionGroupDetailService {
   private organizationsService = inject(OrganizationsService);
   #params = signal<DetailParams | undefined>(undefined);
   #transactionGroupResource = resource({
-    params: () => {
-      const p = this.#params();
-      return p ? { orgSlug: p.orgSlug, id: p.id } : undefined;
-    },
+    params: () => ({ params: this.#params() }),
     loader: async ({ params }) => {
       if (!params.params) {
         return undefined;
