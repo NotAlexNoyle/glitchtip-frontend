@@ -30,7 +30,8 @@ export class TransactionGroupDetailService {
           },
         },
       );
-      return data;
+      // null, not undefined, on a 404 so the page shows not found.
+      return data ?? null;
     },
   });
 
