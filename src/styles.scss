@@ -3,11 +3,12 @@
 @use "./assets/styles/theme-colors" as custom-theme;
 @use "./assets/styles/material-overrides";
 @use "./assets/styles/variables" as vars;
+@use "./assets/styles/controls";
 @use "./assets/styles/font-files";
 @use "./assets/styles/page-header";
 @use "./assets/styles/resets";
-@use "./assets/styles/list-row";
 @use "./assets/styles/record-band";
+@use "./assets/styles/list-row";
 @use "./assets/styles/panel-rows";
 @use "./assets/styles/tag-chip";
 @use "./assets/styles/code";
@@ -51,6 +52,11 @@ html {
   --uptime-color: #8a2387;
   --logs-color: #2196f3;
 
+  // Monitor status roles
+  --gt-monitor-up: var(--success-color);
+  --gt-monitor-down: var(--mat-sys-error);
+  --gt-monitor-none: var(--mat-sys-outline);
+
   // Log severity palette: AA-compliant per mode (darker on light, bright on dark)
   --log-error-color: light-dark(#c62828, #ef4444);
   --log-warn-color: light-dark(#a16207, #f59e0b);
@@ -68,20 +74,60 @@ html {
   --gt-level-fatal: var(--mat-sys-error);
 }
 
+// Spacing scale
+:root {
+  --gt-space-unit: 4px;
+  --gt-space-0: 0;
+  --gt-space-1: var(--gt-space-unit);
+  --gt-space-2: calc(var(--gt-space-unit) * 2);
+  --gt-space-3: calc(var(--gt-space-unit) * 3);
+  --gt-space-4: calc(var(--gt-space-unit) * 4);
+  --gt-space-5: calc(var(--gt-space-unit) * 6);
+  --gt-space-6: calc(var(--gt-space-unit) * 8);
+  --gt-space-7: calc(var(--gt-space-unit) * 12);
+}
+
+// Reading widths for running text, in characters so they follow font size.
+:root {
+  --gt-measure: 70ch;
+  --gt-measure-narrow: 44ch;
+}
+
 a {
   color: var(--mat-sys-on-background);
   text-decoration: none;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 a:hover {
   text-decoration: underline;
 }
 
+// A link inside a sentence: underlined, in the text color, normal weight.
+// Standalone links (row names, nav) keep the bold global style above.
+%inline-link {
+  color: var(--mat-sys-on-surface);
+  font-weight: inherit;
+  text-decoration: underline;
+}
+
+.gt-prose a,
+.page-intro a {
+  @extend %inline-link;
+}
+
+// One or two sentences of orientation between a page's title and its content.
+.page-intro {
+  max-width: var(--gt-measure);
+  margin: 0 0 var(--gt-space-5, 24px);
+  font: var(--mat-sys-body-medium);
+  color: var(--mat-sys-on-surface-variant);
+}
+
 // Used across auth components
 .auth-link {
-  color: var(--mat-sys-primary);
-  text-decoration: underline;
+  @extend %inline-link;
+  font-weight: bold;
 }
 
 // Global rule because link is rendered in markdown
@@ -91,8 +137,7 @@ a:hover {
     margin-bottom: 0;
   }
   a {
-    color: var(--mat-sys-primary);
-    text-decoration: underline;
+    @extend %inline-link;
   }
 }
 
@@ -359,6 +404,30 @@ mat-sidenav-container {
   height: 20px;
   margin-inline: var(--gt-space-2, 8px);
   background-color: var(--mat-sys-outline-variant);
+}
+
+// Material's label wrapper must shrink too, so the back link text can ellipsize.
+gt-back-link .mdc-button__label {
+  min-width: 0;
+}
+
+// A labelled top bar button that keeps only its icon when the bar is narrow.
+.gt-bar-button.mat-mdc-outlined-button {
+  @include controls.narrow-bar {
+    min-width: 32px;
+
+    @include mat.button-overrides(
+      (
+        outlined-horizontal-padding: 6px,
+        outlined-icon-spacing: 0,
+        outlined-icon-offset: 0,
+      )
+    );
+
+    .gt-bar-button__label {
+      display: none;
+    }
+  }
 }
 
 .medium-icon-button {
