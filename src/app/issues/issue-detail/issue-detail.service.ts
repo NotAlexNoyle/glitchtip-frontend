@@ -215,7 +215,7 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
   issueID = signal("");
   eventID = signal<string | null>(null);
 
-  /** Loaded when the event switcher first opens; kept while the issue is open. */
+  /** Loaded when the issue opens; kept while it is open. */
   readonly recentEvents = signal<RecentEvents | null>(null);
 
   /** Loads the first page, or the next one when `more` is set. */

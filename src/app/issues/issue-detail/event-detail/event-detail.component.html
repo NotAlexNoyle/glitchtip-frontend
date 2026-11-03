@@ -115,13 +115,6 @@
             }
           </ng-template>
         </mat-menu>
-        @if (canSwitch()) {
-          <span
-            class="event-bar__count"
-            i18n="After the event switcher: the issue's event count"
-            >of {{ eventCount() | number // i18n(ph="count") }}</span
-          >
-        }
       </div>
       <div class="event-bar__actions">
         <gt-split-button
@@ -168,6 +161,15 @@
         </mat-menu>
         @if (canSwitch()) {
           <span class="gt-bar-divider" aria-hidden="true"></span>
+          @if (nextEvent() !== false) {
+            <a
+              mat-button
+              class="event-bar__latest"
+              [routerLink]="latestUrl()"
+              i18n
+              >Latest</a
+            >
+          }
           <a
             mat-icon-button
             i18n-aria-label
@@ -179,6 +181,24 @@
           >
             <mat-icon>keyboard_arrow_left</mat-icon>
           </a>
+          @if (position(); as pos) {
+            <span
+              class="event-bar__position"
+              [style.min-width.ch]="positionWidth()"
+              i18n="
+                Between the step arrows: this event's place, 1 is the latest
+              "
+              >{{ pos | number // i18n(ph="position") }} of
+              {{ eventCount() | number // i18n(ph="count") }}</span
+            >
+          } @else {
+            <span
+              class="event-bar__position"
+              [style.min-width.ch]="positionWidth()"
+              i18n="Between the step arrows, when this event's place is unknown"
+              >{{ eventCount() | number // i18n(ph="count") }} events</span
+            >
+          }
           <a
             mat-icon-button
             i18n-aria-label

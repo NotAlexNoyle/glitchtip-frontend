@@ -11,6 +11,7 @@ import {
   afterNextRender,
   Injector,
   viewChildren,
+  untracked,
 } from "@angular/core";
 import { OverlayContainer } from "@angular/cdk/overlay";
 import { Router, RouterLink } from "@angular/router";
@@ -244,6 +245,33 @@ export class EventDetailComponent {
   /** The event on screen, to tell a step to another event from a reload. */
   private shown: { issueID: string; eventID: string } | null = null;
 
+  /** A position counted from chevron steps, for events past the first page. */
+  private readonly stepped = signal<{ id: string; position: number } | null>(
+    null,
+  );
+  /** The last event shown, so a step from a known position can count on. */
+  private last: {
+    id: string;
+    position: number | null;
+    previousEventID?: string | null;
+    nextEventID?: string | null;
+  } | null = null;
+  /** Room for the widest "N of N", so the arrows stay put while stepping. */
+  positionWidth = computed(() => {
+    const digits = String(this.eventCount()).length;
+    return 2 * (digits + Math.floor((digits - 1) / 3)) + 4;
+  });
+  /** 1 is the latest; null when an event past the first page was opened directly. */
+  position = computed<number | null>(() => {
+    const event = this.event();
+    if (!event) return null;
+    if (this.nextEvent() === false) return 1;
+    const i = this.recent()?.events.findIndex((e) => e.id === event.id) ?? -1;
+    if (i >= 0) return i + 1;
+    const s = this.stepped();
+    return s?.id === event.id ? s.position : null;
+  });
+
   /** True while the event bar is stuck to the top of the scroll area. */
   readonly stuck = signal(false);
   private readonly sentinel = viewChild<ElementRef<HTMLElement>>("barSentinel");
@@ -263,6 +291,31 @@ export class EventDetailComponent {
       );
       observer.observe(el);
       onCleanup(() => observer.disconnect());
+    });
+    // The first page of recent events gives the newest events their position.
+    effect(() => {
+      if (this.issueID() && this.canSwitch()) {
+        untracked(() => this.issueService.loadRecentEvents());
+      }
+    });
+    // One step from a known position moves it by one.
+    effect(() => {
+      const event = this.event();
+      if (!event) return;
+      const prev = this.last;
+      if (prev && prev.id !== event.id && prev.position !== null) {
+        if (prev.previousEventID === event.id) {
+          this.stepped.set({ id: event.id, position: prev.position + 1 });
+        } else if (prev.nextEventID === event.id) {
+          this.stepped.set({ id: event.id, position: prev.position - 1 });
+        }
+      }
+      this.last = {
+        id: event.id,
+        position: this.position(),
+        previousEventID: event.previousEventID,
+        nextEventID: event.nextEventID,
+      };
     });
     effect(() => {
       const event = this.event();

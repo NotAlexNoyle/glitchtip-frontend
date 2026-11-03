@@ -1,4 +1,5 @@
 @use "controls";
+@use "@angular/material" as mat;
 @use "variables" as vars;
 
 // Everything that changes with Older and Newer.
@@ -149,14 +150,17 @@
   }
 }
 
-.event-bar__count {
+// Between the arrows, so a step changes the number next to the click.
+.event-bar__position {
   flex: none;
   color: var(--mat-sys-on-surface-variant);
   font: var(--mat-sys-body-medium);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
   white-space: nowrap;
 }
 
-// Narrow: "Latest of 17" or the short id; the facts are in the panels.
+// Narrow: "Latest" or the short id; the facts are in the panels.
 @include controls.narrow-bar {
   .event-switch__fact,
   .event-switch__long {
@@ -215,4 +219,14 @@
   display: flex;
   flex: none;
   align-items: center;
+}
+
+// Neutral like the chevrons beside it: it moves between events, it does not act on one.
+.event-bar__latest {
+  @include mat.button-overrides(
+    (
+      text-label-text-color: var(--mat-sys-on-surface),
+      text-state-layer-color: var(--mat-sys-on-surface),
+    )
+  );
 }
