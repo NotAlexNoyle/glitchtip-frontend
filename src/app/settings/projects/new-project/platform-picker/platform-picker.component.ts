@@ -4,6 +4,8 @@ import {
   forwardRef,
   ViewChild,
   ElementRef,
+  computed,
+  signal,
 } from "@angular/core";
 import { flattenedPlatforms } from "./platforms-for-picker";
 import categoryList from "./platform-categories";
@@ -14,8 +16,8 @@ import {
   ReactiveFormsModule,
 } from "@angular/forms";
 import { map, startWith } from "rxjs/operators";
-import { MatButtonModule } from "@angular/material/button";
-import { MatTabsModule } from "@angular/material/tabs";
+import { MatButtonToggleModule } from "@angular/material/button-toggle";
+import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { toSignal } from "@angular/core/rxjs-interop";
@@ -36,8 +38,8 @@ import { toSignal } from "@angular/core/rxjs-interop";
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,
-    MatTabsModule,
-    MatButtonModule,
+    MatButtonToggleModule,
+    MatIconModule,
   ],
 })
 export class PlatformPickerComponent implements ControlValueAccessor {
@@ -53,6 +55,10 @@ export class PlatformPickerComponent implements ControlValueAccessor {
   });
   activePlatform = "";
   categoryList = categoryList;
+
+  selected = signal(0);
+  lastSelected = 0;
+  allTabIndex = this.categoryList.length;
 
   /** Used to filter project names */
   filterPlatformInput = new FormControl();
@@ -75,29 +81,23 @@ export class PlatformPickerComponent implements ControlValueAccessor {
     ),
   );
 
-  selected = 0;
-  lastSelected = 0;
-  allTabIndex = this.categoryList.length;
   setSelected(index: number) {
-    if (this.selected !== this.allTabIndex) {
-      this.lastSelected = this.selected;
+    if (this.selected() !== this.allTabIndex) {
+      this.lastSelected = this.selected();
     }
-    this.selected = index;
+    this.selected.set(index);
   }
 
-  getPlatformId(platformFromCategoryList: string) {
-    const platformInfo = this.platforms.find(
-      (platform) => platform.id === platformFromCategoryList,
-    );
-    return platformInfo ? platformInfo.id : "other";
-  }
-
-  getPlatformName(platformFromCategoryList: string) {
-    const platformInfo = this.platforms.find(
-      (platform) => platform.id === platformFromCategoryList,
-    );
-    return platformInfo ? platformInfo.name : platformFromCategoryList;
-  }
+  shownPlatforms = computed(() => {
+    const index = this.selected();
+    if (index === this.allTabIndex) {
+      return this.filteredPlatforms() ?? [];
+    }
+    // Skips category entries that have no platform; they would all save "other".
+    return this.categoryList[index].platforms
+      .map((id) => this.platforms.find((platform) => platform.id === id))
+      .filter((platform) => platform !== undefined);
+  });
 
   constructor() {}
 
