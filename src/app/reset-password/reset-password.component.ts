@@ -14,7 +14,6 @@ import { RouterLink } from "@angular/router";
 import { MatButtonModule } from "@angular/material/button";
 import { MatInputModule } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatCardModule } from "@angular/material/card";
 import { SettingsService } from "../api/settings.service";
 import { LoadingButtonComponent } from "../shared/loading-button/loading-button.component";
 import {
@@ -25,14 +24,16 @@ import { mapFormErrors } from "../shared/forms/form.utils";
 import { FormErrorComponent } from "../shared/forms/form-error/form-error.component";
 import { StatefulComponent } from "../shared/stateful-service/signal-state.component";
 import { Autofocus } from "../shared/autofocus";
+import { PanelComponent } from "../shared/panel/panel.component";
+import { AuthBrandComponent } from "../shared/auth-brand/auth-brand.component";
 
 @Component({
   selector: "gt-reset-password",
   templateUrl: "./reset-password.component.html",
-  styleUrls: ["./reset-password.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    MatCardModule,
+    PanelComponent,
+    AuthBrandComponent,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,

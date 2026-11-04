@@ -16,7 +16,8 @@ import { Router, RouterLink } from "@angular/router";
 import { MatButtonModule } from "@angular/material/button";
 import { MatInputModule } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatCardModule } from "@angular/material/card";
+import { PanelComponent } from "../shared/panel/panel.component";
+import { AuthBrandComponent } from "../shared/auth-brand/auth-brand.component";
 import { MarkdownComponent, provideMarkdown } from "ngx-markdown";
 import { AuthSvgComponent } from "../shared/auth-svg/auth-svg.component";
 import { InputMatcherDirective } from "../shared/input-matcher.directive";
@@ -36,9 +37,9 @@ type SocialApp = components["schemas"]["SocialAppSchema"];
 @Component({
   selector: "gt-register",
   templateUrl: "./register.html",
-  styleUrls: ["./register.scss"],
   imports: [
-    MatCardModule,
+    PanelComponent,
+    AuthBrandComponent,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
