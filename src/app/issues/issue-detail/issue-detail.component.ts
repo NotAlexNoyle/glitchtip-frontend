@@ -165,10 +165,12 @@ export class IssueDetailComponent implements OnInit {
 
   initialLoadComplete = this.issueService.issueInitialLoadComplete;
   issueID = input.required<string>({ alias: "issue-id" });
+  orgSlug = input.required<string>({ alias: "org-slug" });
   organization = this.organizationsService.activeOrganization;
 
   constructor() {
     effect(() => {
+      this.issueService.orgSlug.set(this.orgSlug());
       this.issueService.issueID.set(this.issueID());
     });
   }

@@ -213,6 +213,7 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
   });
 
   issueID = signal("");
+  orgSlug = signal("");
   eventID = signal<string | null>(null);
 
   /** Loaded when the issue opens; kept while it is open. */
@@ -221,9 +222,10 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
   /** Loads the first page, or the next one when `more` is set. */
   async loadRecentEvents(more = false) {
     const issueID = this.issueID();
+    const orgSlug = this.orgSlug();
     const current = this.recentEvents();
     const same = current?.issueID === issueID;
-    if (!issueID || (same && current.loading)) return;
+    if (!issueID || !orgSlug || (same && current.loading)) return;
     if (same && !more && !current.failed) return;
     const cursor = more && same ? current.cursor : null;
     if (more && !cursor) return;
@@ -240,10 +242,13 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
     let next: string | null = null;
     try {
       const { data, response } = await client.GET(
-        "/api/0/issues/{issue_id}/events/",
+        "/api/0/organizations/{organization_id_or_slug}/issues/{issue_id}/events/",
         {
           params: {
-            path: { issue_id: parseInt(issueID) },
+            path: {
+              ...this.organization.orgPath(orgSlug),
+              issue_id: parseInt(issueID),
+            },
             query: { limit: RECENT_EVENTS_PAGE, cursor },
           },
         },
@@ -270,11 +275,7 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
 
   /** The route of one of this issue's events, as Older and Newer use. */
   eventUrlFor(eventID: string) {
-    return this.eventUrl(
-      this.organization.activeOrganizationSlug(),
-      this.issue() ?? null,
-      eventID,
-    );
+    return this.eventUrl(this.orgSlug(), this.issue() ?? null, eventID);
   }
 
   #issueResource = resource({
@@ -291,12 +292,20 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
     },
   });
   #tagsResource = resource({
-    params: () => ({ issueID: this.issueID() }),
+    params: () => ({ issueID: this.issueID(), orgSlug: this.orgSlug() }),
     loader: async ({ params }) => {
-      if (!+params.issueID) return null;
-      const { data } = await client.GET("/api/0/issues/{issue_id}/tags/", {
-        params: { path: { issue_id: +params.issueID } },
-      });
+      if (!+params.issueID || !params.orgSlug) return null;
+      const { data } = await client.GET(
+        "/api/0/organizations/{organization_id_or_slug}/issues/{issue_id}/tags/",
+        {
+          params: {
+            path: {
+              ...this.organization.orgPath(params.orgSlug),
+              issue_id: +params.issueID,
+            },
+          },
+        },
+      );
       return (data as IssueTags[] | undefined) ?? null;
     },
   });
