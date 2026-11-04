@@ -7,7 +7,7 @@ import {
   computed,
   signal,
 } from "@angular/core";
-import { flattenedPlatforms } from "./platforms-for-picker";
+import { filterPlatforms, flattenedPlatforms } from "./platforms-for-picker";
 import categoryList from "./platform-categories";
 import {
   ControlValueAccessor,
@@ -46,13 +46,9 @@ export class PlatformPickerComponent implements ControlValueAccessor {
   @ViewChild("filterInput", { static: false })
   filterInput?: ElementRef<HTMLInputElement>;
 
-  platforms = flattenedPlatforms.sort((a, b) => {
-    const nameA = a.name.toUpperCase();
-    const nameB = b.name.toUpperCase();
-    if (nameA < nameB) return -1;
-    if (nameA > nameB) return 1;
-    return 0;
-  });
+  platforms = [...flattenedPlatforms].sort((a, b) =>
+    a.name.localeCompare(b.name),
+  );
   activePlatform = "";
   categoryList = categoryList;
 
@@ -73,9 +69,7 @@ export class PlatformPickerComponent implements ControlValueAccessor {
           return this.platforms;
         } else {
           this.setSelected(this.allTabIndex);
-          return this.platforms.filter((platform) =>
-            platform.id.toLowerCase().includes(value.toLowerCase()),
-          );
+          return filterPlatforms(this.platforms, value);
         }
       }),
     ),
