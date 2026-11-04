@@ -123,6 +123,8 @@
       @if (isLargeScreen()) {
         @if (currentStatsPeriod(); as statsPeriod) {
           <mat-button-toggle-group
+            class="gt-segmented"
+            hideSingleSelectionIndicator
             matTooltipPosition="above"
             matTooltip="Set trend charts period"
             [matTooltipShowDelay]="500"
