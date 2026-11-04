@@ -110,10 +110,14 @@
         stroke: none;
       }
       #openid path:nth-child(8) {
-        fill: #232020;
+        fill: currentColor;
         fill-opacity: 1;
         fill-rule: nonzero;
         stroke: none;
+      }
+      /* Monochrome marks follow the text colour so they show in dark mode. */
+      #github path {
+        fill: currentColor;
       }
       #discord path {
         fill: #000000;
