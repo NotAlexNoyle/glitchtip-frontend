@@ -3,11 +3,13 @@ import {
   Component,
   OnInit,
   ViewChild,
+  computed,
   effect,
   inject,
   input,
   signal,
 } from "@angular/core";
+import { DatePipe } from "@angular/common";
 import { toSignal } from "@angular/core/rxjs-interop";
 import {
   AbstractControl,
@@ -18,7 +20,8 @@ import {
   FormGroupDirective,
   ReactiveFormsModule,
 } from "@angular/forms";
-import { Router, RouterLink } from "@angular/router";
+import { ActivatedRoute, Router, RouterLink } from "@angular/router";
+import { map } from "rxjs";
 import {
   FlatPlatform,
   flattenedPlatforms,
@@ -33,9 +36,8 @@ import { CopyInputComponent } from "../../../shared/copy-input/copy-input.compon
 import { LoadingButtonComponent } from "../../../shared/loading-button/loading-button.component";
 import { MatInputModule } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatDividerModule } from "@angular/material/divider";
-import { MatCardModule } from "@angular/material/card";
-import { DetailHeaderComponent } from "src/app/shared/detail/header/header.component";
+import { MatTabsModule } from "@angular/material/tabs";
+import { PageHeaderComponent } from "src/app/shared/detail/page-header/page-header.component";
 import { ProjectDetailService } from "./project-detail.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { OrganizationsService } from "src/app/api/organizations.service";
@@ -44,6 +46,12 @@ import { MatIconModule } from "@angular/material/icon";
 import { TopAppBar } from "src/app/shared/top-app-bar/top-app-bar";
 import { MatDialog } from "@angular/material/dialog";
 import { ConfirmDialogComponent } from "src/app/shared/confirm-dialog/confirm-dialog.component";
+import { SettingsSectionComponent } from "src/app/shared/settings-section/settings-section.component";
+import { mapFormErrors } from "src/app/shared/forms/form.utils";
+import { FormErrorComponent } from "src/app/shared/forms/form-error/form-error.component";
+import { ProjectAlertsService } from "./project-alerts/project-alerts.service";
+import { ProjectEnvironmentsService } from "./project-environments/project-environments.service";
+import { PanelComponent } from "src/app/shared/panel/panel.component";
 
 function autocompleteStringValidator(
   validOptions: Array<FlatPlatform>,
@@ -72,10 +80,10 @@ class CustomErrorStateMatcher implements ErrorStateMatcher {
   templateUrl: "./project-detail.component.html",
   styleUrls: ["./project-detail.component.scss"],
   imports: [
+    DatePipe,
     MatInputModule,
     MatAutocompleteModule,
-    MatCardModule,
-    MatDividerModule,
+    MatTabsModule,
     MatFormFieldModule,
     MatIconModule,
     ReactiveFormsModule,
@@ -85,17 +93,22 @@ class CustomErrorStateMatcher implements ErrorStateMatcher {
     ProjectAlertsComponent,
     MatButtonModule,
     RouterLink,
-    DetailHeaderComponent,
+    PageHeaderComponent,
     BackLinkComponent,
     TopAppBar,
+    SettingsSectionComponent,
+    FormErrorComponent,
+    PanelComponent,
   ],
+  // The tab services live here, so the tab counts and the tabs share one load.
   providers: [
     ProjectDetailService,
+    ProjectAlertsService,
+    ProjectEnvironmentsService,
     { provide: ErrorStateMatcher, useClass: CustomErrorStateMatcher },
   ],
 })
 export class ProjectDetailComponent implements OnInit {
-  settingsFor = (project: string) => $localize`Settings for ${project}:project:`;
   #service = inject(ProjectDetailService);
   #orgService = inject(OrganizationsService);
   #snackBar = inject(MatSnackBar);
@@ -105,6 +118,13 @@ export class ProjectDetailComponent implements OnInit {
   @ViewChild(FormGroupDirective) formDirective: FormGroupDirective | undefined;
 
   projectKeys = this.#service.projectKeys;
+  #alertsService = inject(ProjectAlertsService);
+  #environmentsService = inject(ProjectEnvironmentsService);
+  /** Undefined until loaded, and on a load error. DSN holds one thing: none. */
+  readonly tabCounts = computed<Record<string, number | undefined>>(() => ({
+    environments: this.#environmentsService.environments()?.length,
+    alerts: this.#alertsService.projectAlerts()?.length,
+  }));
   activeProject = this.#service.project;
 
   orgSlug = input.required<string>({ alias: "org-slug" });
@@ -118,6 +138,44 @@ export class ProjectDetailComponent implements OnInit {
   updatePlatformError = this.#service.updatePlatformError;
   canWriteProject = this.#orgService.canWriteProject;
   canAdminProject = this.#orgService.canAdminProject;
+
+  readonly tabs = [
+    { id: "general", label: $localize`General` },
+    { id: "dsn", label: $localize`DSN` },
+    { id: "environments", label: $localize`Environments` },
+    { id: "alerts", label: $localize`Alerts` },
+  ];
+  readonly tab = toSignal(
+    inject(ActivatedRoute).queryParamMap.pipe(
+      map((params) => {
+        const tab = params.get("tab");
+        return this.tabs.some((t) => t.id === tab) ? tab : "general";
+      }),
+    ),
+    { initialValue: "general" },
+  );
+  readonly noPlatformLabel = $localize`No platform set`;
+
+  // Titles name the key only when there is more than one.
+  readonly keyPanels = computed(() => {
+    const keys = this.projectKeys() ?? [];
+    return keys.map((key, index) => {
+      if (keys.length < 2) {
+        return {
+          key,
+          dsnTitle: $localize`DSN`,
+          securityTitle: $localize`Security endpoint`,
+        };
+      }
+      const keyName =
+        key.label || key.name || $localize`Key ${index + 1}:keyNumber:`;
+      return {
+        key,
+        dsnTitle: $localize`DSN: ${keyName}:keyName:`,
+        securityTitle: $localize`Security endpoint: ${keyName}:keyName:`,
+      };
+    });
+  });
 
   nameForm = new FormGroup({
     name: new FormControl("", [Validators.required, Validators.maxLength(64)]),
@@ -143,9 +201,12 @@ export class ProjectDetailComponent implements OnInit {
 
   platformCtrl = this.platformForm.get("platform") as FormControl;
   platformCtrlValueChanges = toSignal(this.platformCtrl.valueChanges);
-  platformCtrlInvalid = isCustomErrorState(this.platformCtrl);
 
   constructor() {
+    effect(() => {
+      this.#alertsService.setParams(this.orgSlug(), this.projectSlug());
+      this.#environmentsService.setParams(this.orgSlug(), this.projectSlug());
+    });
     effect(() => {
       const project = this.activeProject();
       if (project) {
@@ -185,10 +246,11 @@ export class ProjectDetailComponent implements OnInit {
   }
 
   deleteProject() {
+    const name = this.activeProject()?.name;
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
-        title: $localize`Delete project?`,
-        message: $localize`Are you sure you want to delete this project?`,
+        title: $localize`Delete ${name}:name:?`,
+        message: $localize`All of its issues, events and settings will be deleted. This cannot be undone.`,
         confirmText: $localize`Delete`,
       },
     });
@@ -202,8 +264,6 @@ export class ProjectDetailComponent implements OnInit {
             $localize`Your project has been successfully deleted`,
           );
           this.#router.navigate([this.orgSlug(), "settings", "projects"]);
-        } else {
-          this.#snackBar.open(this.deleteError());
         }
       }
     });
@@ -218,12 +278,15 @@ export class ProjectDetailComponent implements OnInit {
         this.#snackBar.open(
           $localize`The name of your project has been updated to ${resp.name}`,
         );
+      } else if (this.updateNameError()) {
+        mapFormErrors({ name: [this.updateNameError()] }, this.nameForm);
       }
     }
   }
 
   async updatePlatform(projectName: string) {
     if (this.platformCtrl.invalid) {
+      this.platformCtrl.markAsTouched();
       return;
     }
     const resp = await this.#service.updateProjectPlatform(
@@ -231,10 +294,14 @@ export class ProjectDetailComponent implements OnInit {
       projectName,
     );
     if (resp) {
+      const platform = this.getPlatformName(resp.platform!);
       this.#snackBar.open(
-        `Your project platform has been updated to ${this.getPlatformName(
-          resp.platform!,
-        )}.`,
+        $localize`Your project platform has been updated to ${platform}:platform:.`,
+      );
+    } else if (this.updatePlatformError()) {
+      mapFormErrors(
+        { platform: [this.updatePlatformError()] },
+        this.platformForm,
       );
     }
   }

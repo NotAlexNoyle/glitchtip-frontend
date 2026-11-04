@@ -11,6 +11,7 @@ import { MatIconModule } from "@angular/material/icon";
 @Component({
   selector: "gt-empty-state",
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { "[attr.title]": "null" },
   imports: [MatIconModule],
   template: `
     <div class="empty-state">
@@ -38,8 +39,8 @@ import { MatIconModule } from "@angular/material/icon";
       flex-direction: column;
       align-items: center;
       text-align: center;
-      gap: var(--gt-space-2, 8px);
-      padding: var(--gt-space-7, 48px) var(--gt-space-4, 16px);
+      gap: var(--gt-space-2);
+      padding: var(--gt-space-7) var(--gt-space-4);
       color: var(--mat-sys-on-surface-variant);
     }
     .empty-state__icon {
@@ -55,11 +56,11 @@ import { MatIconModule } from "@angular/material/icon";
     }
     .empty-state__message {
       margin: 0;
-      max-width: 44ch;
+      max-width: var(--gt-measure-narrow);
       font: var(--mat-sys-body-medium);
     }
     .empty-state__action {
-      margin-top: var(--gt-space-2, 8px);
+      margin-top: var(--gt-space-2);
     }
     .empty-state__action:empty {
       display: none;

@@ -4,9 +4,17 @@
 @use "./assets/styles/theme-colors" as custom-theme;
 @use "./assets/styles/material-overrides";
 @use "./assets/styles/variables" as vars;
+@use "./assets/styles/controls";
 @use "./assets/styles/font-files";
+@use "./assets/styles/page-header";
 @use "./assets/styles/resets";
+@use "./assets/styles/record-band";
+@use "./assets/styles/list-row";
+@use "./assets/styles/panel-rows";
+@use "./assets/styles/tag-chip";
+@use "./assets/styles/code";
 @use "./scss/auth-forms";
+@use "./assets/styles/settings-section";
 
 html {
   color-scheme: light dark;
@@ -59,6 +67,11 @@ html {
   --uptime-color: #8a2387;
   --logs-color: #2196f3;
 
+  // Monitor status roles
+  --gt-monitor-up: var(--success-color);
+  --gt-monitor-down: var(--mat-sys-error);
+  --gt-monitor-none: var(--mat-sys-outline);
+
   // Log severity palette: AA-compliant per mode (darker on light, bright on dark)
   --log-error-color: light-dark(#c62828, #ef4444);
   --log-warn-color: light-dark(#a16207, #f59e0b);
@@ -66,48 +79,79 @@ html {
   --log-debug-color: light-dark(#6d28d9, #a78bfa);
   --log-trace-color: light-dark(#4b5563, #9ca3af);
   --log-service-color: light-dark(#047857, #10b981);
+
+  // Issue level roles
+  --gt-level-sample: var(--mat-sys-outline);
+  --gt-level-debug: var(--mat-sys-outline-variant);
+  --gt-level-info: var(--info-color);
+  --gt-level-warning: var(--warning-color);
+  --gt-level-error: var(--mat-sys-error);
+  --gt-level-fatal: var(--mat-sys-error);
 }
 
-.light {
-  @include meta.load-css("prismjs/themes/prism.css");
+// Spacing scale
+:root {
+  --gt-space-unit: 4px;
+  --gt-space-0: 0;
+  --gt-space-1: var(--gt-space-unit);
+  --gt-space-2: calc(var(--gt-space-unit) * 2);
+  --gt-space-3: calc(var(--gt-space-unit) * 3);
+  --gt-space-4: calc(var(--gt-space-unit) * 4);
+  --gt-space-5: calc(var(--gt-space-unit) * 6);
+  --gt-space-6: calc(var(--gt-space-unit) * 8);
+  --gt-space-7: calc(var(--gt-space-unit) * 12);
 }
 
-.dark {
-  @include meta.load-css("prismjs/themes/prism-tomorrow.css");
+// Reading widths for running text, in characters so they follow font size.
+:root {
+  --gt-measure: 70ch;
+  --gt-measure-narrow: 44ch;
 }
 
+// Colours come from _code.scss; gtPrism blocks still use these two plugins.
 .light,
 .dark {
   @include meta.load-css("prismjs/plugins/line-numbers/prism-line-numbers.css");
   @include meta.load-css(
     "prismjs/plugins/line-highlight/prism-line-highlight.css"
   );
-
-  pre[class*="language-"] {
-    border-radius: vars.$shape-radius;
-    border: none;
-    box-shadow: none;
-  }
-}
-
-mat-card-content {
-  font-family: vars.$font-sans-serif;
 }
 
 a {
   color: var(--mat-sys-on-background);
   text-decoration: none;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 a:hover {
   text-decoration: underline;
 }
 
+// A link inside a sentence: underlined, in the text color, normal weight.
+// Standalone links (row names, nav) keep the bold global style above.
+%inline-link {
+  color: var(--mat-sys-on-surface);
+  font-weight: inherit;
+  text-decoration: underline;
+}
+
+.gt-prose a,
+.page-intro a {
+  @extend %inline-link;
+}
+
+// One or two sentences of orientation between a page's title and its content.
+.page-intro {
+  max-width: var(--gt-measure);
+  margin: 0 0 var(--gt-space-5, 24px);
+  font: var(--mat-sys-body-medium);
+  color: var(--mat-sys-on-surface-variant);
+}
+
 // Used across auth components
 .auth-link {
-  color: var(--mat-sys-primary);
-  text-decoration: underline;
+  @extend %inline-link;
+  font-weight: bold;
 }
 
 // Global rule because link is rendered in markdown
@@ -117,8 +161,7 @@ a:hover {
     margin-bottom: 0;
   }
   a {
-    color: var(--mat-sys-primary);
-    text-decoration: underline;
+    @extend %inline-link;
   }
 }
 
@@ -144,6 +187,14 @@ markdown ol {
 body {
   background-color: var(--mat-sys-background);
   color: var(--mat-sys-on-background);
+  font-family: vars.$font-sans-serif;
+}
+
+// The chart library draws axis and legend labels as bare SVG text, which
+// defaults to serif and black. Put them on the app font and a muted role.
+.ng-charts text {
+  font-family: vars.$font-sans-serif;
+  fill: var(--mat-sys-on-surface-variant);
 }
 
 .flex-common {
@@ -153,14 +204,7 @@ body {
   flex-wrap: wrap;
 }
 
-.project-card-wrapper {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax((290px), 1fr));
-  grid-gap: 24px;
-}
-
-header.page-header,
-header.projects-section-header {
+header.page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -196,10 +240,12 @@ mat-sidenav-container {
   text-decoration: underline;
 }
 
+// --gt-page-inset is the body's side padding; full-bleed bars read it.
 .l-body {
+  --gt-page-inset: 24px;
   max-width: 1100px;
-  padding-left: 24px;
-  padding-right: 24px;
+  padding-left: var(--gt-page-inset);
+  padding-right: var(--gt-page-inset);
   margin-top: 15px;
   margin-bottom: 16px;
   margin-left: auto;
@@ -224,13 +270,31 @@ mat-sidenav-container {
   }
 
   @media screen and (max-width: vars.$small - 1) {
-    padding-left: 15px;
-    padding-right: 15px;
+    --gt-page-inset: 15px;
   }
 }
 
 .u-hidden {
   display: none;
+}
+
+// In-page subheading, such as a gt-list label.
+.gt-subheading {
+  margin: 0 0 var(--gt-space-2, 8px);
+  font: var(--mat-sys-title-small);
+  font-weight: 600;
+  color: var(--mat-sys-on-surface);
+}
+
+.gt-subheading:has(+ .gt-subheading__description) {
+  margin-bottom: var(--gt-space-1, 4px);
+}
+
+.gt-subheading__description {
+  max-width: var(--gt-measure, 70ch);
+  margin: 0 0 var(--gt-space-3, 12px);
+  font: var(--mat-sys-body-medium);
+  color: var(--mat-sys-on-surface-variant);
 }
 
 .full-width {
@@ -268,6 +332,38 @@ mat-sidenav-container {
 .input-icon-button {
   @extend .small-icon-button;
   margin-right: 8px;
+}
+
+// Content starts 16px under a tab bar; a tab panel inside a card has its padding.
+mat-tab-nav-panel:not(mat-card-content > *) {
+  display: block;
+  padding-top: var(--gt-space-4, 16px);
+}
+
+// Material pads the 20px radio icon out to its state layer; pull that back
+// so the circles line up with the section text at any density.
+.gt-radio-column,
+.gt-radio-row {
+  display: flex;
+  margin-inline-start: calc((20px - var(--mat-radio-state-layer-size)) / 2);
+}
+
+.gt-radio-column {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.gt-radio-row {
+  flex-wrap: wrap;
+  column-gap: var(--gt-space-4, 16px);
+}
+
+// What the current value means, under its control.
+.gt-field-hint {
+  max-width: var(--gt-measure);
+  margin: var(--gt-space-2, 8px) 0 0;
+  font: var(--mat-sys-body-medium);
+  color: var(--mat-sys-on-surface-variant);
 }
 
 // Search-syntax help popover (rendered in the CDK overlay; styles must be global).
@@ -349,6 +445,40 @@ mat-sidenav-container {
   color: var(--mat-sys-outline);
 }
 
+// Separates groups of different kinds of bar controls, see DESIGN.md
+.gt-bar-divider {
+  flex: none;
+  align-self: center;
+  width: 1px;
+  height: 20px;
+  margin-inline: var(--gt-space-2, 8px);
+  background-color: var(--mat-sys-outline-variant);
+}
+
+// Material's label wrapper must shrink too, so the back link text can ellipsize.
+gt-back-link .mdc-button__label {
+  min-width: 0;
+}
+
+// A labelled top bar button that keeps only its icon when the bar is narrow.
+.gt-bar-button.mat-mdc-outlined-button {
+  @include controls.narrow-bar {
+    min-width: 32px;
+
+    @include mat.button-overrides(
+      (
+        outlined-horizontal-padding: 6px,
+        outlined-icon-spacing: 0,
+        outlined-icon-offset: 0,
+      )
+    );
+
+    .gt-bar-button__label {
+      display: none;
+    }
+  }
+}
+
 .medium-icon-button {
   width: 36px !important;
   height: 36px !important;
@@ -380,6 +510,15 @@ gt-issue-chart {
 }
 
 .comment-markdown {
+  // Sits under the comment's header row: trim the outer paragraph margins.
+  > :first-child {
+    margin-top: var(--gt-space-1, 4px);
+  }
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+
   ul {
     list-style: disc outside;
     padding-left: 20px;
@@ -416,10 +555,6 @@ gt-issue-chart {
 }
 
 .ng-charts {
-  text {
-    fill: var(--mat-sys-on-surface-variant);
-  }
-
   line.gridline-path,
   line.gridline-path-dotted {
     stroke: var(--mat-sys-outline-variant);
@@ -502,4 +637,16 @@ gt-pagination-buttons {
   .mat-button-toggle-label-content {
     line-height: 38px !important;
   }
+}
+
+.tab-count {
+  display: inline-flex;
+  align-items: center;
+  min-height: 20px;
+  margin-left: var(--gt-space-2, 8px);
+  padding: 0 var(--gt-space-2, 8px);
+  border-radius: var(--mat-sys-corner-full);
+  font: var(--mat-sys-label-medium);
+  background-color: var(--mat-sys-surface-container-highest);
+  color: var(--mat-sys-on-surface-variant);
 }
