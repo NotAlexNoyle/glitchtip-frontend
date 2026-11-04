@@ -27,20 +27,21 @@
 <section class="l-body l-body--full-width">
   <!-- Key facts: the band's corner when wide, the end of the meta line when narrow -->
   <ng-template #facts>
-    <span class="gt-band-fact" i18n
+    @let compacted = group.count >= 1000;
+    <span
+      class="gt-band-fact"
+      [class.gt-has-tip]="compacted"
+      [attr.tabindex]="compacted ? 0 : null"
+      [matTooltip]="compacted ? (group.count | number) : ''"
+      i18n
       >{group.count, plural, =1 {<b>1</b> transaction} other {<b>{{
-        group.count | number // i18n(ph="count")
+        group.count | compactNumber // i18n(ph="count")
       }}</b> transactions}}</span
     >
-    <span class="gt-band-fact" i18n>avg <b>{{ group.avgDuration! | humanizeDuration // i18n(ph="duration") }}</b></span>
+    <span class="gt-band-fact" i18n>avg <b>{{ group.avgDuration! | shortDuration // i18n(ph="duration") }}</b></span>
     @if (group.p95 !== null && group.p95 !== undefined) {
-      <span class="gt-band-fact" i18n>p95 <b>{{ group.p95 | humanizeDuration // i18n(ph="duration") }}</b></span>
+      <span class="gt-band-fact" i18n>p95 <b>{{ group.p95 | shortDuration // i18n(ph="duration") }}</b></span>
     }
-    <span class="gt-band-fact" i18n
-      >{group.errorCount, plural, =1 {<b>1</b> error} other {<b>{{
-        group.errorCount | number // i18n(ph="count")
-      }}</b> errors}}</span
-    >
   </ng-template>
   <gt-record-band>
     <gt-page-header [title]="group.transaction">
@@ -51,6 +52,12 @@
           <span><span class="chip">{{ group.method }}</span></span>
         }
         <ng-container [ngTemplateOutlet]="facts" />
+        <!-- The corner holds three stats at most; the rest stay in the meta line -->
+        <span i18n
+          >{group.errorCount, plural, =1 {<b>1</b> error} other {<b>{{
+            group.errorCount | number // i18n(ph="count")
+          }}</b> errors}}</span
+        >
       </span>
     </gt-page-header>
     <span slot="stats" class="gt-band-facts"
@@ -61,11 +68,13 @@
   <gt-panel i18n-title title="Span breakdown" flush>
     @if (sortedSpans(); as spans) {
       @if (spans.length === 0) {
-        <div class="span-breakdown-empty">
-          <mat-icon class="span-breakdown-empty__icon">bar_chart_4_bars</mat-icon>
-          <p i18n class="body-text">No span data available yet</p>
-          <p i18n class="caption-text span-breakdown-empty__hint">Span data will appear here once child spans are recorded for this transaction group.</p>
-        </div>
+        <gt-empty-state
+          icon="avg_pace"
+          i18n-title
+          title="No span data"
+          i18n-message
+          message="Spans appear here once child spans are recorded for this transaction group."
+        />
       } @else {
         <div class="span-breakdown-intro">
           <!-- By operation -->
