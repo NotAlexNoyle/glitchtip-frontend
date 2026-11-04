@@ -2,9 +2,11 @@ import {
   Component,
   OnInit,
   OnDestroy,
+  computed,
   inject,
   ChangeDetectionStrategy,
 } from "@angular/core";
+import { OrganizationsService } from "src/app/api/organizations.service";
 import {
   FormGroup,
   FormControl,
@@ -90,7 +92,13 @@ export class NewMemberComponent implements OnInit, OnDestroy {
     teams: new FormControl([]),
   });
   formRole = this.form.get("role") as FormControl;
-  readonly roles = MEMBER_ROLES;
+  /** The backend refuses inviting above your own role; only owners outrank managers. */
+  readonly canGrantOwner = inject(OrganizationsService).canAdminOrg;
+  readonly roles = computed(() =>
+    this.canGrantOwner()
+      ? MEMBER_ROLES
+      : MEMBER_ROLES.filter((role) => role !== "owner"),
+  );
   roleName = roleName;
   roleDescription = roleDescription;
 

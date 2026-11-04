@@ -48,12 +48,15 @@
           class="gt-radio-column"
           [attr.aria-labelledby]="roleSection.titleId"
         >
-          @for (role of roles; track role) {
+          @for (role of roles(); track role) {
             <mat-radio-button [value]="role">{{
               roleName(role)
             }}</mat-radio-button>
           }
         </mat-radio-group>
+        @if (!canGrantOwner()) {
+          <p class="gt-field-hint" i18n>Only owners can invite an owner.</p>
+        }
       </gt-settings-section>
 
       <gt-settings-section #teamsSection i18n-title title="Teams">
