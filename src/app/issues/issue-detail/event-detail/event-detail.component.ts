@@ -11,7 +11,6 @@ import {
   afterNextRender,
   Injector,
   viewChildren,
-  untracked,
 } from "@angular/core";
 import { OverlayContainer } from "@angular/cdk/overlay";
 import { Router, RouterLink } from "@angular/router";
@@ -261,7 +260,10 @@ export class EventDetailComponent {
     const digits = String(this.eventCount()).length;
     return 2 * (digits + Math.floor((digits - 1) / 3)) + 4;
   });
-  /** 1 is the latest; null when an event past the first page was opened directly. */
+  /**
+   * 1 is the latest; counted by steps from there. Null for an older event opened
+   * directly, until the switcher has loaded the page it is on.
+   */
   position = computed<number | null>(() => {
     const event = this.event();
     if (!event) return null;
@@ -291,12 +293,6 @@ export class EventDetailComponent {
       );
       observer.observe(el);
       onCleanup(() => observer.disconnect());
-    });
-    // The first page of recent events gives the newest events their position.
-    effect(() => {
-      if (this.issueID() && this.canSwitch()) {
-        untracked(() => this.issueService.loadRecentEvents());
-      }
     });
     // One step from a known position moves it by one.
     effect(() => {
