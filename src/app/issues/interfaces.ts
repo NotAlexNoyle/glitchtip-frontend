@@ -128,7 +128,7 @@ export interface Request {
     DOCUMENT_ROOT?: string;
   } | null;
   headers: string[][];
-  url: string;
+  url?: string | null;
   query?: string[][];
   data?: { [key: string]: string } | null;
   method?: string | null;

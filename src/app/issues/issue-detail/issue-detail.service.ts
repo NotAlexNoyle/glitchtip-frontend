@@ -505,9 +505,9 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
   ): AnnotatedRequest | undefined {
     const eventRequest = this.getRequestEntryData(event);
     if (!eventRequest) return;
-    let path = eventRequest.url;
+    let path = eventRequest.url ?? "";
     try {
-      path = new URL(eventRequest.url).pathname;
+      path = new URL(path).pathname;
     } catch {
       // Not an absolute URL: show it as sent.
     }

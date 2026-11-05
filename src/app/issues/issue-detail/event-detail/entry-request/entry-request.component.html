@@ -12,23 +12,25 @@
       <pre class="gt-raw gt-raw--wrap">{{ raw() }}</pre>
     } @else {
       <div class="gt-kv">
-        <div class="gt-kv__row">
-          <span class="gt-kv__k" i18n>URL</span>
-          <span class="gt-kv__v gt-break">
-            @if (urlIsHttp()) {
-              <a
-                class="gt-prose-link"
-                target="_blank"
-                rel="noopener noreferrer"
-                [href]="r.url"
-                [matTooltip]="r.url"
-                >{{ url() }}</a
-              >
-            } @else {
-              {{ url() }}
-            }
-          </span>
-        </div>
+        @if (url()) {
+          <div class="gt-kv__row">
+            <span class="gt-kv__k" i18n>URL</span>
+            <span class="gt-kv__v gt-break">
+              @if (urlIsHttp()) {
+                <a
+                  class="gt-prose-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  [href]="r.url"
+                  [matTooltip]="r.url"
+                  >{{ url() }}</a
+                >
+              } @else {
+                {{ url() }}
+              }
+            </span>
+          </div>
+        }
         @for (s of sections(); track s.key) {
           @let isOpen = opened().has(s.key);
           <div class="gt-kv__group">

@@ -73,7 +73,7 @@ export class EntryRequestComponent {
   });
 
   /** URL without the query string; the query is its own section. */
-  readonly url = computed(() => this.request()?.url.split("?")[0] ?? "");
+  readonly url = computed(() => this.request()?.url?.split("?")[0] ?? "");
 
   readonly urlIsHttp = computed(() => isHttpUrl(this.request()?.url));
 
@@ -133,14 +133,14 @@ export class EntryRequestComponent {
   readonly raw = computed(() => {
     const r = this.request();
     if (!r) return "";
-    let target = r.url;
+    let target = r.url ?? "";
     try {
-      const u = new URL(r.url);
+      const u = new URL(target);
       target = u.pathname + u.search;
     } catch {
       // keep the raw url
     }
-    const lines = [`${r.method ?? "GET"} ${target}`];
+    const lines = [[r.method ?? "GET", target].filter(Boolean).join(" ")];
     for (const p of rowsOf(r.headers)) lines.push(`${p.key}: ${p.value}`);
     const cookies = rowsOf(r.cookies);
     if (cookies.length) {
