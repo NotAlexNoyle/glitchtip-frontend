@@ -4,10 +4,10 @@ import { map } from "rxjs";
 import { BreakpointObserver } from "@angular/cdk/layout";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
-import { MatMenuModule } from "@angular/material/menu";
+import { MatCardModule } from "@angular/material/card";
 import { TopAppBar } from "src/app/shared/top-app-bar/top-app-bar";
 import { BackLinkComponent } from "src/app/shared/detail/back-link/back-link.component";
-import { DetailHeaderComponent } from "src/app/shared/detail/header/header.component";
+import { PageHeaderComponent } from "src/app/shared/detail/page-header/page-header.component";
 import { ApiRow, PreviewDocComponent } from "../docs/preview-doc.component";
 
 /**
@@ -20,10 +20,10 @@ import { ApiRow, PreviewDocComponent } from "../docs/preview-doc.component";
   imports: [
     TopAppBar,
     BackLinkComponent,
-    DetailHeaderComponent,
+    PageHeaderComponent,
     MatButtonModule,
     MatIconModule,
-    MatMenuModule,
+    MatCardModule,
     PreviewDocComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,13 +34,8 @@ import { ApiRow, PreviewDocComponent } from "../docs/preview-doc.component";
         // side padding) at example scale.
         padding: var(--gt-space-4) var(--gt-space-5) var(--gt-space-5);
       }
-      .dp-body p {
+      .dp-body mat-card {
         margin-top: var(--gt-space-4);
-      }
-      .top-bar-actions {
-        display: flex;
-        align-items: center;
-        gap: var(--gt-space-2);
       }
     `,
   ],
@@ -63,46 +58,37 @@ import { ApiRow, PreviewDocComponent } from "../docs/preview-doc.component";
     >
       <gt-top-app-bar>
         <ng-container slot="left">
-          <gt-back-link
-            [backLinkText]="
-              isMobile() ? 'Uptime Monitors' : 'View all uptime monitors'
-            "
-          />
+          <gt-back-link backLinkText="Uptime Monitors" />
         </ng-container>
         <ng-container slot="right">
-          <div class="top-bar-actions">
-            @if (isMobile()) {
-              <button mat-icon-button aria-label="Edit monitor">
-                <mat-icon>settings</mat-icon>
-              </button>
-              <button mat-icon-button [matMenuTriggerFor]="more" aria-label="More">
-                <mat-icon>more_vert</mat-icon>
-              </button>
-              <mat-menu #more="matMenu">
-                <button mat-menu-item>
-                  <mat-icon>delete</mat-icon>
-                  <span>Delete</span>
-                </button>
-              </mat-menu>
-            } @else {
-              <button mat-stroked-button>Edit monitor</button>
-              <button mat-icon-button class="medium-icon-button" aria-label="Delete">
-                <mat-icon>delete</mat-icon>
-              </button>
-            }
-          </div>
+          @if (isMobile()) {
+            <button mat-icon-button aria-label="Edit monitor">
+              <mat-icon>edit</mat-icon>
+            </button>
+          } @else {
+            <button mat-stroked-button>Edit monitor</button>
+          }
         </ng-container>
       </gt-top-app-bar>
       <section class="dp-body">
-        <gt-detail-header [title]="['Uptime details for GlitchTip Health', null]" />
-        <p>Monitor content: response times, check history, status.</p>
+        <gt-page-header title="GlitchTip Health">
+          <span slot="meta">
+            <span><span class="chip">https://glitchtip.com/</span></span>
+            <span>every <b>60s</b></span>
+          </span>
+        </gt-page-header>
+        <mat-card appearance="outlined">
+          <mat-card-content>
+            Monitor content: response times, check history, status.
+          </mat-card-content>
+        </mat-card>
       </section>
     </preview-doc>
   `,
 })
 export class DetailPagePreview {
-  // The product's own mobile mechanism (see monitor-detail): swap content
-  // below the $small breakpoint. Fires for real inside the Mobile viewport.
+  // Swap the text action for an icon button below the $small breakpoint.
+  // Fires for real inside the Mobile viewport.
   private readonly breakpoints = inject(BreakpointObserver);
   readonly isMobile = toSignal(
     this.breakpoints
@@ -116,47 +102,53 @@ export class DetailPagePreview {
     "Forms that create a record within a list context (new monitor)",
   ];
   readonly dos = [
-    "Put gt-back-link in the app bar's left slot and name the destination",
-    "Put page actions in the app bar's right slot",
-    "Render gt-detail-header first inside the l-body content column",
+    "Put gt-back-link in the app bar's left slot, named with the parent page's nav label",
+    "Put page actions in the app bar's right slot: outlined or neutral only. One extra action is a neutral icon button; two or more go in a More actions menu",
+    "Link to the record's edit page with an outlined Edit X, and put Delete in that page's last section",
+    "Without an edit page, put Delete in the bar (see Top app bar)",
+    "Render gt-page-header first inside the l-body content column (see Page header)",
   ];
   readonly donts = [
     "Hand-roll a back arrow instead of gt-back-link",
+    "Add a margin to gt-back-link to line up its chevron; it already sits on the container edge",
+    "Put a filled button in the bar",
   ];
   readonly composition = {
-    contains: ["Top app bar", "Back link", "Buttons & actions"],
+    contains: ["Top app bar", "Back link", "Page header", "Buttons & actions"],
   };
   readonly anatomy = `<gt-top-app-bar>
   <gt-back-link slot="left" />
   <... slot="right" actions />
 </gt-top-app-bar>
 <section class="l-body">
-  <gt-detail-header [title]="..." />
+  <gt-page-header [title]="..." />
   <... content />
 </section>`;
   readonly api: ApiRow[] = [
-    { name: "gt-back-link backLinkText", type: "string", default: `""`, description: "Link label; navigates to the parent route (..)" },
-    { name: "gt-back-link backLinkParams", type: "object", default: "{}", description: "Query params preserved on the way back" },
-    { name: "gt-detail-header title", type: "string | [string, string | null]", default: `""`, description: "Record title, optionally with a muted suffix" },
+    { name: "gt-back-link backLinkText", type: "string", default: `""`, description: "Link label: the parent page's nav label, or the record's name" },
+    { name: "gt-back-link link", type: "string | unknown[]", default: `[".."]`, description: "Where the link goes; [] stays on the page, for a sub-view in a tab" },
+    { name: "gt-back-link backLinkParams", type: "object", default: "{}", description: "Query params on the way back; null removes one" },
+    { name: "gt-back-link paramsHandling", type: "QueryParamsHandling | null", default: "null", description: "\"merge\" keeps the other query params" },
+    { name: "gt-detail-header title", type: "string | [string, string | null]", default: `""`, description: "Legacy: use gt-page-header for new pages. Record title, optionally with a muted suffix" },
     { name: "gt-detail-header subtitle", type: "string | null", default: "", description: "Secondary line under the title" },
     { name: "gt-detail-header ng-content", type: "content projection", default: "", description: "Optional action row inside the header" },
   ];
   readonly importCode = `import { TopAppBar } from "src/app/shared/top-app-bar/top-app-bar";
 import { BackLinkComponent } from "src/app/shared/detail/back-link/back-link.component";
-import { DetailHeaderComponent } from "src/app/shared/detail/header/header.component";`;
+import { PageHeaderComponent } from "src/app/shared/detail/page-header/page-header.component";`;
   readonly code = `<gt-top-app-bar>
   <ng-container slot="left">
-    <gt-back-link backLinkText="View all uptime monitors" />
+    <gt-back-link i18n-backLinkText backLinkText="Uptime Monitors" />
   </ng-container>
   <ng-container slot="right">
-    <button mat-stroked-button [routerLink]="['./update']">
-      Edit monitor
-    </button>
+    <a mat-stroked-button [routerLink]="['./update']" i18n>Edit monitor</a>
   </ng-container>
 </gt-top-app-bar>
 
 <section class="l-body">
-  <gt-detail-header [title]="['Uptime details for ' + monitor.name, null]" />
+  <gt-page-header [title]="monitor.name">
+    <span slot="meta">...</span>
+  </gt-page-header>
   ...
 </section>`;
 }
