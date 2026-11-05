@@ -1,3 +1,4 @@
+@use "sass:list";
 @use "@angular/material" as mat;
 @use "variables" as vars;
 
@@ -219,6 +220,19 @@ $grid-line: color-mix(in srgb, var(--mat-sys-outline-variant) 55%, transparent);
   opacity: 0;
   // Same length as the drift, and each ping ends before it loops.
   animation: auth-grid-ping 16s ease-in-out var(--d) infinite;
+}
+
+// Each ping's cell (x, y from the centre) and start in the loop, one per <i> in
+// gt-auth-brand. Set here rather than in style attributes, which the CSP blocks.
+$pings: (-6 -5 0.5s), (9 1 3.7s), (-3 5 6.9s), (5 -4 10.1s), (-10 0 13.3s);
+
+@for $i from 1 through list.length($pings) {
+  $ping: list.nth($pings, $i);
+  .auth-brand__ping:nth-child(#{$i}) {
+    --x: #{list.nth($ping, 1)};
+    --y: #{list.nth($ping, 2)};
+    --d: #{list.nth($ping, 3)};
+  }
 }
 
 @keyframes auth-grid-drift {

@@ -17,11 +17,11 @@ import { ChangeDetectionStrategy, Component } from "@angular/core";
     <div class="auth-brand__copy">
       <div class="auth-brand__grid">
         <div class="auth-brand__lines">
-          <i class="auth-brand__ping" style="--x: -6; --y: -5; --d: 0.5s"></i>
-          <i class="auth-brand__ping" style="--x: 9; --y: 1; --d: 3.7s"></i>
-          <i class="auth-brand__ping" style="--x: -3; --y: 5; --d: 6.9s"></i>
-          <i class="auth-brand__ping" style="--x: 5; --y: -4; --d: 10.1s"></i>
-          <i class="auth-brand__ping" style="--x: -10; --y: 0; --d: 13.3s"></i>
+          <i class="auth-brand__ping"></i>
+          <i class="auth-brand__ping"></i>
+          <i class="auth-brand__ping"></i>
+          <i class="auth-brand__ping"></i>
+          <i class="auth-brand__ping"></i>
         </div>
       </div>
       <p class="auth-brand__statement">
