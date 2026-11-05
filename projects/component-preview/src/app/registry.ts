@@ -9,6 +9,12 @@ import { ConfirmDialogPreview } from "./previews/confirm-dialog.preview";
 import { ButtonsPreview } from "./previews/buttons.preview";
 import { TopAppBarPreview } from "./previews/top-app-bar.preview";
 import { DetailPagePreview } from "./previews/detail-page.preview";
+import { PageHeaderPreview } from "./previews/page-header.preview";
+import { RecordBandPreview } from "./previews/record-band.preview";
+import { StatusPillPreview } from "./previews/status-pill.preview";
+import { SettingsSectionPreview } from "./previews/settings-section.preview";
+import { PanelPreview } from "./previews/panel.preview";
+import { PanelRowsPreview } from "./previews/panel-rows.preview";
 import { PermissionGatingPreview } from "./previews/permission-gating.preview";
 import { BrandTypographyPreview } from "./previews/brand-typography.preview";
 import { BrandColorsPreview } from "./previews/brand-colors.preview";
@@ -24,7 +30,6 @@ import { BrandCodeCardPreview } from "./previews/brand-code-card.preview";
 import { BrandPageShellPreview } from "./previews/brand-page-shell.preview";
 import { BrandBannerPreview } from "./previews/brand-banner.preview";
 import { BrandMotionPreview } from "./previews/brand-motion.preview";
-import { ProjectCardPreview } from "./previews/project-card.preview";
 import { BannersPreview } from "./previews/banners.preview";
 import { IconsPreview } from "./previews/icons.preview";
 import { SymbolsPreview } from "./previews/symbols.preview";
@@ -44,6 +49,11 @@ import { ToastsPreview } from "./previews/toasts.preview";
 import { DialogsPreview } from "./previews/dialogs.preview";
 import { LoadingOverlayPreview } from "./previews/loading-overlay.preview";
 import { EmptyStatePreview } from "./previews/empty-state.preview";
+import { ListPreview } from "./previews/list.preview";
+import { GhostSelectPreview } from "./previews/ghost-select.preview";
+import { SplitButtonPreview } from "./previews/split-button.preview";
+import { TagChipPreview } from "./previews/tag-chip.preview";
+import { CodePreview } from "./previews/code.preview";
 
 /**
  * Component lifecycle status, following the practice of published design
@@ -153,13 +163,6 @@ export const PREVIEWS: PreviewEntry[] = [
     status: "stable",
   },
   {
-    id: "project-card",
-    label: "Project card",
-    group: "Components",
-    component: ProjectCardPreview,
-    status: "legacy",
-  },
-  {
     id: "banners",
     label: "Banners",
     group: "Components",
@@ -206,6 +209,83 @@ export const PREVIEWS: PreviewEntry[] = [
     label: "Empty state",
     group: "Components",
     component: EmptyStatePreview,
+    status: "stable",
+  },
+  {
+    id: "page-header",
+    label: "Page header",
+    group: "Components",
+    component: PageHeaderPreview,
+    status: "stable",
+  },
+  {
+    id: "record-band",
+    label: "Record band",
+    group: "Components",
+    component: RecordBandPreview,
+    status: "stable",
+  },
+  {
+    id: "status-pill",
+    label: "Status pill",
+    group: "Components",
+    component: StatusPillPreview,
+    status: "stable",
+  },
+  {
+    id: "settings-section",
+    label: "Settings section",
+    group: "Components",
+    component: SettingsSectionPreview,
+    status: "stable",
+  },
+  {
+    id: "list",
+    label: "List",
+    group: "Components",
+    component: ListPreview,
+    status: "stable",
+  },
+  {
+    id: "panel",
+    label: "Panel",
+    group: "Components",
+    component: PanelPreview,
+    status: "stable",
+  },
+  {
+    id: "panel-rows",
+    label: "Panel rows",
+    group: "Components",
+    component: PanelRowsPreview,
+    status: "stable",
+  },
+  {
+    id: "ghost-select",
+    label: "Ghost select",
+    group: "Components",
+    component: GhostSelectPreview,
+    status: "stable",
+  },
+  {
+    id: "split-button",
+    label: "Split button",
+    group: "Components",
+    component: SplitButtonPreview,
+    status: "stable",
+  },
+  {
+    id: "tag-chip",
+    label: "Tag chip",
+    group: "Components",
+    component: TagChipPreview,
+    status: "stable",
+  },
+  {
+    id: "code",
+    label: "Code",
+    group: "Components",
+    component: CodePreview,
     status: "stable",
   },
   {
