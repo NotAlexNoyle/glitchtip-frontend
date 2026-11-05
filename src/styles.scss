@@ -27,21 +27,16 @@ html {
   );
 }
 
-// Dark brand colors, applied for the theme the app shows.
-@mixin brand-dark {
-  --mat-sys-primary: #d94a5f;
-  --mat-sys-on-primary: #ffffff;
-  --mat-sys-error: #f54e6f;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not(.light) {
-    @include brand-dark;
-  }
-}
-
-:root.dark {
-  @include brand-dark;
+// Brand colors as light/dark pairs, so they follow color-scheme like the rest
+// of the theme. The light values are the palette's own.
+html {
+  @include mat.theme-overrides(
+    (
+      primary: light-dark(#be0131, #d94a5f),
+      on-primary: light-dark(#ffffff, #ffffff),
+      error: light-dark(#ba1434, #f54e6f),
+    )
+  );
 }
 
 // Extended color

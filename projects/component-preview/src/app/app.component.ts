@@ -4,7 +4,6 @@ import {
   DestroyRef,
   afterNextRender,
   computed,
-  effect,
   inject,
   signal,
 } from "@angular/core";
@@ -95,14 +94,6 @@ export class AppComponent {
 
   constructor() {
     this.matIconRegistry.setDefaultFontSetClass("material-symbols-filled");
-
-    // Root classes as in setTheme(), so the brand overrides follow the toggle.
-    // "system" sets neither, leaving the OS media query in charge.
-    effect(() => {
-      const theme = this.theme();
-      document.documentElement.classList.toggle("dark", theme === "dark");
-      document.documentElement.classList.toggle("light", theme === "light");
-    });
 
     // Bare mode reports its content height to the embedding preview-doc so the
     // example iframe hugs the content instead of a fixed tall box.
