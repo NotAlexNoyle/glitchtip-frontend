@@ -1,5 +1,6 @@
 @use "@angular/material" as mat;
 @use "variables" as vars;
+@use "controls";
 
 @include mat.button-overrides(
   (
@@ -9,7 +10,11 @@
     text-container-shape: vars.$shape-radius,
     filled-horizontal-padding: 12px,
     outlined-label-text-color: var(--mat-sys-on-surface),
+    outlined-state-layer-color: var(--mat-sys-on-surface),
+    outlined-ripple-color: controls.state-layer-color(pressed),
     text-label-text-color: var(--mat-sys-on-surface),
+    text-state-layer-color: var(--mat-sys-on-surface),
+    text-ripple-color: controls.state-layer-color(pressed),
   )
 );
 
@@ -19,7 +24,9 @@
   @include mat.button-overrides(
     (
       outlined-label-text-color: var(--mat-sys-error),
+      outlined-state-layer-color: var(--mat-sys-error),
       text-label-text-color: var(--mat-sys-error),
+      text-state-layer-color: var(--mat-sys-error),
     )
   );
 }
