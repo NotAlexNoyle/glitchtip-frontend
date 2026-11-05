@@ -4,6 +4,7 @@ import {
   arrivedLate,
   contextFact,
   contextFor,
+  cookieRows,
   crumbSummary,
   formatBlock,
   eventUser,
@@ -143,6 +144,60 @@ describe("toRows", () => {
     expect(toRows([["Accept", "*/*"]])).toEqual([
       { key: "Accept", value: "*/*", long: false },
     ]);
+  });
+});
+
+describe("cookieRows", () => {
+  it("splits a Cookie header string into one row per cookie", () => {
+    const cases: [string, [string, string][]][] = [
+      [
+        "sessionid=abc; theme=dark",
+        [
+          ["sessionid", "abc"],
+          ["theme", "dark"],
+        ],
+      ],
+      // Base64 values end in "=": split on the first one only.
+      [
+        "token=YWJjZA==; x=1",
+        [
+          ["token", "YWJjZA=="],
+          ["x", "1"],
+        ],
+      ],
+      [
+        " a=1;; b=2 ; ",
+        [
+          ["a", "1"],
+          ["b", "2"],
+        ],
+      ],
+      // Repeated Cookie headers joined with "," (sentry-java, ASP.NET).
+      [
+        "a=1; b=2,c=3",
+        [
+          ["a", "1"],
+          ["b", "2"],
+          ["c", "3"],
+        ],
+      ],
+      // A comma inside a value is not a separator.
+      [
+        "seen=Thu, 05 Nov 2026; tags=a,b",
+        [
+          ["seen", "Thu, 05 Nov 2026"],
+          ["tags", "a,b"],
+        ],
+      ],
+      ["flag", [["flag", ""]]],
+      ["", []],
+    ];
+    for (const [header, expected] of cases) {
+      expect(
+        cookieRows(header).map((r) => [r.key, r.value]),
+        header,
+      ).toEqual(expected);
+    }
   });
 });
 

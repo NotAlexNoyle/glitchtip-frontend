@@ -120,7 +120,11 @@ export interface ExceptionValueData {
 
 export interface Request {
   fragment?: string | null;
-  cookies?: { [key: string]: Json }[];
+  cookies?:
+    | string
+    | [string, string | null][]
+    | { [key: string]: string | null }
+    | null;
   inferredContentType: string | null;
   env?: {
     SERVER_NAME: string;

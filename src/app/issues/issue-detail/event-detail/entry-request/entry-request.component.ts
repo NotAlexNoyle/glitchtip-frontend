@@ -20,6 +20,7 @@ import { Json } from "src/app/interface-primitives";
 import {
   Entries,
   PropertyRow,
+  cookieRows,
   formatBlock,
   isHttpUrl,
   toRows,
@@ -117,12 +118,11 @@ export class EntryRequestComponent {
             : String(body),
       });
     }
-    for (const [key, label, value] of [
-      ["headers", $localize`Headers`, r.headers],
-      ["cookies", $localize`Cookies`, r.cookies],
-      ["env", $localize`Environment`, r.env],
-    ] as [string, string, unknown][]) {
-      const rows = rowsOf(value);
+    for (const [key, label, rows] of [
+      ["headers", $localize`Headers`, rowsOf(r.headers)],
+      ["cookies", $localize`Cookies`, cookieRows(r.cookies)],
+      ["env", $localize`Environment`, rowsOf(r.env)],
+    ] as [string, string, PropertyRow[]][]) {
       if (rows.length) {
         out.push({ key, label, summary: String(rows.length), rows });
       }
@@ -142,12 +142,14 @@ export class EntryRequestComponent {
     }
     const lines = [[r.method ?? "GET", target].filter(Boolean).join(" ")];
     for (const p of rowsOf(r.headers)) lines.push(`${p.key}: ${p.value}`);
-    const cookies = rowsOf(r.cookies);
-    if (cookies.length) {
-      lines.push(
-        "Cookie: " + cookies.map((c) => `${c.key}=${c.value}`).join("; "),
-      );
-    }
+    // A header string is shown as sent; pairs and objects are joined into one.
+    const cookies =
+      typeof r.cookies === "string"
+        ? r.cookies.trim()
+        : cookieRows(r.cookies)
+            .map((c) => `${c.key}=${c.value}`)
+            .join("; ");
+    if (cookies) lines.push(`Cookie: ${cookies}`);
     const body: unknown = r.data;
     if (body) {
       lines.push(

@@ -115,6 +115,37 @@ export function toRows(
     });
 }
 
+/**
+ * A comma that starts another cookie: sentry-java and ASP.NET join repeated
+ * Cookie headers with ",". Only when a name and "=" follow, so commas inside
+ * values (dates, lists, JSON) stay put.
+ */
+const NEXT_COOKIE = /,(?=\s*[\w!#$%&'*+.^`|~-]+=)/;
+
+/**
+ * Request cookies as rows. Most SDKs send pairs or an object, but sentry-java
+ * and sentry-dotnet send the raw Cookie header ("a=1; b=2"), split here on the
+ * first "=" so values that contain one (base64) stay whole.
+ */
+export function cookieRows(
+  cookies: Entries | string | null | undefined,
+): PropertyRow[] {
+  if (typeof cookies !== "string") return toRows(cookies);
+  return toRows(
+    cookies
+      .split(";")
+      .flatMap((part) => part.split(NEXT_COOKIE))
+      .map((part) => part.trim())
+      .filter(Boolean)
+      .map((part): [string, string] => {
+        const eq = part.indexOf("=");
+        return eq < 0
+          ? [part, ""]
+          : [part.slice(0, eq).trim(), part.slice(eq + 1).trim()];
+      }),
+  );
+}
+
 /** "react-dom" from node_modules paths, "django" from site-packages paths. */
 export function packageOf(frame: Frame): string {
   const path = frame.filename || frame.absPath || "";
