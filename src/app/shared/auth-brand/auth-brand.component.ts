@@ -22,6 +22,8 @@ import { ChangeDetectionStrategy, Component } from "@angular/core";
           <i class="auth-brand__ping"></i>
           <i class="auth-brand__ping"></i>
           <i class="auth-brand__ping"></i>
+          <i class="auth-brand__ping"></i>
+          <i class="auth-brand__ping"></i>
         </div>
       </div>
       <p class="auth-brand__statement">

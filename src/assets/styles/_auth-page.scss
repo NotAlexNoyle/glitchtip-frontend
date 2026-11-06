@@ -216,7 +216,7 @@ $grid-line: color-mix(in srgb, var(--mat-sys-outline-variant) 55%, transparent);
   top: calc(50% - #{$cell * 0.5 - 1px} + var(--y) * #{$cell});
   width: $cell - 1px;
   height: $cell - 1px;
-  background: color-mix(in srgb, var(--mat-sys-primary) 22%, transparent);
+  background: color-mix(in srgb, var(--mat-sys-primary) 32%, transparent);
   opacity: 0;
   // Same length as the drift, and each ping ends before it loops.
   animation: auth-grid-ping 16s ease-in-out var(--d) infinite;
@@ -224,7 +224,10 @@ $grid-line: color-mix(in srgb, var(--mat-sys-outline-variant) 55%, transparent);
 
 // Each ping's cell (x, y from the centre) and start in the loop, one per <i> in
 // gt-auth-brand. Set here rather than in style attributes, which the CSP blocks.
-$pings: (-6 -5 0.5s), (9 1 3.7s), (-3 5 6.9s), (5 -4 10.1s), (-10 0 13.3s);
+// Above and below the text: at 1280px there is no room beside it in the pane.
+$pings:
+  (-3 -4 0.5s), (3 3 2.7s), (-3 3 4.9s), (2 -4 7.1s), (0 -4 9.3s), (1 3 11.5s),
+  (-1 -5 13.7s);
 
 @for $i from 1 through list.length($pings) {
   $ping: list.nth($pings, $i);
