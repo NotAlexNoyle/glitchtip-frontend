@@ -71,9 +71,9 @@ import { MatIconModule } from "@angular/material/icon";
     .empty-state__action:empty {
       display: none;
     }
-    /* List boxes fill the viewport, so a fixed top gap looks high on tall screens. */
+    /* Page-level list boxes are tall, so they get a roomier fixed top gap. */
     :host(.tall) .empty-state {
-      padding-block-start: clamp(var(--gt-space-7, 48px), 20vh, 200px);
+      padding-block-start: calc(var(--gt-space-7) * 2);
     }
   `,
 })
