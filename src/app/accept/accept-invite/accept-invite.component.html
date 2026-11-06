@@ -28,8 +28,13 @@
                 <p class="auth-intro gt-prose" i18n
                   >The account you're logged into is already part of this
                   organization. You might want to
-                  <a (click)="logout()" href="javascript:void(0)">log out</a>,
-                  then log into or create the account this invite was meant
+                  <button
+                    type="button"
+                    class="auth-link-button"
+                    (click)="logout()"
+                  >
+                    log out</button
+                  >, then log into or create the account this invite was meant
                   for.</p
                 >
               } @else {

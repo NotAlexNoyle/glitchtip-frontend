@@ -83,6 +83,17 @@ $grid-line: color-mix(in srgb, var(--mat-sys-outline-variant) 55%, transparent);
   color: var(--mat-sys-on-surface-variant);
 }
 
+// An action inside a sentence, styled as an underlined link.
+.auth-link-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .auth-field {
   display: flex;
   flex-direction: column;

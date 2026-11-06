@@ -14,7 +14,6 @@ import { RouterLink } from "@angular/router";
 import { MatButtonModule } from "@angular/material/button";
 import { MatInputModule } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
-import { SettingsService } from "../api/settings.service";
 import { LoadingButtonComponent } from "../shared/loading-button/loading-button.component";
 import {
   ResetPasswordService,
@@ -50,7 +49,6 @@ export class ResetPasswordComponent extends StatefulComponent<
   ResetPasswordService
 > {
   protected service: ResetPasswordService;
-  private settings = inject(SettingsService);
 
   success = this.service.success;
   loading = this.service.loading;
@@ -58,7 +56,6 @@ export class ResetPasswordComponent extends StatefulComponent<
   form = new FormGroup({
     email: new FormControl("", [Validators.required, Validators.email]),
   });
-  enableUserRegistration = this.settings.enableUserRegistration;
 
   constructor() {
     const service = inject(ResetPasswordService);
