@@ -1,9 +1,11 @@
 @use "@angular/material" as mat;
 
+// Product panel: page-colour body, hairline, 4px corner.
 @include mat.card-overrides(
   (
-    outlined-container-color: var(--mat-sys-surface-container),
+    outlined-container-color: transparent,
+    outlined-container-shape: 4px,
     title-text-size: 18px,
-    title-text-weight: 500,
+    title-text-weight: 600,
   )
 );

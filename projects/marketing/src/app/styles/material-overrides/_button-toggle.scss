@@ -1,0 +1,17 @@
+@use "@angular/material" as mat;
+
+// Selected reads strongest: full-ink label on a grey state fill, unselected
+// muted. M3's defaults leave the selected label lighter than the others.
+@include mat.button-toggle-overrides(
+  (
+    shape: 4px,
+    text-color: var(--mat-sys-on-surface-variant),
+    selected-state-text-color: var(--mat-sys-on-surface),
+    selected-state-background-color: color-mix(
+        in srgb,
+        var(--mat-sys-on-surface) 10%,
+        transparent
+      ),
+    divider-color: var(--mat-sys-outline-variant),
+  )
+);

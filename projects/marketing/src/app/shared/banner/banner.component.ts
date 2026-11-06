@@ -1,3 +1,4 @@
+import { GridDriftComponent } from "../grid-drift/grid-drift.component";
 import {
   Component,
   ChangeDetectionStrategy,
@@ -10,7 +11,9 @@ import {
  */
 @Component({
   selector: "mkt-banner",
+  imports: [GridDriftComponent],
   template: `<div class="banner">
+    <mkt-grid-drift />
     <div class="banner__inner"><ng-content /></div>
   </div>`,
   styleUrl: "./banner.component.scss",

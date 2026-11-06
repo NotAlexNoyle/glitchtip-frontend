@@ -63,7 +63,8 @@
     text-decoration: none;
 
     &:hover {
-      color: var(--mat-sys-primary);
+      color: var(--mat-sys-on-surface);
+      text-decoration: underline;
     }
   }
 
@@ -135,7 +136,7 @@
   padding: 9px 12px;
   border-radius: 6px;
   font: var(--mat-sys-label-large);
-  font-weight: 600;
+  font-weight: 500;
   color: var(--mat-sys-on-surface);
   text-decoration: none;
   transition:
@@ -147,8 +148,8 @@
   }
 
   &.is-active {
-    background: var(--mat-sys-primary);
-    color: var(--mat-sys-on-primary);
+    background: color-mix(in srgb, var(--mat-sys-on-surface) 8%, transparent);
+    color: var(--mat-sys-on-surface);
   }
 }
 
@@ -174,7 +175,7 @@
   border-radius: 6px;
   background: none;
   font: var(--mat-sys-label-medium);
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   text-align: left;
@@ -215,12 +216,13 @@
     // .active-section): a solid brand-red fill with white text. Material renders
     // the label in its own .mdc-list-item__primary-text span that ignores `color`
     // on the anchor, so on-primary is applied there directly.
+    // Selected item: a grey state layer, one grey like the rest of the page.
     &.is-active {
-      background: var(--mat-sys-primary);
-      font-weight: 600;
+      background: color-mix(in srgb, var(--mat-sys-on-surface) 8%, transparent);
+      font-weight: 500;
 
       ::ng-deep .mdc-list-item__primary-text {
-        color: var(--mat-sys-on-primary);
+        color: var(--mat-sys-on-surface);
       }
     }
   }

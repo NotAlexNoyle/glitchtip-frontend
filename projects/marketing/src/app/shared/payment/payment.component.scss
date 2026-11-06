@@ -1,7 +1,36 @@
+@use "@angular/material" as mat;
 @import "variables";
 
 .plans {
   margin: 20px 2px;
+}
+
+// One toolbar row: the tabs fit their labels on the left and the billing
+// toggle sits at the right end of the tab bar. Phones centre it above.
+.pricing-tabs {
+  position: relative;
+}
+
+.billing-toggle {
+  position: absolute;
+  top: 9px; // centred on the 50px tab bar, clear of the hairline
+  right: 2px;
+  // Above the tab bar's full-width label strip, which would swallow clicks.
+  z-index: 2;
+  // Compact, as the product's list toggles: no check, 32px, small label.
+  @include mat.button-toggle-overrides(
+    (
+      height: 32px,
+      label-text-size: 13px,
+    )
+  );
+
+  @media (max-width: 720px) {
+    position: static;
+    display: flex;
+    width: fit-content;
+    margin: 0 auto 12px;
+  }
 }
 
 .tab-label {
@@ -12,16 +41,37 @@
   margin-bottom: 0;
   font-weight: 500;
 }
+
+// Phones: names only and tighter tabs, so both fit side by side.
+@media (max-width: 600px) {
+  .tab-label-description {
+    display: none;
+  }
+
+  .pricing-tabs ::ng-deep .mat-mdc-tab {
+    min-width: 0;
+    padding-inline: 12px;
+  }
+}
 .mat-tab-label-content {
   flex-direction: column;
 }
 
+// Header, features and footer are rows shared across the plan cards, so
+// titles, feature lists and footers line up whatever the fonts do.
+.plans mat-card {
+  display: grid;
+  grid-row: span 3;
+  grid-template-rows: subgrid;
+  row-gap: 0;
+}
+
 .spaced-card-content {
-  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding-top: 16px;
+  padding-top: 8px;
+  padding-bottom: 24px;
 }
 
 .product-subtitle {
@@ -37,7 +87,7 @@
 
 .value-props {
   flex: 1;
-  margin-bottom: 15px;
+  margin-bottom: 0;
 
   li {
     margin: 2px 0;
@@ -60,10 +110,29 @@
   }
 }
 
-.price-cta {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+// Name, then price: the number people compare sits at the top of each card.
+// The savings line is reserved, so toggling the period doesn't shift rows.
+.plan-price {
+  min-height: 3.4em;
+  margin-top: 8px;
+
+  p {
+    margin: 0;
+  }
+
+  .marketing-small-heading {
+    font-size: 1.75rem;
+    line-height: 1.2;
+  }
+}
+
+// The footer strip holds only the action, full width.
+.plan-cta {
+  padding-inline: 16px;
+
+  a {
+    width: 100%;
+  }
 }
 
 h2.marketing-small-heading {
@@ -72,41 +141,40 @@ h2.marketing-small-heading {
 
 mat-card {
   border-color: var(--mat-sys-outline-variant);
+  overflow: hidden;
 
   .mat-mdc-card-header {
-    justify-content: space-between;
+    flex-direction: column;
     align-items: flex-start;
-    min-height: 48px;
   }
 
-  // Reserve two lines so wrapping plan names stay aligned with single-line ones.
+  // The shared header row keeps names aligned, so no reserved second line.
   .mat-mdc-card-title {
-    min-height: 2.4em;
     line-height: 1.2;
   }
 }
 
-.billing-toggle {
-  transform: scale(0.8);
-  transform-origin: right center;
-  flex-shrink: 0;
-}
-
+// Annual savings stands out by weight; small red text on grey fails AA.
 .savings {
   margin: 4px 0 0;
   font-size: 0.8em;
-  color: var(--mat-sys-primary);
-  font-weight: 500;
+  color: var(--mat-sys-on-surface);
+  font-weight: 600;
 }
 
 .spend-control {
+  margin-bottom: 16px;
+}
+
+.addons mkt-pricing-addon-card + mkt-pricing-addon-card {
+  border-top: 1px solid var(--mat-sys-outline-variant);
+}
+
+.spend-control-row {
   display: flex;
-  flex-direction: row;
   align-items: center;
   justify-content: space-between;
   gap: 32px;
-  margin: 32px 0 8px;
-  padding: 28px;
 }
 
 .spend-control-text {
@@ -124,30 +192,25 @@ mat-card {
 }
 
 .spend-control-body {
-  margin: 0 0 20px;
+  margin: 0;
   color: var(--mat-sys-on-surface-variant);
-}
-
-.spend-control-cta {
-  white-space: nowrap;
 }
 
 // Layout only; the border opt-out lives in the reusable `.no-frame` modifier.
 .spend-control .spend-control-visual {
   flex-shrink: 0;
-  width: 280px;
+  width: 320px;
   max-width: 45%;
-  height: auto;
   margin: 0;
 }
 
 @media (max-width: 720px) {
-  .spend-control {
+  .spend-control-row {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  // SVG stays crisp, so stretch it full width (and centered) on mobile.
+  // Vector, so it stays crisp stretched full width on mobile.
   .spend-control .spend-control-visual {
     width: 100%;
     max-width: 100%;
@@ -155,6 +218,42 @@ mat-card {
   }
 }
 
-mat-divider {
-  margin: 48px 0;
+// Billing and add-ons as one group, set apart from the plans by space.
+.pricing-extras {
+  margin-top: calc(var(--mkt-section) * 1.25);
+
+  > h2 {
+    margin: 0 0 16px;
+  }
+}
+
+// Two columns: the heading and a way out on the left, questions on the right.
+.faq-section {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: 24px clamp(32px, 5vw, 80px);
+  align-items: start;
+  margin-top: calc(var(--mkt-section) * 1.5);
+
+  @media (max-width: 960px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.faq-intro {
+  position: sticky;
+  top: 96px;
+
+  h2 {
+    margin: 0 0 8px;
+  }
+
+  p {
+    margin: 0;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  @media (max-width: 960px) {
+    position: static;
+  }
 }

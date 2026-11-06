@@ -22,7 +22,6 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
 import { MatExpansionModule } from "@angular/material/expansion";
-import { MatDivider } from "@angular/material/divider";
 import { MatButtonToggleModule } from "@angular/material/button-toggle";
 import { DecimalPipe } from "@angular/common";
 import { PricingAddonCardComponent } from "../pricing-addon-card/pricing-addon-card.component";
@@ -33,6 +32,8 @@ import { planOptions, selfHostedPlanOptions } from "./payment-plans";
  * Copied HTML from the frontend version of this, pulled some data that is
  * currently in use and hardcoded here, and sharing the SCSS file
  */
+import { SpendCapChartComponent } from "../spend-cap-chart/spend-cap-chart.component";
+
 @Component({
   selector: "mkt-payment",
   templateUrl: "./payment.component.html",
@@ -46,9 +47,9 @@ import { planOptions, selfHostedPlanOptions } from "./payment-plans";
     MatIcon,
     MatTooltip,
     MatExpansionModule,
-    MatDivider,
     MatButtonModule,
     MatButtonToggleModule,
+    SpendCapChartComponent,
     RouterLink,
     PricingAddonCardComponent,
   ],
@@ -74,6 +75,11 @@ export class PaymentComponent implements AfterViewChecked, OnInit {
   selfHostedFaqs = selfHostedFaqs;
   planOptions = planOptions;
   selfHostedPlanOptions = selfHostedPlanOptions;
+  // One billing toggle per tab, shown only where a plan has an annual price.
+  hostedHasAnnual = planOptions.some((p) => p.annualPrice);
+  selfHostedHasAnnual = selfHostedPlanOptions.some(
+    (p) => p.annualPrice && p.annualPrice !== "Custom",
+  );
 
   ngOnInit(): void {
     if (this.route.snapshot.queryParamMap.get("plan") === "self-hosted") {

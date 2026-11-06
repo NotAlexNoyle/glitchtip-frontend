@@ -1,0 +1,8 @@
+@use "@angular/material" as mat;
+
+// The focused label is small text, so it stays ink; the red outline is enough.
+@include mat.form-field-overrides(
+  (
+    outlined-focus-label-text-color: var(--mat-sys-on-surface),
+  )
+);

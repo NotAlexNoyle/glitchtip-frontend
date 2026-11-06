@@ -38,10 +38,11 @@
   a {
     color: var(--mat-sys-on-surface);
     text-decoration: none;
-    font-weight: 500;
+    font-weight: 400;
 
     &:hover {
-      color: var(--mat-sys-primary);
+      color: var(--mat-sys-on-surface);
+      text-decoration: underline;
     }
   }
 

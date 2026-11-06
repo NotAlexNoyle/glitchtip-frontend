@@ -1,5 +1,5 @@
 @use "../../../../src/assets/styles/variables" as vars;
-@use "./styles/grid-texture" as *;
+@use "./styles/split-band" as *;
 
 // Screenshots bleed outward by design; `clip` (unlike `hidden`) swallows the
 // overflow without creating a scroll container.
@@ -8,120 +8,26 @@
   overflow-x: clip;
 }
 
-.hero-images-container {
-  display: flex;
-  gap: 3rem;
-  align-items: center;
-  overflow: visible;
-
-  @media screen and (max-width: vars.$large) {
-    flex-direction: column;
-    position: relative;
-  }
-}
-
-.hero-content-left {
-  width: 45%;
-  flex-shrink: 0;
-  position: relative;
-
-  @media screen and (max-width: vars.$large) {
-    width: 100%;
-  }
-}
-
-.hero {
-  margin: 0;
-  padding: 0;
-  z-index: 1;
-  position: relative;
-
-  @media screen and (max-width: vars.$small) {
-    padding: 0;
-    font-size: 0.9em;
-  }
-
-  .content {
-    max-width: 550px;
-    margin: 0;
-
-    // Roomier rhythm: a clear gap after the headline and before the CTA.
-    > p,
-    > .cta-row {
-      margin-top: 1.5rem;
-    }
-  }
-
-  // Hero-only headline size; the shared .marketing-heading is untouched.
-  .marketing-heading {
-    font-size: clamp(1.9rem, 1.05rem + 4.2vw, 3.6rem);
-    line-height: 1.08;
-    margin-bottom: 0.35em;
-    overflow-wrap: break-word;
-  }
-
-  .marketing-body {
-    font-size: 1.25em;
-    line-height: 1.6em;
-  }
-}
-
-.bot-hero-image {
-  position: relative;
-  display: block;
-  margin-top: 2rem;
-  padding: 0;
-  z-index: 1;
-
-  @media screen and (max-width: vars.$large) {
-    z-index: 2;
-    margin-top: 0;
-    margin-bottom: 0;
-  }
-
-  @media screen and (min-width: vars.$large) {
-    margin-right: -20%;
-  }
-
-  img {
-    position: relative;
-    display: block;
-    width: 100%;
-    max-width: 900px;
-    margin: 0 auto;
-  }
-}
-
-.hero-screenshot {
-  width: 95%;
-  flex-shrink: 0;
-  margin-right: -40%;
-  perspective: 1200px;
-
-  @media screen and (max-width: vars.$large) {
-    display: none;
-  }
-
-  picture {
-    display: block;
-    transform: rotateY(-15deg) rotateX(3deg);
-    border-radius: var(--mat-sys-corner-large, 16px);
-    filter: drop-shadow(0 22px 42px rgba(120, 74, 60, 0.32));
-  }
-
-  img {
-    display: block;
-    width: 100%;
-    height: auto;
-    border-radius: var(--mat-sys-corner-large, 16px);
-    border: 1px solid var(--mat-sys-outline-variant);
-  }
-}
-
 .centered-block {
   text-align: center;
   // Fill the home body column; the global .centered-block cap is narrower.
   width: 100%;
+}
+
+// Home dividers run the full width, like the hero and newsletter bands. The
+// border is pushed out with border-image, which overflow clipping can't cut.
+.home-sections > .divider {
+  border-image: linear-gradient(
+      var(--mat-sys-outline-variant),
+      var(--mat-sys-outline-variant)
+    )
+    1 / 1px 0 0 / 0 100vw;
+}
+
+// Body sections on full-width dim bands; each owns its spacing so no gaps show.
+.band-dim {
+  padding-block: var(--mkt-section);
+  background: var(--mat-sys-surface-dim);
 }
 
 // Centers and caps the shared home body column; every section lines up on it.
@@ -132,38 +38,140 @@
   margin: 0 auto;
 }
 
-// Newsletter signup card (composes the global .mkt-surface card primitive).
-.newsletter {
+// Newsletter band: full width on the lighter sheet, the form centred.
+.news {
+  display: flex;
+  justify-content: center;
+  padding: clamp(56px, 7vw, 104px) var(--mkt-gutter);
+  border-block: 1px solid var(--mat-sys-outline-variant);
+  // The hero copy's lighter sheet, dots fading in from the left edge.
+  @include split-band-sheet;
+}
+
+// One route right of the form, hairline to hairline with a jog toward the text,
+// and envelope stickers riding it in stop-motion steps like the hero's cubes.
+.news__mail {
+  --dur: 6s;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  // Right of the form, mirrored, so the jog reaches back toward the text.
+  left: calc(50% + 280px + 10px);
+  width: 160px;
+  overflow: hidden;
+  scale: -1 1;
+
+  @media screen and (max-width: vars.$medium) {
+    display: none;
+  }
+
+  > svg {
+    display: block;
+    overflow: visible;
+
+    path {
+      fill: none;
+      stroke: var(--mat-sys-outline);
+      stroke-width: 2;
+      opacity: 0.5;
+    }
+  }
+}
+
+.news__env {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 24px;
+  height: 18px;
+  offset-rotate: 0deg;
+  filter: drop-shadow(0 3px 4px rgb(0 0 0 / 0.22));
+  // ~8 frames a second, as everywhere else on the page.
+  animation: news-env var(--dur) steps(48) infinite;
+
+  // The second envelope rides half a trip behind.
+  & + & {
+    animation-delay: calc(var(--dur) / -2);
+  }
+
+  svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  rect {
+    fill: var(--mat-sys-primary);
+    stroke: #fff;
+    stroke-width: 2;
+  }
+
+  path {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}
+
+// Rides the whole route; the band clips both ends, so nothing fades.
+@keyframes news-env {
+  to {
+    offset-distance: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .news__env {
+    animation: none;
+    offset-distance: 25%;
+
+    & + & {
+      offset-distance: 50%;
+    }
+  }
+}
+
+.news__text {
   position: relative;
-  margin: 8px auto 0;
-  padding: clamp(28px, 4vw, 48px);
-  @include card-clip;
-  // Filled-cell accents on the corners/edges, clear of the centred copy + form.
-  @include grid-texture(
-    $cells:
-      (1 1 $cell-red-soft) (2 0 $cell-grey-soft) (0 3 $cell-grey)
-      (1 5 $cell-grey-soft) (0 6 $cell-red-soft) (33 0 $cell-grey-soft)
-      (34 1 $cell-red-soft) (35 2 $cell-grey) (34 4 $cell-grey-soft)
-      (35 5 $cell-red-soft)
-  );
+  max-width: 560px;
 
   .marketing-heading {
-    margin-top: 0;
-    color: var(--mat-sys-primary);
+    margin: 0;
+    text-wrap: balance;
+  }
+}
+
+// Phones: one more step down so the heading doesn't run four lines.
+.news .marketing-heading {
+  @media screen and (max-width: vars.$small) {
+    font-size: 1.75rem;
+  }
+}
+
+// About copy keeps a reading measure; left-aligned on phones.
+.content.about {
+  max-width: 65ch;
+  margin-inline: auto;
+}
+
+.about {
+  @media screen and (max-width: vars.$small) {
+    text-align: left;
   }
 }
 
 .newsletter-sub {
   max-width: 44ch;
-  margin: 8px auto 26px;
+  margin: 12px 0 24px;
   color: var(--mat-sys-on-surface-variant);
 }
 
 .subscribe-wrapper {
   display: flex;
-  gap: 0 20px;
+  gap: 0 12px;
   max-width: 500px;
-  margin: 0 auto;
 
   @media screen and (max-width: vars.$small) {
     flex-direction: column;
@@ -192,31 +200,347 @@
   }
 }
 
-.squiggle {
-  // `text-decoration: wavy` can't animate, so the wave is an inline-SVG
-  // background drifting one wavelength on a loop; reduced-motion pins it.
-  font-size: inherit;
-  padding-bottom: 6px;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='6' viewBox='0 0 24 6'><path d='M0 3 Q6 0 12 3 T24 3' fill='none' stroke='%23b3261e' stroke-width='2' stroke-linecap='round'/></svg>");
-  background-repeat: repeat-x;
-  background-position: 0 100%;
-  background-size: 24px 6px;
-  animation: squiggle-drift 1.8s linear infinite;
+// Hero: copy left, product window cropped by the pane on the right.
+.hero3 {
+  // How far the window sits past the hairline; the event routes end there
+  // (FEED in event-flow.component.ts).
+  --flow-feed: 96px;
+  @include split-band-columns;
+  min-height: clamp(640px, calc(100vh - 65px), 960px);
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+
+  @media screen and (max-width: vars.$medium) {
+    min-height: 0;
+  }
 }
 
-@keyframes squiggle-drift {
-  to {
-    background-position: 24px 100%;
+.hero3__copy {
+  // Above the pane, so the event routes draw over the hairline.
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  // Line the copy up with the centred page column used below.
+  padding-block: clamp(48px, 6vw, 96px) clamp(24px, 3vw, 48px);
+  @include split-band-copy-inline;
+
+  // Side by side, the copy clears the event routes: below the top ones and
+  // well away from the drop beside it.
+  @media screen and (min-width: vars.$medium + 1px) {
+    padding-top: 168px;
+    padding-right: clamp(40px, 4.5vw, 96px);
+  }
+
+  // The copy stays centred in the space above the robots.
+  .hero3__text {
+    margin-block: auto;
+  }
+}
+
+// The robots, with breathing room above the bottom hairline. They load last
+// and fade in once decoded rather than painting in.
+.hero3__bots {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: min(100%, 560px);
+  margin-top: 32px;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: opacity 0.6s ease;
+  }
+
+  // Hide instantly; only the reveal animates.
+  &.is-loading img {
+    opacity: 0;
+    transition: none;
+  }
+}
+
+// Until both stills have decoded, the loop and the event cubes hold on the
+// first frame, so nothing cuts to a half-loaded image.
+.hero3:has(.hero3__window.is-loading) {
+  .hero3__frame,
+  .hero3__pan,
+  .hero3__hover {
+    animation-play-state: paused;
+  }
+
+  // The cubes live in another component; it reads this to pause.
+  mkt-event-flow {
+    --flow-play: paused;
+  }
+}
+
+// Every split band's copy half sits on the lighter sheet; the art half stays
+// on the page grey. Body-column sections never get it.
+.hero3__copy {
+  @include split-band-sheet;
+}
+
+.hero3__text {
+  // Above the event routes that run around it.
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--mkt-space-6);
+  max-width: 760px;
+}
+
+// Same voice as the auth brand pane: lead in full ink, the rest muted.
+.hero3__statement {
+  margin: 0;
+  font: var(--mat-sys-headline-medium);
+  font-size: clamp(2rem, 1rem + 2.6vw, 3.75rem);
+  text-wrap: balance;
+  line-height: 1.15;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: color-mix(in srgb, var(--mat-sys-on-surface) 60%, transparent);
+
+  strong {
+    display: block;
+    font-weight: 500;
+    color: var(--mat-sys-on-surface);
+  }
+}
+
+// "error" gets flagged like a linter error: one red squiggle with round ends
+// draws in under it once and stays.
+.lint {
+  position: relative;
+  display: inline-block;
+}
+
+.lint__line {
+  position: absolute;
+  left: 0;
+  bottom: -0.1em;
+  width: 100%;
+  height: 0.2em;
+  overflow: visible;
+
+  path {
+    fill: none;
+    stroke: var(--mat-sys-primary);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-dasharray: 1 2;
+    animation: lint 0.8s cubic-bezier(0.3, 0, 0.2, 1) 0.6s backwards;
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
+  }
+}
+
+@keyframes lint {
+  from {
+    stroke-dashoffset: 1.02;
+  }
+}
+
+// Social proof: a quiet caption tucked under the buttons.
+.hero3__proof {
+  margin: calc(-1 * var(--mkt-space-6) + 16px) 0 0;
+  font: var(--mat-sys-body-medium);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.hero3__sub {
+  margin: 0;
+  max-width: 46ch;
+  font: var(--mat-sys-body-large);
+  line-height: 1.6;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.hero3__pane {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-left: 1px solid var(--mat-sys-outline-variant);
+
+  @media screen and (max-width: vars.$medium) {
+    border-left: 0;
+    border-top: 1px solid var(--mat-sys-outline-variant);
+    min-height: clamp(300px, 70vw, 460px);
+  }
+}
+
+// Inset from the top and left, cropped by the pane on the right and bottom.
+.hero3__window {
+  position: absolute;
+  top: 12%;
+  left: 9%;
+  right: -14%;
+
+  @media screen and (min-width: vars.$medium + 1px) {
+    left: var(--flow-feed);
+  }
+
+  bottom: -8%;
+  overflow: hidden;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 8px 0 0 0;
+  background: var(--mat-sys-surface-container-low);
+  box-shadow: 0 24px 60px -28px rgb(0 0 0 / 0.25);
+}
+
+// Stills sit top-left at a little over the window's width; the overflow is
+// the crop. One 14s loop: list, hover the top row, open it, pan, back.
+$hero-loop: 14s;
+
+.hero3__frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 118%;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+}
+
+.hero3__frame--list {
+  animation: hero-list $hero-loop ease-in-out infinite;
+}
+
+// Over the top issue row (measured on the 1180px-wide shot).
+.hero3__hover {
+  position: absolute;
+  top: 19.85%;
+  left: 8.3%;
+  width: 89.6%;
+  height: 5.25%;
+  background: color-mix(in srgb, var(--mat-sys-on-surface) 8%, transparent);
+  opacity: 0;
+  animation: hero-hover $hero-loop ease-out infinite;
+}
+
+.hero3__frame--detail {
+  opacity: 0;
+  animation: hero-fade-detail $hero-loop ease-in-out infinite;
+}
+
+.hero3__pan {
+  display: block;
+  animation: hero-pan $hero-loop ease-in-out infinite;
+}
+
+// The app sidebar column (6.1% of the shot), pinned over the panning page.
+.hero3__rail {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 93.9% 0 0);
+}
+
+@keyframes hero-list {
+  0%,
+  40% {
+    opacity: 1;
+  }
+  45%,
+  92% {
+    opacity: 0;
+  }
+  98%,
+  100% {
+    opacity: 1;
+  }
+}
+
+// Hover lands, then a firmer press just before the issue opens.
+@keyframes hero-hover {
+  0%,
+  18% {
+    opacity: 0;
+  }
+  22%,
+  33% {
+    opacity: 1;
+    background: color-mix(in srgb, var(--mat-sys-on-surface) 8%, transparent);
+  }
+  36%,
+  40% {
+    opacity: 1;
+    background: color-mix(in srgb, var(--mat-sys-on-surface) 14%, transparent);
+  }
+  45%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes hero-fade-detail {
+  0%,
+  40% {
+    opacity: 0;
+  }
+  45%,
+  90% {
+    opacity: 1;
+  }
+  96%,
+  100% {
+    opacity: 0;
+  }
+}
+
+// Holds on the header, then scrolls down to the breadcrumbs.
+@keyframes hero-pan {
+  0%,
+  52% {
+    transform: none;
+  }
+  82%,
+  100% {
+    transform: translateY(-24%);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .squiggle {
+  .hero3__frame,
+  .hero3__pan,
+  .hero3__hover {
     animation: none;
   }
 }
 
-.main-promo-section {
-  // Top spacing comes from the shared .divider rhythm.
-  padding-bottom: 40px;
+// ── Bugs: one playful scene on the left, the story on the right ─────────────
+.bugs {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(32px, 5vw, 96px);
+  align-items: center;
+
+  // Stacked, the story leads and the scene follows, so text sits between the
+  // hero video and the pulse instead of one motion right under another.
+  @media screen and (max-width: vars.$medium) {
+    grid-template-columns: 1fr;
+
+    .bugs__art {
+      order: 1;
+    }
+  }
+}
+
+.bugs__art {
+  max-width: 640px;
+  justify-self: center;
+  width: 100%;
+}
+
+.bugs__copy {
+  max-width: 58ch;
+
+  h2 {
+    margin-top: 0;
+  }
 }

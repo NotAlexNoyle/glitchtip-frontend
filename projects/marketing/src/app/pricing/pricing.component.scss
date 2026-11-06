@@ -7,15 +7,14 @@
   @include side-pattern-bands(var(--mkt-container-table));
 }
 
-// .fancy is inline-block by default; the page title reads as a centred block.
+// Left-aligned like the tab row and plans under it.
 h1.fancy {
   display: block;
-  text-align: center;
+  margin-bottom: 8px;
 }
 
 .pricing-subhead {
   max-width: 60ch;
-  margin: 0 auto 2rem;
-  text-align: center;
+  margin: 0 0 2rem;
   color: var(--mat-sys-on-surface-variant);
 }

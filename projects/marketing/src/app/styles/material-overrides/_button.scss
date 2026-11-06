@@ -1,9 +1,14 @@
 @use "@angular/material" as mat;
 
+// Same shape and padding as the product buttons.
 @include mat.button-overrides(
   (
-    filled-container-shape: var(--mat-sys-corner-full),
-    outlined-container-shape: var(--mat-sys-corner-full),
-    text-container-shape: var(--mat-sys-corner-full),
+    filled-container-shape: 4px,
+    outlined-container-shape: 4px,
+    text-container-shape: 4px,
+    filled-horizontal-padding: 12px,
+    // Outlined buttons are neutral, as in the product (!832).
+    outlined-label-text-color: var(--mat-sys-on-surface),
+    outlined-outline-color: var(--mat-sys-outline),
   )
 );

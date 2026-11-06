@@ -1,0 +1,89 @@
+@use "../../../../../../src/assets/styles/variables" as vars;
+
+// Under the copy, reaching past the hairline to the window; desktop only.
+:host {
+  position: absolute;
+  inset: 0;
+  // Clip everywhere except the reach into the pane.
+  clip-path: inset(0 calc(-1 * var(--flow-feed)) 0 0);
+  pointer-events: none;
+
+  @media screen and (max-width: vars.$medium) {
+    display: none;
+  }
+}
+
+// Pinned to the hairline; what doesn't fit on the left is clipped, so routes
+// always meet the hairline the same way.
+.map {
+  position: absolute;
+  top: 0;
+  right: calc(-1 * var(--flow-feed));
+}
+
+svg {
+  display: block;
+  overflow: visible;
+
+  path {
+    fill: none;
+    stroke: var(--mat-sys-outline);
+    stroke-width: 2;
+    stroke-linejoin: round;
+    opacity: 0.5;
+  }
+}
+
+.node {
+  fill: var(--mat-sys-surface-container-lowest);
+  stroke: var(--mat-sys-outline);
+  stroke-width: 2;
+}
+
+// The product's level colors (--gt-level-* in src/styles.scss), which the
+// marketing app doesn't load.
+:host {
+  --level-error: var(--mat-sys-error);
+  --level-warning: #e9b949;
+  --level-info: #4b60b4;
+}
+
+// An event: a paper sticker riding its route, upright, in held frames.
+.event {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid #fff;
+  border-radius: 5px;
+  background: var(--level-error);
+  box-shadow: 0 3px 7px rgb(0 0 0 / 0.24);
+  offset-rotate: 0deg;
+  animation: travel var(--dur) steps(var(--steps)) var(--delay) infinite;
+  // Held by the hero until its stills have decoded.
+  animation-play-state: var(--flow-play, running);
+}
+
+.event--warning {
+  background: var(--level-warning);
+}
+
+.event--info {
+  background: var(--level-info);
+}
+
+// Rides the whole route; it starts and ends past clipped edges, so there's
+// no fade: it slides out from under the top line and into the window.
+@keyframes travel {
+  to {
+    offset-distance: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .event {
+    animation: none;
+    offset-distance: 40%;
+  }
+}

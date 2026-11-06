@@ -1,0 +1,78 @@
+@use "../../../../../src/assets/styles/variables" as vars;
+@use "./side-pattern" as *;
+
+$-margin: calc((100vw - var(--mkt-container-home)) / 2);
+
+// Split bands share one column rule so their pane edges line up.
+@mixin split-band-columns($copy: left) {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  @if $copy == right {
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+  }
+
+  @media screen and (max-width: vars.$medium) {
+    grid-template-columns: 1fr;
+  }
+
+  // Wide screens: left copy grows with the viewport; right copy splits evenly.
+  @media screen and (min-width: 1440px) {
+    grid-template-columns:
+      minmax(0, min(60%, calc(100% * 5 / 11 + (100vw - 1440px) / 2)))
+      minmax(0, 1fr);
+    @if $copy == right {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+  }
+}
+
+// Inline padding that lines band copy up with the centred page column on its
+// outer side.
+@mixin split-band-copy-inline($copy: left) {
+  $outer: max(var(--mkt-gutter), #{$-margin});
+  padding-inline: $outer clamp(32px, 4vw, 72px);
+  // Right-hand copy starts at the hairline, so it needs more room there.
+  @if $copy == right {
+    padding-inline: clamp(40px, 5.5vw, 112px) $outer;
+  }
+
+  // Stacked, there is no inner side: the page gutter on both.
+  @media screen and (max-width: vars.$medium) {
+    padding-inline: var(--mkt-gutter);
+  }
+}
+
+// The copy half's lighter sheet, with dots in the free outer margin that fade
+// toward the text. Like the side bands, they fade away as that margin shrinks.
+@mixin split-band-sheet($copy: left) {
+  position: relative;
+  isolation: isolate;
+  background: var(--mat-sys-surface-container);
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: min(330px, max(0px, #{$-margin} - 16px));
+    opacity: clamp(0, calc((#{$-margin} - 60px) / 140px), 1);
+    z-index: -1;
+    pointer-events: none;
+    @include dots;
+    $toward: if($copy == right, left, right);
+    $fade:
+      linear-gradient(to #{$toward}, #000, transparent),
+      linear-gradient(to bottom, transparent, #000 20%, #000 80%, transparent);
+    mask-image: $fade;
+    mask-composite: intersect;
+    @if $copy == right {
+      right: 0;
+    } @else {
+      left: 0;
+    }
+
+    @media screen and (max-width: vars.$medium) {
+      display: none;
+    }
+  }
+}

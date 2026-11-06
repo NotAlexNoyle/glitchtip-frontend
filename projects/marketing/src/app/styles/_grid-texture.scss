@@ -5,10 +5,18 @@
 // 1px. Filled-cell tones are brand red + grey.
 $cell: 36px;
 $cell-fill: $cell - 1px;
-$cell-red: color-mix(in srgb, var(--mat-sys-primary) 30%, transparent);
-$cell-red-soft: color-mix(in srgb, var(--mat-sys-primary) 15%, transparent);
+$cell-red: color-mix(in srgb, var(--mat-sys-outline-variant) 90%, transparent);
+$cell-red-soft: color-mix(
+  in srgb,
+  var(--mat-sys-outline-variant) 55%,
+  transparent
+);
 $cell-grey: color-mix(in srgb, var(--mat-sys-outline-variant) 70%, transparent);
-$cell-grey-soft: color-mix(in srgb, var(--mat-sys-outline-variant) 40%, transparent);
+$cell-grey-soft: color-mix(
+  in srgb,
+  var(--mat-sys-outline-variant) 40%,
+  transparent
+);
 
 @function -grid-lines() {
   @return conic-gradient(
@@ -23,41 +31,11 @@ $cell-grey-soft: color-mix(in srgb, var(--mat-sys-outline-variant) 40%, transpar
 // have no room for flourish. Pass $grid: -grid-lines() to also paint the grid,
 // first, so its lines frame the filled cells.
 @mixin grid-cells($cells, $grid: null) {
-  $images: ();
-  $positions: ();
-  $sizes: ();
-  $repeats: ();
   @if $grid {
-    $images: ($grid,);
-    $positions: (0 0,);
-    $sizes: ($cell $cell,);
-    $repeats: (repeat,);
-  }
-  @each $c in $cells {
-    $tone: list.nth($c, 3);
-    $images: list.append($images, linear-gradient($tone, $tone), comma);
-    $positions: list.append(
-      $positions,
-      (list.nth($c, 1) * $cell + 1px) (list.nth($c, 2) * $cell + 1px),
-      comma
-    );
-    $sizes: list.append($sizes, $cell-fill $cell-fill, comma);
-    $repeats: list.append($repeats, no-repeat, comma);
-  }
-  background-image: $images;
-  background-position: $positions;
-  background-size: $sizes;
-  background-repeat: $repeats;
-
-  @media screen and (max-width: vars.$large) {
-    @if $grid {
-      background-image: $grid;
-      background-position: 0 0;
-      background-size: $cell $cell;
-      background-repeat: repeat;
-    } @else {
-      background-image: none;
-    }
+    background-image: $grid;
+    background-size: $cell $cell;
+  } @else {
+    background-image: none;
   }
 }
 
@@ -78,8 +56,8 @@ $cell-grey-soft: color-mix(in srgb, var(--mat-sys-outline-variant) 40%, transpar
       background-image: -grid-lines();
       background-size: $cell $cell;
     }
-    -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 82%);
-    mask-image: linear-gradient(to bottom, #000 0%, transparent 82%);
+    -webkit-mask-image: radial-gradient(closest-side, #000 20%, transparent);
+    mask-image: radial-gradient(closest-side, #000 20%, transparent);
   }
 
   > * {

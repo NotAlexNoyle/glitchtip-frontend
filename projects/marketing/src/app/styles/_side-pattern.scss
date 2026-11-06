@@ -7,25 +7,30 @@
   overflow-x: clip;
 }
 
+// The dot grid shared by the side bands and the home action bands.
+@mixin dots {
+  background-image: radial-gradient(
+    circle,
+    var(--mat-sys-outline) 1.3px,
+    transparent 1.3px
+  );
+  background-size: 22px 22px;
+}
+
 // Just the fixed decorative edge bands, keyed to the centred content column so
 // they never reach behind it. Use directly on a page (e.g. the home host) that
 // caps its own content; for a single content wrapper use side-pattern() below.
 @mixin side-pattern-bands($content-width) {
-  // Organic inner edge: a shallow base fade unioned with varied radial blobs at
-  // different depths and heights, instead of a straight line.
+  // Dots fade from the outer edge toward the content, and out at top and bottom.
   $band-fade:
-    linear-gradient(to right, #000 0%, #000 16%, transparent 98%),
-    radial-gradient(70% 22% at 26% 6%, #000 0, transparent 70%),
-    radial-gradient(92% 28% at 39% 17%, #000 0, transparent 70%),
-    radial-gradient(58% 20% at 20% 28%, #000 0, transparent 70%),
-    radial-gradient(86% 26% at 41% 39%, #000 0, transparent 70%),
-    radial-gradient(66% 22% at 27% 50%, #000 0, transparent 70%),
-    radial-gradient(94% 28% at 45% 61%, #000 0, transparent 70%),
-    radial-gradient(60% 20% at 22% 72%, #000 0, transparent 70%),
-    radial-gradient(84% 26% at 38% 83%, #000 0, transparent 70%),
-    radial-gradient(70% 22% at 28% 94%, #000 0, transparent 70%);
-
-  $bg: var(--bg, var(--mat-sys-surface-container-highest));
+    linear-gradient(to right, #000 0%, transparent 100%),
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      #000 20%,
+      #000 80%,
+      transparent 100%
+    );
 
   &::before,
   &::after {
@@ -43,23 +48,13 @@
     );
     z-index: -1;
     pointer-events: none;
-    // Opaque page-bg fill hides the dotted page background inside the band; the
-    // translucent wash keeps the pattern subtle while the fill stays opaque.
-    background-color: $bg;
-    background-image:
-      linear-gradient(
-        color-mix(in srgb, #{$bg} 42%, transparent),
-        color-mix(in srgb, #{$bg} 42%, transparent)
-      ),
-      url("/assets/patterns/side-pattern.webp");
-    background-repeat: no-repeat, repeat;
-    background-size:
-      100% 100%,
-      360px auto;
+    @include dots;
     -webkit-mask-image: $band-fade;
+    -webkit-mask-composite: source-in;
     mask-image: $band-fade;
+    mask-composite: intersect;
 
-    // The band width is already ~0 on small screens; skip the image fetch too.
+    // The band width is already ~0 on small screens.
     @media screen and (max-width: vars.$small) {
       display: none;
     }

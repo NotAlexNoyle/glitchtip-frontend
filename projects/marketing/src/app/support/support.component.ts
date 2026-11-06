@@ -18,7 +18,6 @@ import { MatInputModule } from "@angular/material/input";
 import { MatIconModule } from "@angular/material/icon";
 import { RouterLink, ActivatedRoute } from "@angular/router";
 import { PageShellComponent } from "../shared/page-shell/page-shell.component";
-import { SectionHeaderComponent } from "../shared/section-header/section-header.component";
 import { RevealDirective } from "../shared/reveal.directive";
 import { LinksService } from "../links.service";
 import { SeoService } from "../shared/seo.service";
@@ -63,7 +62,6 @@ const SUPPORT_CHANNELS: SupportChannel[] = [
   selector: "mkt-support",
   imports: [
     PageShellComponent,
-    SectionHeaderComponent,
     RevealDirective,
     MatButtonModule,
     MatFormFieldModule,

@@ -1,75 +1,95 @@
-<mat-tab-group [selectedIndex]="selectedTab()" (selectedIndexChange)="setSelectedTab($event)">
-  <mat-tab>
-    <ng-template mat-tab-label>
-      <div class="tab-label">
-        <div class="tab-label-header marketing-body">Hosted version</div>
-        <div class="tab-label-description marketing-caption">
-          Sign up at app.glitchtip.com
+<!-- Toolbar row: plan type tabs on the left, billing period on the right. -->
+<div class="pricing-tabs">
+  @if (selectedTab() === 0 ? hostedHasAnnual : selfHostedHasAnnual) {
+    <mat-button-toggle-group
+      class="billing-toggle"
+      hideSingleSelectionIndicator
+      [value]="billingPeriod()"
+      (change)="billingPeriod.set($event.value)"
+      aria-label="Billing period"
+    >
+      <mat-button-toggle value="monthly">Monthly</mat-button-toggle>
+      <mat-button-toggle value="annual">Annual</mat-button-toggle>
+    </mat-button-toggle-group>
+  }
+  <mat-tab-group
+    mat-stretch-tabs="false"
+    mat-align-tabs="start"
+    disablePagination
+    [selectedIndex]="selectedTab()"
+    (selectedIndexChange)="setSelectedTab($event)"
+  >
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div class="tab-label">
+          <div class="tab-label-header marketing-body">Hosted version</div>
+          <div class="tab-label-description marketing-caption">
+            Sign up at app.glitchtip.com
+          </div>
         </div>
-      </div>
-    </ng-template>
-    <div class="plans mat-elevation-z1">
-      @for (product of planOptions; track product; let i = $index) {
-        <mat-card appearance="outlined">
-          <mat-card-header>
-            <mat-card-title>{{ product.name }}</mat-card-title>
-            @if (product.annualPrice) {
-              <mat-button-toggle-group
-                [value]="billingPeriod()"
-                (change)="billingPeriod.set($event.value)"
-                class="billing-toggle"
-              >
-                <mat-button-toggle value="monthly">Monthly</mat-button-toggle>
-                <mat-button-toggle value="annual">Annual</mat-button-toggle>
-              </mat-button-toggle-group>
-            }
-          </mat-card-header>
-          <mat-card-content class="spaced-card-content">
-            <p class="product-subtitle">{{ product.subtitle }}</p>
-            @if (product.includesFrom) {
-              <p class="includes-from">
-                <strong>Everything from {{ product.includesFrom }} +</strong>
-              </p>
-            }
-            <ul class="value-props">
-              @for (feature of product.features; track feature.text) {
-                <li>
-                  <mat-icon class="check-icon">check_circle</mat-icon>
-                  {{ feature.text }}
-                  @if (feature.tooltip) {
-                    <mat-icon
-                      class="tooltip-icon"
-                      [matTooltip]="feature.tooltip"
-                      matTooltipPosition="above"
-                    >info</mat-icon>
-                  }
-                </li>
-              }
-            </ul>
-            <div class="price-cta">
-              @if (product.monthlyPrice === 'Free') {
-                <p>
-                  <span class="marketing-small-heading">Free ($0)</span>
-                </p>
-              } @else if (billingPeriod() === 'annual' && product.annualPrice) {
-                <p>
-                  <span class="marketing-small-heading">
-                    ${{ product.annualPrice | number }}
-                  </span>
-                  / year
-                </p>
-                <p class="savings">
-                  <!-- "Free"/"Custom" strings excluded by @else if condition above -->
-                  Save ${{ $any(product.monthlyPrice) * 12 - $any(product.annualPrice) | number }} / year
-                </p>
-              } @else {
-                <p>
-                  <span class="marketing-small-heading">
-                    ${{ product.monthlyPrice | number }}
-                  </span>
-                  / month
+      </ng-template>
+      <div class="plans mat-elevation-z1">
+        @for (product of planOptions; track product; let i = $index) {
+          <mat-card appearance="outlined">
+            <mat-card-header>
+              <mat-card-title>{{ product.name }}</mat-card-title>
+              <div class="plan-price">
+                @if (product.monthlyPrice === "Free") {
+                  <p>
+                    <span class="marketing-small-heading">Free ($0)</span>
+                  </p>
+                } @else if (
+                  billingPeriod() === "annual" && product.annualPrice
+                ) {
+                  <p>
+                    <span class="marketing-small-heading">
+                      ${{ product.annualPrice | number }}
+                    </span>
+                    / year
+                  </p>
+                  <p class="savings">
+                    <!-- "Free"/"Custom" strings excluded by @else if condition above -->
+                    Save ${{
+                      $any(product.monthlyPrice) * 12 -
+                        $any(product.annualPrice) | number
+                    }}
+                    / year
+                  </p>
+                } @else {
+                  <p>
+                    <span class="marketing-small-heading">
+                      ${{ product.monthlyPrice | number }}
+                    </span>
+                    / month
+                  </p>
+                }
+              </div>
+            </mat-card-header>
+            <mat-card-content class="spaced-card-content">
+              <p class="product-subtitle">{{ product.subtitle }}</p>
+              @if (product.includesFrom) {
+                <p class="includes-from">
+                  <strong>Everything from {{ product.includesFrom }} +</strong>
                 </p>
               }
+              <ul class="value-props">
+                @for (feature of product.features; track feature.text) {
+                  <li>
+                    <mat-icon class="check-icon">check_circle</mat-icon>
+                    {{ feature.text }}
+                    @if (feature.tooltip) {
+                      <mat-icon
+                        class="tooltip-icon"
+                        [matTooltip]="feature.tooltip"
+                        matTooltipPosition="above"
+                        >info</mat-icon
+                      >
+                    }
+                  </li>
+                }
+              </ul>
+            </mat-card-content>
+            <div class="mkt-panel__footer plan-cta">
               <a
                 mat-flat-button
                 color="primary"
@@ -79,153 +99,166 @@
                 Get started
               </a>
             </div>
-          </mat-card-content>
-        </mat-card>
-      }
-    </div>
-    @if (pricingPage()) {
-      <mat-card appearance="outlined" class="spend-control">
-        <div class="spend-control-text">
-          <h2 class="spend-control-heading">
-            Spike past your plan, not your budget
-          </h2>
-          <p class="marketing-body spend-control-body">
-            Turn on on-demand billing and set a monthly spend cap. When a spike
-            pushes you past your plan, we keep collecting events and bill only
-            for the extra. Billing stops the moment your spend reaches the cap.
-            Your cap, your call.
-          </p>
-          <a
-            mat-stroked-button
-            color="primary"
-            class="spend-control-cta"
-            routerLink="/documentation/on-demand-billing"
-          >
-            Learn how on-demand billing works
-          </a>
-        </div>
-        <img
-          class="spend-control-visual no-frame"
-          src="/assets/pricing/spend-cap-chart.svg"
-          alt=""
-          aria-hidden="true"
-        />
-      </mat-card>
-      <mkt-pricing-addon-card
-        icon="medical_information"
-        title="US Healthcare: HIPAA-compliant hosting available"
-        subtitle="Add on to Large plans"
-        buttonText="Learn More"
-        buttonUrl="/hipaa"
-      />
-      <mkt-pricing-addon-card
-        icon="passport"
-        title="EU Hosting: Data sovereignty in Germany"
-        subtitle="All plans available on our EU instance"
-        buttonText="Learn More"
-        buttonUrl="/documentation/hosted-architecture#eu-hosting-data-sovereignty"
-      />
-    }
-  </mat-tab>
-  <mat-tab>
-    <ng-template mat-tab-label>
-      <div class="tab-label">
-        <div class="tab-label-header marketing-body">Self-hosted version</div>
-        <div class="tab-label-description marketing-caption">
-          Run on your own server
-        </div>
+          </mat-card>
+        }
       </div>
-    </ng-template>
-    <div class="plans mat-elevation-z1">
-      @for (product of selfHostedPlanOptions; track product; let i = $index) {
-        <mat-card appearance="outlined">
-          <mat-card-header>
-            <mat-card-title>{{ product.name }}</mat-card-title>
-            @if (product.annualPrice && product.annualPrice !== 'Custom') {
-              <mat-button-toggle-group
-                [value]="billingPeriod()"
-                (change)="billingPeriod.set($event.value)"
-                class="billing-toggle"
-              >
-                <mat-button-toggle value="monthly">Monthly</mat-button-toggle>
-                <mat-button-toggle value="annual">Annual</mat-button-toggle>
-              </mat-button-toggle-group>
-            }
-          </mat-card-header>
-          <mat-card-content class="spaced-card-content">
-            <p class="product-subtitle">{{ product.subtitle }}</p>
-            @if (product.includesFrom) {
-              <p class="includes-from">
-                <strong>Everything from {{ product.includesFrom }} +</strong>
-              </p>
-            }
-            <ul class="value-props">
-              @for (feature of product.features; track feature.text) {
-                <li>
-                  <mat-icon class="check-icon">check_circle</mat-icon>
-                  {{ feature.text }}
-                  @if (feature.tooltip) {
-                    <mat-icon
-                      class="tooltip-icon"
-                      [matTooltip]="feature.tooltip"
-                      matTooltipPosition="above"
-                    >info</mat-icon>
-                  }
-                </li>
+      @if (pricingPage()) {
+        <section class="pricing-extras">
+          <h2 class="marketing-subheading">Add-ons and options</h2>
+          <div class="mkt-panel spend-control">
+            <div class="mkt-panel__body spend-control-row">
+              <div class="spend-control-text">
+                <h2 class="spend-control-heading">
+                  Spike past your plan, not your budget
+                </h2>
+                <p class="marketing-body spend-control-body">
+                  Turn on on-demand billing and set a monthly spend cap. When a
+                  spike pushes you past your plan, we keep collecting events and
+                  bill only for the extra. Billing stops the moment your spend
+                  reaches the cap. Your cap, your call.
+                </p>
+              </div>
+              <mkt-spend-cap-chart class="spend-control-visual" />
+            </div>
+            <div class="mkt-panel__footer">
+              <div class="mkt-panel__actions">
+                <a
+                  mat-stroked-button
+                  routerLink="/documentation/on-demand-billing"
+                >
+                  Learn how on-demand billing works
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="mkt-panel addons">
+            <mkt-pricing-addon-card
+              icon="medical_information"
+              title="US Healthcare: HIPAA-compliant hosting available"
+              subtitle="Add on to Large plans"
+              buttonText="Learn More"
+              buttonUrl="/hipaa"
+            />
+            <mkt-pricing-addon-card
+              icon="passport"
+              title="EU Hosting: Data sovereignty in Germany"
+              subtitle="All plans available on our EU instance"
+              buttonText="Learn More"
+              buttonUrl="/documentation/hosted-architecture#eu-hosting-data-sovereignty"
+            />
+          </div>
+        </section>
+      }
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div class="tab-label">
+          <div class="tab-label-header marketing-body">Self-hosted version</div>
+          <div class="tab-label-description marketing-caption">
+            Run on your own server
+          </div>
+        </div>
+      </ng-template>
+      <div class="plans mat-elevation-z1">
+        @for (product of selfHostedPlanOptions; track product; let i = $index) {
+          <mat-card appearance="outlined">
+            <mat-card-header>
+              <mat-card-title>{{ product.name }}</mat-card-title>
+              <div class="plan-price">
+                @if (product.monthlyPrice === "Free") {
+                  <p>
+                    <span class="marketing-small-heading">Free ($0)</span>
+                  </p>
+                } @else if (product.monthlyPrice === "Custom") {
+                  <p>
+                    <span class="marketing-small-heading">Custom</span>
+                  </p>
+                } @else if (
+                  billingPeriod() === "annual" &&
+                  product.annualPrice &&
+                  product.annualPrice !== "Custom"
+                ) {
+                  <p>
+                    <span class="marketing-small-heading">
+                      ${{ product.annualPrice | number }}
+                    </span>
+                    {{ product.priceSuffix ? "/user/year" : "/ year" }}
+                  </p>
+                  <p class="savings">
+                    <!-- "Free"/"Custom" strings excluded by @else if condition above -->
+                    Save ${{
+                      $any(product.monthlyPrice) * 12 -
+                        $any(product.annualPrice)
+                    }}{{ product.priceSuffix ? "/user" : "" }} / year
+                  </p>
+                } @else {
+                  <p>
+                    <span class="marketing-small-heading">
+                      ${{ product.monthlyPrice | number }}
+                    </span>
+                    {{ product.priceSuffix || "/ month" }}
+                  </p>
+                }
+              </div>
+            </mat-card-header>
+            <mat-card-content class="spaced-card-content">
+              <p class="product-subtitle">{{ product.subtitle }}</p>
+              @if (product.includesFrom) {
+                <p class="includes-from">
+                  <strong>Everything from {{ product.includesFrom }} +</strong>
+                </p>
               }
-            </ul>
-            <div class="price-cta">
-              @if (product.monthlyPrice === 'Free') {
-                <p>
-                  <span class="marketing-small-heading">Free ($0)</span>
-                </p>
-              } @else if (product.monthlyPrice === 'Custom') {
-                <p>
-                  <span class="marketing-small-heading">Custom</span>
-                </p>
-              } @else if (billingPeriod() === 'annual' && product.annualPrice && product.annualPrice !== 'Custom') {
-                <p>
-                  <span class="marketing-small-heading">
-                    ${{ product.annualPrice | number }}
-                  </span>
-                  {{ product.priceSuffix ? '/user/year' : '/ year' }}
-                </p>
-                <p class="savings">
-                  <!-- "Free"/"Custom" strings excluded by @else if condition above -->
-                  Save ${{ $any(product.monthlyPrice) * 12 - $any(product.annualPrice) }}{{ product.priceSuffix ? '/user' : '' }} / year
-                </p>
-              } @else {
-                <p>
-                  <span class="marketing-small-heading">
-                    ${{ product.monthlyPrice | number }}
-                  </span>
-                  {{ product.priceSuffix || '/ month' }}
-                </p>
-              }
+              <ul class="value-props">
+                @for (feature of product.features; track feature.text) {
+                  <li>
+                    <mat-icon class="check-icon">check_circle</mat-icon>
+                    {{ feature.text }}
+                    @if (feature.tooltip) {
+                      <mat-icon
+                        class="tooltip-icon"
+                        [matTooltip]="feature.tooltip"
+                        matTooltipPosition="above"
+                        >info</mat-icon
+                      >
+                    }
+                  </li>
+                }
+              </ul>
+            </mat-card-content>
+            <div class="mkt-panel__footer plan-cta">
               <a
                 mat-flat-button
                 color="primary"
-                [href]="product.paymentLinks ? product.paymentLinks[billingPeriod()] : product.ctaUrl"
+                [href]="
+                  product.paymentLinks
+                    ? product.paymentLinks[billingPeriod()]
+                    : product.ctaUrl
+                "
               >
                 {{ product.ctaText }}
               </a>
             </div>
-          </mat-card-content>
-        </mat-card>
-      }
-    </div>
-  </mat-tab>
-</mat-tab-group>
-@if (pricingPage()) {
-  <mat-divider></mat-divider>
-}
+          </mat-card>
+        }
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>
 @if (pricingPage()) {
   <section class="faq-section">
-    <h2 class="marketing-body-strong">
-      Questions &amp; answers about {{ selectedTab() === 0 ? 'hosted pricing' : 'self-hosted support' }}
-    </h2>
+    <div class="faq-intro">
+      <h2 class="marketing-subheading">Questions &amp; answers</h2>
+      <p class="marketing-body">
+        About
+        {{ selectedTab() === 0 ? "hosted pricing" : "self-hosted support" }}.
+        Still stuck? <a routerLink="/support">Contact support</a>.
+      </p>
+    </div>
     <mat-accordion>
-      @for (faq of selectedTab() === 0 ? hostedFaqs : selfHostedFaqs; track faq.question) {
+      @for (
+        faq of selectedTab() === 0 ? hostedFaqs : selfHostedFaqs;
+        track faq.question
+      ) {
         <mat-expansion-panel>
           <mat-expansion-panel-header>
             <mat-panel-title>{{ faq.question }}</mat-panel-title>

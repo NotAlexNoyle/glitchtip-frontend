@@ -1,0 +1,99 @@
+@use "../../../../../../src/assets/styles/variables" as vars;
+
+$cell: 36px;
+
+:host {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  mask-image: radial-gradient(closest-side, #000 30%, transparent);
+}
+
+:host(.is-pane) {
+  --grid-line: color-mix(
+    in srgb,
+    var(--mat-sys-outline-variant) 85%,
+    transparent
+  );
+  // Only a soft fade in from the pane's top and left edges.
+  mask-image:
+    linear-gradient(to right, transparent, #000 18%),
+    linear-gradient(to bottom, transparent, #000 18%);
+  mask-composite: intersect;
+}
+
+.lines {
+  position: absolute;
+  inset: -$cell;
+  background: conic-gradient(
+      from 90deg at 1px 1px,
+      #0000 90deg,
+      var(
+          --grid-line,
+          color-mix(in srgb, var(--mat-sys-outline-variant) 55%, transparent)
+        )
+        0
+    )
+    50% 50% / #{$cell} #{$cell};
+  animation: drift 16s linear infinite;
+  will-change: transform;
+}
+
+// Centred tiles put a grid line half a cell left of and above the centre.
+.ping {
+  position: absolute;
+  left: calc(50% - #{$cell * 0.5 - 1px} + var(--x) * #{$cell});
+  top: calc(50% - #{$cell * 0.5 - 1px} + var(--y) * #{$cell});
+  width: $cell - 1px;
+  height: $cell - 1px;
+  background: color-mix(in srgb, var(--mat-sys-primary) 22%, transparent);
+  opacity: 0;
+  animation: ping 16s ease-in-out var(--d) infinite;
+}
+
+@keyframes drift {
+  to {
+    transform: translate($cell, $cell);
+  }
+}
+
+@keyframes ping {
+  0%,
+  12%,
+  100% {
+    opacity: 0;
+  }
+  4% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lines,
+  .ping {
+    animation: none;
+  }
+}
+
+// Stacked, the hero pane sits right under the copy with the video on top; a
+// still grid keeps the video the only thing moving there.
+:host(.is-pane) {
+  @media screen and (max-width: vars.$medium) {
+    .lines,
+    .ping {
+      animation: none;
+    }
+  }
+}
+
+:host(.is-still) {
+  .lines {
+    animation: none;
+  }
+
+  .ping {
+    display: none;
+  }
+}

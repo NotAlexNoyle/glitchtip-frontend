@@ -1,0 +1,113 @@
+:host {
+  display: block;
+}
+
+.chart {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.axis,
+.plan {
+  stroke: var(--mat-sys-outline-variant);
+}
+
+.plan {
+  stroke-dasharray: 4 4;
+}
+
+.cap {
+  stroke: var(--mat-sys-on-surface);
+  stroke-width: 1.5;
+}
+
+.label {
+  font: 500 11px var(--mat-sys-body-medium-font);
+  fill: var(--mat-sys-on-surface-variant);
+}
+
+.usage {
+  fill: none;
+  stroke: var(--mat-sys-outline);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+}
+
+// Colour only for what you pay extra for.
+.usage--over {
+  stroke: var(--mat-sys-primary);
+}
+
+.usage--held {
+  stroke: var(--mat-sys-on-surface);
+}
+
+.extra {
+  fill: color-mix(in srgb, var(--mat-sys-primary) 10%, transparent);
+}
+
+.stop {
+  circle {
+    fill: var(--mat-sys-on-surface);
+  }
+
+  path {
+    fill: none;
+    stroke: var(--mat-sys-surface);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}
+
+// ── Draw once: plan usage, the spike past it, then held at the cap ──────────
+:host(.is-armed) {
+  .usage {
+    stroke-dashoffset: 1;
+  }
+
+  .extra,
+  .stop {
+    opacity: 0;
+  }
+}
+
+:host(.is-drawn) {
+  .usage {
+    animation: draw 0.9s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+  }
+
+  .usage--over {
+    animation-delay: 0.9s;
+  }
+
+  .usage--held {
+    animation-duration: 0.6s;
+    animation-delay: 2.1s;
+  }
+
+  .extra {
+    animation: show 0.6s ease 1.5s forwards;
+  }
+
+  // A soft fade as the line arrives, no bounce.
+  .stop {
+    animation: show 0.5s ease-out 1.75s forwards;
+  }
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes show {
+  to {
+    opacity: 1;
+  }
+}

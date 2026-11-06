@@ -24,12 +24,17 @@ html {
 
 // Brand color override
 :root {
-  --mat-sys-primary: #d94a5f;
+  --mat-sys-primary: #{vars.$brand-red};
   --mkt-accent-blue: #4a7fd9;
   --mkt-accent-yellow: #d9b44a;
   --mkt-success: #1f9d6b;
   --mkt-font-mono: "Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
-  --mat-sys-corner-full: 8px;
+  // Product shape: one 4px corner for buttons, cards and code.
+  --mat-sys-corner-full: 4px;
+  --mat-sys-corner-small: 4px;
+  --mat-sys-corner-medium: 4px;
+  --mat-sys-corner-large: 4px;
+  --mat-sys-corner-extra-large: 4px;
 
   // Shared motion feel, so reveals/floats/hovers stay consistent.
   --mkt-ease: cubic-bezier(0.22, 1, 0.36, 1);
@@ -53,7 +58,7 @@ html {
   // 1500 on large monitors so the content fills the width instead of leaving
   // wide empty margins. Hero card + body sections both read this, so they grow
   // together and stay aligned.
-  --mkt-container-home: min(1500px, max(1320px, 100vw - 430px));
+  --mkt-container-home: 1280px; // home sections: one grid, as pricing
   --mkt-container-table: 1280px; // pricing plan table
   --mkt-container-content: 1040px; // standard content pages (support, etc.)
   --mkt-container-reading: 760px; // prose / blog reading column
@@ -66,49 +71,9 @@ html {
 
 body {
   --bg: var(--mat-sys-surface-container-highest);
-
-  // Elements without a Material typography class fall back to the browser
-  // serif without this.
   font-family: vars.$font-sans-serif;
-
   background-color: var(--bg);
-  // A soft central wash over the dot grid keeps text readable above it.
-  background-image:
-    radial-gradient(
-      ellipse 82% 135% at 50% 50%,
-      color-mix(in srgb, var(--bg) 80%, transparent) 0%,
-      color-mix(in srgb, var(--bg) 80%, transparent) 40%,
-      transparent 82%
-    ),
-    radial-gradient(circle, var(--mat-sys-outline) 1.3px, transparent 1.3px);
-  background-size:
-    100% 100%,
-    22px 22px;
-  background-position:
-    center center,
-    center center;
-  background-attachment: fixed, fixed;
-
-  &::before,
-  &::after {
-    content: "";
-    position: fixed;
-    left: 0;
-    right: 0;
-    height: 700px;
-    z-index: -1;
-    pointer-events: none;
-  }
-
-  &::before {
-    top: 0;
-    background: linear-gradient(to bottom, var(--bg) 0%, transparent 100%);
-  }
-
-  &::after {
-    bottom: 0;
-    background: linear-gradient(to top, var(--bg) 0%, transparent 100%);
-  }
+  color: var(--mat-sys-on-surface);
 }
 
 app-root,
@@ -127,9 +92,22 @@ body.loaded app-root {
   display: flex !important;
 }
 
+// Product link rules: standalone links bold in the text colour, links in a
+// sentence underlined at normal weight. Never the primary colour.
 a {
-  color: var(--mat-sys-primary);
-  font-weight: 500;
+  color: var(--mat-sys-on-surface);
+  font-weight: 400;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+p a,
+li a {
+  font-weight: inherit;
+  text-decoration: underline;
 }
 
 .fancy {
@@ -324,10 +302,10 @@ a {
   blockquote {
     margin: 20px 0;
     padding: 14px 18px;
-    border-left: 4px solid var(--mat-sys-primary);
+    border-left: 2px solid var(--mat-sys-outline);
     border-radius: 0 var(--mat-sys-corner-medium, 12px)
       var(--mat-sys-corner-medium, 12px) 0;
-    background: color-mix(in srgb, var(--mat-sys-primary) 6%, var(--bg));
+    background: var(--mat-sys-surface-container-high);
 
     > :first-child {
       margin-top: 0;
@@ -361,7 +339,7 @@ a {
     padding-inline: 0 8px;
 
     &:hover .mat-expansion-panel-header-title {
-      color: var(--mat-sys-primary);
+      text-decoration: underline;
     }
   }
 
@@ -420,9 +398,41 @@ a {
 // Marquee cards (hero, feature switcher, newsletter) override the 16px corner
 // to the extra-large 28px; code blocks use the small corner instead.
 .mkt-surface {
-  background: var(--mat-sys-surface);
-  border: 1px solid var(--mat-sys-outline-variant);
+  background: transparent;
+  border: 0;
   border-radius: var(--mat-sys-corner-large, 16px);
+}
+
+// Panel, as the product's gt-panel: a hairline box whose body shows the page,
+// with an optional footer strip one tint down holding the actions.
+.mkt-panel {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.mkt-panel__body {
+  flex: 1;
+  padding: clamp(20px, 2.5vw, 28px);
+}
+
+.mkt-panel__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 12px clamp(20px, 2.5vw, 28px);
+  border-top: 1px solid var(--mat-sys-outline-variant);
+  background: color-mix(in srgb, var(--mat-sys-on-surface) 4%, transparent);
+}
+
+.mkt-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-left: auto;
 }
 
 // Interactive card: border and __title lift to primary on hover.
@@ -431,7 +441,7 @@ a {
   transition: border-color 0.15s ease;
 
   &:hover {
-    border-color: var(--mat-sys-primary);
+    border-color: var(--mat-sys-outline);
   }
 }
 
@@ -440,7 +450,7 @@ a {
 }
 
 .mkt-card:hover .mkt-card__title {
-  color: var(--mat-sys-primary);
+  text-decoration: underline;
 }
 
 // Divider-row title: lifts to primary when its .mkt-row link is hovered.
@@ -449,7 +459,7 @@ a {
 }
 
 .mkt-row:hover .mkt-row__title {
-  color: var(--mat-sys-primary);
+  text-decoration: underline;
 }
 
 // Prev/next pager (blog posts, docs pages).
@@ -479,7 +489,7 @@ a {
   }
 
   &:hover .mkt-pager__title {
-    color: var(--mat-sys-primary);
+    text-decoration: underline;
   }
 
   @media screen and (max-width: vars.$small) {

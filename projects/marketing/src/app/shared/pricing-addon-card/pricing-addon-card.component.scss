@@ -1,18 +1,21 @@
+:host {
+  display: block;
+}
+
 .addon-card {
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 20px 24px;
-  margin-top: 16px;
+  padding: 16px clamp(20px, 2.5vw, 28px);
   gap: 16px;
 }
 
 .addon-icon {
-  font-size: 40px;
-  width: 40px;
-  height: 40px;
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
   flex-shrink: 0;
-  color: var(--mat-sys-primary);
+  color: var(--mat-sys-on-surface-variant);
 }
 
 .addon-text {
@@ -31,9 +34,17 @@
   flex-shrink: 0;
 }
 
+// Phones: the button drops under the text, lined up with it.
 @media (max-width: 599px) {
   .addon-card {
-    flex-direction: column;
-    text-align: center;
+    flex-wrap: wrap;
+  }
+
+  .addon-text {
+    flex-basis: calc(100% - 44px);
+  }
+
+  .addon-button {
+    margin-left: 44px;
   }
 }

@@ -1,0 +1,32 @@
+<div class="map">
+  <svg
+    [attr.width]="size.w"
+    [attr.height]="size.h"
+    [attr.viewBox]="'0 0 ' + size.w + ' ' + size.h"
+  >
+    @for (r of routes; track r.d) {
+      <path [attr.d]="r.d" />
+    }
+    @for (n of nodes; track $index) {
+      <rect
+        class="node"
+        [attr.x]="n[0] - 5"
+        [attr.y]="n[1] - 5"
+        width="10"
+        height="10"
+        rx="2"
+      />
+    }
+  </svg>
+  @for (r of routes; track r.d) {
+    @for (t of r.trips; track t.delay) {
+      <i
+        class="event event--{{ t.level }}"
+        [style.offset-path]="'path(&quot;' + r.d + '&quot;)'"
+        [style.--dur.s]="r.dur"
+        [style.--delay.s]="t.delay"
+        [style.--steps]="r.steps"
+      ></i>
+    }
+  }
+</div>

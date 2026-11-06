@@ -4,14 +4,13 @@ import {
   input,
   ChangeDetectionStrategy,
 } from "@angular/core";
-import { MatCard } from "@angular/material/card";
 import { MatIcon } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 import { RouterLink } from "@angular/router";
 
 @Component({
   selector: "mkt-pricing-addon-card",
-  imports: [MatCard, MatIcon, MatButtonModule, RouterLink],
+  imports: [MatIcon, MatButtonModule, RouterLink],
   templateUrl: "./pricing-addon-card.component.html",
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ["./pricing-addon-card.component.scss"],

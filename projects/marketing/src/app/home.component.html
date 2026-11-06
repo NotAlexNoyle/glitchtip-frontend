@@ -1,210 +1,264 @@
-<mkt-banner class="hero-banner">
-  <div class="hero-images-container">
-    <div class="hero-content-left">
-      <div class="hero">
-        <h1 class="fancy marketing-heading">
-          Simple, open source error&nbsp;tracking
-        </h1>
-        <div class="content">
-          <p class="marketing-body">
-            Collect every error from your project in real time, organize them to
-            make them useful, and receive alerts when and where you
-            want...without breaking the budget.
-          </p>
-          <div class="cta-row">
-            <a mat-flat-button color="primary" [href]="registerLink"
-              >Try GlitchTip for free</a
+<section class="hero3">
+  <div class="hero3__copy">
+    <mkt-event-flow />
+    <div class="hero3__text">
+      <h1 class="hero3__statement">
+        <strong
+          >Simple, open source
+          <span class="lint"
+            >error<svg
+              class="lint__line"
+              viewBox="0 0 65 6"
+              preserveAspectRatio="none"
+              aria-hidden="true"
             >
-          </div>
-        </div>
+              <path
+                d="M1.5 3 q2.583 -2.8 5.167 0 q2.583 2.8 5.167 0 q2.583 -2.8 5.167 0 q2.583 2.8 5.167 0 q2.583 -2.8 5.167 0 q2.583 2.8 5.167 0 q2.583 -2.8 5.167 0 q2.583 2.8 5.167 0 q2.583 -2.8 5.167 0 q2.583 2.8 5.167 0 q2.583 -2.8 5.167 0 q2.583 2.8 5.167 0"
+                pathLength="1"
+              /></svg
+          ></span>
+          tracking.</strong
+        >
+        Every error from your apps, in one place.
+      </h1>
+      <p class="hero3__sub">
+        Alerts when and where you want them, uptime and performance alongside,
+        and pricing that doesn't break the budget. Use it hosted, or run it on
+        your own server.
+      </p>
+      <div class="cta-row">
+        <a mat-flat-button color="primary" [href]="registerLink"
+          >Try GlitchTip for free</a
+        >
+        <a mat-stroked-button [routerLink]="['documentation', 'install']"
+          >Self-host it</a
+        >
       </div>
-      <picture class="bot-hero-image">
-        <source
-          media="(max-width: 479px)"
-          type="image/webp"
-          srcset="
-            /assets/home/bots-assembled-mobile@1x.webp,
-            /assets/home/bots-assembled-mobile@2x.webp 2x,
-            /assets/home/bots-assembled-mobile@3x.webp 3x
-          "
-        />
-        <source
-          media="(max-width: 479px)"
-          srcset="
-            /assets/home/bots-assembled-mobile@1x.png,
-            /assets/home/bots-assembled-mobile@2x.png 2x,
-            /assets/home/bots-assembled-mobile@3x.png 3x
-          "
-        />
-        <source
-          type="image/webp"
-          srcset="
-            /assets/home/bots-assembled@1x.webp,
-            /assets/home/bots-assembled@2x.webp 2x,
-            /assets/home/bots-assembled@3x.webp 3x
-          "
-        />
-        <img
-          src="/assets/home/bots-assembled@1x.png"
-          srcset="
-            /assets/home/bots-assembled@1x.png,
-            /assets/home/bots-assembled@2x.png 2x,
-            /assets/home/bots-assembled@3x.png 3x
-          "
-          alt=""
-          loading="eager"
-        />
-      </picture>
+      <p class="hero3__proof"
+        >Join 17,000+ teams tracking errors with GlitchTip</p
+      >
     </div>
-    <div class="hero-screenshot">
-      <picture>
-        <source
-          type="image/webp"
-          srcset="/assets/home/dashboard-hero@1x.webp"
-        />
-        <img
-          src="/assets/home/dashboard-hero@1x.png"
-          alt="GlitchTip Dashboard"
-        />
-      </picture>
+    <!-- The GlitchTip robots, standing on the hero's bottom hairline. -->
+    <picture class="hero3__bots" mktImagesReady>
+      <source
+        media="(max-width: 479px)"
+        type="image/webp"
+        srcset="
+          /assets/home/bots-assembled-mobile@1x.webp,
+          /assets/home/bots-assembled-mobile@2x.webp 2x,
+          /assets/home/bots-assembled-mobile@3x.webp 3x
+        "
+      />
+      <source
+        type="image/webp"
+        srcset="
+          /assets/home/bots-assembled@1x.webp,
+          /assets/home/bots-assembled@2x.webp 2x,
+          /assets/home/bots-assembled@3x.webp 3x
+        "
+      />
+      <img
+        src="/assets/home/bots-assembled@1x.png"
+        alt="The GlitchTip robots"
+        width="900"
+        height="361"
+        decoding="async"
+        fetchpriority="low"
+      />
+    </picture>
+  </div>
+  <div class="hero3__pane" aria-hidden="true">
+    <mkt-grid-drift [pane]="true" [still]="true" />
+    <div class="hero3__window" mktImagesReady>
+      <!-- Sharp stills, staged by CSS: the list, a row hover, the issue, a slow pan. -->
+      <div class="hero3__frame hero3__frame--list">
+        <picture>
+          <source srcset="/assets/home/hero-list.avif" type="image/avif" />
+          <img
+            src="/assets/home/hero-list.webp"
+            alt=""
+            width="1900"
+            height="1610"
+            fetchpriority="high"
+          />
+        </picture>
+        <span class="hero3__hover"></span>
+      </div>
+      <div class="hero3__frame hero3__frame--detail">
+        @for (part of ["pan", "rail"]; track part) {
+          <!-- The page pans; a clipped copy keeps the app sidebar pinned. -->
+          <picture class="hero3__{{ part }}">
+            <source srcset="/assets/home/hero-detail.avif" type="image/avif" />
+            <img
+              src="/assets/home/hero-detail.webp"
+              alt=""
+              width="1900"
+              height="1997"
+              decoding="async"
+              fetchpriority="low"
+            />
+          </picture>
+        }
+      </div>
     </div>
   </div>
-</mkt-banner>
+</section>
 
-<div class="home-sections">
-  <mkt-feature-section
-    mktReveal
-    class="main-promo-section divider flush-media"
-    imageSrc="assets/home/main-promo@1x.png"
-    imageAlt="Illustration that shows errors from various sites/apps reporting to GlitchTip"
-    direction="right"
-    [promo]="true"
-  >
-    <h2 class="marketing-heading"
-      >Have some <span class="squiggle">bugs</span> in your code?</h2
-    >
-    <p class="marketing-body">
-      GlitchTip makes monitoring software easy. Track errors, monitor
-      performance, and check site uptime all in one place. Our app is compatible
-      with Sentry client SDKs, but easier to run.
-    </p>
-
-    <p class="marketing-body">
-      It's also open source, so you can view, modify, and use the code as you
-      see fit.
-      <a [routerLink]="['documentation', 'install']">Run it on your server</a>,
-      or let us host it for&nbsp;you. All you need to do is
-      <a [href]="registerLink">register</a> with your email and password. Then,
-      select the subscription that works best for you.
-    </p>
-
-    <p class="marketing-body">
-      GlitchTip is the right choice if you value simplicity, affordability, and
-      the freedom provided by open source.
-    </p>
-  </mkt-feature-section>
-
-  <mkt-feature-switcher mktReveal class="divider"></mkt-feature-switcher>
+<div class="band-dim">
+  <div class="home-sections">
+    <section mktReveal class="bugs">
+      <mkt-bug-scene class="bugs__art" />
+      <div class="bugs__copy">
+        <h2 class="marketing-heading">Have some bugs in your code?</h2>
+        <p class="marketing-body">
+          GlitchTip makes monitoring software easy. Track errors, monitor
+          performance, and check site uptime all in one place. Our app is
+          compatible with Sentry client SDKs, but easier to run.
+        </p>
+        <p class="marketing-body">
+          It's also open source, so you can view, modify, and use the code as
+          you see fit.
+          <a [routerLink]="['documentation', 'install']"
+            >Run it on your server</a
+          >, or let us host it for&nbsp;you. All you need to do is
+          <a [href]="registerLink">register</a> with your email and password.
+          Then, select the subscription that works best for you.
+        </p>
+        <p class="marketing-body">
+          GlitchTip is the right choice if you value simplicity, affordability,
+          and the freedom provided by open source.
+        </p>
+      </div>
+    </section>
+  </div>
 </div>
 
-<div class="home-sections">
-  <div mktReveal class="centered-block divider" id="pricing">
-    <h2 class="marketing-heading">Pricing</h2>
-    <mkt-payment></mkt-payment>
-  </div>
+<mkt-feature-switcher mktReveal />
 
-  <div mktReveal class="centered-block divider">
-    <div class="newsletter mkt-surface">
-      <h2 class="marketing-heading">
-        Stay up-to-date on our latest features and releases
-      </h2>
-      <p class="newsletter-sub marketing-body">
-        Product updates and release notes, straight to your inbox. No spam,
-        unsubscribe anytime.
-      </p>
-
-      <!-- Begin Mailchimp Signup Form -->
-      <div id="mc_embed_signup">
-        <form
-          action="https://burkesoftware.us7.list-manage.com/subscribe/post?u=894614c6582c030b526699146&amp;id=116edb1090"
-          method="post"
-          id="mc-embedded-subscribe-form"
-          name="mc-embedded-subscribe-form"
-          class="validate"
-          target="_blank"
-          novalidate
-        >
-          <div class="subscribe-wrapper" id="mc_embed_signup_scroll">
-            <div class="mc-field-group">
-              <mat-form-field appearance="outline">
-                <div style="position: absolute; left: -5000px">
-                  Email Address
-                </div>
-                <mat-label>Email Address</mat-label>
-                <input
-                  matInput
-                  type="email"
-                  value=""
-                  name="EMAIL"
-                  class="required email"
-                  id="mce-EMAIL"
-                />
-              </mat-form-field>
-            </div>
-            <div id="mce-responses" class="clear">
-              <div
-                class="response"
-                id="mce-error-response"
-                style="display: none"
-              ></div>
-              <div
-                class="response"
-                id="mce-success-response"
-                style="display: none"
-              ></div>
-            </div>
-            <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
-            <div style="position: absolute; left: -5000px" aria-hidden="true">
-              <input
-                type="text"
-                name="b_894614c6582c030b526699146_116edb1090"
-                tabindex="-1"
-                value=""
-              />
-            </div>
-            <div class="clear">
-              <button
-                mat-stroked-button
-                color="primary"
-                type="submit"
-                name="subscribe"
-                id="mc-embedded-subscribe"
-              >
-                Subscribe
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
-      <!--End mc_embed_signup-->
+<div class="band-dim">
+  <div class="home-sections">
+    <div mktReveal class="centered-block" id="pricing">
+      <h2 class="marketing-heading">Pricing</h2>
+      <mkt-payment></mkt-payment>
     </div>
+  </div>
+</div>
 
-    <h2 class="marketing-heading">Who’s making this?</h2>
+<!-- Newsletter band: full width on the lighter sheet, the form centred. -->
+<section mktReveal class="news">
+  <!-- Notifications on their way: envelopes riding a route right of the form. -->
+  <div class="news__mail" aria-hidden="true">
+    <svg width="160" height="600" viewBox="0 0 160 600">
+      <path [attr.d]="mailRoute" />
+    </svg>
+    @for (n of [1, 2]; track n) {
+      <i
+        class="news__env"
+        [style.offset-path]="'path(&quot;' + mailRoute + '&quot;)'"
+      >
+        <svg viewBox="0 0 22 16">
+          <rect x="1" y="1" width="20" height="14" rx="3" />
+          <path d="M4 4.5 11 10l7-5.5" />
+        </svg>
+      </i>
+    }
+  </div>
+  <div class="news__text">
+    <h2 class="marketing-heading">
+      Stay up‑to‑date on our latest features and releases
+    </h2>
+    <p class="newsletter-sub marketing-body">
+      Product updates and release notes, straight to your inbox. No spam,
+      unsubscribe anytime.
+    </p>
 
-    <div class="content">
-      <p class="marketing-body">
-        GlitchTip was created by Burke Software and Consulting, a small team of
-        software developers doing consulting work and supporting open source
-        software development. We also created
-        <a href="https://passit.io">Passit</a>.
-      </p>
+    <!-- Begin Mailchimp Signup Form -->
+    <div id="mc_embed_signup">
+      <form
+        action="https://burkesoftware.us7.list-manage.com/subscribe/post?u=894614c6582c030b526699146&amp;id=116edb1090"
+        method="post"
+        id="mc-embedded-subscribe-form"
+        name="mc-embedded-subscribe-form"
+        class="validate"
+        target="_blank"
+        novalidate
+      >
+        <div class="subscribe-wrapper" id="mc_embed_signup_scroll">
+          <div class="mc-field-group">
+            <mat-form-field appearance="outline">
+              <div style="position: absolute; left: -5000px">
+                Email Address
+              </div>
+              <mat-label>Email Address</mat-label>
+              <input
+                matInput
+                type="email"
+                value=""
+                name="EMAIL"
+                class="required email"
+                id="mce-EMAIL"
+              />
+            </mat-form-field>
+          </div>
+          <div id="mce-responses" class="clear">
+            <div
+              class="response"
+              id="mce-error-response"
+              style="display: none"
+            ></div>
+            <div
+              class="response"
+              id="mce-success-response"
+              style="display: none"
+            ></div>
+          </div>
+          <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+          <div style="position: absolute; left: -5000px" aria-hidden="true">
+            <input
+              type="text"
+              name="b_894614c6582c030b526699146_116edb1090"
+              tabindex="-1"
+              value=""
+            />
+          </div>
+          <div class="clear">
+            <button
+              mat-stroked-button
+              color="primary"
+              type="submit"
+              name="subscribe"
+              id="mc-embedded-subscribe"
+            >
+              Subscribe
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <!--End mc_embed_signup-->
+  </div>
+</section>
 
-      <p class="marketing-body">
-        GlitchTip is open source, which means that you can be making it too! If
-        you’re interested in doing so,
-        <a href="https://gitlab.com/glitchtip">visit our GitLab page</a> for
-        more information, or start a live chat on this&nbsp;page.
-      </p>
+<div class="band-dim">
+  <div class="home-sections">
+    <div mktReveal class="centered-block">
+      <h2 class="marketing-heading about">Who’s making this?</h2>
+
+      <div class="content about">
+        <p class="marketing-body">
+          GlitchTip was created by Burke Software and Consulting, a small team
+          of software developers doing consulting work and supporting open
+          source software development. We also created
+          <a href="https://passit.io">Passit</a>.
+        </p>
+
+        <p class="marketing-body">
+          GlitchTip is open source, which means that you can be making it too!
+          If you’re interested in doing so,
+          <a href="https://gitlab.com/glitchtip">visit our GitLab page</a> for
+          more information, or start a live chat on this&nbsp;page.
+        </p>
+      </div>
     </div>
   </div>
 </div>

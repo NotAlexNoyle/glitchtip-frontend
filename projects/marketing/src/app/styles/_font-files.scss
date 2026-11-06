@@ -43,24 +43,25 @@
 .marketing-display {
   font: var(--mat-sys-headline-large);
   font-size: clamp(2.4rem, 1.1rem + 5vw, 3.75rem);
-  line-height: 1.05;
-  font-weight: 700;
-  letter-spacing: -0.035em;
+  line-height: 1.1;
+  font-weight: 500;
+  letter-spacing: -0.02em;
 }
 
+// Fluid steps: hero statement > section heading > feature title.
 .marketing-heading {
   font: var(--mat-sys-headline-large);
-  font-size: 45px;
-  line-height: 50px;
-  font-weight: 700;
-  letter-spacing: -0.035em;
+  font-size: clamp(1.75rem, 1.2rem + 1.6vw, 2.5rem);
+  line-height: 1.15;
+  font-weight: 500;
+  letter-spacing: -0.02em;
 }
 
 .marketing-subheading {
   font: var(--mat-sys-headline-medium);
-  font-size: 34px;
-  line-height: 37px;
-  font-weight: 700;
+  font-size: clamp(1.5rem, 1.1rem + 1vw, 2rem);
+  line-height: 1.15;
+  font-weight: 500;
   letter-spacing: -0.02em;
 }
 
@@ -68,7 +69,7 @@
   font: var(--mat-sys-headline-small);
   font-size: 24px;
   line-height: 30px;
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: -0.02em;
 }
 
@@ -111,10 +112,15 @@
 // and every hand-rolled equivalent should use this one token).
 .marketing-eyebrow {
   font-family: var(--mat-sys-body-large-font);
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.2;
-  font-weight: 700;
-  letter-spacing: 0.12em;
+  font-weight: 500;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--mat-sys-primary);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+// Second tone of a two-tone statement, as on the auth brand pane.
+.mkt-muted {
+  color: color-mix(in srgb, var(--mat-sys-on-surface) 60%, transparent);
 }

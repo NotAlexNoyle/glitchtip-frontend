@@ -1,0 +1,205 @@
+@use "../../../../../../src/assets/styles/variables" as vars;
+@use "../../styles/grid-texture" as *;
+
+$rest: drop-shadow(0 2px 3px rgb(0 0 0 / 0.16));
+$lifted: drop-shadow(0 5px 6px rgb(0 0 0 / 0.2));
+
+// The same faint, still grid as the panels: a monitor chart, not a second motion.
+:host {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  padding-block: 48px;
+  @include grid-texture;
+}
+
+.art {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: auto;
+
+  // Phones crop the faded ends so the bug and the beats stay legible.
+  @media screen and (max-width: vars.$small) {
+    width: 150%;
+    margin-inline: -25%;
+  }
+}
+
+.pulse__line,
+.flat {
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.pulse__line {
+  stroke: var(--mat-sys-outline);
+}
+
+.flat {
+  stroke: var(--mat-sys-primary);
+}
+
+.ping {
+  fill: none;
+  stroke: var(--mat-sys-primary);
+  stroke-width: 1.5;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+// The paper sticker, with the same soft shadow as the bear.
+.bug__paper {
+  transform-box: fill-box;
+  transform-origin: center;
+  filter: $rest;
+}
+
+// ── Motion: transforms and opacity only ─────────────────────────────────────
+// The pulse scrolls one beat per cycle forever; the story runs on $loop.
+$loop: 13s;
+$down: 33%;
+$up: 64%;
+
+.pulse {
+  animation: scroll 1.8s linear infinite;
+}
+
+@keyframes scroll {
+  to {
+    transform: translateX(-130px);
+  }
+}
+
+.pulse__line {
+  animation: pulse-line $loop ease-in-out infinite;
+}
+
+.flat {
+  opacity: 0;
+  animation: down $loop ease-in-out infinite;
+}
+
+@keyframes pulse-line {
+  0%,
+  #{$down - 1%},
+  #{$up + 4%},
+  100% {
+    opacity: 1;
+  }
+  #{$down + 1%},
+  #{$up} {
+    opacity: 0;
+  }
+}
+
+@keyframes down {
+  0%,
+  #{$down - 1%},
+  #{$up + 4%},
+  100% {
+    opacity: 0;
+  }
+  #{$down + 1%},
+  #{$up} {
+    opacity: 1;
+  }
+}
+
+.ping {
+  opacity: 0;
+  animation: ping $loop ease-out infinite;
+}
+
+@keyframes ping {
+  0%,
+  #{$down} {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  #{$down + 1%} {
+    opacity: 0.9;
+  }
+  #{$down + 12%},
+  100% {
+    opacity: 0;
+    transform: scale(2.6);
+  }
+}
+
+// Paper stop motion, like the bear: the bug walks in held frames (~8fps), lifted
+// off the table while it moves, then is caught and shrinks away.
+.bug {
+  animation: bug-walk $loop infinite;
+}
+
+.bug__body {
+  transform: rotate(90deg);
+}
+
+@keyframes bug-walk {
+  0% {
+    transform: translate(-24px, 60px);
+    opacity: 1;
+    animation-timing-function: steps(33, end);
+  }
+  #{$down - 1%},
+  #{$up - 8%} {
+    transform: translate(260px, 60px);
+    opacity: 1;
+    animation-timing-function: steps(4, end);
+  }
+  #{$up - 3%},
+  100% {
+    transform: translate(260px, 60px) scale(0.3) rotate(-20deg);
+    opacity: 0;
+  }
+}
+
+// Hand jitter between frames, plus the shadow lift while it walks.
+.bug__paper {
+  animation:
+    bug-boil 1s steps(1, end) infinite,
+    bug-lift $loop steps(1, end) infinite;
+}
+
+@keyframes bug-boil {
+  0% {
+    translate: 0 0;
+    rotate: 0deg;
+  }
+  25% {
+    translate: 0.6px -0.6px;
+    rotate: 4deg;
+  }
+  50% {
+    translate: -0.6px 0;
+    rotate: -3deg;
+  }
+  75% {
+    translate: 0 0.6px;
+    rotate: 2deg;
+  }
+}
+
+@keyframes bug-lift {
+  0% {
+    filter: $lifted;
+  }
+  #{$down - 1%},
+  100% {
+    filter: $rest;
+  }
+}
+
+// Reduced motion: the pulse at rest with the bug sitting on it.
+@media (prefers-reduced-motion: reduce) {
+  .art * {
+    animation: none !important;
+  }
+
+  .bug {
+    transform: translate(260px, 60px);
+  }
+}
