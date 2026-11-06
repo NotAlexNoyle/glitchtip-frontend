@@ -28,11 +28,11 @@ html {
 }
 
 // Brand colors as light/dark pairs, so they follow color-scheme like the rest
-// of the theme. The light values are the palette's own.
+// of the theme.
 html {
   @include mat.theme-overrides(
     (
-      primary: light-dark(#be0131, #d94a5f),
+      primary: light-dark(vars.$brand-red, #d94a5f),
       on-primary: light-dark(#ffffff, #ffffff),
       error: light-dark(#ba1434, #f54e6f),
     )
