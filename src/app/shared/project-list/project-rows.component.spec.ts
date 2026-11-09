@@ -146,6 +146,86 @@ describe("ProjectRowsComponent", () => {
     expect(el.textContent).toContain("Not a member");
   });
 
+  describe("on the projects page", () => {
+    afterEach(() => vi.restoreAllMocks());
+
+    const projectsOf = (count: number) =>
+      Array.from({ length: count }, (_, i) => ({
+        id: i + 1,
+        name: `service-${i + 1}`,
+        slug: `service-${i + 1}`,
+        firstEvent: "2026-10-22",
+        isMember: true,
+      }));
+
+    async function renderTrend(summaryStatus: number, count = 2) {
+      const projects = projectsOf(count);
+      const calls: { url: string; ids?: number[] }[] = [];
+      vi.spyOn(client, "GET").mockImplementation((async (
+        url: string,
+        init: { params: { query?: { project?: number[] } } },
+      ) => {
+        calls.push({ url, ids: init.params.query?.project });
+        if (url.endsWith("/projects/summary/")) {
+          return {
+            data: init.params.query!.project!.map((id) => ({
+              id: String(id),
+              unresolved: id * 100,
+              lastSeen: null,
+              days: [{ date: "2026-11-09", count: 3 }],
+            })),
+            response: new Response(null, { status: summaryStatus }),
+          };
+        }
+        const headers = { link: "", "x-hits": "5", "x-max-hits": "1000" };
+        return {
+          data: url.endsWith("/stats_v2/") ? { intervals: [], groups: [] } : [],
+          response: new Response(null, { status: 200, headers }),
+        };
+      }) as never);
+      TestBed.configureTestingModule({ providers: [provideRouter([])] });
+      const fixture = TestBed.createComponent(ProjectRowsComponent);
+      fixture.componentRef.setInput("orgSlug", "acme");
+      fixture.componentRef.setInput("projects", projects);
+      fixture.detectChanges();
+      await vi.waitFor(() => expect(client.GET).toHaveBeenCalled());
+      await new Promise((done) => setTimeout(done, 20));
+      fixture.detectChanges();
+      return { el: fixture.nativeElement as HTMLElement, calls };
+    }
+
+    const summaryCalls = (calls: { url: string; ids?: number[] }[]) =>
+      calls.filter((call) => call.url.endsWith("/projects/summary/"));
+
+    it("loads every visible row from one summary request", async () => {
+      const { el, calls } = await renderTrend(200);
+      expect(calls.map((call) => call.ids)).toEqual([[1, 2]]);
+      expect(el.textContent).toContain("100 unresolved");
+      expect(el.textContent).toContain("200 unresolved");
+    });
+
+    it("splits more than 100 rows across requests", async () => {
+      const { calls } = await renderTrend(200, 101);
+      expect(summaryCalls(calls).map((call) => call.ids!.length)).toEqual([
+        100, 1,
+      ]);
+    });
+
+    it("falls back to a request per fact when the backend has no summary", async () => {
+      const { el, calls } = await renderTrend(404);
+      expect(summaryCalls(calls).length).toBe(1);
+      expect(calls.length).toBe(1 + 3 * 2);
+      expect(el.textContent).toContain("5 unresolved");
+    });
+
+    it("does not fall back when the summary request fails", async () => {
+      const { el, calls } = await renderTrend(500);
+      expect(calls.length).toBe(1);
+      expect(el.textContent).not.toMatch(/\d unresolved/);
+      expect(el.querySelectorAll(".glance__skeleton--loading").length).toBe(0);
+    });
+  });
+
   describe("in the settings list", () => {
     afterEach(() => vi.restoreAllMocks());
 

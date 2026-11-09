@@ -56,6 +56,8 @@ const platformNames = new Map(
 );
 
 const SKELETON_BARS = Array.from({ length: 14 }, (_, i) => i);
+// The backend's limit for one summary request.
+const SUMMARY_BATCH = 100;
 
 /** A flat list of projects, each with its own facts loaded once it scrolls into view. */
 @Component({
@@ -265,9 +267,13 @@ export class ProjectRowsComponent {
   readonly skeletonBars = SKELETON_BARS;
 
   protected readonly rows = signal(new Map<string, RowState>());
-  // At most four projects load at once, so a long list cannot flood the API.
+  // At most four requests at once, so a long list cannot flood the API.
   private readonly queue = limitConcurrency(4);
   private readonly orgs = inject(OrganizationsService);
+  /** Trend rows seen since the last summary request. */
+  private pending: ProjectRow[] = [];
+  /** Turns false when the backend predates the summary endpoint. */
+  private hasSummary = true;
 
   key(project: ProjectRow) {
     return `${this.orgSlug()}/${project.id}`;
@@ -282,15 +288,15 @@ export class ProjectRowsComponent {
     const trend = this.showTrend();
     if (this.rows().has(key) || (trend && !project.firstEvent)) return;
     this.set(key, "loading");
-    const path = this.orgs.orgPath(this.orgSlug());
-    this.queue(() =>
-      trend
-        ? loadTrend(path, +project.id)
-        : loadAlertCount(path, project.slug ?? ""),
-    ).then(
-      (facts) => this.set(key, facts),
-      () => this.set(key, "failed"),
-    );
+    if (!trend) {
+      this.loadRow(project, (path) => loadAlertCount(path, project.slug ?? ""));
+    } else if (!this.hasSummary) {
+      this.loadTrendRow(project);
+    } else {
+      // Rows that come into view together share one request.
+      if (!this.pending.length) setTimeout(() => this.loadPending());
+      this.pending.push(project);
+    }
   }
 
   platformName(id?: string | null) {
@@ -299,6 +305,53 @@ export class ProjectRowsComponent {
 
   settingsLabel(name: string) {
     return $localize`${name}:project: settings`;
+  }
+
+  private loadPending() {
+    const projects = this.pending;
+    this.pending = [];
+    if (!this.hasSummary) {
+      projects.forEach((project) => this.loadTrendRow(project));
+      return;
+    }
+    for (let i = 0; i < projects.length; i += SUMMARY_BATCH) {
+      this.loadSummaries(projects.slice(i, i + SUMMARY_BATCH));
+    }
+  }
+
+  private loadSummaries(projects: ProjectRow[]) {
+    const path = this.orgs.orgPath(this.orgSlug());
+    const keys = projects.map((project) => this.key(project));
+    const ids = projects.map((project) => +project.id);
+    this.queue(() => fetchSummaries(path, ids, this.timeZone)).then(
+      (summaries) => {
+        if (!summaries) {
+          this.hasSummary = false;
+          projects.forEach((project) => this.loadTrendRow(project));
+          return;
+        }
+        projects.forEach((project, i) =>
+          this.set(keys[i], summaries.get(String(project.id)) ?? "failed"),
+        );
+      },
+      () => keys.forEach((key) => this.set(key, "failed")),
+    );
+  }
+
+  private loadTrendRow(project: ProjectRow) {
+    this.loadRow(project, (path) => loadTrend(path, +project.id));
+  }
+
+  private loadRow(
+    project: ProjectRow,
+    task: (path: OrgPath) => Promise<RowFacts>,
+  ) {
+    const key = this.key(project);
+    const path = this.orgs.orgPath(this.orgSlug());
+    this.queue(() => task(path)).then(
+      (facts) => this.set(key, facts),
+      () => this.set(key, "failed"),
+    );
   }
 
   private set(key: string, state: RowState) {
@@ -318,6 +371,35 @@ interface StatsV2 {
 
 type OrgPath = { organization_id_or_slug: string };
 
+/** Facts for many projects in one request; null when the backend has no such endpoint. */
+async function fetchSummaries(
+  path: OrgPath,
+  projects: number[],
+  tz: string,
+): Promise<Map<string, RowFacts> | null> {
+  const { data, response } = await client.GET(
+    "/api/0/organizations/{organization_id_or_slug}/projects/summary/",
+    { params: { path, query: { project: projects, tz } } },
+  );
+  if (response.status === 404) return null;
+  if (!response.ok || !data) throw new Error("summaries failed to load");
+  return new Map(
+    data.map((summary) => [
+      summary.id,
+      {
+        days: summary.days.map(({ date, count }) => {
+          const [year, month, day] = date.split("-").map(Number);
+          const timestamp = new Date(year, month - 1, day).getTime();
+          return { name: String(timestamp), timestamp, value: count };
+        }),
+        unresolved: summary.unresolved,
+        lastSeen: summary.lastSeen,
+      },
+    ]),
+  );
+}
+
+/** One project's facts from three requests, for backends without the summary endpoint. */
 async function loadTrend(path: OrgPath, project: number): Promise<RowFacts> {
   const end = new Date();
   const start = trendStart(end);
@@ -373,7 +455,7 @@ export function trendStart(end: Date) {
   return new Date(localDay(end, 1 - DAYS));
 }
 
-/** One bar per local day; missing hours count as zero. */
+/** One bar per local day; missing hours count as zero. Fallback only. */
 export function toDays(
   stats: StatsV2 | undefined,
   start: Date,
