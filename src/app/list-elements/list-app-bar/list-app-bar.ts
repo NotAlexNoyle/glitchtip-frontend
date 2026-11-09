@@ -18,6 +18,7 @@ import { MatIcon } from "@angular/material/icon";
 import { TimeRangeSelect } from "../timerange-select/time-range-select";
 import { NgTemplateOutlet } from "@angular/common";
 import { MatBadge } from "@angular/material/badge";
+import { MatTooltip } from "@angular/material/tooltip";
 
 @Component({
   standalone: true,
@@ -27,6 +28,7 @@ import { MatBadge } from "@angular/material/badge";
     MatButton,
     MatIconButton,
     MatIcon,
+    MatTooltip,
     NgTemplateOutlet,
     ListTitleComponent,
     ProjectMultiselect,
@@ -68,7 +70,7 @@ export class ListAppBar {
   );
   activeOrgProjects = this.organizationsService.activeOrganizationProjects;
   activeOrgSlug = this.organizationsService.activeOrganizationSlug;
-  accessProjectWrite = this.organizationsService.accessProjectWrite;
+  canWriteProject = this.organizationsService.canWriteProject;
   singleQueriedProjectSlug = computed(() => {
     const queriedProjects = this.queriedProjects();
     const activeOrgProjects = this.activeOrgProjects();
