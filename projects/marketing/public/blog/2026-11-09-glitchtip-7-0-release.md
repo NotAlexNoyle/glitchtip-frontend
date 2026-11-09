@@ -3,9 +3,9 @@ title: GlitchTip 7.0 released
 description: Simpler Permissions, Better Stack Traces and QoL Improvements
 published: true
 ---
- GlitchTip 7.0 is out! It brings simpler permissions, much better stack traces, and a batch of quality of life improvements. Make sure to read [Breaking Changes](#breaking-changes) to understand how these changes affect you!
+ GlitchTip 7.0 is out! It brings simpler permissions, much better stack traces, and a batch of quality of life improvements. Make sure to read [Breaking Changes](/blog/2026-11-09-glitchtip-7-0-release#breaking-changes) to understand how these changes affect you!
 
-## Simpler Permissions
+<h2 id="simpler-permissions">Simpler Permissions</h2>
 
 In 7.0, we've reworked the old permissions scheme into one that is focused on roles. For both users and their API tokens, what you can do depends on your role in a given Organization.  As a reminder, GlitchTip's roles from least to most access go as follows:
 
@@ -60,15 +60,15 @@ GlitchTip's built-in [MCP server](/documentation/mcp) lets AI assistants read yo
 - **AWS RDS IAM.** Self-hosters can authenticate to AWS RDS with IAM tokens instead of a database password. Turn it on with `DATABASE_IAM_AUTH=true` and `sslmode=verify-full`.
 - **Django 6.1.** Security support through December 2027.
 
-## Breaking Changes
+<h2 id="breaking-changes">Breaking Changes</h2>
 
-Hosted users only need to read [For All Users](#for-all-users). Self-hosting? Read both sections.
+Hosted users only need to read [For All Users](/blog/2026-11-09-glitchtip-7-0-release#for-all-users). Self-hosting? Read both sections.
 
-### For All Users
+<h3 id="for-all-users">For All Users</h3>
 
 - **All-digit org slugs renamed.** To improve compatibility with third-party API clients, every URL with an organization in it now also accepts the organization's numeric id, so slugs can no longer be all digits. Existing all-digit slugs got the first free "-N" appended: `2024` becomes `2024-1`, or `2024-2` if that one is taken. If your slug was all digits, update your links, bookmarks, CI configs and API scripts.
 - **Some tokens need reminting.** An API token with scopes beyond its owner's role stops working. Mint a new one.
-- **Some actions now need admin.** Members lose a few configuration actions. See the table in [Simpler Permissions](#simpler-permissions).
+- **Some actions now need admin.** Members lose a few configuration actions. See the table in [Simpler Permissions](/blog/2026-11-09-glitchtip-7-0-release#simpler-permissions).
 
 ### For Self-Hosted Users
 
