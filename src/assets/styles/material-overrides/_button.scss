@@ -1,4 +1,5 @@
 @use "@angular/material" as mat;
+@use "controls";
 @use "variables" as vars;
 
 @include mat.button-overrides(
@@ -10,3 +11,39 @@
     filled-horizontal-padding: 12px,
   )
 );
+
+// Filled buttons darken the red on hover and press, like the active nav item,
+// instead of Material's white state layer; keyboard focus gets the ring.
+[mat-flat-button] {
+  @include mat.button-overrides(
+    (
+      filled-hover-state-layer-opacity: 0,
+      filled-focus-state-layer-opacity: 0,
+      filled-pressed-state-layer-opacity: 0,
+      filled-ripple-color: transparent,
+    )
+  );
+
+  // Touch screens skip hover, so a tap leaves nothing behind.
+  @media (hover: hover) {
+    &:hover {
+      @include mat.button-overrides(
+        (
+          filled-container-color: var(--gt-primary-hover),
+        )
+      );
+    }
+  }
+
+  &:active {
+    @include mat.button-overrides(
+      (
+        filled-container-color: var(--gt-primary-pressed),
+      )
+    );
+  }
+
+  &:focus-visible {
+    @include controls.focus-ring;
+  }
+}

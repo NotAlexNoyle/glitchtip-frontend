@@ -37,6 +37,10 @@ html {
       error: light-dark(#ba1434, #f54e6f),
     )
   );
+  // Hover and press on red fills: the same red a step darker, since a grey
+  // state layer muddies it.
+  --gt-primary-hover: oklch(from var(--mat-sys-primary) calc(l - 0.05) c h);
+  --gt-primary-pressed: oklch(from var(--mat-sys-primary) calc(l - 0.1) c h);
 }
 
 // Extended color
@@ -566,19 +570,6 @@ gt-issue-chart {
 
   .mat-select-search-clear {
     position: relative;
-  }
-}
-
-//Override for routerLinkActiveOptions in the side-nav
-.mat-mdc-list-item.mdc-list-item--activated {
-  background-color: var(--mat-sys-primary) !important;
-
-  .mdc-list-item__primary-text {
-    color: var(--mat-sys-on-primary) !important;
-  }
-
-  mat-icon {
-    color: var(--mat-sys-on-primary) !important;
   }
 }
 

@@ -140,7 +140,7 @@
             mat-list-item
             [matMenuTriggerFor]="orgMenu"
             [disabled]="!activeOrganization()"
-            [class.active-section]="orgWrapper.isActive"
+            [class.mdc-list-item--activated]="orgWrapper.isActive"
             matTooltip="Organization"
             [matTooltipDisabled]="!isCollapsed()"
             matTooltipPosition="right"
@@ -174,7 +174,7 @@
           <button
             mat-list-item
             [matMenuTriggerFor]="profileMenu"
-            [class.active-section]="profileWrapper.isActive"
+            [class.mdc-list-item--activated]="profileWrapper.isActive"
             matTooltip="Profile"
             [matTooltipDisabled]="!isCollapsed()"
             matTooltipPosition="right"
