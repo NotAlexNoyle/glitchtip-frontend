@@ -14,7 +14,7 @@ describe("Create New Project", () => {
 
   it("should render appropriate field and server side errors", () => {
     cy.visit(`/${seededOrg.slug}/settings/projects/new`);
-    cy.contains("Create a New Project");
+    cy.contains("h1", "New project");
     cy.get("[data-cy=create-project-submit]").click();
     cy.get("[data-cy='project-name-error-required']");
     cy.get("input[formcontrolname=name]").type(
@@ -26,14 +26,14 @@ describe("Create New Project", () => {
   it("create new project with new team but no platform", () => {
     cy.intercept("GET", /\/api\/0\/organizations\/(\?|$)/).as("orgList");
     cy.visit(`/${seededOrg.slug}/settings/projects/new`);
-    cy.contains("Create a New Project");
+    cy.contains("h1", "New project");
     cy.get("#create-team-from-projects").click();
     cy.contains(
       "Your team slug can only consist of letters, numbers, underscores and/or hyphens.",
     );
     cy.get("input[formcontrolname=slug]").type(secondSeededTeam.slug);
     cy.get("#create-team-submit").click();
-    cy.contains(new RegExp("^" + secondSeededTeam.slug + "$", "g"));
+    cy.contains(new RegExp("^#" + secondSeededTeam.slug + "$", "g"));
     cy.intercept("POST", `api/0/teams/*/*/projects/`).as(
       "createProjectRequest",
     );
@@ -59,7 +59,7 @@ describe("Create New Project", () => {
 
   it("create new project with platform and existing team", () => {
     cy.visit(`/${seededOrg.slug}/settings/projects/new`);
-    cy.contains("Create a New Project");
+    cy.contains("h1", "New project");
     cy.get("input[formcontrolname=name]").type(newProject.name);
     cy.get("[formcontrolname=platform] [data-test]").first().click();
     cy.get("[data-cy=create-project-submit]").click();
