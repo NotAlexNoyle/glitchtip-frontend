@@ -8,16 +8,16 @@ import {
 } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { MatButtonModule } from "@angular/material/button";
-import { MatCardModule } from "@angular/material/card";
 import { AuthService } from "src/app/auth.service";
 import { AcceptInviteService } from "./accept-invite.service";
+import { PanelComponent } from "src/app/shared/panel/panel.component";
+import { AuthBrandComponent } from "src/app/shared/auth-brand/auth-brand.component";
 
 @Component({
   selector: "gt-accept-invite",
   templateUrl: "./accept-invite.component.html",
-  styleUrls: ["./accept-invite.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatCardModule, MatButtonModule, RouterLink],
+  imports: [MatButtonModule, RouterLink, PanelComponent, AuthBrandComponent],
 })
 export class AcceptInviteComponent implements OnInit {
   #authService = inject(AuthService);
