@@ -74,9 +74,28 @@ Database migrations will automatically happen.
 
 GlitchTip 7.0 squashes old database migrations and changes how GlitchTip runs. Before changing the image tag to `glitchtip/glitchtip:7`:
 
-1. Upgrade to the latest 6.x release first and let it start, so its migrations complete. Upgrading directly from an older release to 7.0 is not supported.
+1. Upgrade from any 6.x release. On 5.x or older, upgrade to the latest 6.x first and let it migrate.
 2. Upgrade PostgreSQL to 15 or newer. PostgreSQL 14 is no longer supported.
 3. If you run separate web and worker services, remove the worker service and keep one GlitchTip service. There is no separate worker in 7.0: `./bin/run-worker.sh` and any `SERVER_ROLE` other than `web` or `all_in_one` now refuse to start. `SERVER_ROLE` and `GLITCHTIP_EMBED_WORKER` are no longer needed and may be removed.
+4. Replace any retired environment variable names using the table below. 7.0 no longer reads the old names. It logs a warning and uses the default. **If you still use an old retention name, retention falls back to 90 days and older events will be deleted.**
+5. Check `TRUSTED_PROXIES`. The default changed from `*` to `private`, so `X-Forwarded-For` is only read from proxies on private addresses. Behind Cloudflare, set `TRUSTED_PROXIES=cloudflare,private`; behind another proxy with public addresses, list its ranges plus `private`. `TRUSTED_PROXIES=*` restores the old behavior.
+
+| Retired name (now ignored)                   | Use instead                            |
+| -------------------------------------------- | -------------------------------------- |
+| `GLITCHTIP_MAX_EVENT_LIFE_DAYS`*             | `GLITCHTIP_RETENTION_DAYS`             |
+| `GLITCHTIP_MAX_TRANSACTION_EVENT_LIFE_DAYS`* | `GLITCHTIP_TRANSACTION_RETENTION_DAYS` |
+| `GLITCHTIP_MAX_UPTIME_CHECK_LIFE_DAYS`*      | `GLITCHTIP_UPTIME_RETENTION_DAYS`      |
+| `GLITCHTIP_MAX_FILE_LIFE_DAYS`*              | `GLITCHTIP_FILE_RETENTION_DAYS`        |
+| `GLITCHTIP_LOGS_COLD_DAYS`*                  | `GLITCHTIP_LOG_RETENTION_DAYS`         |
+| `GLITCHTIP_EVENTS_HOT_DAYS`                  | `GLITCHTIP_EVENT_HOT_DAYS`             |
+| `GLITCHTIP_LOGS_HOT_DAYS`                    | `GLITCHTIP_LOG_HOT_DAYS`               |
+| `ENABLE_OPEN_USER_REGISTRATION`**            | `ENABLE_ORGANIZATION_CREATION`         |
+
+`*` marks a retention setting. If you have the old name set, **update it.**
+
+`**` controls organization creation and needs one extra step. If you set `ENABLE_OPEN_USER_REGISTRATION`, set `ENABLE_ORGANIZATION_CREATION` to the same value before upgrading and remove the old name. In 6.x the old name overrode the new one, so if you set both to different values, 7.0 will flip your organization-creation setting.
+
+These settings were removed rather than renamed. They no longer do anything, log a warning if set, and may be deleted: `IS_WORKER`, `DATABASE_CONN_MAX_AGE`, `USE_ASYNC_SERVER` and `GLITCHTIP_RUST_INGEST`.
 
 ## PikaPods
 
@@ -163,12 +182,11 @@ This method is not recommended and assumes the reader knows how to deploy an ASG
 3. Extract the zip file and move the `dist/glitchtip-frontend/browser` directory to the glitchtip-backend's dist folder. If you installed glitchtip to `/opt/glitchtip` then this might look like `unzip assets.zip; mv dist/glitchtip-frontend/browser /opt/glitchtip/dist`. Note the `mv` command will move the directory called "browser".
 4. Create a Python virtual environment (or other preferred way to run Python). Install [uv](https://docs.astral.sh/uv/) and run `uv sync` to install Python dependencies.
 5. Set required [environment variables](https://glitchtip.com/documentation/install#configuration).
-6. Migrate the database with `./manage.py migrate`
-7. Collect static files `./manage.py collectstatic`
-8. Run `./bin/start.sh` with your preferred init system, such as systemd or supervisor. It starts one process that serves HTTP and runs background tasks and the scheduler; there is no separate worker to run. See `./bin/*` for the other run scripts.
-9. Put a web server such as nginx or apache in front of it as a reverse proxy. Ensure SSL is configured.
+6. Collect static files `./manage.py collectstatic`
+7. Run `./bin/start.sh` with your preferred init system, such as systemd or supervisor. It starts one process that serves HTTP and runs background tasks and the scheduler; there is no separate worker to run. See `./bin/*` for the other run scripts.
+8. Put a web server such as nginx or apache in front of it as a reverse proxy. Ensure SSL is configured.
 
-To upgrade, follow the same steps with the latest version tag. Include migrating the database and collectstatic.
+To upgrade, follow the same steps with the latest version tag, including collectstatic. `./bin/start.sh` migrates the database when it starts.
 
 # Configuration
 
