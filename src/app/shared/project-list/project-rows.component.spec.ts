@@ -16,40 +16,44 @@ import { client } from "src/app/shared/api/api";
 import {
   DAYS,
   ProjectRowsComponent,
-  summaryDays,
+  statsHours,
   toDays,
   trendStart,
 } from "./project-rows.component";
 
-describe("summaryDays", () => {
-  it("puts each summary date at local midnight, like toDays", () => {
-    const [day] = summaryDays([{ date: "2026-11-09", count: 3 }]);
-    expect(day.timestamp).toBe(new Date(2026, 10, 9).getTime());
-    expect(day.value).toBe(3);
+describe("statsHours", () => {
+  it("turns stats_v2 into [seconds, count] hours, zero where empty", () => {
+    const at = new Date(2026, 10, 9, 5);
+    expect(
+      statsHours({
+        intervals: [at.toISOString(), at.toISOString()],
+        groups: [{ series: { "sum(quantity)": [3, null] } }],
+      }),
+    ).toEqual([
+      [at.getTime() / 1000, 3],
+      [at.getTime() / 1000, 0],
+    ]);
+    expect(statsHours(undefined)).toEqual([]);
   });
 });
 
-/**
- * stats_v2 is read hourly and summed per day here, because its daily interval
- * undercounts and a project filter drops empty hours instead of zeroing them.
- */
+/** Hours are summed per local day here, so the server never needs the zone. */
 describe("toDays", () => {
   const start = new Date(2026, 9, 17);
-  const hour = (day: number, h: number) =>
-    new Date(2026, 9, 17 + day, h).toISOString();
+  const hour = (day: number, h: number, count: number) => [
+    new Date(2026, 9, 17 + day, h).getTime() / 1000,
+    count,
+  ];
 
   it("gives one bar per day, zero where no hour was returned", () => {
-    const days = toDays({ intervals: [], groups: [{ series: {} }] }, start);
+    const days = toDays([], start);
     expect(days.length).toBe(DAYS);
     expect(days.every((d) => d.value === 0)).toBe(true);
   });
 
   it("sums every hour of a day, not only the first", () => {
     const days = toDays(
-      {
-        intervals: [hour(2, 0), hour(2, 9), hour(2, 23), hour(3, 1)],
-        groups: [{ series: { "sum(quantity)": [1, 5, null, 2] } }],
-      },
+      [hour(2, 0, 1), hour(2, 9, 5), hour(2, 23, 0), hour(3, 1, 2)],
       start,
     );
     expect(days[2].value).toBe(6);
@@ -57,13 +61,7 @@ describe("toDays", () => {
   });
 
   it("ignores hours outside the window", () => {
-    const days = toDays(
-      {
-        intervals: [hour(-1, 12), hour(DAYS, 12)],
-        groups: [{ series: { "sum(quantity)": [9, 9] } }],
-      },
-      start,
-    );
+    const days = toDays([hour(-1, 12, 9), hour(DAYS, 12, 9)], start);
     expect(days.reduce((sum, d) => sum + d.value, 0)).toBe(0);
   });
 
@@ -92,10 +90,7 @@ describe("toDays", () => {
       const start = trendStart(new Date(2027, 2, 20, 12));
       expect(start).toEqual(new Date(2027, 2, 7));
       const days = toDays(
-        {
-          intervals: [new Date(2027, 2, 14, 12).toISOString()],
-          groups: [{ series: { "sum(quantity)": [4] } }],
-        },
+        [[new Date(2027, 2, 14, 12).getTime() / 1000, 4]],
         start,
       );
       expect(dates(days)).toEqual(calendar(2027, 2, 7));
@@ -105,7 +100,7 @@ describe("toDays", () => {
     it("keeps every calendar day when the clocks go back", () => {
       const start = trendStart(new Date(2026, 10, 3, 12));
       expect(start).toEqual(new Date(2026, 9, 21));
-      expect(dates(toDays(undefined, start))).toEqual(calendar(2026, 9, 21));
+      expect(dates(toDays([], start))).toEqual(calendar(2026, 9, 21));
     });
   });
 });
@@ -174,13 +169,13 @@ describe("ProjectRowsComponent", () => {
       omit?: number,
     ) {
       const projects = projectsOf(count);
-      const calls: { url: string; ids?: number[]; tz?: string }[] = [];
+      const calls: { url: string; ids?: number[] }[] = [];
       vi.spyOn(client, "GET").mockImplementation((async (
         url: string,
-        init: { params: { query?: { project?: number[]; tz?: string } } },
+        init: { params: { query?: { project?: number[] } } },
       ) => {
-        const { project: ids, tz } = init.params.query ?? {};
-        calls.push({ url, ids, tz });
+        const ids = init.params.query?.project;
+        calls.push({ url, ids });
         if (url.endsWith("/projects/summary/")) {
           if (summary === "offline") throw new TypeError("Failed to fetch");
           return {
@@ -190,7 +185,7 @@ describe("ProjectRowsComponent", () => {
                 id: String(id),
                 unresolved: id * 100,
                 lastSeen: null,
-                days: [{ date: "2026-11-09", count: 3 }],
+                hours: [[Date.now() / 1000, 3]],
               })),
             response: new Response(null, { status: summary }),
           };
@@ -227,9 +222,6 @@ describe("ProjectRowsComponent", () => {
     it("loads every visible row from one summary request", async () => {
       const { el, calls } = await renderTrend(200);
       expect(calls.map((call) => call.ids)).toEqual([[1, 2]]);
-      expect(calls[0].tz).toBe(
-        Intl.DateTimeFormat().resolvedOptions().timeZone,
-      );
       expect(el.textContent).toContain("100 unresolved");
       expect(el.textContent).toContain("200 unresolved");
     });

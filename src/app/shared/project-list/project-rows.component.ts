@@ -323,7 +323,7 @@ export class ProjectRowsComponent {
     const path = this.orgs.orgPath(this.orgSlug());
     const keys = projects.map((project) => this.key(project));
     const ids = projects.map((project) => +project.id);
-    this.queue(() => fetchSummaries(path, ids, this.timeZone)).then(
+    this.queue(() => fetchSummaries(path, ids)).then(
       (summaries) => {
         if (typeof summaries === "number") {
           // A 404 means the backend predates the endpoint; other errors cost only this batch.
@@ -376,11 +376,11 @@ type OrgPath = { organization_id_or_slug: string };
 async function fetchSummaries(
   path: OrgPath,
   projects: number[],
-  tz: string,
 ): Promise<Map<string, RowFacts> | number> {
+  const start = trendStart(new Date());
   const { data, response } = await client.GET(
     "/api/0/organizations/{organization_id_or_slug}/projects/summary/",
-    { params: { path, query: { project: projects, tz } } },
+    { params: { path, query: { project: projects } } },
   );
   // The old requests would fail auth the same way.
   if (!response.ok && response.status !== 401 && response.status !== 403) {
@@ -391,23 +391,12 @@ async function fetchSummaries(
     data.map((summary) => [
       summary.id,
       {
-        days: summaryDays(summary.days),
+        days: toDays(summary.hours, start),
         unresolved: summary.unresolved,
         lastSeen: summary.lastSeen,
       },
     ]),
   );
-}
-
-/** One bar per local day, from the summary's calendar dates. */
-export function summaryDays(
-  days: { date: string; count: number }[],
-): FormattedStatsDataPoint[] {
-  return days.map(({ date, count }) => {
-    const [year, month, day] = date.split("-").map(Number);
-    const timestamp = new Date(year, month - 1, day).getTime();
-    return { name: String(timestamp), timestamp, value: count };
-  });
 }
 
 /** One project's facts from three requests, for backends without the summary endpoint. */
@@ -446,7 +435,7 @@ async function loadTrend(path: OrgPath, project: number): Promise<RowFacts> {
     throw new Error("project trend failed to load");
   }
   return {
-    days: toDays(stats.data as StatsV2 | undefined, start),
+    days: toDays(statsHours(stats.data as StatsV2 | undefined), start),
     unresolved: getPaginationHeaders(unresolved.response).hits,
     lastSeen: latest.data?.[0]?.lastSeen ?? null,
   };
@@ -466,20 +455,28 @@ export function trendStart(end: Date) {
   return new Date(localDay(end, 1 - DAYS));
 }
 
-/** One bar per local day; missing hours count as zero. Fallback only. */
+/** stats_v2 as [seconds, count] hours, the summary's shape. */
+export function statsHours(stats: StatsV2 | undefined): number[][] {
+  const series = stats?.groups[0]?.series["sum(quantity)"] ?? [];
+  return (stats?.intervals ?? []).map((at, i) => [
+    Date.parse(at) / 1000,
+    series[i] ?? 0,
+  ]);
+}
+
+/** One bar per local day from [seconds, count] hours; missing hours count as zero. */
 export function toDays(
-  stats: StatsV2 | undefined,
+  hours: number[][],
   start: Date,
 ): FormattedStatsDataPoint[] {
   const totals = new Map<number, number>();
   for (let i = 0; i < DAYS; i++) {
     totals.set(localDay(start, i), 0);
   }
-  const series = stats?.groups[0]?.series["sum(quantity)"] ?? [];
-  stats?.intervals.forEach((at, i) => {
-    const day = localDay(new Date(at));
-    if (totals.has(day)) totals.set(day, totals.get(day)! + (series[i] ?? 0));
-  });
+  for (const [seconds, count] of hours) {
+    const day = localDay(new Date(seconds * 1000));
+    if (totals.has(day)) totals.set(day, totals.get(day)! + count);
+  }
   return [...totals].map(([timestamp, value]) => ({
     name: String(timestamp),
     timestamp,

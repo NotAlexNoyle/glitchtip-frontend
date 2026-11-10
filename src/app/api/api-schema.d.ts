@@ -1339,7 +1339,7 @@ export interface paths {
         };
         /**
          * List Project Summaries
-         * @description Unresolved count, last seen and daily error counts per project, in ``tz``
+         * @description Unresolved count, last seen and hourly error counts per project
          */
         get: operations["apps_projects_api_list_project_summaries"];
         put?: never;
@@ -5034,21 +5034,6 @@ export interface components {
         ProjectSummaryQuery: {
             /** Project */
             project: number[];
-            /**
-             * Tz
-             * @default UTC
-             */
-            tz: string;
-        };
-        /** ProjectSummaryDay */
-        ProjectSummaryDay: {
-            /**
-             * Date
-             * Format: date
-             */
-            date: string;
-            /** Count */
-            count: number;
         };
         /** ProjectSummarySchema */
         ProjectSummarySchema: {
@@ -5058,8 +5043,8 @@ export interface components {
             unresolved: number;
             /** Lastseen */
             lastSeen: string | null;
-            /** Days */
-            days: components["schemas"]["ProjectSummaryDay"][];
+            /** Hours */
+            hours: number[][];
         };
         /** KeyRateLimit */
         KeyRateLimit: {
@@ -8477,7 +8462,6 @@ export interface operations {
         parameters: {
             query: {
                 project: number[];
-                tz?: string;
             };
             header?: never;
             path: {
