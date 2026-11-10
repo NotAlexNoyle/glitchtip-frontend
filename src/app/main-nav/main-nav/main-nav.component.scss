@@ -39,20 +39,6 @@ mat-nav-list {
   }
 }
 
-.active-section {
-  background-color: var(--mat-sys-primary);
-
-  .mdc-list-item__primary-text,
-  span[matListItemTitle],
-  mat-icon {
-    color: var(--mat-sys-on-primary);
-  }
-
-  .arrow-icon {
-    color: var(--mat-sys-on-primary);
-  }
-}
-
 .active-menu-item {
   background-color: var(--mat-sys-surface-container-highest);
 }
