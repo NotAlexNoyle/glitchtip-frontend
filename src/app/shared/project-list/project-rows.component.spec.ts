@@ -210,7 +210,7 @@ describe("ProjectRowsComponent", () => {
           0,
         );
       });
-      return { el, calls };
+      return { el, calls, fixture, projects };
     }
 
     const summaryCalls = (calls: { url: string; ids?: number[] }[]) =>
@@ -241,21 +241,25 @@ describe("ProjectRowsComponent", () => {
     });
 
     it("falls back to a request per fact when the backend has no summary", async () => {
-      const { el, calls } = await renderTrend(404);
+      const { el, calls, fixture, projects } = await renderTrend(404);
       expect(summaryCalls(calls).length).toBe(1);
       expect(calls.length).toBe(1 + 3 * 2);
       expect(el.textContent).toContain("5 unresolved");
-    });
 
-    it("loads a batch the summary rejects the old way", async () => {
-      const { el, calls } = await renderTrend(422);
+      // Later rows skip the summary once it is known to be missing.
+      fixture.componentRef.setInput("projects", [
+        ...projects,
+        ...projectsOf(3).slice(2),
+      ]);
+      await vi.waitFor(() => {
+        fixture.detectChanges();
+        expect(calls.length).toBe(1 + 3 * 3);
+      });
       expect(summaryCalls(calls).length).toBe(1);
-      expect(calls.length).toBe(1 + 3 * 2);
-      expect(el.textContent).toContain("5 unresolved");
     });
 
-    for (const summary of [403, "offline"] as const) {
-      it(`marks the batch failed without retrying when ${summary === 403 ? "forbidden" : "offline"}`, async () => {
+    for (const summary of [403, 500, "offline"] as const) {
+      it(`marks the batch failed without retrying on ${summary}`, async () => {
         const { el, calls } = await renderTrend(summary);
         expect(calls.length).toBe(1);
         expect(failedRows(el)).toBe(2);

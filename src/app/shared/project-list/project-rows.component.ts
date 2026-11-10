@@ -325,9 +325,8 @@ export class ProjectRowsComponent {
     const ids = projects.map((project) => +project.id);
     this.queue(() => fetchSummaries(path, ids)).then(
       (summaries) => {
-        if (typeof summaries === "number") {
-          // A 404 means the backend predates the endpoint; other errors cost only this batch.
-          if (summaries === 404) this.hasSummary = false;
+        if (!summaries) {
+          this.hasSummary = false;
           projects.forEach((project) => this.loadTrendRow(project));
           return;
         }
@@ -372,20 +371,18 @@ interface StatsV2 {
 
 type OrgPath = { organization_id_or_slug: string };
 
-/** Facts for many projects in one request, or the status when the rows should load the old way. */
+/** Facts for many projects in one request, or null when the backend predates the endpoint. */
 async function fetchSummaries(
   path: OrgPath,
   projects: number[],
-): Promise<Map<string, RowFacts> | number> {
+): Promise<Map<string, RowFacts> | null> {
   const start = trendStart(new Date());
   const { data, response } = await client.GET(
     "/api/0/organizations/{organization_id_or_slug}/projects/summary/",
     { params: { path, query: { project: projects } } },
   );
-  // The old requests would fail auth the same way.
-  if (!response.ok && response.status !== 401 && response.status !== 403) {
-    return response.status;
-  }
+  // Other errors fail only this batch, so a struggling server gets no extra requests.
+  if (response.status === 404) return null;
   if (!response.ok || !data) throw new Error("summaries failed to load");
   return new Map(
     data.map((summary) => [
