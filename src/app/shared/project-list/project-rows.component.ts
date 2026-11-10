@@ -325,8 +325,9 @@ export class ProjectRowsComponent {
     const ids = projects.map((project) => +project.id);
     this.queue(() => fetchSummaries(path, ids, this.timeZone)).then(
       (summaries) => {
-        if (!summaries) {
-          this.hasSummary = false;
+        if (typeof summaries === "number") {
+          // A 404 means the backend predates the endpoint; other errors cost only this batch.
+          if (summaries === 404) this.hasSummary = false;
           projects.forEach((project) => this.loadTrendRow(project));
           return;
         }
@@ -371,32 +372,42 @@ interface StatsV2 {
 
 type OrgPath = { organization_id_or_slug: string };
 
-/** Facts for many projects in one request; null when the backend has no such endpoint. */
+/** Facts for many projects in one request, or the status when the rows should load the old way. */
 async function fetchSummaries(
   path: OrgPath,
   projects: number[],
   tz: string,
-): Promise<Map<string, RowFacts> | null> {
+): Promise<Map<string, RowFacts> | number> {
   const { data, response } = await client.GET(
     "/api/0/organizations/{organization_id_or_slug}/projects/summary/",
     { params: { path, query: { project: projects, tz } } },
   );
-  if (response.status === 404) return null;
+  // The old requests would fail auth the same way.
+  if (!response.ok && response.status !== 401 && response.status !== 403) {
+    return response.status;
+  }
   if (!response.ok || !data) throw new Error("summaries failed to load");
   return new Map(
     data.map((summary) => [
       summary.id,
       {
-        days: summary.days.map(({ date, count }) => {
-          const [year, month, day] = date.split("-").map(Number);
-          const timestamp = new Date(year, month - 1, day).getTime();
-          return { name: String(timestamp), timestamp, value: count };
-        }),
+        days: summaryDays(summary.days),
         unresolved: summary.unresolved,
         lastSeen: summary.lastSeen,
       },
     ]),
   );
+}
+
+/** One bar per local day, from the summary's calendar dates. */
+export function summaryDays(
+  days: { date: string; count: number }[],
+): FormattedStatsDataPoint[] {
+  return days.map(({ date, count }) => {
+    const [year, month, day] = date.split("-").map(Number);
+    const timestamp = new Date(year, month - 1, day).getTime();
+    return { name: String(timestamp), timestamp, value: count };
+  });
 }
 
 /** One project's facts from three requests, for backends without the summary endpoint. */
