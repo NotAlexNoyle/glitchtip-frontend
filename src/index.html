@@ -110,11 +110,13 @@
         stroke: none;
       }
       #openid path:nth-child(8) {
-        fill: #232020;
+        fill: currentColor;
         fill-opacity: 1;
         fill-rule: nonzero;
         stroke: none;
       }
+      /* Monochrome marks follow the text colour so they show in dark mode. */
+      #github path,
       #discord path,
       #webhook path {
         fill: currentColor;
@@ -309,12 +311,12 @@
             gradientTransform="matrix(15.8584 0 0 -15.8584 -1816.246 8200.18)"
             gradientUnits="userSpaceOnUse"
           >
-            <stop offset="0" style="stop-color: #348878" />
-            <stop offset="1" style="stop-color: #56bda8" />
+            <stop offset="0" stop-color="#348878" />
+            <stop offset="1" stop-color="#56bda8" />
           </linearGradient>
           <path
             d="M441.8 64.8H84.7c-24.5 0-44.6 19-44.6 42.1l.3 285.3-6.7 38.4 95.6-28.8h312.4c24.5 0 44.6-19 44.6-42.1V106.9c.1-23.2-20-42.1-44.5-42.1"
-            style="fill: url(#ntfy-gradient)"
+            fill="url(#ntfy-gradient)"
           />
           <path
             fill="#fff"

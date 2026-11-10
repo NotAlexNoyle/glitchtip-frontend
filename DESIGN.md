@@ -138,6 +138,11 @@ Every record detail page opens with `gt-page-header`: the record's name, then on
 - The back link and page actions live in the top app bar, never in the header.
 - The title is the record's own name, not a sentence about it ("checkout-api", not "Settings for checkout-api"). Titles have one style; an identifier title (an email, a version) is not set in mono.
 
+### Page width
+
+- Width follows the page's job. Pages for watching data (the Projects, Issues, Logs, Performance, Releases and Uptime lists, and the issue, transaction, release and monitor pages) are full width (`l-body l-body--full-width`), so the body shares the top app bar's edges.
+- Settings pages (including project, team and member settings) and forms stay centered at 1100px (`l-body`) on every screen; forms read worse wider. The settings projects list is centered even though the Projects list is full width.
+
 ### Top app bar
 
 - The top app bar is 52px. Every control in it is 32px: compact buttons (`controls.compact-buttons` from `_controls.scss`, also used by panel headers) and ghost select filters. Visual customisation of Material goes through its overrides/density mixins in `material-overrides/`, never internal classes or `::ng-deep`.

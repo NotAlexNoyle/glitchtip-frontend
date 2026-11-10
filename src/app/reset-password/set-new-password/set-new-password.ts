@@ -14,20 +14,20 @@ import {
 } from "@angular/forms";
 import { MatInputModule } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
-
-import { MatCardModule } from "@angular/material/card";
 import { LoadingButtonComponent } from "../../shared/loading-button/loading-button.component";
 import { InputMatcherDirective } from "../../shared/input-matcher.directive";
 import { FormErrorComponent } from "src/app/shared/forms/form-error/form-error.component";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { SetNewPasswordService } from "./set-new-password-state";
+import { PanelComponent } from "../../shared/panel/panel.component";
+import { AuthBrandComponent } from "../../shared/auth-brand/auth-brand.component";
 
 @Component({
   templateUrl: "./set-new-password.html",
-  styleUrls: ["./set-new-password.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    MatCardModule,
+    PanelComponent,
+    AuthBrandComponent,
     ReactiveFormsModule,
     FormErrorComponent,
     MatFormFieldModule,

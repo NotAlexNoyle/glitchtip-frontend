@@ -12,6 +12,7 @@ $font-path: "../../../src/assets/fonts";
 html {
   color-scheme: light;
   // Land #fragment targets below the sticky app bar. Keep in sync with
+  // the setOffset in app.component.ts and
   // ANCHOR_OFFSET in documentation-page.component.ts.
   scroll-padding-top: 88px;
   @include mat.theme(

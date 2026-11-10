@@ -74,6 +74,7 @@
   @switch (zeroStateKind()) {
     @case ("no-projects") {
       <gt-empty-state
+        tall
         data-cy="no-projects"
         icon="folder"
         i18n-title
@@ -84,6 +85,7 @@
     }
     @case ("no-access") {
       <gt-empty-state
+        tall
         icon="security"
         i18n-title
         title="No access"
@@ -92,6 +94,7 @@
     }
     @case ("no-results") {
       <gt-empty-state
+        tall
         icon="search"
         i18n-title
         title="No matching issues"
