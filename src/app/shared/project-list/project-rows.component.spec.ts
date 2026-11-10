@@ -16,9 +16,18 @@ import { client } from "src/app/shared/api/api";
 import {
   DAYS,
   ProjectRowsComponent,
+  summaryDays,
   toDays,
   trendStart,
 } from "./project-rows.component";
+
+describe("summaryDays", () => {
+  it("puts each summary date at local midnight, like toDays", () => {
+    const [day] = summaryDays([{ date: "2026-11-09", count: 3 }]);
+    expect(day.timestamp).toBe(new Date(2026, 10, 9).getTime());
+    expect(day.value).toBe(3);
+  });
+});
 
 /**
  * stats_v2 is read hourly and summed per day here, because its daily interval
@@ -158,23 +167,32 @@ describe("ProjectRowsComponent", () => {
         isMember: true,
       }));
 
-    async function renderTrend(summaryStatus: number, count = 2) {
+    // A status for the summary response, or "offline" for a request that never gets one
+    async function renderTrend(
+      summary: number | "offline",
+      count = 2,
+      omit?: number,
+    ) {
       const projects = projectsOf(count);
-      const calls: { url: string; ids?: number[] }[] = [];
+      const calls: { url: string; ids?: number[]; tz?: string }[] = [];
       vi.spyOn(client, "GET").mockImplementation((async (
         url: string,
-        init: { params: { query?: { project?: number[] } } },
+        init: { params: { query?: { project?: number[]; tz?: string } } },
       ) => {
-        calls.push({ url, ids: init.params.query?.project });
+        const { project: ids, tz } = init.params.query ?? {};
+        calls.push({ url, ids, tz });
         if (url.endsWith("/projects/summary/")) {
+          if (summary === "offline") throw new TypeError("Failed to fetch");
           return {
-            data: init.params.query!.project!.map((id) => ({
-              id: String(id),
-              unresolved: id * 100,
-              lastSeen: null,
-              days: [{ date: "2026-11-09", count: 3 }],
-            })),
-            response: new Response(null, { status: summaryStatus }),
+            data: ids!
+              .filter((id) => id !== omit)
+              .map((id) => ({
+                id: String(id),
+                unresolved: id * 100,
+                lastSeen: null,
+                days: [{ date: "2026-11-09", count: 3 }],
+              })),
+            response: new Response(null, { status: summary }),
           };
         }
         const headers = { link: "", "x-hits": "5", "x-max-hits": "1000" };
@@ -188,20 +206,39 @@ describe("ProjectRowsComponent", () => {
       fixture.componentRef.setInput("orgSlug", "acme");
       fixture.componentRef.setInput("projects", projects);
       fixture.detectChanges();
-      await vi.waitFor(() => expect(client.GET).toHaveBeenCalled());
-      await new Promise((done) => setTimeout(done, 20));
-      fixture.detectChanges();
-      return { el: fixture.nativeElement as HTMLElement, calls };
+      const el = fixture.nativeElement as HTMLElement;
+      // Every row has settled once no skeleton is still pulsing.
+      await vi.waitFor(() => {
+        fixture.detectChanges();
+        expect(client.GET).toHaveBeenCalled();
+        expect(el.querySelectorAll(".glance__skeleton--loading").length).toBe(
+          0,
+        );
+      });
+      return { el, calls };
     }
 
     const summaryCalls = (calls: { url: string; ids?: number[] }[]) =>
       calls.filter((call) => call.url.endsWith("/projects/summary/"));
+    const failedRows = (el: HTMLElement) =>
+      el.querySelectorAll(".glance__skeleton:not(.glance__skeleton--loading)")
+        .length;
 
     it("loads every visible row from one summary request", async () => {
       const { el, calls } = await renderTrend(200);
       expect(calls.map((call) => call.ids)).toEqual([[1, 2]]);
+      expect(calls[0].tz).toBe(
+        Intl.DateTimeFormat().resolvedOptions().timeZone,
+      );
       expect(el.textContent).toContain("100 unresolved");
       expect(el.textContent).toContain("200 unresolved");
+    });
+
+    it("marks a row the summary leaves out as failed", async () => {
+      const { el } = await renderTrend(200, 2, 2);
+      expect(el.textContent).toContain("100 unresolved");
+      expect(el.textContent).not.toContain("200 unresolved");
+      expect(failedRows(el)).toBe(1);
     });
 
     it("splits more than 100 rows across requests", async () => {
@@ -218,12 +255,20 @@ describe("ProjectRowsComponent", () => {
       expect(el.textContent).toContain("5 unresolved");
     });
 
-    it("does not fall back when the summary request fails", async () => {
-      const { el, calls } = await renderTrend(500);
-      expect(calls.length).toBe(1);
-      expect(el.textContent).not.toMatch(/\d unresolved/);
-      expect(el.querySelectorAll(".glance__skeleton--loading").length).toBe(0);
+    it("loads a batch the summary rejects the old way", async () => {
+      const { el, calls } = await renderTrend(422);
+      expect(summaryCalls(calls).length).toBe(1);
+      expect(calls.length).toBe(1 + 3 * 2);
+      expect(el.textContent).toContain("5 unresolved");
     });
+
+    for (const summary of [403, "offline"] as const) {
+      it(`marks the batch failed without retrying when ${summary === 403 ? "forbidden" : "offline"}`, async () => {
+        const { el, calls } = await renderTrend(summary);
+        expect(calls.length).toBe(1);
+        expect(failedRows(el)).toBe(2);
+      });
+    }
   });
 
   describe("in the settings list", () => {
