@@ -99,6 +99,9 @@ const LABELS: { [key: string]: string } = {
 /** Facts shown before "Show all", never for just one more. */
 const CAP = 6;
 
+/** A chip that repeats a fact row (a user id, browser.name) goes last. */
+const REPEAT_ORDER = 101;
+
 /** Time sorts after the tag and context facts, before custom tags. */
 const TIME_ORDER = 50;
 
@@ -135,10 +138,14 @@ export class EventFactsPanelComponent {
     const tags = event.tags ?? [];
     const keys = tags.map((t) => t.key ?? "");
     const requestUrl = this.issueService.eventEntryRequest()?.url;
+    // The User fact already links the identity it shows.
+    const userKey = eventUser(
+      event.user as { [key: string]: unknown } | null,
+    )?.key;
     const chips: TagChip[] = [];
     for (const t of tags) {
       if (!t.key || isBlank(t.value)) continue;
-      if (isFactTag(t.key, keys) || !isSpreadTag(t.key, keys)) continue;
+      if (isFactTag(t.key, keys) || t.key === userKey) continue;
       if (t.key === "url" && requestUrl) continue;
       const value = String(t.value);
       chips.push({
@@ -146,7 +153,7 @@ export class EventFactsPanelComponent {
         value,
         query: this.tagFilter(t.key, value),
         href: isHttpUrl(value) ? value : undefined,
-        order: rank(t.key),
+        order: isSpreadTag(t.key, keys) ? rank(t.key) : REPEAT_ORDER,
       });
     }
     return chips.sort(byRank);

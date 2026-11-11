@@ -1,6 +1,7 @@
 import { inject } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Params } from "@angular/router";
+import { IssueTagsAdjusted } from "../interfaces";
 
 /** Page filters a tag link keeps when it opens the issue list. */
 const KEPT_FILTERS = ["project", "environment"];
@@ -16,6 +17,20 @@ export function isSpreadTag(key: string, keys: string[]): boolean {
   if (key === "browser.name" && keys.includes("browser")) return false;
   if (key === "os" && keys.includes("os.name")) return false;
   return true;
+}
+
+type RankableTag = Pick<
+  IssueTagsAdjusted,
+  "key" | "uniqueValues" | "topValues"
+>;
+
+/** A tag's top share; a tag with one value says nothing about spread and sinks. */
+const tagSignal = (tag: RankableTag) =>
+  tag.uniqueValues > 1 ? (tag.topValues[0]?.percent ?? 0) : -1;
+
+/** Most concentrated tags first; ties by key, so the order holds between loads. */
+export function byTagSignal(a: RankableTag, b: RankableTag): number {
+  return tagSignal(b) - tagSignal(a) || a.key.localeCompare(b.key);
 }
 
 /** Issue list params for one tag value, keeping the page's project and environment. */

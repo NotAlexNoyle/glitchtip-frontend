@@ -15,10 +15,12 @@ import { OrganizationsService } from "src/app/api/organizations.service";
 import { IssueTagsAdjusted } from "../../interfaces";
 import { IssueDetailService } from "../issue-detail.service";
 import { openKeys } from "src/app/shared/signal.utils";
-import { injectTagFilter, isSpreadTag, isUserTag } from "../tag-filters";
-
-/** The user tag the full ranking shows: the most readable one present. */
-const USER_DISPLAY_KEYS = ["user.email", "user.username", "user.id", "user.ip"];
+import {
+  byTagSignal,
+  injectTagFilter,
+  isSpreadTag,
+  isUserTag,
+} from "../tag-filters";
 
 /** The one user tag the summary line may show, most readable first. */
 const LINE_USER_KEYS = ["user.email", "user.username", "user.id"];
@@ -28,15 +30,6 @@ const USER_CONCENTRATION_MIN = 50;
 
 /** Chips on the line before All tags. */
 const TOP = 3;
-
-/** The ranking also splits by release and by one user tag. */
-function isRankedTag(key: string, keys: string[]): boolean {
-  if (key === "release") return true;
-  if (isUserTag(key)) {
-    return key === USER_DISPLAY_KEYS.find((k) => keys.includes(k));
-  }
-  return isSpreadTag(key, keys);
-}
 
 interface TagValue {
   value: string;
@@ -83,31 +76,25 @@ export class IssueTagsSummaryComponent {
   readonly panelId = `gt-issue-tags-${nextId++}`;
   readonly opened = openKeys(this.issueService.tags);
 
-  private readonly tags = computed(() => {
-    const tags = this.issueService.tags() ?? [];
-    const keys = tags.map((t) => t.key);
-    return tags.filter((t) => t.topValues.length && isRankedTag(t.key, keys));
-  });
-
-  /** Every tag, most concentrated first; a tag with one value shows 100%. */
-  readonly ranked = computed<RankedTag[]>(() =>
-    [...this.tags()]
-      .sort(
-        (a, b) =>
-          (b.topValues[0]?.percent ?? 0) - (a.topValues[0]?.percent ?? 0),
-      )
-      .map((t) => this.toRanked(t)),
+  private readonly tags = computed(() =>
+    (this.issueService.tags() ?? []).filter((t) => t.topValues.length),
   );
 
-  /** At most one user tag, and only when one user dominates. */
+  /** Every tag, so each one can be filtered by. */
+  readonly ranked = computed<RankedTag[]>(() =>
+    [...this.tags()].sort(byTagSignal).map((t) => this.toRanked(t)),
+  );
+
+  /** The line skips repeats, and shows one user tag only when one user dominates. */
   readonly top = computed(() => {
     const ranked = this.ranked();
-    const userKey = LINE_USER_KEYS.find((k) => ranked.some((t) => t.key === k));
+    const keys = ranked.map((t) => t.key);
+    const userKey = LINE_USER_KEYS.find((k) => keys.includes(k));
     return ranked
-      .filter(
-        (t) =>
-          !isUserTag(t.key) ||
-          (t.key === userKey && t.top.percent >= USER_CONCENTRATION_MIN),
+      .filter((t) =>
+        isUserTag(t.key)
+          ? t.key === userKey && t.top.percent >= USER_CONCENTRATION_MIN
+          : t.key === "release" || isSpreadTag(t.key, keys),
       )
       .slice(0, TOP)
       .map((t) => ({ ...t, tip: `${t.key}: ${t.top.tip}` }));
