@@ -89,7 +89,7 @@ function spend(text: string, budget: { left: number }): string | null {
 }
 
 /** A long or multi-line value goes under its label on narrow panels. */
-export function isLongValue(text: string): boolean {
+function isLongValue(text: string): boolean {
   return text.length > 24 || text.includes("\n");
 }
 

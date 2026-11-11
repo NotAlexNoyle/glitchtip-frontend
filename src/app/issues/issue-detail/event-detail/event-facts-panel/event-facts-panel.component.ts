@@ -84,6 +84,7 @@ const LABELS: { [key: string]: string } = {
   environment: $localize`Environment`,
   release: $localize`Release`,
   browser: $localize`Browser`,
+  "browser.name": $localize`Browser`,
   "os.name": $localize`OS`,
   os: $localize`OS`,
   device: $localize`Device`,
@@ -199,7 +200,6 @@ export class EventFactsPanelComponent {
       const kind = CONTEXT_OF[tag.key];
       if (kind) kindsWithTag.add(kind);
       if (!isFactTag(tag.key, keys)) continue;
-      if (tag.key === "url" && request?.url) continue;
       const ctx = kind ? contextFor(contexts, kind) : undefined;
       const fact: Fact = {
         label: LABELS[tag.key] ?? tag.key,
