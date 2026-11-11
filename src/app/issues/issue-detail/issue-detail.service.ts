@@ -147,6 +147,8 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
     const tags = this.rawTags();
     return tags && this.tagsWithPercent(tags);
   });
+  /** While true, the page may still show the event it had before. */
+  readonly eventLoading = computed(() => this.#eventResource.isLoading());
   readonly eventInitialLoadComplete = computed(() =>
     this.#eventResource.hasValue(),
   );
@@ -321,7 +323,12 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
     },
   });
   #eventResource = resource({
-    params: () => ({ issueID: this.issueID(), eventID: this.eventID() }),
+    // A new visit refetches; reload() would keep showing the old event.
+    params: () => ({
+      issueID: this.issueID(),
+      eventID: this.eventID(),
+      visit: this.#visit(),
+    }),
     loader: async ({ params }) => {
       const issueID = parseInt(params.issueID);
       const eventID = params.eventID;
@@ -366,7 +373,6 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
     if (revisit) {
       this.#issueResource.reload();
       this.#tagsResource.reload();
-      this.#eventResource.reload();
     }
   }
 

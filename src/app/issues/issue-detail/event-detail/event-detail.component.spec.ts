@@ -65,6 +65,7 @@ function setup(
     })),
   };
   const dialogs: object[] = [];
+  const eventLoading = signal(false);
   const recentEvents = signal(recent);
   const url = (id?: string | null) =>
     id ? `/acme/issues/7/events/${id}` : null;
@@ -92,6 +93,7 @@ function setup(
           exceptionHasFrames: signal(false),
           eventInitialLoadComplete: signal(true),
           loadRecentEvents: vi.fn(),
+          eventLoading,
           // Checks the names only, so a rename in the service fails here.
         } satisfies Partial<Record<keyof IssueDetailService, unknown>>,
       },
@@ -130,6 +132,7 @@ function setup(
     recentEvents,
     snackBar,
     dialogs,
+    eventLoading,
   };
 }
 
@@ -197,10 +200,15 @@ describe("EventDetailComponent switcher options", () => {
 describe("EventDetailComponent [ and ] keys", () => {
   function press(
     init: KeyboardEventInit,
-    { from = document.body as Element, dialogOpen = false } = {},
+    {
+      from = document.body as Element,
+      dialogOpen = false,
+      loading = false,
+    } = {},
   ) {
-    const { dialogs } = setup(eventAt(2));
+    const { dialogs, eventLoading } = setup(eventAt(2));
     if (dialogOpen) dialogs.push({});
+    eventLoading.set(loading);
     const navigate = vi
       .spyOn(TestBed.inject(Router), "navigateByUrl")
       .mockResolvedValue(true);
@@ -221,6 +229,12 @@ describe("EventDetailComponent [ and ] keys", () => {
 
     const newer = press({ key: "]" });
     expect(newer.navigate).toHaveBeenCalledWith("/acme/issues/7/events/e1");
+  });
+
+  it("waits for the next event to load before stepping again", () => {
+    expect(
+      press({ key: "[" }, { loading: true }).navigate,
+    ).not.toHaveBeenCalled();
   });
 
   it("leaves browser shortcuts alone", () => {

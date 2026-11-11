@@ -171,7 +171,7 @@
             i18n-matTooltip
             matTooltip="Older event"
             [routerLink]="previousEventUrl() || null"
-            [disabled]="previousEvent() === false"
+            [disabled]="eventLoading() || previousEvent() === false"
           >
             <mat-icon>keyboard_arrow_left</mat-icon>
           </a>
@@ -200,7 +200,7 @@
             i18n-matTooltip
             matTooltip="Newer event"
             [routerLink]="nextEventUrl() || null"
-            [disabled]="nextEvent() === false"
+            [disabled]="eventLoading() || nextEvent() === false"
           >
             <mat-icon>keyboard_arrow_right</mat-icon>
           </a>
@@ -208,14 +208,20 @@
       </div>
     </div>
 
-    <div class="event-zone__body" #zoneBody>
-      <gt-entry-exception />
-      <gt-entry-message />
-      <gt-entry-csp />
-      <gt-event-facts-panel (showRequest)="scrollToRequest()" />
-      <gt-entry-breadcrumbs />
-      <gt-entry-request />
-      <gt-event-more-data />
-    </div>
+    <gt-loading-overlay
+      i18n-label
+      label="Loading event"
+      [loading]="eventLoading()"
+    >
+      <div class="event-zone__body" #zoneBody>
+        <gt-entry-exception />
+        <gt-entry-message />
+        <gt-entry-csp />
+        <gt-event-facts-panel (showRequest)="scrollToRequest()" />
+        <gt-entry-breadcrumbs />
+        <gt-entry-request />
+        <gt-event-more-data />
+      </div>
+    </gt-loading-overlay>
   </section>
 }

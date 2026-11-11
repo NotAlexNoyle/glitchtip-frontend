@@ -27,6 +27,7 @@ import { SettingsService } from "src/app/api/settings.service";
 import { DaysAgoPipe } from "src/app/shared/days-ago.pipe";
 import { PanelComponent } from "src/app/shared/panel/panel.component";
 import { EmptyStateComponent } from "src/app/shared/empty-state/empty-state.component";
+import { LoadingOverlayComponent } from "src/app/shared/loading-overlay/loading-overlay.component";
 import { SplitButtonComponent } from "src/app/shared/split-button/split-button.component";
 import { EntryRequestComponent } from "./entry-request/entry-request.component";
 import { EntryBreadcrumbsComponent } from "./entry-breadcrumbs/entry-breadcrumbs.component";
@@ -121,6 +122,7 @@ function readHintSeen(): boolean {
     DaysAgoPipe,
     PanelComponent,
     EmptyStateComponent,
+    LoadingOverlayComponent,
     SplitButtonComponent,
   ],
 })
@@ -211,6 +213,8 @@ export class EventDetailComponent {
   previousEvent = this.issueService.hasPreviousEvent;
   nextEventUrl = this.issueService.nextEventUrl;
   previousEventUrl = this.issueService.previousEventUrl;
+  /** Steps wait for the event on screen to be the one the URL names. */
+  eventLoading = this.issueService.eventLoading;
 
   shortId = computed(() => shortEventId(this.event()?.id ?? ""));
   eventCount = computed(() => +(this.issueService.issue()?.count ?? 0));
@@ -328,7 +332,7 @@ export class EventDetailComponent {
 
   /** [ and ] step to the older and newer event, outside fields and overlays. */
   onKeydown(e: KeyboardEvent) {
-    if (e.key !== "[" && e.key !== "]") return;
+    if ((e.key !== "[" && e.key !== "]") || this.eventLoading()) return;
     // Some layouts type [ and ] with Option or AltGr.
     if (e.metaKey || (e.ctrlKey && !e.getModifierState("AltGraph"))) return;
     if (this.dialog.openDialogs.length) return;

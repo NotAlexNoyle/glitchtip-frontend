@@ -81,10 +81,13 @@ describe("IssueDetailService open", () => {
     get.mockClear();
 
     service.open("acme", "7");
-    // The page keeps the issue it showed while the fresh copy loads.
+    // The issue stays while it reloads; the event, which may be stale, does not.
     expect(service.issue()).toMatchObject({ id: "7" });
+    expect(service.event()).toBeUndefined();
     await settle();
-    expect(get.mock.calls.map((call) => call[0])).toEqual(
+    const urls = get.mock.calls.map((call) => String(call[0]));
+    expect(urls.filter((url) => url.includes("/events/"))).toHaveLength(1);
+    expect(urls).toEqual(
       expect.arrayContaining([
         "/api/0/issues/{issue_id}/",
         "/api/0/issues/{issue_id}/events/latest/",
