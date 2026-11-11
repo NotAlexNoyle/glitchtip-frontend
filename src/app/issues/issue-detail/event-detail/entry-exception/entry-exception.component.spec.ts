@@ -52,6 +52,12 @@ const texts = (el: HTMLElement, selector: string) =>
     n.textContent!.replace(/\s+/g, " ").trim(),
   );
 
+/** A frameless link has nothing to fold, so it has no aria-expanded. */
+const expanded = (el: HTMLElement) =>
+  [...el.querySelectorAll(".chain__head")].map((b) =>
+    b.getAttribute("aria-expanded"),
+  );
+
 describe("EntryExceptionComponent frames", () => {
   const stack = (n: number) => ({
     frames: Array.from({ length: n }, (_, i) => ({
@@ -140,6 +146,38 @@ describe("EntryExceptionComponent frames", () => {
       "In group",
     ]);
     expect(el.querySelector(".chain--root")).toBeNull();
+  });
+
+  it("opens a group's first member with frames, not its last", () => {
+    // As the MIT sentry JavaScript SDK sends an AggregateError, thrown first.
+    const member = (type: string, i: number, frames: number) => ({
+      type,
+      value: "x",
+      ...(frames ? { stacktrace: stack(frames) } : {}),
+      mechanism: { type: "chained", handled: true, source: `errors[${i}]` },
+    });
+    const el = renderChain([
+      { type: "AggregateError", value: "3 failed", stacktrace: stack(1) },
+      member("SyntaxError", 0, 0),
+      member("RangeError", 1, 1),
+      member("TypeError", 2, 1),
+    ]);
+    expect(expanded(el)).toEqual(["false", null, "true", "false"]);
+  });
+
+  it("opens the group itself when no member has frames", () => {
+    // As sentry-go sends errors.Join: members carry no frames.
+    const member = (i: number) => ({
+      type: "*errors.errorString",
+      value: "x",
+      mechanism: { type: "chained", source: `errors[${i}]` },
+    });
+    const el = renderChain([
+      { type: "*errors.joinError", value: "a\nb", stacktrace: stack(1) },
+      member(0),
+      member(1),
+    ]);
+    expect(expanded(el)).toEqual(["true", null, null]);
   });
 
   it("names a frame that has only an address and a package", () => {

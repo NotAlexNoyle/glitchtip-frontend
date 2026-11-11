@@ -123,6 +123,13 @@ function mechanismOf(mech: Values["mechanism"]): Mechanism | null {
   return { type: mech.type ?? "", handled, fn };
 }
 
+function roleOf(i: number, value: Values, root: boolean): string {
+  if (i === 0) return $localize`Thrown`;
+  if (inGroup(value)) return $localize`In group`;
+  if (root) return $localize`Root cause`;
+  return $localize`Caused by`;
+}
+
 @Component({
   selector: "gt-entry-exception",
   templateUrl: "./entry-exception.component.html",
@@ -194,21 +201,15 @@ export class EntryExceptionComponent {
       const items = stack.map((frame, fi) =>
         this.frameItem(frame, frameKey(i, fi), platform),
       );
+      const root = i === last && last > 0 && !grouped;
       return {
         key: linkKey(i),
-        role:
-          i === 0
-            ? $localize`Thrown`
-            : inGroup(value)
-              ? $localize`In group`
-              : i === last && !grouped
-                ? $localize`Root cause`
-                : $localize`Caused by`,
+        role: roleOf(i, value, root),
         type: value.type,
         value: value.value || "",
         unhandled: value.mechanism?.handled === false,
         mechanism: mechanismOf(value.mechanism),
-        root: i === last && last > 0 && !grouped,
+        root,
         top: items[topFrameIndex(stack)],
         frames: newestFirst ? [...items].reverse() : items,
       };
@@ -227,17 +228,18 @@ export class EntryExceptionComponent {
     return n > 1 ? $localize`${n}:count: in chain, thrown first` : "";
   });
 
-  /** The deepest link with frames opens on its top app frame. */
+  /** A group opens its first framed member, a chain its deepest framed link. */
   private readonly defaultOpen = computed(() => {
     const values = this.values();
     const open = new Set<string>();
-    for (let i = values.length - 1; i >= 0; i--) {
-      const stack = stackFrames(values[i]);
-      if (!stack.length) continue;
-      if (values.length > 1) open.add(linkKey(i));
-      open.add(frameKey(i, topFrameIndex(stack)));
-      break;
-    }
+    const framed = (j: number) => stackFrames(values[j]).length > 0;
+    const indexes = values.map((_, j) => j);
+    const i =
+      indexes.find((j) => inGroup(values[j]) && framed(j)) ??
+      indexes.reverse().find(framed);
+    if (i === undefined) return open;
+    if (values.length > 1) open.add(linkKey(i));
+    open.add(frameKey(i, topFrameIndex(stackFrames(values[i]))));
     return open;
   });
   readonly opened = openKeys(this.defaultOpen, (keys) => keys);

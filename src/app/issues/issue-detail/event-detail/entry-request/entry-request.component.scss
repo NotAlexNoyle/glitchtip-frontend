@@ -1,10 +1,6 @@
 @use "controls";
 @use "row-mixins" as rows;
 
-:host {
-  scroll-margin-top: 64px;
-}
-
 // The copy button sits in the body block's top right corner.
 .body {
   position: relative;
