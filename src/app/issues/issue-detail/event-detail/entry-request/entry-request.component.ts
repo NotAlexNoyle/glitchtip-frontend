@@ -19,9 +19,11 @@ import { IssueDetailService } from "../../issue-detail.service";
 import { Json } from "src/app/interface-primitives";
 import {
   PropertyRow,
+  cookiePairs,
   cookieRows,
   formatBlock,
   isHttpUrl,
+  summarize,
   toRows,
 } from "../event-format";
 import { openKeys } from "src/app/shared/signal.utils";
@@ -29,6 +31,8 @@ import { openKeys } from "src/app/shared/signal.utils";
 interface Section {
   key: string;
   label: string;
+  /** Rows inside, shown by the label. */
+  count: number | null;
   summary: string;
   rows: PropertyRow[];
   /** Body: shown as an indented block instead of rows. */
@@ -79,34 +83,28 @@ export class EntryRequestComponent {
     const r = this.request();
     if (!r) return [];
     const out: Section[] = [];
-    const query = toRows(r.query);
-    if (query.length) {
-      out.push({
-        key: "query",
-        label: $localize`Query`,
-        summary: query.map((p) => `${p.key} ${p.value}`).join(" · "),
-        rows: query,
-      });
-    }
+    const rowSection = (key: string, label: string, value: unknown) => {
+      const rows = toRows(value);
+      if (rows.length) {
+        out.push({
+          key,
+          label,
+          count: rows.length,
+          summary: summarize(value),
+          rows,
+        });
+      }
+    };
+    rowSection("query", $localize`Query`, r.query);
     const body: unknown = r.data;
-    const rows = toRows(body);
-    // An empty object or array has nothing to show either.
-    if (
-      rows.length ||
-      (typeof body !== "object" && body !== undefined && body !== "")
-    ) {
+    const summary = summarize(body);
+    // An empty object, array or string has nothing to show.
+    if (summary) {
       out.push({
         key: "body",
         label: $localize`Body`,
-        summary: rows.length
-          ? rows
-              .map((p) =>
-                p.value.startsWith("[") || p.value.startsWith("{")
-                  ? p.key
-                  : `${p.key} ${p.value}`,
-              )
-              .join(" · ")
-          : String(body),
+        count: null,
+        summary,
         rows: [],
         pre: formatBlock(body as Json),
         copy:
@@ -115,17 +113,16 @@ export class EntryRequestComponent {
             : String(body),
       });
     }
-    for (const [key, label, rows] of [
-      ["headers", $localize`Headers`, toRows(r.headers)],
-      ["cookies", $localize`Cookies`, cookieRows(r.cookies)],
-      ["env", $localize`Environment`, toRows(r.env)],
-    ] as [string, string, PropertyRow[]][]) {
-      if (rows.length) {
-        out.push({ key, label, summary: String(rows.length), rows });
-      }
-    }
+    rowSection("headers", $localize`Headers`, r.headers);
+    rowSection("cookies", $localize`Cookies`, cookiePairs(r.cookies));
+    rowSection("env", $localize`Environment`, r.env);
     return out;
   });
+
+  /** A request with no URL and no sections has nothing to show. */
+  readonly hasContent = computed(
+    () => !!this.url() || this.sections().length > 0,
+  );
 
   readonly raw = computed(() => {
     const r = this.request();

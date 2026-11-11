@@ -13,7 +13,7 @@ import { PanelComponent } from "src/app/shared/panel/panel.component";
 import { SelectGhostDirective } from "src/app/shared/select-ghost.directive";
 import { IssueDetailService } from "../../issue-detail.service";
 import { Breadcrumb } from "../../../interfaces";
-import { PropertyRow, crumbSummary, toRows } from "../event-format";
+import { PropertyRow, crumbSummary, hasRows, toRows } from "../event-format";
 import { openKeys } from "src/app/shared/signal.utils";
 
 /** Breadcrumbs shown before "Show N earlier", never for just one. */
@@ -60,7 +60,12 @@ function crumbIcon(category: string | null | undefined): string {
   return "code";
 }
 
-function clock(iso: string): { time: string; short: string } {
+function clock(iso: string | null | undefined): {
+  time: string;
+  short: string;
+} {
+  // new Date(null) is 1970, not "no time".
+  if (!iso) return { time: "", short: "" };
   const d = new Date(iso);
   if (isNaN(d.getTime())) return { time: iso, short: iso };
   const pad = (n: number, w = 2) => String(n).padStart(w, "0");
@@ -125,10 +130,10 @@ export class EntryBreadcrumbsComponent {
       .map((c, i) => ({ c, i }))
       .filter(({ c }) => !picked.size || picked.has(c.category))
       .map(({ c, i }) => {
-        const level = c.level in LEVELS ? c.level : "";
+        const level = Object.hasOwn(LEVELS, c.level) ? c.level : "";
         const message = crumbSummary(c);
         const long = message.length > LONG_MESSAGE || message.includes("\n");
-        const hasData = !!c.data && Object.keys(c.data).length > 0;
+        const hasData = hasRows(c.data);
         return {
           key: `b${i}`,
           ...clock(c.timestamp),
@@ -162,7 +167,7 @@ export class EntryBreadcrumbsComponent {
     const opened = this.opened();
     const data = new Map<string, PropertyRow[]>();
     for (const row of this.rows()) {
-      if (opened.has(row.key) && row.crumb.data) {
+      if (opened.has(row.key) && hasRows(row.crumb.data)) {
         data.set(row.key, toRows(row.crumb.data));
       }
     }

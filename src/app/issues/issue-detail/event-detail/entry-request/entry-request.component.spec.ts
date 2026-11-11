@@ -5,7 +5,8 @@ import { AnnotatedRequest } from "src/app/issues/interfaces";
 import { IssueDetailService } from "../../issue-detail.service";
 import { EntryRequestComponent } from "./entry-request.component";
 
-function render(request: Partial<AnnotatedRequest>) {
+// Typed loosely: payloads do not have to match the interface.
+function render(request: object) {
   TestBed.configureTestingModule({
     providers: [
       {
@@ -66,5 +67,34 @@ describe("EntryRequestComponent", () => {
     expect(el.querySelector("pre")!.textContent).toContain(
       "\nCookie: sessionid=abc; theme=dark",
     );
+  });
+
+  it("summarises each section and counts its rows by the label", () => {
+    const fixture = render({
+      url: "https://shop.example.com/cart",
+      headers: [
+        ["Accept", "*/*"],
+        ["Accept", "text/html"],
+      ],
+      data: [{ sku: "A-1" }, { sku: "B-7" }],
+    });
+    const rows = [
+      ...(fixture.nativeElement as HTMLElement).querySelectorAll(
+        "button.gt-kv__row",
+      ),
+    ].map((b) =>
+      [...b.children]
+        .map((c) => c.textContent!.replace(/\s+/g, " ").trim())
+        .join(" "),
+    );
+    expect(rows).toEqual([
+      "Body [2] keyboard_arrow_right",
+      "Headers 2 Accept */* · Accept text/html keyboard_arrow_right",
+    ]);
+  });
+
+  it("is hidden when the request has no URL and no sections", () => {
+    const fixture = render({ method: "GET", url: null, data: "", query: [] });
+    expect((fixture.nativeElement as HTMLElement).textContent).toBe("");
   });
 });

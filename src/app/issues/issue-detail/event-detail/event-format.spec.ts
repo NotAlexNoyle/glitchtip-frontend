@@ -15,10 +15,13 @@ import {
   frameLineCol,
   framePackage,
   hideFunctionName,
+  packageLine,
   packageOf,
   rawTrace,
+  recordOf,
   shortEventId,
   stackFrames,
+  summarize,
   toRows,
 } from "./event-format";
 
@@ -168,6 +171,66 @@ describe("toRows", () => {
     expect(keys("abc")).toEqual([]);
     expect(keys(42)).toEqual([]);
     expect(keys([])).toEqual([]);
+  });
+});
+
+describe("summarize", () => {
+  it("reads any payload value as one line", () => {
+    const cases: [unknown, string][] = [
+      [{ a: 1, b: "x" }, "a 1 · b x"],
+      [{ a: { b: 1 }, c: [1, 2, 3] }, "a {…} · c [3]"],
+      [
+        [
+          ["Accept", "*/*"],
+          ["X", "y"],
+        ],
+        "Accept */* · X y",
+      ],
+      [["ab", "cd"], '["ab", "cd"]'],
+      [[null, 1], "[null, 1]"],
+      [[{ a: 1 }, { a: 2 }], "[2]"],
+      [[["a", 1], "b"], "[2]"],
+      [{ a: null }, "a null"],
+      ["abc", "abc"],
+      [0, "0"],
+      [false, "false"],
+      ["", ""],
+      [{}, ""],
+      [[], ""],
+      [null, ""],
+      [undefined, ""],
+    ];
+    for (const [value, line] of cases) {
+      expect(summarize(value), JSON.stringify(value)).toBe(line);
+    }
+  });
+
+  it("bounds what a huge value puts on the row", () => {
+    expect(summarize("x".repeat(5000)).length).toBe(200);
+    const many = Object.fromEntries(
+      Array.from({ length: 500 }, (_, i) => [`key${i}`, i]),
+    );
+    expect(summarize(many).length).toBe(201);
+    expect(summarize(many).endsWith("…")).toBe(true);
+  });
+});
+
+describe("recordOf and packageLine", () => {
+  it("reads anything but a plain object as empty", () => {
+    for (const value of ["abc", 5, null, undefined, [1], true]) {
+      expect(recordOf(value)).toEqual({});
+    }
+    expect(recordOf({ a: 1 })).toEqual({ a: 1 });
+  });
+
+  it("names an SDK package, whatever was sent", () => {
+    expect(packageLine({ name: "npm:react", version: "18.3.1" })).toBe(
+      "npm:react 18.3.1",
+    );
+    expect(packageLine({ name: "a" })).toBe("a");
+    for (const value of [null, "x", 5, [], {}]) {
+      expect(packageLine(value)).toBe("");
+    }
   });
 });
 
@@ -400,6 +463,14 @@ describe("crumbSummary", () => {
     ).toBe('{ href: "/a" } · 0');
     expect(crumbSummary(crumb({ data: { a: 1, b: 2 } }))).toBe("a, b");
     expect(crumbSummary(crumb({}))).toBe("");
+  });
+
+  // The API types these as a string and an object; payloads do not have to.
+  it("reads a message or data of the wrong type without throwing", () => {
+    const odd = (o: object) => crumbSummary(crumb(o as Partial<Breadcrumb>));
+    expect(odd({ message: { text: "hi" } })).toBe('{ text: "hi" }');
+    expect(odd({ data: "plain text" })).toBe("plain text");
+    expect(odd({ data: [1, 2] })).toBe("[1, 2]");
   });
 });
 

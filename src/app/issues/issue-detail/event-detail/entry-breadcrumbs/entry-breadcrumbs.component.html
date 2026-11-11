@@ -85,7 +85,7 @@
               }
               @if (openedData().get(c.key); as data) {
                 <dl class="gt-property-list crumbs__data">
-                  @for (d of data; track d.key) {
+                  @for (d of data; track $index) {
                     <div
                       class="gt-property-list__row"
                       [class.gt-property-list__row--long]="d.long"

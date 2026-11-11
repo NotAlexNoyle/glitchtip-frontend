@@ -55,8 +55,8 @@ export class EntryCSPComponent {
     const csp = this.eventEntryCSP();
     if (!csp) return [];
     const keys = [
-      ...Object.keys(LABELS).filter((k) => k in csp),
-      ...Object.keys(csp).filter((k) => !(k in LABELS)),
+      ...Object.keys(LABELS).filter((k) => Object.hasOwn(csp, k)),
+      ...Object.keys(csp).filter((k) => !Object.hasOwn(LABELS, k)),
     ];
     return keys
       .filter((k) => csp[k] !== null && csp[k] !== undefined && csp[k] !== "")

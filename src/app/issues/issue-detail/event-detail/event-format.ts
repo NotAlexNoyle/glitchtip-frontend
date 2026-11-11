@@ -114,14 +114,53 @@ function entriesOf(obj: unknown): [string, Json][] {
     : [];
 }
 
+export function propertyRow(key: string, value: string): PropertyRow {
+  return { key, value, long: isLongValue(value) };
+}
+
 /** Object entries or [key, value] pairs (headers, query) as property rows, in order. */
 export function toRows(obj: unknown, skip: string[] = []): PropertyRow[] {
   return entriesOf(obj)
     .filter(([key]) => !skip.includes(key))
-    .map(([key, v]) => {
-      const value = formatValue(v);
-      return { key, value, long: isLongValue(value) };
-    });
+    .map(([key, v]) => propertyRow(key, formatValue(v)));
+}
+
+/** Whether a value opens to rows, without formatting them. */
+export function hasRows(obj: unknown): boolean {
+  return entriesOf(obj).length > 0;
+}
+
+/** The value when it is a plain object, else {}: payload fields are untrusted. */
+export function recordOf(value: unknown): { [key: string]: Json } {
+  return value && typeof value === "object" && !Array.isArray(value)
+    ? (value as { [key: string]: Json })
+    : {};
+}
+
+/** Bounds a collapsed row's text; CSS does the visible ellipsis. */
+const SUMMARY_MAX = 200;
+
+/** A value inside a summary: scalars as text, containers as {…} or [n]. */
+function brief(value: Json | undefined): string {
+  if (Array.isArray(value)) return `[${value.length}]`;
+  if (value && typeof value === "object") return "{…}";
+  return formatValue(value).slice(0, SUMMARY_MAX);
+}
+
+/** A collapsed row's line: "key value · key value", or "" for nothing to show. */
+export function summarize(value: unknown): string {
+  if (value === null || value === undefined) return "";
+  if (typeof value !== "object") return brief(value as Json);
+  if (Array.isArray(value) && !value.every(isPair)) {
+    const scalars = value.every((v) => v === null || typeof v !== "object");
+    return (scalars && inline(value as Json)) || brief(value as Json);
+  }
+  let out = "";
+  for (const [key, v] of entriesOf(value)) {
+    out += (out ? " · " : "") + [key, brief(v)].filter(Boolean).join(" ");
+    if (out.length > SUMMARY_MAX) return out.slice(0, SUMMARY_MAX) + "…";
+  }
+  return out;
 }
 
 /**
@@ -132,25 +171,27 @@ export function toRows(obj: unknown, skip: string[] = []): PropertyRow[] {
 const NEXT_COOKIE = /,(?=\s*[\w!#$%&'*+.^`|~-]+=)/;
 
 /**
- * Request cookies as rows. Most SDKs send pairs or an object, but sentry-java
- * and sentry-dotnet send the raw Cookie header ("a=1; b=2"), split here on the
- * first "=" so values that contain one (base64) stay whole.
+ * Request cookies as sent, or as pairs: most SDKs send pairs or an object, but
+ * sentry-java and sentry-dotnet send the raw Cookie header ("a=1; b=2"), split
+ * here on the first "=" so values that contain one (base64) stay whole.
  */
+export function cookiePairs(cookies: unknown): unknown {
+  if (typeof cookies !== "string") return cookies;
+  return cookies
+    .split(";")
+    .flatMap((part) => part.split(NEXT_COOKIE))
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .map((part): [string, string] => {
+      const eq = part.indexOf("=");
+      return eq < 0
+        ? [part, ""]
+        : [part.slice(0, eq).trim(), part.slice(eq + 1).trim()];
+    });
+}
+
 export function cookieRows(cookies: unknown): PropertyRow[] {
-  if (typeof cookies !== "string") return toRows(cookies);
-  return toRows(
-    cookies
-      .split(";")
-      .flatMap((part) => part.split(NEXT_COOKIE))
-      .map((part) => part.trim())
-      .filter(Boolean)
-      .map((part): [string, string] => {
-        const eq = part.indexOf("=");
-        return eq < 0
-          ? [part, ""]
-          : [part.slice(0, eq).trim(), part.slice(eq + 1).trim()];
-      }),
-  );
+  return toRows(cookiePairs(cookies));
 }
 
 /** "react-dom" from node_modules paths, "django" from site-packages paths. */
@@ -344,8 +385,11 @@ function rawFrame(
 
 /** One-line summary of a breadcrumb: its message, or what its data says. */
 export function crumbSummary(crumb: Breadcrumb): string {
-  if (crumb.message) return crumb.message;
-  const d = (crumb.data ?? {}) as { [key: string]: Json };
+  const message: unknown = crumb.message;
+  if (message) {
+    return typeof message === "string" ? message : formatValue(message as Json);
+  }
+  const d = recordOf(crumb.data);
   if (d["url"] || d["method"]) {
     const parts = [d["method"], d["url"]]
       .filter((v) => v !== null && v !== undefined && v !== "")
@@ -359,8 +403,8 @@ export function crumbSummary(crumb: Breadcrumb): string {
   if (d["from"] !== undefined || d["to"] !== undefined) {
     return `${formatValue(d["from"] ?? "")} → ${formatValue(d["to"] ?? "")}`;
   }
-  const keys = Object.keys(d);
-  return keys.length ? keys.join(", ") : "";
+  // Data that is not an object (a string, a list) reads as itself.
+  return Object.keys(d).join(", ") || summarize(crumb.data);
 }
 
 export type EventContext = { [key: string]: unknown } | null | undefined;
@@ -381,6 +425,12 @@ export function str(value: unknown): string {
   return typeof value === "string" || typeof value === "number"
     ? String(value).trim()
     : "";
+}
+
+/** "name version" of an SDK package; anything else reads as "". */
+export function packageLine(pkg: unknown): string {
+  const p = recordOf(pkg);
+  return [str(p["name"]), str(p["version"])].filter(Boolean).join(" ");
 }
 
 /** A context by kind; older SDKs send the OS as client_os. */

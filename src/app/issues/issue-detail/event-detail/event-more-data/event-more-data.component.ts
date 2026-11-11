@@ -8,7 +8,15 @@ import { MatIconModule } from "@angular/material/icon";
 import { PanelComponent } from "src/app/shared/panel/panel.component";
 import { IssueDetailService } from "../../issue-detail.service";
 import { Json } from "src/app/interface-primitives";
-import { PropertyRow, str, toRows } from "../event-format";
+import {
+  PropertyRow,
+  formatValue,
+  packageLine,
+  propertyRow,
+  recordOf,
+  str,
+  toRows,
+} from "../event-format";
 import { openKeys } from "src/app/shared/signal.utils";
 
 interface Group {
@@ -25,6 +33,12 @@ interface Source {
   integrations?: number;
   /** Formatted on first open. */
   groups: () => Group[];
+}
+
+/** A context's rows; a scalar context is one row under its own name. */
+function contextRows(name: string, ctx: Json | undefined): PropertyRow[] {
+  const scalar = ctx !== null && ctx !== "" && typeof ctx !== "object";
+  return scalar ? [propertyRow(name, formatValue(ctx))] : toRows(ctx, ["type"]);
 }
 
 /** User, contexts, additional data and SDK as collapsed rows: the raw sources. */
@@ -84,7 +98,7 @@ interface Source {
                         <div class="gt-group__label">{{ g.label }}</div>
                       }
                       <dl class="gt-property-list gt-property-list--nested">
-                        @for (kv of g.rows; track kv.key) {
+                        @for (kv of g.rows; track $index) {
                           <div
                             class="gt-property-list__row"
                             [class.gt-property-list__row--long]="kv.long"
@@ -137,8 +151,8 @@ export class EventMoreDataComponent {
     if (!event) return [];
     const out: Source[] = [];
 
-    const user = event.user as { [key: string]: Json } | null;
-    if (user && Object.keys(user).length) {
+    const user = recordOf(event.user);
+    if (Object.keys(user).length) {
       out.push({
         key: "user",
         label: $localize`User`,
@@ -148,33 +162,31 @@ export class EventMoreDataComponent {
       });
     }
 
-    const contexts = (event.contexts ?? {}) as {
-      [key: string]: { [key: string]: Json } | null;
-    };
-    const names = Object.keys(contexts)
-      .filter((name) => toRows(contexts[name], ["type"]).length)
-      .sort();
-    if (names.length) {
+    const contexts = recordOf(event.contexts);
+    const shown = Object.keys(contexts)
+      .sort()
+      .map((name) => {
+        const type = str(recordOf(contexts[name])["type"]);
+        return {
+          name,
+          label: type && type !== name ? `${name} (${type})` : name,
+          rows: contextRows(name, contexts[name]),
+        };
+      })
+      .filter((c) => c.rows.length);
+    if (shown.length) {
       out.push({
         key: "contexts",
         label: $localize`Contexts`,
-        count: names.length,
-        summary: names.join(", "),
-        groups: () =>
-          names.map((name) => {
-            const ctx = contexts[name];
-            const type = ctx?.["type"];
-            return {
-              label: type && type !== name ? `${name} (${type})` : name,
-              rows: toRows(ctx, ["type"]),
-            };
-          }),
+        count: shown.length,
+        summary: shown.map((c) => c.name).join(", "),
+        groups: () => shown,
       });
     }
 
-    const extra = event.context as { [key: string]: Json } | null;
-    if (extra && Object.keys(extra).length) {
-      const keys = Object.keys(extra);
+    const extra = recordOf(event.context);
+    const keys = Object.keys(extra);
+    if (keys.length) {
       out.push({
         key: "extra",
         label: $localize`Additional data`,
@@ -187,11 +199,11 @@ export class EventMoreDataComponent {
     }
 
     // The SDK's own event id, so app logs can be matched.
-    const sdk = (event.sdk ?? {}) as { [key: string]: Json };
+    const sdk = recordOf(event.sdk);
     if (Object.keys(sdk).length || event.eventID) {
-      const integrations = Array.isArray(sdk["integrations"])
-        ? (sdk["integrations"] as string[])
-        : [];
+      const list = (v: Json) => (Array.isArray(v) ? v : []);
+      const integrations = list(sdk["integrations"]).map(str).filter(Boolean);
+      const packages = list(sdk["packages"]).map(packageLine).filter(Boolean);
       out.push({
         key: "sdk",
         label: "SDK",
@@ -205,14 +217,10 @@ export class EventMoreDataComponent {
           if (event.eventID) {
             rows.unshift({ key: "event_id", value: event.eventID, long: true });
           }
-          if (Array.isArray(sdk["packages"])) {
-            const packages = sdk["packages"] as {
-              name: string;
-              version: string;
-            }[];
+          if (packages.length) {
             rows.push({
               key: "packages",
-              value: packages.map((p) => `${p.name} ${p.version}`).join(", "),
+              value: packages.join(", "),
               long: true,
             });
           }
