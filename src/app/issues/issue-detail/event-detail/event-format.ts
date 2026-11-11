@@ -358,8 +358,8 @@ function rawFrame(
     case "native": {
       const parts = [
         frame.package,
-        frame.instructionAddr,
-        fn || frame.symbolAddr,
+        frame.instruction_addr,
+        fn || frame.symbol_addr,
       ].filter(Boolean);
       const where = frame.filename
         ? ` (${frame.filename}${line ? ":" + line : ""})`

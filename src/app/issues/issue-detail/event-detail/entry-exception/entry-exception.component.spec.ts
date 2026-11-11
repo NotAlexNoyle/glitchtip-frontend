@@ -14,9 +14,9 @@ const baseFrame: Frame = {
   module: null,
   function: null,
   package: null,
-  instructionAddr: null,
+  instruction_addr: null,
   symbol: null,
-  symbolAddr: null,
+  symbol_addr: null,
   trust: null,
   inApp: true,
   context: null,
@@ -86,7 +86,7 @@ describe("EntryExceptionComponent frames", () => {
           frames: [
             {
               ...baseFrame,
-              instructionAddr: "0x1000",
+              instruction_addr: "0x1000",
               package: "/usr/lib/libfoo.dylib",
             },
           ],

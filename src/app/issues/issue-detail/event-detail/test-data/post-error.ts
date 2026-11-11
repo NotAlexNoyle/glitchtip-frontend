@@ -72,7 +72,7 @@ export const postError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/utils/datastructures.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/utils/datastructures.py",
                   platform: null,
                   context: [
@@ -91,7 +91,7 @@ export const postError: EventDetail = {
                     [80, "            return list_[-1]"],
                     [81, "        except IndexError:"],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
               ],
               framesOmitted: null,
@@ -126,7 +126,7 @@ export const postError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/core/handlers/exception.py",
                   platform: null,
                   context: [
@@ -148,7 +148,7 @@ export const postError: EventDetail = {
                     [38, "    return inner"],
                     [39, ""],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
                 {
                   function: "_get_response",
@@ -178,7 +178,7 @@ export const postError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/core/handlers/base.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/core/handlers/base.py",
                   platform: null,
                   context: [
@@ -209,7 +209,7 @@ export const postError: EventDetail = {
                     ],
                     [120, "                view_name = callback.__name__"],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
                 {
                   function: "_get_response",
@@ -239,7 +239,7 @@ export const postError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/core/handlers/base.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/core/handlers/base.py",
                   platform: null,
                   context: [
@@ -267,7 +267,7 @@ export const postError: EventDetail = {
                     ],
                     [118, "        if response is None:"],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
                 {
                   function: "view",
@@ -289,7 +289,7 @@ export const postError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/views/generic/base.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/views/generic/base.py",
                   platform: null,
                   context: [
@@ -314,7 +314,7 @@ export const postError: EventDetail = {
                     [75, "        # take name and docstring from class"],
                     [76, "        update_wrapper(view, cls, updated=())"],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
                 {
                   function: "dispatch",
@@ -336,7 +336,7 @@ export const postError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/views/generic/base.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/views/generic/base.py",
                   platform: null,
                   context: [
@@ -370,7 +370,7 @@ export const postError: EventDetail = {
                       "            extra={'status_code': 405, 'request': request}",
                     ],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
                 {
                   function: "post",
@@ -389,7 +389,7 @@ export const postError: EventDetail = {
                   package: null,
                   absPath: "/code/errors/views.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "errors/views.py",
                   platform: null,
                   context: [
@@ -405,7 +405,7 @@ export const postError: EventDetail = {
                     [26, "    def get(self, request, *args, **kwargs):"],
                     [27, "        users = User.objects.all()"],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
                 {
                   function: "__getitem__",
@@ -429,7 +429,7 @@ export const postError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/utils/datastructures.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/utils/datastructures.py",
                   platform: null,
                   context: [
@@ -445,7 +445,7 @@ export const postError: EventDetail = {
                     [82, "            return []"],
                     [83, ""],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
               ],
               framesOmitted: null,

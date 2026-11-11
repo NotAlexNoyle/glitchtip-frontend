@@ -350,7 +350,7 @@ export class EntryExceptionComponent {
       frame,
       fn: hideFunctionName(frame, platform)
         ? ""
-        : frame.function || frame.symbol || frame.instructionAddr || "?",
+        : frame.function || frame.symbol || frame.instruction_addr || "?",
       file,
       fileTip: abs || (showsModule && frame.filename ? frame.filename : ""),
       lc: frameLineCol(frame),

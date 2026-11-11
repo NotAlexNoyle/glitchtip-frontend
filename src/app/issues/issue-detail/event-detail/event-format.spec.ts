@@ -33,9 +33,9 @@ function frame(overrides: Partial<Frame>): Frame {
     module: null,
     function: null,
     package: null,
-    instructionAddr: null,
+    instruction_addr: null,
     symbol: null,
-    symbolAddr: null,
+    symbol_addr: null,
     trust: null,
     inApp: true,
     context: null,
@@ -422,8 +422,8 @@ describe("rawTrace", () => {
     );
     const native = frame({
       package: "Shop",
-      instructionAddr: "0x1",
-      symbolAddr: "0x2",
+      instruction_addr: "0x1",
+      symbol_addr: "0x2",
     });
     expect(rawTrace([exception("E", "", [native])], "cocoa")).toBe(
       "E\n  Shop 0x1 0x2",

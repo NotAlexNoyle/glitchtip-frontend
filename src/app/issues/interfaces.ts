@@ -279,9 +279,10 @@ export interface Frame {
   function: string | null;
   rawFunction?: string | null;
   package: string | null;
-  instructionAddr: string | null;
+  // The API passes the two addresses through as the SDK names them.
+  instruction_addr: string | null;
   symbol: string | null;
-  symbolAddr: string | null;
+  symbol_addr: string | null;
   trust: string | null;
   inApp: boolean;
   context: FrameContextTuple[] | null;

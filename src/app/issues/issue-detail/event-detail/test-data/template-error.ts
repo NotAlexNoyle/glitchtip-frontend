@@ -69,7 +69,7 @@ export const templateError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/core/handlers/exception.py",
                   platform: null,
                   context: [
@@ -91,7 +91,7 @@ export const templateError: EventDetail = {
                     [38, "    return inner"],
                     [39, ""],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
                 {
                   function: "_get_response",
@@ -122,7 +122,7 @@ export const templateError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/core/handlers/base.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/core/handlers/base.py",
                   platform: null,
                   context: [
@@ -144,7 +144,7 @@ export const templateError: EventDetail = {
                     ],
                     [150, '        """'],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
                 {
                   function: "_get_response",
@@ -175,7 +175,7 @@ export const templateError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/core/handlers/base.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/core/handlers/base.py",
                   platform: null,
                   context: [
@@ -200,7 +200,7 @@ export const templateError: EventDetail = {
                     [147, "        return response"],
                     [148, ""],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
                 {
                   function: "render",
@@ -219,7 +219,7 @@ export const templateError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/template/response.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/template/response.py",
                   platform: null,
                   context: [
@@ -238,7 +238,7 @@ export const templateError: EventDetail = {
                     [109, "                    retval = newretval"],
                     [110, "        return retval"],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
                 {
                   function: "rendered_content",
@@ -260,7 +260,7 @@ export const templateError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/template/response.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/template/response.py",
                   platform: null,
                   context: [
@@ -291,7 +291,7 @@ export const templateError: EventDetail = {
                     [87, ""],
                     [88, "        If the response has already been rendered,"],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
                 {
                   function: "render",
@@ -311,7 +311,7 @@ export const templateError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/template/backends/django.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/template/backends/django.py",
                   platform: null,
                   context: [
@@ -330,7 +330,7 @@ export const templateError: EventDetail = {
                     [65, ""],
                     [66, "def copy_exception(exc, backend=None):"],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
                 {
                   function: "render",
@@ -349,7 +349,7 @@ export const templateError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/template/base.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/template/base.py",
                   platform: null,
                   context: [
@@ -374,7 +374,7 @@ export const templateError: EventDetail = {
                     [175, "    def compile_nodelist(self):"],
                     [176, '        """'],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
                 {
                   function: "_render",
@@ -393,7 +393,7 @@ export const templateError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/template/base.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/template/base.py",
                   platform: null,
                   context: [
@@ -415,7 +415,7 @@ export const templateError: EventDetail = {
                     ],
                     [168, "            if context.template is None:"],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
                 {
                   function: "render",
@@ -441,7 +441,7 @@ export const templateError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/template/base.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/template/base.py",
                   platform: null,
                   context: [
@@ -460,7 +460,7 @@ export const templateError: EventDetail = {
                     [940, "        return mark_safe(''.join(bits))"],
                     [941, ""],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
                 {
                   function: null,
@@ -474,7 +474,7 @@ export const templateError: EventDetail = {
                   package: null,
                   absPath: "/code/errors/templates/template_error.html",
                   inApp: true,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "/code/errors/templates/template_error.html",
                   platform: null,
                   context: [
@@ -483,7 +483,7 @@ export const templateError: EventDetail = {
                       "&lt;a href=&quot;{% url &#x27;nope&#x27; %}&quot;&gt;",
                     ],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
                 {
                   function: "render_annotated",
@@ -502,7 +502,7 @@ export const templateError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/template/base.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/template/base.py",
                   platform: null,
                   context: [
@@ -533,7 +533,7 @@ export const templateError: EventDetail = {
                     [907, "            raise"],
                     [908, ""],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
                 {
                   function: "render",
@@ -560,7 +560,7 @@ export const templateError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/template/defaulttags.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/template/defaulttags.py",
                   platform: null,
                   context: [
@@ -585,7 +585,7 @@ export const templateError: EventDetail = {
                     [447, ""],
                     [448, "        if self.asvar:"],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
                 {
                   function: "reverse",
@@ -612,7 +612,7 @@ export const templateError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/urls/base.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/urls/base.py",
                   platform: null,
                   context: [
@@ -637,7 +637,7 @@ export const templateError: EventDetail = {
                     [91, ""],
                     [92, ""],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
                 {
                   function: "_reverse_with_prefix",
@@ -663,7 +663,7 @@ export const templateError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/urls/resolvers.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/urls/resolvers.py",
                   platform: null,
                   context: [
@@ -680,7 +680,7 @@ export const templateError: EventDetail = {
                     [676, "            )"],
                     [677, "        raise NoReverseMatch(msg)"],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
               ],
               framesOmitted: null,

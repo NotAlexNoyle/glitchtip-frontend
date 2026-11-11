@@ -74,7 +74,7 @@ export const databaseError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/core/handlers/exception.py",
                   platform: null,
                   context: [
@@ -96,7 +96,7 @@ export const databaseError: EventDetail = {
                     [38, "    return inner"],
                     [39, ""],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
                 {
                   function: "_get_response",
@@ -126,7 +126,7 @@ export const databaseError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/core/handlers/base.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/core/handlers/base.py",
                   platform: null,
                   context: [
@@ -157,7 +157,7 @@ export const databaseError: EventDetail = {
                     ],
                     [120, "                view_name = callback.__name__"],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
                 {
                   function: "_get_response",
@@ -187,7 +187,7 @@ export const databaseError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/core/handlers/base.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/core/handlers/base.py",
                   platform: null,
                   context: [
@@ -215,7 +215,7 @@ export const databaseError: EventDetail = {
                     ],
                     [118, "        if response is None:"],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
                 {
                   function: "view",
@@ -237,7 +237,7 @@ export const databaseError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/views/generic/base.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/views/generic/base.py",
                   platform: null,
                   context: [
@@ -262,7 +262,7 @@ export const databaseError: EventDetail = {
                     [75, "        # take name and docstring from class"],
                     [76, "        update_wrapper(view, cls, updated=())"],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
                 {
                   function: "dispatch",
@@ -284,7 +284,7 @@ export const databaseError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/views/generic/base.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/views/generic/base.py",
                   platform: null,
                   context: [
@@ -318,7 +318,7 @@ export const databaseError: EventDetail = {
                       "            extra={'status_code': 405, 'request': request}",
                     ],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
                 {
                   function: "get",
@@ -337,7 +337,7 @@ export const databaseError: EventDetail = {
                   package: null,
                   absPath: "/code/errors/views.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "errors/views.py",
                   platform: null,
                   context: [
@@ -353,7 +353,7 @@ export const databaseError: EventDetail = {
                     [21, "    def post(self, request, *args, **kwargs):"],
                     [22, '        request.POST["nope"]'],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
                 {
                   function: "manager_method",
@@ -373,7 +373,7 @@ export const databaseError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/db/models/manager.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/db/models/manager.py",
                   platform: null,
                   context: [
@@ -398,7 +398,7 @@ export const databaseError: EventDetail = {
                     [86, ""],
                     [87, "        new_methods = {}"],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
                 {
                   function: "get",
@@ -421,7 +421,7 @@ export const databaseError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/db/models/query.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/db/models/query.py",
                   platform: null,
                   context: [
@@ -443,7 +443,7 @@ export const databaseError: EventDetail = {
                       "            'get() returned more than one %s -- it returned %s!' % (",
                     ],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
               ],
               framesOmitted: null,

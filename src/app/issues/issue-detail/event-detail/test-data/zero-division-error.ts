@@ -68,7 +68,7 @@ export const zeroDivisionError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/core/handlers/exception.py",
                   platform: null,
                   context: [
@@ -90,7 +90,7 @@ export const zeroDivisionError: EventDetail = {
                     [38, "    return inner"],
                     [39, ""],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
                 {
                   function: "_get_response",
@@ -120,7 +120,7 @@ export const zeroDivisionError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/core/handlers/base.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/core/handlers/base.py",
                   platform: null,
                   context: [
@@ -151,7 +151,7 @@ export const zeroDivisionError: EventDetail = {
                     ],
                     [120, "                view_name = callback.__name__"],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
                 {
                   function: "_get_response",
@@ -181,7 +181,7 @@ export const zeroDivisionError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/core/handlers/base.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/core/handlers/base.py",
                   platform: null,
                   context: [
@@ -209,7 +209,7 @@ export const zeroDivisionError: EventDetail = {
                     ],
                     [118, "        if response is None:"],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
                 {
                   function: "view",
@@ -231,7 +231,7 @@ export const zeroDivisionError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/views/generic/base.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/views/generic/base.py",
                   platform: null,
                   context: [
@@ -256,7 +256,7 @@ export const zeroDivisionError: EventDetail = {
                     [75, "        # take name and docstring from class"],
                     [76, "        update_wrapper(view, cls, updated=())"],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
                 {
                   function: "dispatch",
@@ -278,7 +278,7 @@ export const zeroDivisionError: EventDetail = {
                   absPath:
                     "/usr/local/lib/python3.8/site-packages/django/views/generic/base.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "django/views/generic/base.py",
                   platform: null,
                   context: [
@@ -312,7 +312,7 @@ export const zeroDivisionError: EventDetail = {
                       "            extra={'status_code': 405, 'request': request}",
                     ],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
                 {
                   function: "get",
@@ -331,7 +331,7 @@ export const zeroDivisionError: EventDetail = {
                   package: null,
                   absPath: "/code/errors/views.py",
                   inApp: false,
-                  instructionAddr: null,
+                  instruction_addr: null,
                   filename: "errors/views.py",
                   platform: null,
                   context: [
@@ -347,7 +347,7 @@ export const zeroDivisionError: EventDetail = {
                     [16, "    def get(self, request, *args, **kwargs):"],
                     [17, '        User.objects.get(id="9999999")'],
                   ],
-                  symbolAddr: null,
+                  symbol_addr: null,
                 },
               ],
               framesOmitted: null,
