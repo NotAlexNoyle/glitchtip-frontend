@@ -162,13 +162,7 @@
         @if (canSwitch()) {
           <span class="gt-bar-divider" aria-hidden="true"></span>
           @if (nextEvent() !== false) {
-            <a
-              mat-button
-              class="event-bar__latest"
-              [routerLink]="latestUrl()"
-              i18n
-              >Latest</a
-            >
+            <a mat-button [routerLink]="latestUrl()" i18n>Latest</a>
           }
           <a
             mat-icon-button

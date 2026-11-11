@@ -227,8 +227,11 @@ export class EventFactsPanelComponent {
       });
     }
 
+    // A user known only by IP already shows it as the User fact.
     const where = userLocation(user);
-    if (where) rest.push({ label: $localize`Location`, value: where });
+    if (where && where !== who?.value) {
+      rest.push({ label: $localize`Location`, value: where });
+    }
 
     const trace = traceSummary(contexts["trace"]);
     if (trace) {

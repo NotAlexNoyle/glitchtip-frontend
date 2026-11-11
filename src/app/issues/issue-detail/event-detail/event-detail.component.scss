@@ -1,5 +1,4 @@
 @use "controls";
-@use "@angular/material" as mat;
 @use "variables" as vars;
 
 // Everything that changes with Older and Newer.
@@ -219,14 +218,4 @@
   display: flex;
   flex: none;
   align-items: center;
-}
-
-// Neutral like the chevrons beside it: it moves between events, it does not act on one.
-.event-bar__latest {
-  @include mat.button-overrides(
-    (
-      text-label-text-color: var(--mat-sys-on-surface),
-      text-state-layer-color: var(--mat-sys-on-surface),
-    )
-  );
 }

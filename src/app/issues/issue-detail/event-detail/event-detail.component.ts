@@ -172,7 +172,7 @@ export class EventDetailComponent {
       `Organization: ${this.orgSlug()}`,
       `Issue ID: ${this.issueID()}`,
       `Event ID: ${event.id}`,
-      `Event URL: ${window.location.href}`,
+      `Event URL: ${this.eventLink()}`,
       "",
       "Raw event JSON:",
       "```json",
@@ -328,7 +328,8 @@ export class EventDetailComponent {
   /** [ and ] step to the older and newer event, outside fields and overlays. */
   onKeydown(e: KeyboardEvent) {
     if (e.key !== "[" && e.key !== "]") return;
-    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    // Some layouts type [ and ] with Option or AltGr.
+    if (e.metaKey || (e.ctrlKey && !e.getModifierState("AltGraph"))) return;
     if (this.dialog.openDialogs.length) return;
     const target = e.target as HTMLElement | null;
     if (
