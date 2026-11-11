@@ -179,11 +179,11 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
     const values = (entry?.data as ExceptionValueData | undefined)?.values;
     return [...(values ?? [])].reverse();
   });
-  /** Raw view, Copy trace and the event menu share this text. */
   /** Without frames there is nothing to filter, order, show raw or copy. */
   readonly exceptionHasFrames = computed(() =>
     this.exceptionChain().some((v) => stackFrames(v).length),
   );
+  /** Raw view, Copy trace and the event menu share this text. */
   readonly exceptionTrace = computed(() => {
     const chain = this.exceptionChain();
     return chain.length ? rawTrace(chain, this.event()?.platform) : "";
