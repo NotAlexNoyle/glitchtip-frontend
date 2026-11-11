@@ -170,7 +170,10 @@ export class IssueDetailComponent implements OnInit {
 
   constructor() {
     effect(() => {
-      this.issueService.open(this.orgSlug(), this.issueID());
+      // The event view sets it too, but only once the issue has loaded.
+      const eventID =
+        this.route.firstChild?.snapshot.paramMap.get("event-id") ?? null;
+      this.issueService.open(this.orgSlug(), this.issueID(), eventID);
     });
   }
 

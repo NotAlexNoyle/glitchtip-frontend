@@ -355,12 +355,13 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
   }
 
   /** Opens an issue; coming back to the one last shown fetches it again. */
-  open(orgSlug: string, issueID: string) {
+  open(orgSlug: string, issueID: string, eventID: string | null = null) {
     const revisit = untracked(
       () => this.orgSlug() === orgSlug && this.issueID() === issueID,
     );
     this.orgSlug.set(orgSlug);
     this.issueID.set(issueID);
+    this.eventID.set(eventID);
     this.#visit.update((n) => n + 1);
     if (revisit) {
       this.#issueResource.reload();

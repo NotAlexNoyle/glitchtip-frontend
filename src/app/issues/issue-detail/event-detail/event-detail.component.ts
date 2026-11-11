@@ -280,7 +280,8 @@ export class EventDetailComponent {
 
   constructor() {
     effect(() => {
-      this.issueService.eventID.set(this.eventID());
+      // The router clears a missing event-id to undefined, not the null default.
+      this.issueService.eventID.set(this.eventID() ?? null);
     });
     // The sentinel marks the zone's top: once it scrolls out, the bar is stuck.
     effect((onCleanup) => {
