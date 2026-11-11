@@ -145,6 +145,30 @@ describe("toRows", () => {
       { key: "Accept", value: "*/*", long: false },
     ]);
   });
+
+  // A bulk JSON body, a custom context or extra can be any array or scalar.
+  it("keys other arrays by index and gives a scalar no rows", () => {
+    const keys = (obj: unknown) => toRows(obj).map((r) => [r.key, r.value]);
+    expect(keys([{ sku: "A-1" }, { sku: "B-7" }])).toEqual([
+      ["0", '{ sku: "A-1" }'],
+      ["1", '{ sku: "B-7" }'],
+    ]);
+    expect(keys([1, 2])).toEqual([
+      ["0", "1"],
+      ["1", "2"],
+    ]);
+    expect(keys(["ab", "cd"])).toEqual([
+      ["0", "ab"],
+      ["1", "cd"],
+    ]);
+    expect(keys([["a", 1], "b"])).toEqual([
+      ["0", '["a", 1]'],
+      ["1", "b"],
+    ]);
+    expect(keys("abc")).toEqual([]);
+    expect(keys(42)).toEqual([]);
+    expect(keys([])).toEqual([]);
+  });
 });
 
 describe("cookieRows", () => {

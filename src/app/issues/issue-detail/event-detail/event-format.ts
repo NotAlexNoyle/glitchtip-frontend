@@ -99,15 +99,24 @@ export interface PropertyRow {
   long: boolean;
 }
 
-export type Entries = { [key: string]: Json } | [string, Json][];
+const isPair = (item: unknown): item is [string, Json] =>
+  Array.isArray(item) && item.length === 2 && typeof item[0] === "string";
+
+/** Payload fields are untrusted: any other array is keyed by index, a scalar has no rows. */
+function entriesOf(obj: unknown): [string, Json][] {
+  if (Array.isArray(obj)) {
+    return obj.every(isPair)
+      ? obj
+      : obj.map((value, i): [string, Json] => [String(i), value as Json]);
+  }
+  return obj && typeof obj === "object"
+    ? Object.entries(obj as Record<string, Json>)
+    : [];
+}
 
 /** Object entries or [key, value] pairs (headers, query) as property rows, in order. */
-export function toRows(
-  obj: Entries | null | undefined,
-  skip: string[] = [],
-): PropertyRow[] {
-  if (!obj) return [];
-  return (Array.isArray(obj) ? obj : Object.entries(obj))
+export function toRows(obj: unknown, skip: string[] = []): PropertyRow[] {
+  return entriesOf(obj)
     .filter(([key]) => !skip.includes(key))
     .map(([key, v]) => {
       const value = formatValue(v);
@@ -127,9 +136,7 @@ const NEXT_COOKIE = /,(?=\s*[\w!#$%&'*+.^`|~-]+=)/;
  * and sentry-dotnet send the raw Cookie header ("a=1; b=2"), split here on the
  * first "=" so values that contain one (base64) stay whole.
  */
-export function cookieRows(
-  cookies: Entries | string | null | undefined,
-): PropertyRow[] {
+export function cookieRows(cookies: unknown): PropertyRow[] {
   if (typeof cookies !== "string") return toRows(cookies);
   return toRows(
     cookies

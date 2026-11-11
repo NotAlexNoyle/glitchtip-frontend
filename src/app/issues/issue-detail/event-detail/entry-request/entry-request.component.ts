@@ -18,7 +18,6 @@ import {
 import { IssueDetailService } from "../../issue-detail.service";
 import { Json } from "src/app/interface-primitives";
 import {
-  Entries,
   PropertyRow,
   cookieRows,
   formatBlock,
@@ -37,8 +36,6 @@ interface Section {
   /** Body as JSON for Copy body. */
   copy?: string;
 }
-
-const rowsOf = (value: unknown) => toRows(value as Entries);
 
 @Component({
   selector: "gt-entry-request",
@@ -82,7 +79,7 @@ export class EntryRequestComponent {
     const r = this.request();
     if (!r) return [];
     const out: Section[] = [];
-    const query = rowsOf(r.query);
+    const query = toRows(r.query);
     if (query.length) {
       out.push({
         key: "query",
@@ -92,7 +89,7 @@ export class EntryRequestComponent {
       });
     }
     const body: unknown = r.data;
-    const rows = typeof body === "object" && body !== null ? rowsOf(body) : [];
+    const rows = toRows(body);
     // An empty object or array has nothing to show either.
     if (
       rows.length ||
@@ -119,9 +116,9 @@ export class EntryRequestComponent {
       });
     }
     for (const [key, label, rows] of [
-      ["headers", $localize`Headers`, rowsOf(r.headers)],
+      ["headers", $localize`Headers`, toRows(r.headers)],
       ["cookies", $localize`Cookies`, cookieRows(r.cookies)],
-      ["env", $localize`Environment`, rowsOf(r.env)],
+      ["env", $localize`Environment`, toRows(r.env)],
     ] as [string, string, PropertyRow[]][]) {
       if (rows.length) {
         out.push({ key, label, summary: String(rows.length), rows });
@@ -141,7 +138,7 @@ export class EntryRequestComponent {
       // keep the raw url
     }
     const lines = [[r.method ?? "GET", target].filter(Boolean).join(" ")];
-    for (const p of rowsOf(r.headers)) lines.push(`${p.key}: ${p.value}`);
+    for (const p of toRows(r.headers)) lines.push(`${p.key}: ${p.value}`);
     // A header string is shown as sent; pairs and objects are joined into one.
     const cookies =
       typeof r.cookies === "string"
