@@ -5,6 +5,7 @@ import {
   linkedSignal,
   resource,
   signal,
+  untracked,
 } from "@angular/core";
 import { Router } from "@angular/router";
 import { MatSnackBar } from "@angular/material/snack-bar";
@@ -341,6 +342,20 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
   constructor() {
     super(initialState);
     this.setState({ isReversed: readNewestFirst() });
+  }
+
+  /** Opens an issue; coming back to the one last shown fetches it again. */
+  open(orgSlug: string, issueID: string) {
+    const revisit = untracked(
+      () => this.orgSlug() === orgSlug && this.issueID() === issueID,
+    );
+    this.orgSlug.set(orgSlug);
+    this.issueID.set(issueID);
+    if (revisit) {
+      this.#issueResource.reload();
+      this.#tagsResource.reload();
+      this.#eventResource.reload();
+    }
   }
 
   /** The frame order is the reader's choice, so it survives a new issue. */

@@ -170,8 +170,7 @@ export class IssueDetailComponent implements OnInit {
 
   constructor() {
     effect(() => {
-      this.issueService.orgSlug.set(this.orgSlug());
-      this.issueService.issueID.set(this.issueID());
+      this.issueService.open(this.orgSlug(), this.issueID());
     });
   }
 
