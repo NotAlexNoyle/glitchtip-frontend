@@ -93,6 +93,29 @@ describe("EntryRequestComponent", () => {
     ]);
   });
 
+  // SDKs may send the query apart from the URL.
+  it("puts a separately sent query on the raw request line, once", () => {
+    const rawLine = (request: object) => {
+      TestBed.resetTestingModule();
+      const fixture = render(request);
+      fixture.componentInstance.format.set("raw");
+      fixture.detectChanges();
+      return (fixture.nativeElement as HTMLElement)
+        .querySelector("pre")!
+        .textContent!.split("\n")[0];
+    };
+    const query = [
+      ["page", "2"],
+      ["sort", "name"],
+    ];
+    expect(rawLine({ method: "GET", url: "https://x.test/a", query })).toBe(
+      "GET /a?page=2&sort=name",
+    );
+    expect(
+      rawLine({ method: "GET", url: "https://x.test/a?page=2", query }),
+    ).toBe("GET /a?page=2");
+  });
+
   it("is hidden when the request has no URL and no sections", () => {
     const fixture = render({ method: "GET", url: null, data: "", query: [] });
     expect((fixture.nativeElement as HTMLElement).textContent).toBe("");

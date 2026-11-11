@@ -77,6 +77,32 @@ describe("EntryExceptionComponent frames", () => {
     );
   });
 
+  it("counts the frames inside the folded library runs it hides", () => {
+    // Seven app frames, each followed by a run of three library frames.
+    const frames = Array.from({ length: 28 }, (_, i) => ({
+      ...baseFrame,
+      function: `f${i}`,
+      filename: "app.c",
+      inApp: i % 4 === 0,
+    }));
+    const el = renderChain([
+      { type: "E", value: "boom", stacktrace: { frames } },
+    ]);
+    // Ten rows show; two app frames and two runs of three do not.
+    expect(texts(el, ".frames__more")).toEqual(["Show 8 more frames"]);
+  });
+
+  it("shows a link with no frames in full, as it cannot be opened", () => {
+    const el = renderChain([
+      { type: "Outer", value: "a long message" },
+      { type: "Inner", value: "b" },
+    ]);
+    const open = [...el.querySelectorAll(".chain")].map((c) =>
+      c.classList.contains("chain--open"),
+    );
+    expect(open).toEqual([true, true]);
+  });
+
   it("names a frame that has only an address and a package", () => {
     const el = renderChain([
       {
@@ -137,7 +163,7 @@ function render(frame: Partial<Frame>, platform: string) {
     .trim();
 }
 
-// The open frame's meta line once lost the spaces around its words.
+// Angular drops whitespace between elements, so the words need their own.
 describe("EntryExceptionComponent frame meta", () => {
   it("keeps a space before the file and the package", () => {
     const text = render(

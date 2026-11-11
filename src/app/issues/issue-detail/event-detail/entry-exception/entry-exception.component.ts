@@ -139,7 +139,7 @@ export class EntryExceptionComponent {
   private snackBar = inject(MatSnackBar);
 
   readonly mode = signal<"app" | "all" | "raw">("app");
-  readonly unhandledLabel = $localize`unhandled`;
+  readonly unhandledLabel = $localize`Unhandled`;
 
   readonly orders: GhostSelectOption[] = [
     { value: "newest", label: $localize`Most recent first` },
@@ -269,12 +269,19 @@ export class EntryExceptionComponent {
       }
       const capped = list.length > FRAME_CAP + 2 && !showAll.has(link.key);
       // Keep the crash end of the stack, whichever way it is listed.
-      const shown = newestFirst
-        ? list.slice(0, FRAME_CAP)
-        : list.slice(-FRAME_CAP);
+      const cut = newestFirst ? FRAME_CAP : list.length - FRAME_CAP;
+      const [shown, rest] = !capped
+        ? [list, []]
+        : newestFirst
+          ? [list.slice(0, cut), list.slice(cut)]
+          : [list.slice(cut), list.slice(0, cut)];
       views.set(link.key, {
-        list: capped ? shown : list,
-        hidden: capped ? list.length - FRAME_CAP : 0,
+        list: shown,
+        // A folded run of library frames is one row but many frames.
+        hidden: rest.reduce(
+          (n, item) => n + (item.kind === "run" ? item.frames.length : 1),
+          0,
+        ),
         hiddenAbove: !newestFirst,
       });
     }

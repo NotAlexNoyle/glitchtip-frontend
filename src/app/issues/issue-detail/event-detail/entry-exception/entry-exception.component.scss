@@ -65,7 +65,7 @@ $chev-slot: rows.$chev-slot;
   color: var(--mat-sys-on-surface);
 }
 
-// Closed links clamp to two lines; an open link shows its value in full.
+// Closed links clamp to two lines; an open or frameless one shows its value in full.
 .chain--open .chain__what,
 .chain--open .chain__msg {
   display: inline;
@@ -318,10 +318,6 @@ $chev-slot: rows.$chev-slot;
   }
 
   .frame__body {
-    padding-inline-start: var(--gt-space-4, 16px);
-  }
-
-  .frames--top .frame__head {
     padding-inline-start: var(--gt-space-4, 16px);
   }
 }

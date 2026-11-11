@@ -132,8 +132,13 @@ export class EntryRequestComponent {
       const u = new URL(target);
       target = u.pathname + u.search;
     } catch {
-      // keep the raw url
+      // Not an absolute URL: shown as sent.
     }
+    // SDKs may send the query apart from the URL.
+    const query = toRows(r.query)
+      .map((p) => `${p.key}=${p.value}`)
+      .join("&");
+    if (query && !target.includes("?")) target += `?${query}`;
     const lines = [[r.method ?? "GET", target].filter(Boolean).join(" ")];
     for (const p of toRows(r.headers)) lines.push(`${p.key}: ${p.value}`);
     // A header string is shown as sent; pairs and objects are joined into one.

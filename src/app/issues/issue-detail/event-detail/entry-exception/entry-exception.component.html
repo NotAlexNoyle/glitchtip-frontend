@@ -88,7 +88,7 @@
         @let isOpen = opened().has(link.key);
         <div
           class="chain"
-          [class.chain--open]="isOpen"
+          [class.chain--open]="isOpen || !link.frames.length"
           [class.chain--root]="link.root"
         >
           <button
