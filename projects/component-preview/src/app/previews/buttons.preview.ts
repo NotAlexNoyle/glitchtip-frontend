@@ -193,10 +193,11 @@ export class ButtonsPreview {
   readonly dos = [
     "Use one filled button per view, for the primary action",
     "Use outlined for the secondary action next to it",
-    "Keep cancel, close, and dismiss as text buttons",
+    "Keep cancel, close, and dismiss as text buttons; they are neutral, so Cancel never reads as destructive",
     "Leave a secondary outlined button uncolored: primary and warn are both red, so a color on an outline reads as destructive",
     "Put the icon before the label",
     "Style destructive actions as an outlined warn button plus a confirm dialog",
+    "Keep row actions neutral; the confirm dialog carries the warning",
     "Use the two standard icon-button sizes, not ad-hoc ones",
   ];
   readonly donts = [
@@ -206,7 +207,7 @@ export class ButtonsPreview {
     "Invent per-page icon-button sizes",
   ];
   readonly content = [
-    "Use a verb, and name the object when it adds clarity: Add Monitor, not just Add",
+    "Use a verb, and name the object when it adds clarity: Add monitor, not just Add",
     "A bare verb is fine only when the object is obvious from right beside it",
     "Match a confirm button to its action: Delete, not Confirm or Yes",
     "Keep it short: a verb, or a verb plus its object",

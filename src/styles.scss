@@ -13,6 +13,8 @@
 @use "./assets/styles/tag-chip";
 @use "./assets/styles/code";
 @use "./scss/auth-forms";
+@use "./assets/styles/auth-page";
+@use "./assets/styles/settings-section";
 
 html {
   color-scheme: light dark;
@@ -25,13 +27,20 @@ html {
   );
 }
 
-// Brand color override
-@media (prefers-color-scheme: dark) {
-  :root {
-    --mat-sys-primary: #d94a5f;
-    --mat-sys-on-primary: #ffffff;
-    --mat-sys-error: #f54e6f;
-  }
+// Brand colors as light/dark pairs, so they follow color-scheme like the rest
+// of the theme.
+html {
+  @include mat.theme-overrides(
+    (
+      primary: light-dark(vars.$brand-red, #d94a5f),
+      on-primary: light-dark(#ffffff, #ffffff),
+      error: light-dark(#ba1434, #f54e6f),
+    )
+  );
+  // Hover and press on red fills: the same red a step darker, since a grey
+  // state layer muddies it.
+  --gt-primary-hover: oklch(from var(--mat-sys-primary) calc(l - 0.05) c h);
+  --gt-primary-pressed: oklch(from var(--mat-sys-primary) calc(l - 0.1) c h);
 }
 
 // Extended color
@@ -180,14 +189,7 @@ body {
   flex-wrap: wrap;
 }
 
-.project-card-wrapper {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax((290px), 1fr));
-  grid-gap: 24px;
-}
-
-header.page-header,
-header.projects-section-header {
+header.page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -315,6 +317,38 @@ mat-sidenav-container {
 .input-icon-button {
   @extend .small-icon-button;
   margin-right: 8px;
+}
+
+// Content starts 16px under a tab bar; a tab panel inside a card has its padding.
+mat-tab-nav-panel:not(mat-card-content > *) {
+  display: block;
+  padding-top: var(--gt-space-4, 16px);
+}
+
+// Material pads the 20px radio icon out to its state layer; pull that back
+// so the circles line up with the section text at any density.
+.gt-radio-column,
+.gt-radio-row {
+  display: flex;
+  margin-inline-start: calc((20px - var(--mat-radio-state-layer-size)) / 2);
+}
+
+.gt-radio-column {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.gt-radio-row {
+  flex-wrap: wrap;
+  column-gap: var(--gt-space-4, 16px);
+}
+
+// What the current value means, under its control.
+.gt-field-hint {
+  max-width: var(--gt-measure);
+  margin: var(--gt-space-2, 8px) 0 0;
+  font: var(--mat-sys-body-medium);
+  color: var(--mat-sys-on-surface-variant);
 }
 
 // Search-syntax help popover (rendered in the CDK overlay; styles must be global).
@@ -505,6 +539,12 @@ gt-issue-chart {
   }
 }
 
+.ng-charts {
+  line.gridline-path,
+  line.gridline-path-dotted {
+    stroke: var(--mat-sys-outline-variant);
+  }
+}
 // Overrides for ngx-mat-select-search
 .project-multiselect__search-field.mdc-list-item--disabled {
   mat-checkbox {
@@ -521,19 +561,6 @@ gt-issue-chart {
 
   .mat-select-search-clear {
     position: relative;
-  }
-}
-
-//Override for routerLinkActiveOptions in the side-nav
-.mat-mdc-list-item.mdc-list-item--activated {
-  background-color: var(--mat-sys-primary) !important;
-
-  .mdc-list-item__primary-text {
-    color: var(--mat-sys-on-primary) !important;
-  }
-
-  mat-icon {
-    color: var(--mat-sys-on-primary) !important;
   }
 }
 

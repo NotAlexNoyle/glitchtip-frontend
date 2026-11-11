@@ -1,4 +1,5 @@
 import {
+  booleanAttribute,
   ChangeDetectionStrategy,
   Component,
   computed,
@@ -11,12 +12,13 @@ import { MatIconModule } from "@angular/material/icon";
  * action. Use it wherever a list, table or panel has no data so every empty
  * state reads the same. Project a single button for the action. Set headingLevel
  * to match the surrounding page so the title lands in the right place in the
- * heading outline.
+ * heading outline. Set tall on page-level list boxes so the content sits lower
+ * instead of hugging the top of the box.
  */
 @Component({
   selector: "gt-empty-state",
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { "[attr.title]": "null" },
+  host: { "[attr.title]": "null", "[class.tall]": "tall()" },
   imports: [MatIconModule],
   template: `
     <div class="empty-state">
@@ -70,6 +72,10 @@ import { MatIconModule } from "@angular/material/icon";
     .empty-state__action:empty {
       display: none;
     }
+    /* Page-level list boxes are tall, so they get a roomier fixed top gap. */
+    :host(.tall) .empty-state {
+      padding-block-start: calc(var(--gt-space-7) * 2);
+    }
   `,
 })
 export class EmptyStateComponent {
@@ -78,6 +84,7 @@ export class EmptyStateComponent {
   /** One sentence; a list renders one paragraph per message. */
   readonly message = input<string | readonly string[]>("");
   readonly headingLevel = input<number>(3);
+  readonly tall = input(false, { transform: booleanAttribute });
   protected readonly paragraphs = computed(() =>
     ([] as string[]).concat(this.message()).filter(Boolean),
   );

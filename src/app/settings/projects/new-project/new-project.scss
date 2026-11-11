@@ -1,32 +1,9 @@
-.form-center {
-  text-align: center;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.l-body {
-  max-width: 650px;
-}
-
-mat-form-field {
-  display: block;
-  width: 100%;
-}
-
-.teams {
+.team-row {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  gap: var(--gt-space-2, 8px);
 
-  .icon-button-shift {
-    margin-bottom: 19.75px;
+  mat-form-field {
+    flex: 1;
   }
-}
-
-.project-name {
-  margin: 10px 0;
-}
-
-gt-loading-button {
-  margin-top: 10px;
 }

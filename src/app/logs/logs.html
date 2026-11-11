@@ -108,6 +108,7 @@
           } @else if (initialLoadComplete() && !isLoading()) {
             @if (query() || level().length || service_()) {
               <gt-empty-state
+                tall
                 icon="search"
                 i18n-title
                 title="No matching logs"
@@ -116,6 +117,7 @@
               />
             } @else {
               <gt-empty-state
+                tall
                 icon="text_snippet"
                 i18n-title
                 title="No logs yet"
