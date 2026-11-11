@@ -5,7 +5,8 @@ const loaded = (
   value: string | null | undefined,
   loading = false,
   issueID = "1",
-): LoadedEvent<string> => ({ value, loading, issueID });
+  visit = 1,
+): LoadedEvent<string> => ({ value, loading, issueID, visit });
 
 describe("holdWhileLoading", () => {
   it("keeps the shown event while the next one of the same issue loads", () => {
@@ -22,6 +23,13 @@ describe("holdWhileLoading", () => {
     const prev = { source: loaded("a"), value: "a" };
     expect(
       holdWhileLoading(loaded(undefined, true, "2"), prev),
+    ).toBeUndefined();
+  });
+
+  it("does not carry an event over to a new visit of the same issue", () => {
+    const prev = { source: loaded("a"), value: "a" };
+    expect(
+      holdWhileLoading(loaded(undefined, true, "1", 2), prev),
     ).toBeUndefined();
   });
 

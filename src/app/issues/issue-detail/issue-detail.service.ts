@@ -93,6 +93,8 @@ export interface LoadedEvent<T> {
   value: T | null | undefined;
   loading: boolean;
   issueID: string | null;
+  /** Bumped by open(); an event from an earlier visit is never held. */
+  visit: number;
 }
 
 /** Keeps the shown event while the next one of the same issue loads, so Older and Newer do not blank the page. */
@@ -102,7 +104,8 @@ export function holdWhileLoading<T>(
 ): T | null | undefined {
   return next.value === undefined &&
     next.loading &&
-    prev?.source.issueID === next.issueID
+    prev?.source.issueID === next.issueID &&
+    prev.source.visit === next.visit
     ? prev.value
     : next.value;
 }
@@ -132,6 +135,7 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
         : undefined,
       loading: this.#eventResource.isLoading(),
       issueID: this.issueID(),
+      visit: this.#visit(),
     }),
     computation: (next, prev) => holdWhileLoading(next, prev),
   });
@@ -221,6 +225,7 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
   issueID = signal("");
   orgSlug = signal("");
   eventID = signal<string | null>(null);
+  readonly #visit = signal(0);
 
   /** Loaded when the issue opens; kept while it is open. */
   readonly recentEvents = signal<RecentEvents | null>(null);
@@ -356,6 +361,7 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
     );
     this.orgSlug.set(orgSlug);
     this.issueID.set(issueID);
+    this.#visit.update((n) => n + 1);
     if (revisit) {
       this.#issueResource.reload();
       this.#tagsResource.reload();
