@@ -106,10 +106,10 @@ describe("EntryRequestComponent", () => {
     };
     const query = [
       ["page", "2"],
-      ["sort", "name"],
+      ["sort", "a b"],
     ];
     expect(rawLine({ method: "GET", url: "https://x.test/a", query })).toBe(
-      "GET /a?page=2&sort=name",
+      "GET /a?page=2&sort=a%20b",
     );
     expect(
       rawLine({ method: "GET", url: "https://x.test/a?page=2", query }),

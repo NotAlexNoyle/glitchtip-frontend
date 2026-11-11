@@ -95,12 +95,14 @@ describe("EntryExceptionComponent frames", () => {
   it("shows a link with no frames in full, as it cannot be opened", () => {
     const el = renderChain([
       { type: "Outer", value: "a long message" },
-      { type: "Inner", value: "b" },
+      { type: "Middle", value: "b", stacktrace: stack(1) },
+      { type: "Inner", value: "c" },
     ]);
     const open = [...el.querySelectorAll(".chain")].map((c) =>
       c.classList.contains("chain--open"),
     );
-    expect(open).toEqual([true, true]);
+    // The middle link has frames and starts closed, so it stays clamped.
+    expect(open).toEqual([true, false, true]);
   });
 
   it("names a frame that has only an address and a package", () => {

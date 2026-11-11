@@ -136,7 +136,7 @@ export class EntryRequestComponent {
     }
     // SDKs may send the query apart from the URL.
     const query = toRows(r.query)
-      .map((p) => `${p.key}=${p.value}`)
+      .map((p) => `${encodeURIComponent(p.key)}=${encodeURIComponent(p.value)}`)
       .join("&");
     if (query && !target.includes("?")) target += `?${query}`;
     const lines = [[r.method ?? "GET", target].filter(Boolean).join(" ")];
