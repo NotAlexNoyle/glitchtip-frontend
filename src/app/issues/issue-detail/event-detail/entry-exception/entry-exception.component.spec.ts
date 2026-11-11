@@ -96,13 +96,50 @@ describe("EntryExceptionComponent frames", () => {
     const el = renderChain([
       { type: "Outer", value: "a long message" },
       { type: "Middle", value: "b", stacktrace: stack(1) },
-      { type: "Inner", value: "c" },
+      { type: "Inner", value: "c", stacktrace: stack(1) },
     ]);
     const open = [...el.querySelectorAll(".chain")].map((c) =>
       c.classList.contains("chain--open"),
     );
     // The middle link has frames and starts closed, so it stays clamped.
     expect(open).toEqual([true, false, true]);
+  });
+
+  it("opens the deepest link with frames when the root cause has none", () => {
+    const el = renderChain([
+      { type: "RuntimeError", value: "outer", stacktrace: stack(2) },
+      { type: "ValueError", value: "quota 0" },
+    ]);
+    const open = [...el.querySelectorAll(".chain")].map((c) =>
+      c.classList.contains("chain--open"),
+    );
+    expect(open).toEqual([true, true]);
+    expect(el.querySelector(".frame__fn")).not.toBeNull();
+  });
+
+  it("calls a group's members In group, and none of them the root cause", () => {
+    // As sentry-python sends a thrown ExceptionGroup, thrown first.
+    const member = (type: string, i: number) => ({
+      type,
+      value: "x",
+      stacktrace: stack(1),
+      mechanism: { type: "chained", handled: true, source: `exceptions[${i}]` },
+    });
+    const el = renderChain([
+      {
+        type: "ExceptionGroup",
+        value: "2 checks failed",
+        stacktrace: stack(1),
+      },
+      member("ValueError", 0),
+      member("TimeoutError", 1),
+    ]);
+    expect(texts(el, ".chain__role")).toEqual([
+      "Thrown",
+      "In group",
+      "In group",
+    ]);
+    expect(el.querySelector(".chain--root")).toBeNull();
   });
 
   it("names a frame that has only an address and a package", () => {

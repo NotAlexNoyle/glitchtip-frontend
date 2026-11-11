@@ -94,6 +94,12 @@ interface ChainLink {
   frames: FrameItem[];
 }
 
+/** SDKs name a group member by its place in the group: exceptions[0], errors[0]. */
+const GROUP_MEMBER = /^(exceptions|errors)\[\d+\]$/;
+
+const inGroup = (value: Values) =>
+  GROUP_MEMBER.test(value.mechanism?.source ?? "");
+
 /** Items shown before "Show N more frames". */
 const FRAME_CAP = 10;
 
@@ -181,6 +187,8 @@ export class EntryExceptionComponent {
     const last = values.length - 1;
     const platform = this.issueService.event()?.platform;
     const newestFirst = this.issueService.isReversed();
+    // A group's members fail side by side, so none of them is the root cause.
+    const grouped = values.some(inGroup);
     return values.map((value, i) => {
       const stack = stackFrames(value);
       const items = stack.map((frame, fi) =>
@@ -191,14 +199,16 @@ export class EntryExceptionComponent {
         role:
           i === 0
             ? $localize`Thrown`
-            : i === last
-              ? $localize`Root cause`
-              : $localize`Caused by`,
+            : inGroup(value)
+              ? $localize`In group`
+              : i === last && !grouped
+                ? $localize`Root cause`
+                : $localize`Caused by`,
         type: value.type,
         value: value.value || "",
         unhandled: value.mechanism?.handled === false,
         mechanism: mechanismOf(value.mechanism),
-        root: i === last && last > 0,
+        root: i === last && last > 0 && !grouped,
         top: items[topFrameIndex(stack)],
         frames: newestFirst ? [...items].reverse() : items,
       };
@@ -217,15 +227,17 @@ export class EntryExceptionComponent {
     return n > 1 ? $localize`${n}:count: in chain, thrown first` : "";
   });
 
-  /** The root cause opens on its top app frame. */
+  /** The deepest link with frames opens on its top app frame. */
   private readonly defaultOpen = computed(() => {
     const values = this.values();
-    const last = values.length - 1;
     const open = new Set<string>();
-    if (last < 0) return open;
-    if (last > 0) open.add(linkKey(last));
-    const stack = stackFrames(values[last]);
-    if (stack.length) open.add(frameKey(last, topFrameIndex(stack)));
+    for (let i = values.length - 1; i >= 0; i--) {
+      const stack = stackFrames(values[i]);
+      if (!stack.length) continue;
+      if (values.length > 1) open.add(linkKey(i));
+      open.add(frameKey(i, topFrameIndex(stack)));
+      break;
+    }
     return open;
   });
   readonly opened = openKeys(this.defaultOpen, (keys) => keys);

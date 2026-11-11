@@ -404,6 +404,26 @@ describe("rawTrace", () => {
     );
   });
 
+  it("claims a Python link only when the SDK says which it is", () => {
+    const link = (source?: string) =>
+      rawTrace(
+        [
+          exception("ValueError", "bad cart", []),
+          exception("KeyError", "id", [], {
+            mechanism: { type: "chained", handled: true, source },
+          }),
+        ],
+        "python",
+      ).split("\n")[2];
+    expect(link("__cause__")).toBe(
+      "The above exception was the direct cause of the following exception:",
+    );
+    // sentry-python leaves the source out of a plain chain.
+    expect(link(undefined)).toBe(
+      "The above exception is linked to the following exception:",
+    );
+  });
+
   it("follows the java, ruby, php and native formats", () => {
     const java = exception("NullPointerException", "cart", [outer], {
       module: "java.lang",

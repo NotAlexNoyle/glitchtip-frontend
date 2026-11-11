@@ -294,17 +294,23 @@ function exceptionLine(
   return [type, value.value].filter(Boolean).join(": ");
 }
 
+/** Python's own line when the SDK says how two exceptions link; plain chains do not. */
+function pythonLink(source: string | undefined): string {
+  if (source === "__cause__") {
+    return "The above exception was the direct cause of the following exception:";
+  }
+  if (source === "__context__") {
+    return "During handling of the above exception, another exception occurred:";
+  }
+  return "The above exception is linked to the following exception:";
+}
+
 function pythonTrace(rootFirst: Values[]): string {
   return rootFirst
     .map((value, i) => {
       const lines: string[] = [];
       if (i) {
-        lines.push(
-          rootFirst[i - 1].mechanism?.source === "__context__"
-            ? "During handling of the above exception, another exception occurred:"
-            : "The above exception was the direct cause of the following exception:",
-          "",
-        );
+        lines.push(pythonLink(rootFirst[i - 1].mechanism?.source), "");
       }
       const frames = stackFrames(value);
       if (frames.length) {
