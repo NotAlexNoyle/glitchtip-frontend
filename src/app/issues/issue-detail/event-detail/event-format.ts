@@ -248,9 +248,12 @@ export function isHttpUrl(value: string | null | undefined): boolean {
   return !!value && /^https?:\/\//.test(value);
 }
 
+/** "line:col"; SDKs send 0 or -1 for unknown. */
 export function frameLineCol(frame: Frame): string {
-  if (!frame.lineNo) return "";
-  return frame.colNo ? `${frame.lineNo}:${frame.colNo}` : `${frame.lineNo}`;
+  if (!frame.lineNo || frame.lineNo < 1) return "";
+  return frame.colNo && frame.colNo > 0
+    ? `${frame.lineNo}:${frame.colNo}`
+    : `${frame.lineNo}`;
 }
 
 /** Frames as the API sends them: oldest first, the crash point last. */

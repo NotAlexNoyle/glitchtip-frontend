@@ -332,6 +332,8 @@ describe("frame display", () => {
     expect(frameLineCol(frame({ lineNo: 12, colNo: 4 }))).toBe("12:4");
     expect(frameLineCol(frame({ lineNo: 12 }))).toBe("12");
     expect(frameLineCol(frame({}))).toBe("");
+    expect(frameLineCol(frame({ lineNo: -1, colNo: -1 }))).toBe("");
+    expect(frameLineCol(frame({ lineNo: 12, colNo: -1 }))).toBe("12");
   });
 
   it("reads frames in API order and tolerates a missing stacktrace", () => {

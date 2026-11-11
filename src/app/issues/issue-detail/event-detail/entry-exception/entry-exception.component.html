@@ -101,7 +101,7 @@
             <span class="chain__role">{{ link.role }}</span>
             <span class="chain__what">
               <span class="chain__type"
-                >{{ link.type }}{{ link.value ? ":" : "" }}</span
+                >{{ link.type }}{{ link.type && link.value ? ":" : "" }}</span
               >
               @if (link.value) {
                 <span class="chain__msg">{{ link.value }}</span>
@@ -151,6 +151,11 @@
 
 <ng-template #frameList let-link>
   @let view = views().get(link.key)!;
+  @if (view.hidden && view.hiddenAbove) {
+    <ng-container
+      *ngTemplateOutlet="moreFrames; context: { $implicit: link }"
+    />
+  }
   @for (item of view.list; track item.key) {
     @if (item.kind === "run") {
       @let runOpen = opened().has(item.key);
@@ -186,16 +191,23 @@
       />
     }
   }
-  @if (view.hidden) {
-    <div class="frames__more">
-      <button mat-button type="button" (click)="showMore(link.key)" i18n>
-        {view.hidden, plural,
-          =1 {Show 1 more frame}
-          other {Show {{ view.hidden // i18n(ph="count") }} more frames}
-        }
-      </button>
-    </div>
+  @if (view.hidden && !view.hiddenAbove) {
+    <ng-container
+      *ngTemplateOutlet="moreFrames; context: { $implicit: link }"
+    />
   }
+</ng-template>
+
+<ng-template #moreFrames let-link>
+  @let hidden = views().get(link.key)!.hidden;
+  <div class="frames__more">
+    <button mat-button type="button" (click)="showMore(link.key)" i18n>
+      {hidden, plural,
+        =1 {Show 1 more frame}
+        other {Show {{ hidden // i18n(ph="count") }} more frames}
+      }
+    </button>
+  </div>
 </ng-template>
 
 <ng-template #frameRow let-item>
@@ -267,7 +279,7 @@
             aria-label="Source context"
           >
             <div class="gt-code__lines">
-              @for (l of f.context; track l[0]; let i = $index) {
+              @for (l of f.context; track $index; let i = $index) {
                 <div
                   class="gt-code__line"
                   [class.gt-code__line--hl]="l[0] === f.lineNo"
@@ -310,7 +322,7 @@
     }
     @if (m.handled) {
       <span i18n>handled yes</span>
-    } @else {
+    } @else if (m.handled === false) {
       <span i18n>handled no</span>
     }
     @if (m.fn) {

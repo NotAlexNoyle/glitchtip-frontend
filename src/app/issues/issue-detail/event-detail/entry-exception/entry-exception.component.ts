@@ -70,11 +70,14 @@ interface RunItem {
 interface FrameView {
   list: (FrameItem | RunItem)[];
   hidden: number;
+  /** Oldest first: the hidden frames come before the list. */
+  hiddenAbove: boolean;
 }
 
 interface Mechanism {
   type: string;
-  handled: boolean;
+  /** Null when the SDK did not say. */
+  handled: boolean | null;
   fn: string;
 }
 
@@ -109,7 +112,9 @@ function mechanismOf(mech: Values["mechanism"]): Mechanism | null {
   if (!mech) return null;
   const fn = mech.data?.function ?? "";
   if (mech.type === "chained" && mech.handled !== false && !fn) return null;
-  return { type: mech.type ?? "", handled: mech.handled !== false, fn };
+  const handled = mech.handled ?? null;
+  if (!mech.type && handled === null && !fn) return null;
+  return { type: mech.type ?? "", handled, fn };
 }
 
 @Component({
@@ -236,6 +241,7 @@ export class EntryExceptionComponent {
   readonly views = computed(() => {
     const full = this.view() === "all";
     const showAll = this.showAllFrames();
+    const newestFirst = this.issueService.isReversed();
     const views = new Map<string, FrameView>();
     for (const link of this.chain()) {
       const all = full || !link.frames.some((f) => f.frame.inApp);
@@ -262,12 +268,15 @@ export class EntryExceptionComponent {
         }
       }
       const capped = list.length > FRAME_CAP + 2 && !showAll.has(link.key);
-      views.set(
-        link.key,
-        capped
-          ? { list: list.slice(0, FRAME_CAP), hidden: list.length - FRAME_CAP }
-          : { list, hidden: 0 },
-      );
+      // Keep the crash end of the stack, whichever way it is listed.
+      const shown = newestFirst
+        ? list.slice(0, FRAME_CAP)
+        : list.slice(-FRAME_CAP);
+      views.set(link.key, {
+        list: capped ? shown : list,
+        hidden: capped ? list.length - FRAME_CAP : 0,
+        hiddenAbove: !newestFirst,
+      });
     }
     return views;
   });
@@ -331,7 +340,8 @@ export class EntryExceptionComponent {
     key: string,
     platform: string | null | undefined,
   ): FrameItem {
-    const file = frameDisplay(frame, platform);
+    // A native frame often has only its address and package.
+    const file = frameDisplay(frame, platform) || packageOf(frame);
     const showsModule = !!frame.module && file === frame.module;
     const abs = frame.absPath && frame.absPath !== file ? frame.absPath : "";
     return {
@@ -340,7 +350,7 @@ export class EntryExceptionComponent {
       frame,
       fn: hideFunctionName(frame, platform)
         ? ""
-        : frame.function || frame.symbol || "?",
+        : frame.function || frame.symbol || frame.instructionAddr || "?",
       file,
       fileTip: abs || (showsModule && frame.filename ? frame.filename : ""),
       lc: frameLineCol(frame),

@@ -25,6 +25,88 @@ const baseFrame: Frame = {
   colNo: null,
 };
 
+function renderChain(chain: object[], newestFirst = true) {
+  TestBed.resetTestingModule();
+  TestBed.configureTestingModule({
+    providers: [
+      {
+        provide: IssueDetailService,
+        useValue: {
+          exceptionChain: signal(chain as Values[]),
+          exceptionTrace: signal(""),
+          exceptionHasFrames: signal(true),
+          isReversed: signal(newestFirst),
+          event: signal({ platform: "native" }),
+        },
+      },
+      { provide: MatSnackBar, useValue: { open: () => undefined } },
+    ],
+  });
+  const fixture = TestBed.createComponent(EntryExceptionComponent);
+  fixture.detectChanges();
+  return fixture.nativeElement as HTMLElement;
+}
+
+const texts = (el: HTMLElement, selector: string) =>
+  [...el.querySelectorAll(selector)].map((n) =>
+    n.textContent!.replace(/\s+/g, " ").trim(),
+  );
+
+describe("EntryExceptionComponent frames", () => {
+  const stack = (n: number) => ({
+    frames: Array.from({ length: n }, (_, i) => ({
+      ...baseFrame,
+      function: `step${i}`,
+      filename: "app.c",
+    })),
+  });
+
+  it("keeps the crash end of a long stack in either order", () => {
+    const chain = [{ type: "E", value: "boom", stacktrace: stack(40) }];
+    const newest = texts(renderChain(chain, true), ".frame__fn");
+    expect(newest.slice(0, 2)).toEqual(["step39", "step38"]);
+    expect(newest).toHaveLength(10);
+
+    const el = renderChain(chain, false);
+    const oldest = texts(el, ".frame__fn");
+    expect(oldest.slice(-2)).toEqual(["step38", "step39"]);
+    expect(oldest).toHaveLength(10);
+    // The hidden frames are older, so the way to them sits above.
+    expect(el.querySelector(".frames")!.firstElementChild!.className).toBe(
+      "frames__more",
+    );
+  });
+
+  it("names a frame that has only an address and a package", () => {
+    const el = renderChain([
+      {
+        type: "E",
+        value: "boom",
+        stacktrace: {
+          frames: [
+            {
+              ...baseFrame,
+              instructionAddr: "0x1000",
+              package: "/usr/lib/libfoo.dylib",
+            },
+          ],
+        },
+      },
+    ]);
+    expect(texts(el, ".frame__fn")).toEqual(["0x1000"]);
+    expect(texts(el, ".frame__file")).toEqual(["libfoo.dylib"]);
+  });
+
+  it("says nothing about handled or a type the SDK did not send", () => {
+    const el = renderChain([
+      { type: "Outer", value: "a", mechanism: { type: "generic" } },
+      { type: "", value: "inner text", mechanism: { type: "chained" } },
+    ]);
+    expect(texts(el, ".mech-line")).toEqual(["mechanism generic"]);
+    expect(texts(el, ".chain__type")).toEqual(["Outer:", ""]);
+  });
+});
+
 function render(frame: Partial<Frame>, platform: string) {
   const chain = [
     {
