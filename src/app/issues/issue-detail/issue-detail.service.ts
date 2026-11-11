@@ -115,7 +115,10 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
   private snackBar = inject(MatSnackBar);
   private router = inject(Router);
 
-  readonly issue = computed(() => this.#issueResource.value());
+  // value() throws once a load has failed, so read it only when there is one.
+  readonly issue = computed(() =>
+    this.#issueResource.hasValue() ? this.#issueResource.value() : undefined,
+  );
   readonly issueInitialLoadComplete = computed(() =>
     this.#issueResource.hasValue(),
   );
@@ -124,7 +127,9 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
     EventDetail | null | undefined
   >({
     source: () => ({
-      value: this.#eventResource.value(),
+      value: this.#eventResource.hasValue()
+        ? this.#eventResource.value()
+        : undefined,
       loading: this.#eventResource.isLoading(),
       issueID: this.issueID(),
     }),

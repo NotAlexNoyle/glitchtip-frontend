@@ -299,7 +299,7 @@
         }
         @if (body?.vars?.length) {
           <dl class="gt-property-list gt-property-list--vars">
-            @for (v of body!.vars; track v.key) {
+            @for (v of body!.vars; track $index) {
               <div
                 class="gt-property-list__row"
                 [class.gt-property-list__row--long]="v.long"
