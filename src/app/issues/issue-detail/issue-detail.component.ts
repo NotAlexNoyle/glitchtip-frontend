@@ -6,6 +6,7 @@ import {
   computed,
   input,
   effect,
+  LOCALE_ID,
 } from "@angular/core";
 import { CompactNumberPipe } from "src/app/shared/compact-number.pipe";
 import { ActivatedRoute, RouterModule } from "@angular/router";
@@ -22,6 +23,7 @@ import {
   DecimalPipe,
   TitleCasePipe,
   NgTemplateOutlet,
+  formatDate,
 } from "@angular/common";
 import { BackLinkComponent } from "src/app/shared/detail/back-link/back-link.component";
 import { RecordBandComponent } from "src/app/shared/record-band/record-band.component";
@@ -72,14 +74,15 @@ export class IssueDetailComponent implements OnInit {
   private organizationsService = inject(OrganizationsService);
   private route = inject(ActivatedRoute);
   private dialog = inject(MatDialog);
+  private locale = inject(LOCALE_ID);
 
   readonly issueNotFoundMessage = [
     $localize`This may be because the URL is pointing to an issue that doesn't exist or was deleted.`,
     $localize`It's also possible that this issue was reported to a project that you are not able to access.`,
   ];
 
-  issue = this.issueService.issue;
-  issueTitle = computed(() => {
+  readonly issue = this.issueService.issue;
+  readonly issueTitle = computed(() => {
     const issue = this.issue();
     if (!issue) {
       return ["", null] as [string, string | null];
@@ -111,7 +114,7 @@ export class IssueDetailComponent implements OnInit {
         return [metadata.title || fallback, null] as [string, string | null];
     }
   });
-  issueSubtitle = computed<string>(() => {
+  readonly issueSubtitle = computed<string>(() => {
     const issue = this.issue();
     if (!issue || issue.metadata === null) {
       return "";
@@ -129,44 +132,43 @@ export class IssueDetailComponent implements OnInit {
     }
   });
 
-  userCount = this.issueService.userCount;
+  readonly userCount = this.issueService.userCount;
 
-  usersTip = computed(() => {
+  readonly usersTip = computed(() => {
     const users = this.userCount();
     return users
       ? $localize`Distinct ${users.key}:key: values across all events (${users.tagged}:tagged: tagged)`
       : "";
   });
 
-  firstSeenTip = computed(() => {
+  readonly firstSeenTip = computed(() => {
     const issue = this.issue();
     if (!issue) return "";
-    const date = new Date(issue.firstSeen).toLocaleString(undefined, {
-      dateStyle: "medium",
-      timeStyle: "short",
-    });
+    const date = formatDate(issue.firstSeen, "medium", this.locale);
     return $localize`First seen ${date}:date:`;
   });
 
-  backLinkParams = computed(() => {
+  readonly backLinkParams = computed(() => {
     const projectId = this.issue()?.project.id;
     return projectId
       ? { ...this.route.snapshot.queryParams, project: projectId }
       : {};
   });
 
-  status = computed(() => ISSUE_STATUS[this.issue()?.status ?? "unresolved"]);
+  readonly status = computed(
+    () => ISSUE_STATUS[this.issue()?.status ?? "unresolved"],
+  );
 
-  resolvedInRelease = computed(() => {
+  readonly resolvedInRelease = computed(() => {
     const issue = this.issue();
     if (!issue || issue.status !== "resolved") return null;
     return issue.statusDetails?.["inRelease"] ?? null;
   });
 
-  initialLoadComplete = this.issueService.issueInitialLoadComplete;
-  issueID = input.required<string>({ alias: "issue-id" });
-  orgSlug = input.required<string>({ alias: "org-slug" });
-  organization = this.organizationsService.activeOrganization;
+  readonly initialLoadComplete = this.issueService.issueInitialLoadComplete;
+  readonly issueID = input.required<string>({ alias: "issue-id" });
+  readonly orgSlug = input.required<string>({ alias: "org-slug" });
+  readonly organization = this.organizationsService.activeOrganization;
 
   constructor() {
     effect(() => {

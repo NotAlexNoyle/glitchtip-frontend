@@ -91,11 +91,11 @@ function contextRows(name: string, ctx: Json | undefined): PropertyRow[] {
                 >
               </button>
               @if (openedGroups().get(s.key); as groups) {
-                <div class="gt-groups">
+                <div class="groups">
                   @for (g of groups; track g.label) {
-                    <div class="gt-group">
+                    <div class="group">
                       @if (groups.length > 1) {
-                        <div class="gt-group__label">{{ g.label }}</div>
+                        <div class="group__label">{{ g.label }}</div>
                       }
                       <dl class="gt-property-list gt-property-list--nested">
                         @for (kv of g.rows; track $index) {
@@ -122,15 +122,15 @@ function contextRows(name: string, ctx: Json | undefined): PropertyRow[] {
     @use "controls";
     @use "row-mixins" as rows;
 
-    .gt-groups {
+    .groups {
       padding-block: var(--gt-space-1, 4px);
     }
 
-    .gt-group + .gt-group {
+    .group + .group {
       @include rows.inset-hairline(32px);
     }
 
-    .gt-group__label {
+    .group__label {
       padding: var(--gt-space-2, 8px) var(--gt-space-4, 16px) 0
         var(--gt-indent, var(--gt-space-4, 16px));
       font: var(--mat-sys-label-medium);

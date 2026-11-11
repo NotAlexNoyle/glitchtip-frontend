@@ -39,19 +39,19 @@ const LABELS: { [key: string]: string } = {
 export class EntryCSPComponent {
   private issueService = inject(IssueDetailService);
 
-  eventEntryCSP = this.issueService.eventEntryCSP;
+  readonly eventEntryCSP = this.issueService.eventEntryCSP;
   readonly formats: GhostSelectOption[] = [
     { value: "report", label: $localize`Report` },
     { value: "raw", label: $localize`Raw` },
   ];
   readonly format = signal("report");
 
-  subtitle = computed(() =>
+  readonly subtitle = computed(() =>
     String(this.eventEntryCSP()?.["effective_directive"] ?? ""),
   );
 
   /** Known fields first in a fixed order, then the rest; empty ones left out. */
-  rows = computed(() => {
+  readonly rows = computed(() => {
     const csp = this.eventEntryCSP();
     if (!csp) return [];
     const keys = [
@@ -69,7 +69,7 @@ export class EntryCSPComponent {
   });
 
   /** The report as the browser sends it, under its "csp-report" key. */
-  raw = computed(() =>
+  readonly raw = computed(() =>
     JSON.stringify({ "csp-report": this.eventEntryCSP() ?? {} }, null, 2),
   );
 }

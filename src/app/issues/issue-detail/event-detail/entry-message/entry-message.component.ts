@@ -18,10 +18,10 @@ import { formatValue, recordOf } from "../event-format";
 export class EntryMessageComponent {
   private issueService = inject(IssueDetailService);
 
-  eventEntryMessage = this.issueService.eventEntryMessage;
+  readonly eventEntryMessage = this.issueService.eventEntryMessage;
 
   /** The message, unless it only repeats the exception shown above it. */
-  text = computed(() => {
+  readonly text = computed(() => {
     const m = this.eventEntryMessage();
     const text = m?.formatted || m?.message || "";
     // The stored message is cut short with "…", so a prefix counts too.
@@ -36,7 +36,7 @@ export class EntryMessageComponent {
     return repeats ? "" : text;
   });
 
-  params = computed(() => {
+  readonly params = computed(() => {
     const params: unknown = this.eventEntryMessage()?.params;
     return Array.isArray(params)
       ? params.map((p) => formatValue(p))
@@ -45,10 +45,10 @@ export class EntryMessageComponent {
         );
   });
 
-  paramsText = computed(() => this.params().join(" · "));
+  readonly paramsText = computed(() => this.params().join(" · "));
 
   /** The template only adds something when it differs from the message. */
-  template = computed(() => {
+  readonly template = computed(() => {
     const m = this.eventEntryMessage();
     // Without a formatted text the message is the text itself, not a template.
     return m?.formatted && m.message && m.message !== m.formatted
@@ -57,7 +57,7 @@ export class EntryMessageComponent {
   });
 
   /** A message entry with no text, template or params has nothing to show. */
-  hasContent = computed(
+  readonly hasContent = computed(
     () => !!(this.text() || this.template() || this.paramsText()),
   );
 }

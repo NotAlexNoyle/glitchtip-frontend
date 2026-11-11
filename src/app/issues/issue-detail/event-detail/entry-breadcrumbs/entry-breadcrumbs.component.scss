@@ -1,6 +1,7 @@
 @use "controls";
 @use "variables" as vars;
 @use "row-mixins" as rows;
+@use "issue-level";
 
 // A grid table that restacks under 560px, ending at the "This event" row.
 
@@ -81,24 +82,23 @@ $stack-below: 559px;
   }
 }
 
-// Level is a bar plus a word, for warning, error and fatal only; a bar
-// marks a level everywhere, as on the issue level tag.
+// Level is a bar plus a word, for warning, error and fatal only; the bar paints as on the issue header.
 .crumbs__level-bar {
+  position: relative;
   display: inline-block;
   flex: none;
   width: 3px;
   height: 10px;
   margin-inline-end: 6px;
-  border-radius: var(--mat-sys-corner-full);
 
-  &--warning {
-    background-color: var(--gt-level-warning);
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: var(--mat-sys-corner-full);
   }
 
-  &--error,
-  &--fatal {
-    background-color: var(--gt-level-error);
-  }
+  @include issue-level.accent;
 }
 
 .crumbs__cat {

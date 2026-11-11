@@ -135,23 +135,23 @@ export class EventDetailComponent {
   private dialog = inject(MatDialog);
   private overlay = inject(OverlayContainer);
   private injector = inject(Injector);
-  orgSlug = input.required<string>({ alias: "org-slug" });
-  issueID = input.required<string>({ alias: "issue-id" });
-  eventID = input<string | null>(null, { alias: "event-id" });
+  readonly orgSlug = input.required<string>({ alias: "org-slug" });
+  readonly issueID = input.required<string>({ alias: "issue-id" });
+  readonly eventID = input<string | null>(null, { alias: "event-id" });
 
-  event = this.issueService.event;
+  readonly event = this.issueService.event;
 
   /**
    * Whether the MCP feature is available on this instance. Gates the post-copy
    * hint ONLY — the "copy for AI" button works regardless. Reuses the already
    * loaded settings, no extra fetch.
    */
-  mcpEnabled = computed(() =>
+  readonly mcpEnabled = computed(() =>
     this.settingsService.enabledFeatures().includes("mcp"),
   );
 
   /** Frontend-only dismiss flag for the one-time MCP hint. */
-  private mcpHintSeen = signal(readHintSeen());
+  private readonly mcpHintSeen = signal(readHintSeen());
 
   /**
    * The event as a payload tuned for pasting into an LLM agent: a marker that
@@ -161,7 +161,7 @@ export class EventDetailComponent {
    * Light metadata only — deliberately NO pre-written prompt/ask. The added
    * context makes the plain paste-into-a-chatbot path work better on its own.
    */
-  aiPayload = computed(() => {
+  readonly aiPayload = computed(() => {
     const event = this.event();
     if (!event) {
       return "";
@@ -184,51 +184,57 @@ export class EventDetailComponent {
     return lines.join("\n");
   });
 
-  environment = computed(() => tagOf(this.event()?.tags, "environment"));
-  release = computed(() => tagOf(this.event()?.tags, "release"));
+  readonly environment = computed(() =>
+    tagOf(this.event()?.tags, "environment"),
+  );
+  readonly release = computed(() => tagOf(this.event()?.tags, "release"));
   /** The header already shows the first seen release. */
-  showRelease = computed(() => {
+  readonly showRelease = computed(() => {
     const release = this.release();
     const first = this.issueService.issue()?.firstRelease;
     return (
       !!release && release !== first?.version && release !== first?.shortVersion
     );
   });
-  latestUrl = computed(() => `/${this.orgSlug()}/issues/${this.issueID()}`);
-  rawJsonUrl = computed(() => {
+  readonly latestUrl = computed(
+    () => `/${this.orgSlug()}/issues/${this.issueID()}`,
+  );
+  readonly rawJsonUrl = computed(() => {
     const event = this.event();
     if (!event) return "";
     return `/organizations/${this.orgSlug()}/issues/${event.groupID}/events/${event.id}/json/`;
   });
-  eventLink = computed(() => {
+  readonly eventLink = computed(() => {
     const event = this.event();
     if (!event) return "";
     return `${window.location.origin}/${this.orgSlug()}/issues/${this.issueID()}/events/${event.id}`;
   });
-  trace = this.issueService.exceptionTrace;
-  traceHasFrames = this.issueService.exceptionHasFrames;
+  readonly trace = this.issueService.exceptionTrace;
+  readonly traceHasFrames = this.issueService.exceptionHasFrames;
   readonly eventNotFoundMessage = $localize`This may be because the URL is pointing to an event that doesn't exist or was deleted.`;
-  initialLoadComplete = this.issueService.eventInitialLoadComplete;
-  nextEvent = this.issueService.hasNextEvent;
-  previousEvent = this.issueService.hasPreviousEvent;
-  nextEventUrl = this.issueService.nextEventUrl;
-  previousEventUrl = this.issueService.previousEventUrl;
+  readonly initialLoadComplete = this.issueService.eventInitialLoadComplete;
+  readonly nextEvent = this.issueService.hasNextEvent;
+  readonly previousEvent = this.issueService.hasPreviousEvent;
+  readonly nextEventUrl = this.issueService.nextEventUrl;
+  readonly previousEventUrl = this.issueService.previousEventUrl;
   /** Steps wait for the event on screen to be the one the URL names. */
-  eventLoading = this.issueService.eventLoading;
+  readonly eventLoading = this.issueService.eventLoading;
 
-  shortId = computed(() => shortEventId(this.event()?.id ?? ""));
-  eventCount = computed(() => +(this.issueService.issue()?.count ?? 0));
+  readonly shortId = computed(() => shortEventId(this.event()?.id ?? ""));
+  readonly eventCount = computed(
+    () => +(this.issueService.issue()?.count ?? 0),
+  );
   /** With one event there is nothing to switch or step to. */
-  canSwitch = computed(() => this.eventCount() > 1);
-  private recent = computed(() => {
+  readonly canSwitch = computed(() => this.eventCount() > 1);
+  private readonly recent = computed(() => {
     const r = this.issueService.recentEvents();
     return r && r.issueID === this.issueID() ? r : null;
   });
-  recentLoading = computed(() => !!this.recent()?.loading);
-  recentFailed = computed(() => !!this.recent()?.failed);
-  hasMoreEvents = computed(() => !!this.recent()?.cursor);
+  readonly recentLoading = computed(() => !!this.recent()?.loading);
+  readonly recentFailed = computed(() => !!this.recent()?.failed);
+  readonly hasMoreEvents = computed(() => !!this.recent()?.cursor);
   /** Newest first; the current event is always an option, last if older. */
-  switcherOptions = computed<EventOption[]>(() => {
+  readonly switcherOptions = computed<EventOption[]>(() => {
     const event = this.event();
     if (!event) return [];
     const url = (e: RecentEvent, latest: boolean) =>
@@ -260,7 +266,7 @@ export class EventDetailComponent {
     nextEventID?: string | null;
   } | null = null;
   /** Room for the widest "N of N", so the arrows stay put while stepping. */
-  positionWidth = computed(() => {
+  readonly positionWidth = computed(() => {
     const digits = String(this.eventCount()).length;
     return 2 * (digits + Math.floor((digits - 1) / 3)) + 4;
   });
@@ -268,7 +274,7 @@ export class EventDetailComponent {
    * 1 is the latest; counted by steps from there. Null for an older event opened
    * directly, until the switcher has loaded the page it is on.
    */
-  position = computed<number | null>(() => {
+  readonly position = computed<number | null>(() => {
     const event = this.event();
     if (!event) return null;
     if (this.nextEvent() === false) return 1;
