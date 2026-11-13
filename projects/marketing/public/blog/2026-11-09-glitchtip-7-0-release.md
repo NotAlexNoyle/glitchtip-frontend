@@ -3,16 +3,15 @@ title: GlitchTip 7.0 released
 description: Simpler Permissions, Better Stack Traces and QoL Improvements
 published: true
 ---
-
-GlitchTip 7.0 is out! It brings simpler permissions, much better stack traces, and a batch of quality of life improvements. Make sure to read [Breaking Changes](/blog/2026-11-09-glitchtip-7-0-release#breaking-changes) to understand how these changes affect you!
+ GlitchTip 7.0 is out! It brings simpler permissions, much better stack traces, and a batch of quality of life improvements. Make sure to read [Breaking Changes](/blog/2026-11-09-glitchtip-7-0-release#breaking-changes) to understand how these changes affect you!
 
 <h2 id="simpler-permissions">Simpler Permissions</h2>
 
-In 7.0, we've reworked the old permissions scheme into one that is focused on roles. For both users and their API tokens, what you can do depends on your role in a given Organization. As a reminder, GlitchTip's roles from least to most access go as follows:
+In 7.0, we've reworked the old permissions scheme into one that is focused on roles. For both users and their API tokens, what you can do depends on your role in a given Organization.  As a reminder, GlitchTip's roles from least to most access go as follows:
 
-> Member < Admin < Manager < Owner
+> Member < Admin <  Manager < Owner
 
-Please consult this table of changed behaviors to see how this might effect you. We suggest re-organizing users in your organization to fit this scheme.
+Please consult this table of changed behaviors to see how this might effect you. We suggest re-organizing users in your organization to fit this scheme. 
 
 | Action                                   | Before 7.0                                                | 7.0 and later |
 | ---------------------------------------- | --------------------------------------------------------- | ------------- |
@@ -73,33 +72,24 @@ Hosted users only need to read [For All Users](/blog/2026-11-09-glitchtip-7-0-re
 
 ### For Self-Hosted Users
 
-Follow these steps in order. **Skipping one can delete events.**
-
-1. **Back up your database.** Take another backup before step 5.
-2. **Upgrade to GlitchTip 6.2.6 and let it migrate.** 7.0 requires 6.0.9 or later, and the latest 6.x is the safest starting point. 7.0 won't stop you if you skip this step. From 6.0.3–6.0.8, it skips migrations 7.0 relies on. From 5.x, it can fail partway through and leave migrations to finish by hand.
-3. **Rename retired environment variables, then restart.** 7.0 ignores the old names in the [table below](#renamed-environment-variables) and uses the default instead. For retention settings, the default is 90 days, and **7.0 deletes everything older the first time it runs, before it logs any warning.** GlitchTip 6.2.6 already reads the new names, so rename them while you're still on 6.2.6.
-4. **Upgrade to PostgreSQL 15 or newer.** 7.0 refuses to connect to an older server. The easiest path is pg_dump and restore onto a new server.
-5. **Upgrade to GlitchTip 7.0 and save the migration output.** If any of your organization slugs were all digits, the migration prints each organization's old and new slug.
-
-Other self-hosting changes:
-
+- **Upgrade from 6.x.** Any 6.x release can upgrade to 7.0. On 5.x? Upgrade to 6.x first.
+- **PostgreSQL 15 or newer is required.** The easiest path is pg_dump and restore onto a new server. **Upgrade Postgres while you are still on GlitchTip 6.x.**
+- **Renamed environment variables.** 7.0 no longer reads the old names in the table below. It logs a warning and uses the default. **If you still use an old retention name, retention falls back to 90 days and older events will be deleted.**
 - **Check `TRUSTED_PROXIES`.** The default changed from `*` to `private`, so X-Forwarded-For is only read from proxies on private addresses. Behind Cloudflare, set `TRUSTED_PROXIES=cloudflare,private`. Behind another proxy with public addresses, list its ranges plus `private`. Until you do, users behind that proxy share one login rate limit, and GlitchTip logs a warning. `TRUSTED_PROXIES=*` restores the old behavior.
 - **uWSGI removed.** The legacy uWSGI server is no longer installed in the Docker image. If you override GlitchTip's startup command, we recommend switching back to the default, `bin/start.sh`.
 - **No more memory-based restarts.** GlitchTip no longer restarts workers when memory grows. Reported memory will look higher because those restarts were hiding the spikes. Size your containers for spikes. For periodic restarts, set `GRANIAN_WORKERS_LIFETIME`.
 - **Removed settings.** `DATABASE_CONN_MAX_AGE`, `USE_ASYNC_SERVER`, `IS_WORKER`, `GLITCHTIP_EMBED_WORKER` and `SERVER_ROLE` no longer do anything and log a warning if set.
 
-#### Renamed Environment Variables
-
-| Retired name (now ignored)                    | Use instead                            |
-| --------------------------------------------- | -------------------------------------- |
-| `GLITCHTIP_MAX_EVENT_LIFE_DAYS`\*             | `GLITCHTIP_RETENTION_DAYS`             |
-| `GLITCHTIP_MAX_TRANSACTION_EVENT_LIFE_DAYS`\* | `GLITCHTIP_TRANSACTION_RETENTION_DAYS` |
-| `GLITCHTIP_MAX_UPTIME_CHECK_LIFE_DAYS`\*      | `GLITCHTIP_UPTIME_RETENTION_DAYS`      |
-| `GLITCHTIP_MAX_FILE_LIFE_DAYS`\*              | `GLITCHTIP_FILE_RETENTION_DAYS`        |
-| `GLITCHTIP_LOGS_COLD_DAYS`\*                  | `GLITCHTIP_LOG_RETENTION_DAYS`         |
-| `GLITCHTIP_EVENTS_HOT_DAYS`                   | `GLITCHTIP_EVENT_HOT_DAYS`             |
-| `GLITCHTIP_LOGS_HOT_DAYS`                     | `GLITCHTIP_LOG_HOT_DAYS`               |
-| `ENABLE_OPEN_USER_REGISTRATION`\*\*           | `ENABLE_ORGANIZATION_CREATION`         |
+| Retired name (now ignored)                   | Use instead                            |
+| -------------------------------------------- | -------------------------------------- |
+| `GLITCHTIP_MAX_EVENT_LIFE_DAYS`*             | `GLITCHTIP_RETENTION_DAYS`             |
+| `GLITCHTIP_MAX_TRANSACTION_EVENT_LIFE_DAYS`* | `GLITCHTIP_TRANSACTION_RETENTION_DAYS` |
+| `GLITCHTIP_MAX_UPTIME_CHECK_LIFE_DAYS`*      | `GLITCHTIP_UPTIME_RETENTION_DAYS`      |
+| `GLITCHTIP_MAX_FILE_LIFE_DAYS`*              | `GLITCHTIP_FILE_RETENTION_DAYS`        |
+| `GLITCHTIP_LOGS_COLD_DAYS`*                  | `GLITCHTIP_LOG_RETENTION_DAYS`         |
+| `GLITCHTIP_EVENTS_HOT_DAYS`                  | `GLITCHTIP_EVENT_HOT_DAYS`             |
+| `GLITCHTIP_LOGS_HOT_DAYS`                    | `GLITCHTIP_LOG_HOT_DAYS`               |
+| `ENABLE_OPEN_USER_REGISTRATION`**            | `ENABLE_ORGANIZATION_CREATION`         |
 
 `*` marks a retention setting. If you have the old name set, **update it.**
 
@@ -119,8 +109,7 @@ GlitchTip is 100% built and funded by users. No VC. We have no one to answer to 
 - 💖 [Individual License](mailto:support@glitchtip.com?subject=Purchasing%20an%20individual%20license) (For Supporters) for $5 per month
 - 💸 Donate via [Liberapay](https://en.liberapay.com/GlitchTip).
 
-### Community & Social
-
+### Community & Social 
 - ⭐ on [GitLab](https://gitlab.com/glitchtip/glitchtip-backend/). Help us reach 400 stars!
 - ⭐ on [Docker Hub](https://hub.docker.com/r/glitchtip/glitchtip), where we have over 5 million pulls
 - ❤️ on [AlternativeTo](https://alternativeto.net/software/glitchtip/about/) and leave a review. AlternativeTo generates [significant](https://plausible.io/glitchtip.com?period=30d) website traffic.
