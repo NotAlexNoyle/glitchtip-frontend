@@ -62,23 +62,32 @@ GlitchTip's built-in [MCP server](/documentation/mcp) lets AI assistants read yo
 
 <h2 id="breaking-changes">Breaking Changes</h2>
 
-Hosted users only need to read [For All Users](/blog/2026-11-09-glitchtip-7-0-release#for-all-users). Self-hosting? Read both sections.
+Hosted users only need to read [For All Users](/blog/2026-11-09-glitchtip-7-0-release#for-all-users). Self-hosting? Read both sections, and follow the upgrade steps in order.
 
 <h3 id="for-all-users">For All Users</h3>
 
-- **All-digit org slugs renamed.** To improve compatibility with third-party API clients, every URL with an organization in it now also accepts the organization's numeric id, so slugs can no longer be all digits. Existing all-digit slugs got the first free "-N" appended: `2024` becomes `2024-1`, or `2024-2` if that one is taken. If your slug was all digits, update your links, bookmarks, CI configs and API scripts.
+- **All-digit org slugs renamed.** To improve compatibility with third-party API clients, every URL with an organization in it now also accepts the organization's numeric id, so slugs can no longer be all digits. Existing all-digit slugs got the first free "-N" appended: `2024` becomes `2024-1`, or `2024-2` if that one is taken. If your slug was all digits, update your links, bookmarks, CI configs and API scripts. Nothing redirects from the old slug.
 - **Some tokens need reminting.** An API token with scopes beyond its owner's role stops working. Mint a new one.
 - **Some actions now need admin.** Members lose a few configuration actions. See the table in [Simpler Permissions](/blog/2026-11-09-glitchtip-7-0-release#simpler-permissions).
 
 ### For Self-Hosted Users
 
-- **Upgrade from 6.x.** Any 6.x release can upgrade to 7.0. On 5.x? Upgrade to 6.x first.
-- **PostgreSQL 15 or newer is required.** The easiest path is pg_dump and restore onto a new server. **Upgrade Postgres while you are still on GlitchTip 6.x.**
-- **Renamed environment variables.** 7.0 no longer reads the old names in the table below. It logs a warning and uses the default. **If you still use an old retention name, retention falls back to 90 days and older events will be deleted.**
+Follow these steps in order. **Skipping one can delete events.**
+
+1. **Back up your database.** Take another backup before step 5.
+2. **Upgrade to GlitchTip 6.2.6 and let it migrate.** 7.0 requires 6.0.9 or later, and the latest 6.x is the safest starting point. 7.0 won't stop you if you skip this step. From 6.0.3–6.0.8, it skips migrations 7.0 relies on. From 5.x, it can fail partway through and leave migrations to finish by hand.
+3. **Rename retired environment variables, then restart.** 7.0 ignores the old names in the [table below](/blog/2026-11-09-glitchtip-7-0-release#renamed-environment-variables) and uses the default instead. For retention settings, the default is 90 days, and **7.0 deletes everything older the first time it runs, before it logs any warning.** GlitchTip 6.2.6 already reads the new names, so rename them while you're still on 6.2.6.
+4. **Upgrade to PostgreSQL 15 or newer.** 7.0 refuses to connect to an older server. The easiest path is pg_dump and restore onto a new server.
+5. **Upgrade to GlitchTip 7.0 and save the migration output.** If any of your organization slugs were all digits, the migration prints each organization's old and new slug.
+
+Other self-hosting changes:
+
 - **Check `TRUSTED_PROXIES`.** The default changed from `*` to `private`, so X-Forwarded-For is only read from proxies on private addresses. Behind Cloudflare, set `TRUSTED_PROXIES=cloudflare,private`. Behind another proxy with public addresses, list its ranges plus `private`. Until you do, users behind that proxy share one login rate limit, and GlitchTip logs a warning. `TRUSTED_PROXIES=*` restores the old behavior.
 - **uWSGI removed.** The legacy uWSGI server is no longer installed in the Docker image. If you override GlitchTip's startup command, we recommend switching back to the default, `bin/start.sh`.
 - **No more memory-based restarts.** GlitchTip no longer restarts workers when memory grows. Reported memory will look higher because those restarts were hiding the spikes. Size your containers for spikes. For periodic restarts, set `GRANIAN_WORKERS_LIFETIME`.
 - **Removed settings.** `DATABASE_CONN_MAX_AGE`, `USE_ASYNC_SERVER`, `IS_WORKER`, `GLITCHTIP_EMBED_WORKER` and `SERVER_ROLE` no longer do anything and log a warning if set.
+
+<h4 id="renamed-environment-variables">Renamed Environment Variables</h4>
 
 | Retired name (now ignored)                   | Use instead                            |
 | -------------------------------------------- | -------------------------------------- |
@@ -91,7 +100,7 @@ Hosted users only need to read [For All Users](/blog/2026-11-09-glitchtip-7-0-re
 | `GLITCHTIP_LOGS_HOT_DAYS`                    | `GLITCHTIP_LOG_HOT_DAYS`               |
 | `ENABLE_OPEN_USER_REGISTRATION`**            | `ENABLE_ORGANIZATION_CREATION`         |
 
-`*` marks a retention setting. If you have the old name set, **update it.**
+`*` marks a retention setting. If you have the old name set, **rename it before upgrading** (step 3).
 
 `**` controls organization creation and needs one extra step. If you set `ENABLE_OPEN_USER_REGISTRATION`, set `ENABLE_ORGANIZATION_CREATION` to the same value before upgrading and remove the old name. In 6.x the old name overrode the new one, so if you set both to different values, 7.0 will flip your organization-creation setting.
 
