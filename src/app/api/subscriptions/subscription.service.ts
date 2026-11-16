@@ -304,9 +304,20 @@ export class SubscriptionService extends StatefulService<SubscriptionState> {
   }
 
   /**
-   * Retrieve Subscription and navigate to subscription page if no subscription exists
+   * Navigate to the subscription page if the org has no subscription.
+   * Reads subscriptionResource rather than fetching; call from an effect so it
+   * re-runs once the resource settles.
    */
-  async checkIfUserHasSubscription(orgSlug: string) {
+  checkIfUserHasSubscription(orgSlug: string) {
+    // Resource is keyed on the selected org, the caller may pass the first-org
+    // fallback; an idle or other-org resource is not "no subscription".
+    if (
+      this.organizationSlug() !== orgSlug ||
+      this.subscriptionResource.isLoading() ||
+      this.subscriptionResource.error()
+    ) {
+      return;
+    }
     const subscriptionRoute = [orgSlug, "settings", "subscription"];
     if (
       !this.router.isActive(this.router.createUrlTree(subscriptionRoute), {
@@ -314,12 +325,10 @@ export class SubscriptionService extends StatefulService<SubscriptionState> {
         queryParams: "subset",
         fragment: "ignored",
         matrixParams: "ignored",
-      })
+      }) &&
+      !this.subscription()
     ) {
-      const subscription = await this.getSubscriptionData(orgSlug);
-      if (!subscription) {
-        this.router.navigate(subscriptionRoute);
-      }
+      this.router.navigate(subscriptionRoute);
     }
   }
 
@@ -426,21 +435,6 @@ export class SubscriptionService extends StatefulService<SubscriptionState> {
       }
       i++;
     }, 2000);
-  }
-
-  private async getSubscriptionData(orgSlug: string) {
-    const { data, error } = await client.GET(
-      "/api/0/stripe/subscriptions/{organization_id_or_slug}/",
-      {
-        params: {
-          path: this.organizationsService.orgPath(orgSlug),
-        },
-      },
-    );
-    if (error) {
-      throw error;
-    }
-    return data;
   }
 
   private setSubscriptionRefreshingStart() {
