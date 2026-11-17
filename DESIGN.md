@@ -221,6 +221,14 @@ A record seen through one occurrence at a time (an issue and its events) is laid
 - The occurrence's facts panel keeps User, URL, Environment and the logo rows as rows and puts its other tags in one "Tags" row of chips; a tag shown as a fact row is not repeated there.
 - Tag chips appear in Tags rows. Fact rows stay plain text so a field looks the same on every event; a filterable value is a quiet link. The occurrence zone shows no shares or counts: how common a value is belongs to the issue zone's Tags row.
 
+### Tables
+
+Tables use `mat-table` inside `.table-container` with the shared global classes (see the Table pattern preview).
+
+- **Numeric columns:** put `.table-numeric` on the header and cells. They right-align with tabular figures, and the sort arrow goes before the label (`arrowPosition="before"`). Identifiers that happen to be numbers, such as issue IDs, stay left-aligned.
+- **End column:** put `.table-end` on a short last column, such as a date, so it right-aligns.
+- **One right edge:** every table ends on the same right edge. The primary column flexes, secondary columns get a fixed width, and overflowing content truncates.
+
 ## Accessibility
 
 - Color pairings must meet WCAG contrast; the preview app shows on-color pairings for a quick check.
