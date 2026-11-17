@@ -137,7 +137,7 @@ export class ProjectDetailComponent implements OnInit {
   updatePlatformLoading = this.#service.updatePlatformLoading;
   updatePlatformError = this.#service.updatePlatformError;
   canWriteProject = this.#orgService.canWriteProject;
-  canAdminProject = this.#orgService.canAdminProject;
+  canWriteOrg = this.#orgService.canWriteOrg;
 
   readonly tabs = [
     { id: "general", label: $localize`General` },
