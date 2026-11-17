@@ -21,6 +21,7 @@ import { OrganizationsService } from "src/app/api/organizations.service";
 import { StatefulService } from "src/app/shared/stateful-service/signal-state.service";
 import { client } from "src/app/shared/api/api";
 import { components } from "src/app/api/api-schema";
+import { AssigneeChoice } from "src/app/shared/assignee-picker/assignee-picker";
 
 type EventDetail = components["schemas"]["IssueEventDetailSchema"];
 type IssueDetail = components["schemas"]["IssueDetailSchema"];
@@ -224,6 +225,42 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
         }
       }
     }
+  }
+
+  #assignCall = 0;
+
+  async setAssignee(choice: AssigneeChoice) {
+    const issue = this.issue();
+    if (!issue) return;
+    const issueID = this.issueID();
+    const call = ++this.#assignCall;
+    const previous = issue.assignedTo ?? null;
+    const show = (assignedTo: IssueDetail["assignedTo"]) =>
+      this.#issueResource.update((i) => (i ? { ...i, assignedTo } : i));
+    // Optimistic: the name is known locally, so show it before the round trip.
+    show(choice.actor);
+    const { data, error } = await client.PUT(
+      "/api/0/organizations/{organization_id_or_slug}/issues/{issue_id}/",
+      {
+        params: {
+          path: {
+            ...this.organization.orgPath(
+              this.organization.activeOrganizationSlug(),
+            ),
+            issue_id: parseInt(issueID),
+          },
+        },
+        body: { assignedTo: choice.value },
+      },
+    );
+    // A newer assign or another issue owns the view now.
+    if (call !== this.#assignCall || issueID !== this.issueID()) return;
+    if (error || !data) {
+      show(previous);
+      this.snackBar.open($localize`Error, unable to assign issue`);
+      return;
+    }
+    show(data.assignedTo ?? null);
   }
 
   updateCommentCount(num: number) {

@@ -42,6 +42,8 @@ export class IssueStatusUpdateDropdownComponent {
   buttonLabel = computed(
     () => this.options.find((o) => o.value === this.selectedValue())?.label,
   );
+  // Names the control once a narrow bar hides its label.
+  ariaLabel = computed(() => $localize`Status: ${this.buttonLabel()}`);
 
   /**
    * Whether a menu option represents the issue's current state. "Resolved" is

@@ -1,3 +1,4 @@
+@use "controls";
 @use "variables" as vars;
 @use "issue-level";
 @use "@angular/material" as mat;
@@ -140,4 +141,14 @@ table {
   display: flex;
   justify-content: flex-start;
   width: 270px;
+}
+
+// Assignee is its own fact after the age facts, with the shared dot.
+.row-assignee {
+  white-space: nowrap;
+
+  // The template's whitespace already gives the dot some room on the left.
+  &::before {
+    @include controls.middot(var(--gt-space-2, 8px), var(--gt-space-1, 4px));
+  }
 }

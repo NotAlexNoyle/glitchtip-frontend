@@ -1,0 +1,107 @@
+@use "@angular/material" as mat;
+@use "controls";
+
+// Portaled into the menu overlay, but still in this component's style scope.
+
+.filter {
+  display: flex;
+  align-items: center;
+  gap: var(--gt-space-2, 8px);
+  width: 264px;
+  margin: 0 var(--gt-space-2, 8px) var(--gt-space-1, 4px);
+  padding: 0 var(--gt-space-2, 8px);
+  border: 1px solid controls.$field-outline;
+  border-radius: var(--mat-sys-corner-extra-small, 4px);
+
+  // Neutral, not primary: the brand red reads as a warning.
+  &:focus-within {
+    border-color: var(--mat-sys-on-surface-variant);
+  }
+}
+
+.filter__icon {
+  @include controls.icon-size(18px);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.filter__input {
+  flex: 1;
+  min-width: 0;
+  height: 32px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+}
+
+// Long member lists scroll here; filter and Unassign stay in view.
+.scroll {
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+// The theme's 14px menu item inset, so labels and names share an edge.
+.group-label {
+  padding: var(--gt-space-3, 12px) 14px var(--gt-space-1, 4px);
+  color: var(--mat-sys-on-surface-variant);
+  font: var(--mat-sys-label-medium);
+}
+
+.note {
+  padding: var(--gt-space-2, 8px) 14px;
+  color: var(--mat-sys-on-surface-variant);
+  font: var(--mat-sys-body-small);
+}
+
+// Menu items are controls: one 36px label-large line, one left edge.
+.item {
+  min-height: 36px;
+
+  // The trailing check makes Material use its 12px icon inset; keep the theme's 14px.
+  @include mat.menu-overrides(
+    (
+      item-with-icon-leading-spacing: 14px,
+      item-with-icon-trailing-spacing: 14px,
+    )
+  );
+}
+
+// The menu panel is 280px wide; the cap lets long emails ellipsize.
+.item__row {
+  display: flex;
+  max-width: 256px;
+  align-items: baseline;
+  gap: var(--gt-space-2, 8px);
+  min-width: 0;
+  font: var(--mat-sys-label-large);
+}
+
+.item__name {
+  flex: none;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.item__detail {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--mat-sys-on-surface-variant);
+  font: var(--mat-sys-body-small);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.item__check {
+  @include controls.icon-size(18px);
+  flex: none;
+  margin: 0 0 0 auto;
+  align-self: center;
+}
+
+.invisible {
+  visibility: hidden;
+}

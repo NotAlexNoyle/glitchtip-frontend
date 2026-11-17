@@ -1,3 +1,5 @@
+@use "@angular/material" as mat;
+@use "controls";
 @use "issue-level";
 @use "variables" as vars;
 
@@ -119,4 +121,33 @@ table.mat-table {
   }
 
   @include issue-level.accent;
+}
+
+// Dynamic label: capped so a long name or email can't crowd the bar.
+.assign-button__label {
+  display: inline-block;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+
+// Narrow bar: glyph and caret only, with the shared icon-only padding.
+@include controls.narrow-bar {
+  .assign-button {
+    min-width: 0;
+
+    @include mat.button-overrides(
+      (
+        outlined-horizontal-padding: controls.$icon-only-padding,
+        outlined-icon-spacing: 0,
+        outlined-icon-offset: 0,
+      )
+    );
+  }
+
+  .assign-button__label {
+    display: none;
+  }
 }

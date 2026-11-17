@@ -36,6 +36,27 @@
     </ng-container>
     <ng-container slot="right">
       <div class="top-bar-actions">
+        <gt-assignee-picker
+          #picker="gtAssigneePicker"
+          [current]="assignee()"
+          [showUnassign]="!!assignee()"
+          (picked)="setAssignee($event)"
+        />
+        <button
+          mat-stroked-button
+          class="assign-button"
+          [matMenuTriggerFor]="picker.menu()"
+          #assignTrigger="matMenuTrigger"
+          [matTooltip]="assigneeTip()"
+          [matTooltipDisabled]="assignTrigger.menuOpen"
+          [attr.aria-label]="assigneeTip()"
+        >
+          <mat-icon>{{ assigneeIcon() }}</mat-icon>
+          <span class="assign-button__label">{{
+            assigneeLabel() ?? assignText
+          }}</span>
+          <mat-icon iconPositionEnd>arrow_drop_down</mat-icon>
+        </button>
         <gt-issue-status-update-dropdown
           [selectedValue]="issue.status"
           [statusColor]="status().color"

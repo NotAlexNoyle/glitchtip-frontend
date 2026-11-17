@@ -7,7 +7,6 @@ import {
   input,
   effect,
 } from "@angular/core";
-import { FormControl, FormGroup } from "@angular/forms";
 import { ActivatedRoute, RouterModule } from "@angular/router";
 import { MatBadgeModule } from "@angular/material/badge";
 import { MatTabsModule } from "@angular/material/tabs";
@@ -27,6 +26,12 @@ import { IssueStatusUpdateDropdownComponent } from "src/app/shared/issue-status-
 import { IssueStatus } from "../interfaces";
 import { ConfirmDialogComponent } from "src/app/shared/confirm-dialog/confirm-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
+import { MatMenuModule } from "@angular/material/menu";
+import {
+  AssigneeChoice,
+  AssigneePickerComponent,
+} from "src/app/shared/assignee-picker/assignee-picker";
+import { assigneeLabel } from "src/app/shared/assignee-picker/assignee-options.service";
 
 const ISSUE_STATUS: Record<IssueStatus, { label: string; color: string }> = {
   unresolved: { label: $localize`Unresolved`, color: "var(--info-color)" },
@@ -56,6 +61,8 @@ const ISSUE_STATUS: Record<IssueStatus, { label: string; color: string }> = {
     BackLinkComponent,
     TopAppBar,
     IssueStatusUpdateDropdownComponent,
+    MatMenuModule,
+    AssigneePickerComponent,
   ],
 })
 export class IssueDetailComponent implements OnInit {
@@ -63,6 +70,22 @@ export class IssueDetailComponent implements OnInit {
   private organizationsService = inject(OrganizationsService);
   private route = inject(ActivatedRoute);
   private dialog = inject(MatDialog);
+
+  assignee = computed(() => this.issue()?.assignedTo ?? null);
+  assigneeLabel = computed(() => {
+    const actor = this.assignee();
+    return actor ? assigneeLabel(actor) : null;
+  });
+  assigneeIcon = computed(() => {
+    const actor = this.assignee();
+    return actor?.type === "team" ? "groups" : "person";
+  });
+  // The label truncates, so the full name lives in the tooltip.
+  assigneeTip = computed(() => {
+    const label = this.assigneeLabel();
+    return label ? $localize`Assigned to ${label}` : $localize`Assign issue`;
+  });
+  readonly assignText = $localize`Assign`;
 
   issue = this.issueService.issue;
   issueTitle = computed(() => {
@@ -124,9 +147,6 @@ export class IssueDetailComponent implements OnInit {
   });
 
   initialLoadComplete = this.issueService.issueInitialLoadComplete;
-  form = new FormGroup({
-    assignee: new FormControl(""),
-  });
   issueID = input.required<string>({ alias: "issue-id" });
   organization = this.organizationsService.activeOrganization;
   participantCountPluralMapping: { [k: string]: string } = {
@@ -147,6 +167,10 @@ export class IssueDetailComponent implements OnInit {
 
   updateIssueStatus(status: IssueStatus) {
     this.issueService.setStatus(status);
+  }
+
+  setAssignee(choice: AssigneeChoice) {
+    this.issueService.setAssignee(choice);
   }
 
   resolveInNextRelease() {
