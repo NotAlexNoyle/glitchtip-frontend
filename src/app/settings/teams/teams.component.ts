@@ -86,17 +86,14 @@ export class TeamsComponent {
   );
   loading = this.organizationDetailService.loading;
   canWriteTeam = this.organizationsService.canWriteTeam;
-  // Mirrors the backend: open membership lets anyone join or leave; otherwise
-  // joining needs Manager+ (org:write) and leaving needs Admin+ (team:write).
+  // Open membership lets anyone join or leave; otherwise it needs Admin+.
   #openMembership = computed(
     () => this.activeOrganization()?.openMembership ?? false,
   );
   canJoinTeam = computed(
-    () => this.#openMembership() || this.organizationsService.canWriteOrg(),
-  );
-  canLeaveTeam = computed(
     () => this.#openMembership() || this.organizationsService.canWriteTeam(),
   );
+  canLeaveTeam = this.canJoinTeam;
 
   /** Every role gets a next step it can take. */
   noTeamsJoinedMessage = computed(() => {
@@ -105,9 +102,6 @@ export class TeamsComponent {
     }
     if (this.canJoinTeam()) {
       return $localize`Join a team below.`;
-    }
-    if (this.canWriteTeam()) {
-      return $localize`Create a team, or ask an organization manager or owner to add you to one.`;
     }
     return $localize`Ask an organization manager or owner to add you to one.`;
   });

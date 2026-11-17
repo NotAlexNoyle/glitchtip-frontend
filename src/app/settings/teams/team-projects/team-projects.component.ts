@@ -51,8 +51,7 @@ export class TeamProjectsComponent implements OnInit {
   teamSlug = input.required<string>({ alias: "team-slug" });
   orgSlug = input.required<string>({ alias: "org-slug" });
 
-  // Only managers and owners can change a team's projects.
-  canEditProjects = inject(OrganizationsService).canWriteOrg;
+  canEditProjects = inject(OrganizationsService).canWriteProject;
   projectsOnTeam = this.projectsService.projectsOnTeam;
   projectsOnTeamCount = this.projectsService.projectsOnTeamCount;
   projectsNotOnTeam = this.projectsService.projectsNotOnTeam;
@@ -61,7 +60,6 @@ export class TeamProjectsComponent implements OnInit {
   project = new FormControl<string | null>(null);
   /** Add stays disabled until something is picked. */
   readonly picked = toSignal(this.project.valueChanges, { initialValue: null });
-  // Adding and removing go through project endpoints that require org:write.
   noProjectsMessage = computed(() =>
     this.canEditProjects()
       ? $localize`Add a project so this team's members get its alerts.`

@@ -28,9 +28,9 @@ export function roleDescription(role: MemberRole | null | undefined) {
     case "owner":
       return $localize`Owners have full access to the organization, its data and its settings.`;
     case "manager":
-      return $localize`Managers can also add and remove members, and manage every team.`;
+      return $localize`Managers can also add and remove members, and change organization settings.`;
     case "admin":
-      return $localize`Admins can also create teams and projects, and manage the teams they are on.`;
+      return $localize`Admins can also create, change and delete any team, project, alert and uptime monitor.`;
     case "member":
       return $localize`Members can see and act on issues and events, and see most other data in the organization.`;
     default:
