@@ -89,8 +89,8 @@ describe("IssueDetailService open", () => {
     expect(urls.filter((url) => url.includes("/events/"))).toHaveLength(1);
     expect(urls).toEqual(
       expect.arrayContaining([
-        "/api/0/issues/{issue_id}/",
-        "/api/0/issues/{issue_id}/events/latest/",
+        "/api/0/organizations/{organization_id_or_slug}/issues/{issue_id}/",
+        "/api/0/organizations/{organization_id_or_slug}/issues/{issue_id}/events/latest/",
         "/api/0/organizations/{organization_id_or_slug}/issues/{issue_id}/tags/",
       ]),
     );
