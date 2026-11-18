@@ -42,20 +42,6 @@ describe("AssigneeFilterComponent", () => {
     expect(filter.labelFor(null)).toBe("");
   });
 
-  it("shows the current filter while you are not typing", () => {
-    const filter = setup("#platform");
-    expect(filter.text()).toBe("#platform");
-    filter.typed.set("an");
-    expect(filter.text()).toBe("an");
-  });
-
-  it("keeps Anyone when nothing matches, so the panel stays open", () => {
-    const filter = setup();
-    filter.typed.set("zzz");
-    expect(filter.visibleShortcuts().map((s) => s.value)).toEqual([null]);
-    expect(filter.noMatches()).toBe(true);
-  });
-
   it("only reports a change when the value is different", () => {
     const filter = setup("me");
     const changes: (string | null)[] = [];
