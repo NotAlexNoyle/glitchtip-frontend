@@ -55,7 +55,9 @@ $chev-slot: rows.$chev-slot;
   }
 }
 
+// Unhandled is a fixed fact about the exception, so a badge, not a state pill.
 .chain__pill {
+  @include controls.badge;
   margin-inline-start: var(--gt-space-2, 8px);
   vertical-align: 1px;
 }

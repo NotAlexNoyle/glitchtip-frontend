@@ -55,6 +55,8 @@ import {
 } from "../assignee-query";
 import { IssueActor } from "../interfaces";
 import { ISSUE_STATUS } from "../issue-status";
+import { termValue, withTerm } from "../search-terms";
+import { StatusFilterComponent } from "./status-filter/status-filter";
 import { StatusPillComponent } from "src/app/shared/status-pill/status-pill.component";
 
 @Component({
@@ -63,6 +65,7 @@ import { StatusPillComponent } from "src/app/shared/status-pill/status-pill.comp
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     StatusPillComponent,
+    StatusFilterComponent,
     MatTableModule,
     DataFilterBarComponent,
     MatCheckboxModule,
@@ -172,12 +175,23 @@ export class IssuesPage implements OnInit, OnDestroy {
     return withAssignedFilter(this.effectiveQuery(), assignedValueFor(actor));
   }
 
+  /** The is: value in the search; null when the list shows every status. */
+  readonly statusFilter = computed(() => termValue(this.effectiveQuery(), "is"));
+
+  filterByStatus(value: string | null) {
+    this.applyQuery(
+      withTerm(this.form.value.query ?? this.effectiveQuery(), "is", value),
+    );
+  }
+
   filterByAssignee(value: string | null) {
     // From the search box, so text typed there but not yet submitted is kept.
-    const query = withAssignedFilter(
-      this.form.value.query ?? this.effectiveQuery(),
-      value,
+    this.applyQuery(
+      withAssignedFilter(this.form.value.query ?? this.effectiveQuery(), value),
     );
+  }
+
+  private applyQuery(query: string) {
     this.form.patchValue({ query });
     this.router.navigate([], {
       queryParams: { query, cursor: null },

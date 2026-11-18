@@ -23,6 +23,11 @@
       (searchSubmit)="searchSubmit()"
       (sortByChanged)="sortByChanged($event)"
     >
+      <gt-status-filter
+        gtFilterBarField
+        [value]="statusFilter()"
+        (changed)="filterByStatus($event)"
+      />
       <gt-assignee-filter
         gtFilterBarField
         [value]="assigneeFilter()"

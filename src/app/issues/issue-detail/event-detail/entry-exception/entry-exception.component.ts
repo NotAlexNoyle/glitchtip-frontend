@@ -14,7 +14,6 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { PanelComponent } from "src/app/shared/panel/panel.component";
-import { StatusPillComponent } from "src/app/shared/status-pill/status-pill.component";
 import {
   GhostSelectComponent,
   GhostSelectOption,
@@ -137,7 +136,6 @@ function roleOf(i: number, value: Values, root: boolean): string {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     PanelComponent,
-    StatusPillComponent,
     GhostSelectComponent,
     MatButtonModule,
     MatIconModule,
