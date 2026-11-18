@@ -18,9 +18,11 @@ import { IssueActor } from "src/app/issues/interfaces";
 import {
   AssigneeOption,
   AssigneeOptionsService,
-  assigneeLabel,
+  assigneeList,
   isCurrentAssignee,
+  matchesAssignee,
 } from "./assignee-options.service";
+import { AssigneeOptionComponent } from "./assignee-option";
 
 /** What the picker emits: the assignedTo value and the actor to show, or null to unassign. */
 export interface AssigneeChoice {
@@ -46,6 +48,7 @@ export class FocusOnOpenDirective {
     MatIconModule,
     MatDividerModule,
     FocusOnOpenDirective,
+    AssigneeOptionComponent,
   ],
   templateUrl: "./assignee-picker.html",
   styleUrl: "./assignee-picker.scss",
@@ -67,29 +70,31 @@ export class AssigneePickerComponent {
   readonly query = signal("");
   readonly loading = this.options.loading;
   readonly me = this.options.me;
-  private matches = (option: AssigneeOption) => {
-    const q = this.query().trim().toLowerCase();
-    if (!q) return true;
-    const { name, email, slug } = option.actor;
-    return [name, email, slug].some((s) => s?.toLowerCase().includes(q));
-  };
-  readonly members = computed(() =>
-    this.options.members().filter((m) => !m.isMe && this.matches(m)),
+  readonly list = computed(() =>
+    assigneeList(
+      this.options.teams(),
+      this.options.members().filter((m) => !m.isMe),
+      this.query(),
+      (option) => this.isCurrent(option),
+    ),
   );
-  readonly teams = computed(() => this.options.teams().filter(this.matches));
+  readonly groups = computed(() => [
+    { label: $localize`Teams`, options: this.list().teams },
+    { label: $localize`Members`, options: this.list().members },
+  ]);
   readonly showMe = computed(() => {
     const me = this.me();
-    return !!me && this.matches(me);
+    return !!me && matchesAssignee(me, this.query());
   });
   readonly noMatches = computed(
-    () =>
-      !this.loading() &&
-      !this.showMe() &&
-      !this.members().length &&
-      !this.teams().length,
+    () => !this.loading() && !this.showMe() && !this.list().total,
   );
-
-  readonly label = assigneeLabel;
+  readonly moreNote = computed(() => {
+    const { shown, total } = this.list();
+    return shown < total
+      ? $localize`Showing ${shown} of ${total}. Type to narrow.`
+      : null;
+  });
 
   isCurrent(option: AssigneeOption) {
     return isCurrentAssignee(option, this.current());

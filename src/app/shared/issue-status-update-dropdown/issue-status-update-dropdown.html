@@ -1,8 +1,4 @@
-<button
-  mat-stroked-button
-  [matMenuTriggerFor]="menu"
-  [attr.aria-label]="ariaLabel()"
->
+<button mat-stroked-button [matMenuTriggerFor]="menu">
   <span class="status-content">
     @if (statusColor(); as color) {
       <span

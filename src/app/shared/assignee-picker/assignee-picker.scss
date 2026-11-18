@@ -85,16 +85,6 @@
   white-space: nowrap;
 }
 
-.item__detail {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  color: var(--mat-sys-on-surface-variant);
-  font: var(--mat-sys-body-small);
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .item__check {
   @include controls.icon-size(18px);
   flex: none;
@@ -104,4 +94,9 @@
 
 .invisible {
   visibility: hidden;
+}
+
+// Shortcuts and the people and teams are different kinds, so a line splits them.
+.split {
+  margin-block: var(--gt-space-1, 4px);
 }

@@ -33,49 +33,38 @@
             >
           </span>
         </button>
-      }
-      @if (members().length) {
-        <div class="group-label" i18n>Members</div>
-        @for (option of members(); track option.value) {
-          <button
-            mat-menu-item
-            class="item"
-            [title]="option.actor.email ?? ''"
-            (click)="pick(option)"
-          >
-            <span class="item__row">
-              <span class="item__name">{{ option.actor.name }}</span>
-              @if (option.actor.email !== option.actor.name) {
-                <span class="item__detail">{{ option.actor.email }}</span>
-              }
-              <mat-icon
-                class="item__check"
-                [class.invisible]="!isCurrent(option)"
-                >done</mat-icon
-              >
-            </span>
-          </button>
+        @if (list().total) {
+          <mat-divider class="split" />
         }
       }
-      @if (teams().length) {
-        <div class="group-label" i18n>Teams</div>
-        @for (option of teams(); track option.value) {
-          <button mat-menu-item class="item" (click)="pick(option)">
-            <span class="item__row">
-              <span class="item__name">{{ label(option.actor) }}</span>
-              <mat-icon
-                class="item__check"
-                [class.invisible]="!isCurrent(option)"
-                >done</mat-icon
-              >
-            </span>
-          </button>
+      @for (group of groups(); track group.label) {
+        @if (group.options.length) {
+          <div class="group-label">{{ group.label }}</div>
+          @for (option of group.options; track option.value) {
+            <button
+              mat-menu-item
+              class="item"
+              [title]="option.actor.email ?? ''"
+              (click)="pick(option)"
+            >
+              <span class="item__row">
+                <gt-assignee-option [option]="option" />
+                <mat-icon
+                  class="item__check"
+                  [class.invisible]="!isCurrent(option)"
+                  >done</mat-icon
+                >
+              </span>
+            </button>
+          }
         }
       }
       @if (loading()) {
         <div class="note" i18n>Loading…</div>
       } @else if (noMatches()) {
         <div class="note" i18n>No one matches</div>
+      } @else if (moreNote(); as note) {
+        <div class="note">{{ note }}</div>
       }
     </div>
     @if (showUnassign()) {

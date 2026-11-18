@@ -49,19 +49,21 @@ function setup() {
 describe("AssigneePickerComponent", () => {
   it("keeps me out of Members, since Assign to me covers it", () => {
     const picker = setup();
-    expect(picker.members().map((m) => m.actor.name)).toEqual(["Ana Ruiz"]);
+    expect(picker.list().members.map((m) => m.actor.name)).toEqual([
+      "Ana Ruiz",
+    ]);
     expect(picker.showMe()).toBe(true);
   });
 
   it("filters people by name or email and teams by slug", () => {
     const picker = setup();
     picker.query.set("ana@");
-    expect(picker.members().length).toBe(1);
-    expect(picker.teams().length).toBe(0);
+    expect(picker.list().members.length).toBe(1);
+    expect(picker.list().teams.length).toBe(0);
     expect(picker.showMe()).toBe(false);
     picker.query.set("PLAT");
-    expect(picker.teams().length).toBe(1);
-    expect(picker.members().length).toBe(0);
+    expect(picker.list().teams.length).toBe(1);
+    expect(picker.list().members.length).toBe(0);
   });
 
   it("says so when nothing matches", () => {

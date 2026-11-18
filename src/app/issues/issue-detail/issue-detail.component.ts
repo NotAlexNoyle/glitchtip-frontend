@@ -6,6 +6,8 @@ import {
   computed,
   input,
   effect,
+  viewChild,
+  ElementRef,
 } from "@angular/core";
 import { ActivatedRoute, RouterModule } from "@angular/router";
 import { MatBadgeModule } from "@angular/material/badge";
@@ -26,12 +28,16 @@ import { IssueStatusUpdateDropdownComponent } from "src/app/shared/issue-status-
 import { IssueStatus } from "../interfaces";
 import { ConfirmDialogComponent } from "src/app/shared/confirm-dialog/confirm-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
-import { MatMenuModule } from "@angular/material/menu";
+import { take } from "rxjs";
+import { MatMenuModule, MatMenuTrigger } from "@angular/material/menu";
 import {
   AssigneeChoice,
   AssigneePickerComponent,
 } from "src/app/shared/assignee-picker/assignee-picker";
-import { assigneeLabel } from "src/app/shared/assignee-picker/assignee-options.service";
+import {
+  assigneeInitials,
+  assigneeLabel,
+} from "src/app/shared/assignee-picker/assignee-options.service";
 
 const ISSUE_STATUS: Record<IssueStatus, { label: string; color: string }> = {
   unresolved: { label: $localize`Unresolved`, color: "var(--info-color)" },
@@ -80,12 +86,16 @@ export class IssueDetailComponent implements OnInit {
     const actor = this.assignee();
     return actor?.type === "team" ? "groups" : "person";
   });
-  // The label truncates, so the full name lives in the tooltip.
+  /** Initials in the bar: a circle for a person, a square for a team. */
+  assigneeInitials = computed(() => {
+    const actor = this.assignee();
+    return actor ? assigneeInitials(actor) : null;
+  });
+  // The button shows initials or an icon, so the full name lives in the tooltip.
   assigneeTip = computed(() => {
     const label = this.assigneeLabel();
     return label ? $localize`Assigned to ${label}` : $localize`Assign issue`;
   });
-  readonly assignText = $localize`Assign`;
 
   issue = this.issueService.issue;
   issueTitle = computed(() => {
@@ -167,6 +177,28 @@ export class IssueDetailComponent implements OnInit {
 
   updateIssueStatus(status: IssueStatus) {
     this.issueService.setStatus(status);
+  }
+
+  private narrowPicker = viewChild<MatMenuTrigger>("narrowPicker");
+
+  private moreButton = viewChild<string, ElementRef<HTMLElement>>(
+    "moreButton",
+    {
+      read: ElementRef,
+    },
+  );
+
+  /** Narrow bar: the More menu hands over to the picker once it has closed. */
+  openNarrowPicker() {
+    setTimeout(() => {
+      const trigger = this.narrowPicker();
+      if (!trigger) return;
+      // The anchor can't take focus, so give it back to More actions.
+      trigger.menuClosed
+        .pipe(take(1))
+        .subscribe(() => this.moreButton()?.nativeElement.focus());
+      trigger.openMenu();
+    });
   }
 
   setAssignee(choice: AssigneeChoice) {

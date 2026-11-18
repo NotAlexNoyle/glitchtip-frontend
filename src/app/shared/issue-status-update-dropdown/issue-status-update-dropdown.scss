@@ -1,13 +1,26 @@
 @use "@angular/material" as mat;
 @use "controls";
 
+// Narrow bar: tighter padding, so the back link keeps its label.
+@include controls.narrow-bar {
+  :host {
+    @include mat.button-overrides(
+      (
+        outlined-horizontal-padding: var(--gt-space-3, 12px),
+      )
+    );
+  }
+}
+
 .invisible {
   visibility: hidden;
 }
 
-// All labels in one grid cell: the button is as wide as the longest.
+// All labels in one grid cell, at the shared bar dropdown label width.
 .status-label {
   display: inline-grid;
+  width: controls.$bar-label-width;
+  text-align: start;
 
   > * {
     grid-area: 1 / 1;
@@ -24,32 +37,9 @@
   align-items: center;
 }
 
+// The dot sits centred in an 18px slot, the width of an icon in other bar
+// dropdowns, so labels start at the same offset.
 .status-dot {
   @include controls.status-dot;
-  margin-inline-end: var(--gt-space-2, 8px);
-}
-
-// Narrow bar: dot and caret only; the status pill under the title names the state.
-@include controls.narrow-bar {
-  // Drop Material's 64px minimum so the button hugs the dot and caret.
-  button {
-    min-width: 0;
-  }
-
-  :host {
-    @include mat.button-overrides(
-      (
-        outlined-horizontal-padding: controls.$icon-only-padding,
-        outlined-icon-spacing: var(--gt-space-1, 4px),
-      )
-    );
-  }
-
-  .status-label {
-    display: none;
-  }
-
-  .status-dot {
-    margin-inline-end: 0;
-  }
+  margin-inline: 5.5px calc(5.5px + var(--gt-space-2, 8px));
 }
