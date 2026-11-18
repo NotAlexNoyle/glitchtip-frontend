@@ -68,7 +68,7 @@ Rule: use these in new code instead of ad-hoc pixel values. Migrating existing u
 
 ### Radius and elevation
 
-Corner radius is `$shape-radius` (4px). The one exception is the shell corner, `$shell-radius` (8px): where the top app bar's hairline turns down into the side nav's edge. Badges (`.chip`) use `--mat-sys-corner-extra-small`; counts (`.tab-count`) and status pills use `--mat-sys-corner-full`. Elevation uses Material 3 `--mat-sys-level*` shadows.
+Two radii, by size, as GitLab's and Vercel's scales do. `$shape-radius` (4px) is for controls (buttons, fields, selects, toggles, the active nav row, platform tiles) and for what pops out of a control (menus, dropdowns, autocomplete, tooltips, the date picker), which Material also keeps small. `$surface-radius` (8px) is for surfaces on the page (cards, `gt-panel`, the table box, code blocks, stat tiles) and dialogs; the shell corner (`$shell-radius`, where the top app bar's hairline turns down into the side nav's edge) is a surface corner. A control inside an 8px surface keeps 4px, close to concentric. Data marks (chart and progress bars) keep their own small radius. Badges (`.chip`) use `--mat-sys-corner-extra-small`; counts (`.tab-count`) and status pills use `--mat-sys-corner-full`. Elevation uses Material 3 `--mat-sys-level*` shadows.
 
 ## Components
 

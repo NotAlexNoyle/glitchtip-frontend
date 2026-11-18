@@ -3,9 +3,9 @@
 
 @include mat.card-overrides(
   (
-    elevated-container-shape: vars.$shape-radius,
+    elevated-container-shape: vars.$surface-radius,
     elevated-container-color: var(--mat-sys-surface-container-high),
-    outlined-container-shape: vars.$shape-radius,
+    outlined-container-shape: vars.$surface-radius,
     title-text-size: 18px,
     title-text-weight: 500
   )

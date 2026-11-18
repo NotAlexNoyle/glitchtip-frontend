@@ -26,7 +26,7 @@
     display: grid;
     grid-auto-flow: column;
     grid-auto-columns: minmax(0, 1fr);
-    border-radius: vars.$shape-radius;
+    border-radius: vars.$surface-radius;
 
     mat-card + mat-card {
       border-left: none;
@@ -41,11 +41,11 @@
       --mat-card-container-elevation-shadow: none;
 
       &:first-child {
-        border-radius: vars.$shape-radius 0 0 vars.$shape-radius;
+        border-radius: vars.$surface-radius 0 0 vars.$surface-radius;
       }
 
       &:last-child {
-        border-radius: 0 vars.$shape-radius vars.$shape-radius 0;
+        border-radius: 0 vars.$surface-radius vars.$surface-radius 0;
       }
     }
 
