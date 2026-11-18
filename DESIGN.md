@@ -140,7 +140,7 @@ Every record detail page opens with `gt-page-header`: the record's name, then on
 
 ### Page width
 
-- Width follows the page's job. Pages for watching data (the Projects, Issues, Logs, Performance, Releases and Uptime lists, and the issue, transaction, release and monitor pages) are full width (`l-body l-body--full-width`), so the body shares the top app bar's edges.
+- Width follows the page's job. Pages for watching data (the Projects, Issues, Logs, Performance, Releases and Uptime lists, and the issue, transaction, release and monitor pages) are full width (`l-body l-body--full-width`), so the body shares the top app bar's edges. The page inset (`--gt-page-inset`) is 16px, 15px on phones, and the top app bar uses the same, so a title, the search and the table start on one line. A table box fills the page to the bottom whatever its row count, so its edge stays put when you switch between lists.
 - Settings pages (including project, team and member settings) and forms stay centered at 1100px (`l-body`) on every screen; forms read worse wider. The settings projects list is centered even though the Projects list is full width.
 
 ### Top app bar
