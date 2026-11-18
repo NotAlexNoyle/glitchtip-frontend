@@ -1,4 +1,3 @@
-@use "sass:meta";
 @use "sass:map";
 @use "@angular/material" as mat;
 @use "./assets/styles/theme-colors" as custom-theme;
@@ -101,15 +100,6 @@ html {
 :root {
   --gt-measure: 70ch;
   --gt-measure-narrow: 44ch;
-}
-
-// Colours come from _code.scss; gtPrism blocks still use these two plugins.
-.light,
-.dark {
-  @include meta.load-css("prismjs/plugins/line-numbers/prism-line-numbers.css");
-  @include meta.load-css(
-    "prismjs/plugins/line-highlight/prism-line-highlight.css"
-  );
 }
 
 a {
@@ -628,16 +618,6 @@ gt-pagination-buttons {
 
 .mat-mdc-table .table-numeric {
   font-variant-numeric: tabular-nums;
-}
-
-// TODO: Find a better way to match this height with the height of mat formfield items
-.mat-button-toggle-group {
-  height: 40px;
-  align-items: center;
-
-  .mat-button-toggle-label-content {
-    line-height: 38px !important;
-  }
 }
 
 .tab-count {

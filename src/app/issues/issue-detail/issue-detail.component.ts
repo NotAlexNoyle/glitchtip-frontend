@@ -6,27 +6,35 @@ import {
   computed,
   input,
   effect,
+  LOCALE_ID,
 } from "@angular/core";
-import { FormControl, FormGroup } from "@angular/forms";
+import { CompactNumberPipe } from "src/app/shared/compact-number.pipe";
 import { ActivatedRoute, RouterModule } from "@angular/router";
-import { MatBadgeModule } from "@angular/material/badge";
 import { MatTabsModule } from "@angular/material/tabs";
-import { MatCardModule } from "@angular/material/card";
 import { PageHeaderComponent } from "src/app/shared/detail/page-header/page-header.component";
 import { IssueDetailService } from "./issue-detail.service";
 import { DaysAgoPipe } from "../../shared/days-ago.pipe";
-import { IssueDetailTagsComponent } from "./issue-detail-tags/issue-detail-tags.component";
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { OrganizationsService } from "src/app/api/organizations.service";
-import { DatePipe, DecimalPipe, TitleCasePipe } from "@angular/common";
+import {
+  DatePipe,
+  DecimalPipe,
+  TitleCasePipe,
+  NgTemplateOutlet,
+  formatDate,
+} from "@angular/common";
 import { BackLinkComponent } from "src/app/shared/detail/back-link/back-link.component";
+import { RecordBandComponent } from "src/app/shared/record-band/record-band.component";
 import { TopAppBar } from "src/app/shared/top-app-bar/top-app-bar";
 import { IssueStatusUpdateDropdownComponent } from "src/app/shared/issue-status-update-dropdown/issue-status-update-dropdown";
 import { IssueStatus } from "../interfaces";
 import { ConfirmDialogComponent } from "src/app/shared/confirm-dialog/confirm-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
+import { PanelComponent } from "src/app/shared/panel/panel.component";
+import { EmptyStateComponent } from "src/app/shared/empty-state/empty-state.component";
+import { IssueTagsSummaryComponent } from "./issue-tags-summary/issue-tags-summary.component";
 
 const ISSUE_STATUS: Record<IssueStatus, { label: string; color: string }> = {
   unresolved: { label: $localize`Unresolved`, color: "var(--info-color)" },
@@ -40,22 +48,25 @@ const ISSUE_STATUS: Record<IssueStatus, { label: string; color: string }> = {
   styleUrls: ["./issue-detail.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    MatCardModule,
+    CompactNumberPipe,
+    NgTemplateOutlet,
     RouterModule,
     MatTabsModule,
-    MatBadgeModule,
     MatIconModule,
     MatButtonModule,
     MatTooltipModule,
-    IssueDetailTagsComponent,
     TitleCasePipe,
     DatePipe,
     DecimalPipe,
     DaysAgoPipe,
     PageHeaderComponent,
+    RecordBandComponent,
     BackLinkComponent,
     TopAppBar,
     IssueStatusUpdateDropdownComponent,
+    PanelComponent,
+    EmptyStateComponent,
+    IssueTagsSummaryComponent,
   ],
 })
 export class IssueDetailComponent implements OnInit {
@@ -63,9 +74,15 @@ export class IssueDetailComponent implements OnInit {
   private organizationsService = inject(OrganizationsService);
   private route = inject(ActivatedRoute);
   private dialog = inject(MatDialog);
+  private locale = inject(LOCALE_ID);
 
-  issue = this.issueService.issue;
-  issueTitle = computed(() => {
+  readonly issueNotFoundMessage = [
+    $localize`This may be because the URL is pointing to an issue that doesn't exist or was deleted.`,
+    $localize`It's also possible that this issue was reported to a project that you are not able to access.`,
+  ];
+
+  readonly issue = this.issueService.issue;
+  readonly issueTitle = computed(() => {
     const issue = this.issue();
     if (!issue) {
       return ["", null] as [string, string | null];
@@ -97,7 +114,7 @@ export class IssueDetailComponent implements OnInit {
         return [metadata.title || fallback, null] as [string, string | null];
     }
   });
-  issueSubtitle = computed<string>(() => {
+  readonly issueSubtitle = computed<string>(() => {
     const issue = this.issue();
     if (!issue || issue.metadata === null) {
       return "";
@@ -115,29 +132,50 @@ export class IssueDetailComponent implements OnInit {
     }
   });
 
-  status = computed(() => ISSUE_STATUS[this.issue()?.status ?? "unresolved"]);
+  readonly userCount = this.issueService.userCount;
 
-  resolvedInRelease = computed(() => {
+  readonly usersTip = computed(() => {
+    const users = this.userCount();
+    return users
+      ? $localize`Distinct ${users.key}:key: values across all events (${users.tagged}:tagged: tagged)`
+      : "";
+  });
+
+  readonly firstSeenTip = computed(() => {
+    const issue = this.issue();
+    if (!issue) return "";
+    const date = formatDate(issue.firstSeen, "medium", this.locale);
+    return $localize`First seen ${date}:date:`;
+  });
+
+  readonly backLinkParams = computed(() => {
+    const projectId = this.issue()?.project.id;
+    return projectId
+      ? { ...this.route.snapshot.queryParams, project: projectId }
+      : {};
+  });
+
+  readonly status = computed(
+    () => ISSUE_STATUS[this.issue()?.status ?? "unresolved"],
+  );
+
+  readonly resolvedInRelease = computed(() => {
     const issue = this.issue();
     if (!issue || issue.status !== "resolved") return null;
     return issue.statusDetails?.["inRelease"] ?? null;
   });
 
-  initialLoadComplete = this.issueService.issueInitialLoadComplete;
-  form = new FormGroup({
-    assignee: new FormControl(""),
-  });
-  issueID = input.required<string>({ alias: "issue-id" });
-  organization = this.organizationsService.activeOrganization;
-  participantCountPluralMapping: { [k: string]: string } = {
-    "=0": "No Participants",
-    "=1": "1 Participant",
-    other: "# Participants",
-  };
+  readonly initialLoadComplete = this.issueService.issueInitialLoadComplete;
+  readonly issueID = input.required<string>({ alias: "issue-id" });
+  readonly orgSlug = input.required<string>({ alias: "org-slug" });
+  readonly organization = this.organizationsService.activeOrganization;
 
   constructor() {
     effect(() => {
-      this.issueService.issueID.set(this.issueID());
+      // The event view sets it too, but only once the issue has loaded.
+      const eventID =
+        this.route.firstChild?.snapshot.paramMap.get("event-id") ?? null;
+      this.issueService.open(this.orgSlug(), this.issueID(), eventID);
     });
   }
 
@@ -170,12 +208,5 @@ export class IssueDetailComponent implements OnInit {
         this.issueService.deleteIssue(id.toString());
       }
     });
-  }
-
-  generateBackLink(projectId: string) {
-    return {
-      ...this.route.snapshot.queryParams,
-      project: projectId,
-    };
   }
 }

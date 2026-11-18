@@ -62,24 +62,6 @@ export interface EventDetail extends Event {
   sdkUpdates?: [];
 }
 
-export interface AnnotatedContexts {
-  type: ContextsType;
-  icon: string | null;
-  matIcon: string | null;
-  title: string;
-  subtitle: string | null;
-  key: string | null;
-}
-
-type ContextsType =
-  | "user"
-  | "browser"
-  | "runtime"
-  | "os"
-  | "client_os"
-  | "device"
-  | "gpu";
-
 interface Errors {
   data: { [key: string]: string };
   message: string;
@@ -138,7 +120,11 @@ export interface ExceptionValueData {
 
 export interface Request {
   fragment?: string | null;
-  cookies?: { [key: string]: Json }[];
+  cookies?:
+    | string
+    | [string, string | null][]
+    | { [key: string]: string | null }
+    | null;
   inferredContentType: string | null;
   env?: {
     SERVER_NAME: string;
@@ -146,14 +132,14 @@ export interface Request {
     DOCUMENT_ROOT?: string;
   } | null;
   headers: string[][];
-  url: string;
+  url?: string | null;
   query?: string[][];
   data?: { [key: string]: string } | null;
   method?: string | null;
 }
 
 export interface AnnotatedRequest extends Request {
-  domainName: string;
+  /** The URL's path, or the URL itself when it is not absolute. */
   path: string;
 }
 
@@ -272,6 +258,8 @@ interface Mechanism {
   data?: { function: string };
   type: string;
   handled: boolean;
+  /** How a chained exception links to its parent ("__cause__", "__context__"). */
+  source?: string;
 }
 
 export interface Stacktrace {
@@ -291,9 +279,10 @@ export interface Frame {
   function: string | null;
   rawFunction?: string | null;
   package: string | null;
-  instructionAddr: string | null;
+  // The API passes the two addresses through as the SDK names them.
+  instruction_addr: string | null;
   symbol: string | null;
-  symbolAddr: string | null;
+  symbol_addr: string | null;
   trust: string | null;
   inApp: boolean;
   context: FrameContextTuple[] | null;

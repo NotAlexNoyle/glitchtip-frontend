@@ -1,104 +1,137 @@
-@if (breadcrumbs(); as breadcrumbs) {
-  <section class="mat-typography">
-    <mat-divider></mat-divider>
-    <div class="breadcrumbs-header">
-      <h3 i18n>Breadcrumbs</h3>
-      @if (availableCategories().length > 1) {
-        <mat-form-field appearance="outline" subscriptSizing="dynamic">
-          <mat-label i18n>Filter by category</mat-label>
-          <mat-select
-            multiple
-            [ngModel]="selectedCategories()"
-            (ngModelChange)="selectedCategories.set($event)"
-          >
-            @for (category of availableCategories(); track category) {
-              <mat-option [value]="category">{{ category }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-      }
-    </div>
-    <div
-      #breadBox
-      class="wrapper"
-      [ngClass]="showShowMore() ? 'bread-box' : 'bread-box--expanded'"
-      [class.bread-box--expanded]="showShowMore() === false"
-    >
-      @if (showShowMore()) {
-        <button
-          class="expand-button"
-          mat-button
-          color="primary"
-          (click)="expandBreadcrumbs()"
+@if (total()) {
+  <gt-panel flush i18n-title title="Breadcrumbs" [subtitle]="subtitle()">
+    @if (categories().length > 1) {
+      <span slot="actions" gtSelectGhost class="crumbs-filter">
+        <span class="gt-select-ghost__label" aria-hidden="true" i18n
+          >Categories</span
         >
-          <mat-icon>more_horiz</mat-icon> <ng-container i18n>Show All
-          {{ breadcrumbs?.values?.length }} Breadcrumbs</ng-container>
-        </button>
-      }
-      <ul>
-        @for (
-          value of filteredBreadcrumbs()?.values;
-          track value;
-          let i = $index
-        ) {
-          <li>
-            <ng-container>
-              @if (i !== 0) {
-                <mat-divider></mat-divider>
-              }
-              <div
-                class="table-wrapper"
-                [class.error]="value.level === 'error'"
-              >
-                <table cdk-table>
-                  <ng-container>
-                    <tr>
-                      <td class="column-one">
-                        @if (value.level === "error") {
-                          <mat-icon class="error">warning</mat-icon>
-                        } @else {
-                          @switch (value.category) {
-                            @case ("ui.click") {
-                              <mat-icon class="ui">person</mat-icon>
-                            }
-                            @case ("xhr") {
-                              <mat-icon class="xhr">cached</mat-icon>
-                            }
-                            @default {
-                              <mat-icon>code</mat-icon>
-                            }
-                          }
-                        }
-                      </td>
-                      <td class="column-two category">
-                        {{ value.category }}
-                      </td>
-                      <td class="column-three">{{ value.message }}</td>
-                      <td class="column-four">
-                        {{ value.timestamp | date: "HH:mm:ss.SSS" }}
-                      </td>
-                    </tr>
-                    <ng-container>
-                      @for (
-                        data of value.data | keyvalue: keepOrder;
-                        track data
-                      ) {
-                        <tr>
-                          <td class="column-one"></td>
-                          <td class="column-two">{{ data.key }}</td>
-                          <td class="column-three">
-                            {{ data.value | json }}
-                          </td>
-                        </tr>
-                      }
-                    </ng-container>
-                  </ng-container>
-                </table>
-              </div></ng-container
+        @if (!category().length) {
+          <span class="gt-select-ghost__value" aria-hidden="true" i18n
+            >All</span
+          >
+        }
+        <mat-select
+          multiple
+          i18n-aria-label
+          aria-label="Breadcrumb categories"
+          [panelWidth]="null"
+          [value]="category()"
+          (valueChange)="category.set($event)"
+        >
+          <mat-select-trigger
+            ><span class="gt-select-ghost__value">{{
+              categoryLabel()
+            }}</span></mat-select-trigger
+          >
+          @for (c of categories(); track c) {
+            <mat-option [value]="c">{{ c }}</mat-option>
+          }
+        </mat-select>
+      </span>
+    }
+    <div class="crumbs">
+      <div
+        class="crumbs__row crumbs__row--head table-header"
+        aria-hidden="true"
+      >
+        <span i18n>Time</span>
+        <span i18n>Level</span>
+        <span i18n>Category</span>
+        <span i18n>Message</span>
+      </div>
+      <ol class="crumbs__list" i18n-aria-label aria-label="Breadcrumbs">
+        @if (hiddenCount()) {
+          <li class="crumbs__more">
+            <button
+              mat-button
+              type="button"
+              (click)="showEarlier.set(true)"
+              i18n
             >
+              {hiddenCount(), plural,
+                =1 {Show 1 earlier}
+                other {Show {{ hiddenCount() // i18n(ph="count") }} earlier}
+              }
+            </button>
           </li>
         }
-      </ul>
+        @for (c of rows(); track c.key) {
+          @let isOpen = opened().has(c.key);
+          <li>
+            @if (c.expandable) {
+              <button
+                type="button"
+                class="crumbs__row gt-expandable-row"
+                [attr.aria-expanded]="isOpen"
+                (click)="opened.toggle(c.key)"
+              >
+                <ng-container
+                  *ngTemplateOutlet="cells; context: { $implicit: c }"
+                />
+                <mat-icon class="gt-chev crumbs__end" aria-hidden="true"
+                  >keyboard_arrow_right</mat-icon
+                >
+              </button>
+            } @else {
+              <div class="crumbs__row">
+                <ng-container
+                  *ngTemplateOutlet="cells; context: { $implicit: c }"
+                />
+              </div>
+            }
+            @if (isOpen) {
+              @if (c.long) {
+                <p class="crumbs__full">{{ c.message }}</p>
+              }
+              @if (openedData().get(c.key); as data) {
+                <dl class="gt-property-list crumbs__data">
+                  @for (d of data; track $index) {
+                    <div
+                      class="gt-property-list__row"
+                      [class.gt-property-list__row--long]="d.long"
+                    >
+                      <dt class="gt-mono">{{ d.key }}</dt>
+                      <dd class="gt-mono">{{ d.value }}</dd>
+                    </div>
+                  }
+                </dl>
+              }
+            }
+          </li>
+        }
+        @if (eventRow(); as e) {
+          <li class="crumbs__row crumbs__row--marker">
+            <span class="crumbs__time"
+              ><span class="wide-only">{{ e.time }}</span
+              ><span class="narrow-only">{{ e.short }}</span></span
+            >
+            <span class="crumbs__level"></span>
+            <span class="crumbs__cat crumbs__this" i18n>This event</span>
+            <span class="crumbs__msg">{{ e.message }}</span>
+          </li>
+        }
+      </ol>
     </div>
-  </section>
+  </gt-panel>
 }
+
+<ng-template #cells let-c>
+  <span class="crumbs__time"
+    ><span class="wide-only">{{ c.time }}</span
+    ><span class="narrow-only">{{ c.short }}</span></span
+  >
+  <span
+    class="crumbs__level"
+    [class.crumbs__level--error]="c.tone === 'error'"
+    [class.crumbs__level--warning]="c.tone === 'warning'"
+  >
+    @if (c.level) {
+      <span [class]="c.levelClass"></span>{{ c.level }}
+    }
+  </span>
+  <span class="crumbs__cat"
+    ><mat-icon class="crumbs__icon" aria-hidden="true">{{ c.icon }}</mat-icon
+    >{{ c.category }}</span
+  >
+  <span class="crumbs__msg">{{ c.message }}</span>
+</ng-template>

@@ -1,17 +1,16 @@
 @use "variables" as vars;
 @use "object-header";
 
-// Block, so padding a page adds to the host (the issue level bar) indents the header.
+// The space under the header is on the host; a record band sets the gap to 0.
 :host {
   display: block;
+  margin-bottom: var(--gt-page-header-gap, var(--gt-space-5, 24px));
 }
 
 .gt-page-header {
   display: flex;
   align-items: center;
   gap: var(--gt-space-4, 16px);
-  // A record band sets the gap to 0: its tiers do the spacing.
-  margin-bottom: var(--gt-page-header-gap, var(--gt-space-5, 24px));
 }
 
 .gt-page-header__icon {
@@ -60,9 +59,10 @@
 
 // Settings pages: one line, with the facts wrapping under the title.
 :host(.gt-page-header--compact) {
+  margin-bottom: var(--gt-space-4, 16px);
+
   .gt-page-header {
     gap: var(--gt-space-3, 12px);
-    margin-bottom: var(--gt-space-4, 16px);
   }
 
   .gt-page-header__icon {

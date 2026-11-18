@@ -1,5 +1,6 @@
 @use "controls";
 @use "row-mixins" as rows;
+@use "object-header";
 // A tag: muted key, bold value, optional share, in a hairline pill.
 .gt-tag-chip {
   display: inline-flex;
@@ -27,14 +28,6 @@
   &:focus-visible {
     @include controls.focus-ring;
   }
-}
-
-.gt-tag-chip--compact {
-  height: 24px;
-  align-items: center;
-  padding: 0 var(--gt-space-2, 8px);
-  font: var(--mat-sys-label-medium);
-  font-weight: 400;
 }
 
 .gt-tag-chip__key {
@@ -80,5 +73,34 @@
     align-items: center;
     min-width: 0;
     max-width: 100%;
+  }
+}
+
+// In a summary, tags read as text like the meta line: no pills, drawn dots
+// between them. A dot that starts a wrapped line is clipped.
+.gt-tag-chips--text {
+  column-gap: 0;
+  margin-left: calc(-1 * #{object-header.$sep-gap});
+  // Room above and below for the links' focus rings.
+  clip-path: inset(-4px -4px -4px object-header.$sep-gap);
+
+  > li {
+    position: relative;
+    margin-left: object-header.$sep-gap;
+
+    &::before {
+      @include object-header.separator;
+    }
+  }
+
+  .gt-tag-chip {
+    padding: 0;
+    border: 0;
+    font: var(--mat-sys-body-medium);
+
+    &:is(a):hover {
+      background-color: transparent;
+      text-decoration: underline;
+    }
   }
 }
