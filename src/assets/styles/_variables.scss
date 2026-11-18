@@ -3,6 +3,8 @@ $font-sans-serif: "Plex Sans";
 $font-mono: "Plex Mono";
 
 $shape-radius: 4px;
+// The one layout corner: where the top app bar turns down into the side nav's edge.
+$shell-radius: 8px;
 
 // Light-mode brand red shared by the app and marketing; white text on it is 5:1.
 $brand-red: #cb3753;

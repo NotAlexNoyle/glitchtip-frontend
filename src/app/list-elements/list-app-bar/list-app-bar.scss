@@ -1,9 +1,11 @@
 @use "controls";
+@use "shell";
 @use "variables" as vars;
 
 // Keep layout aligned with gt-top-app-bar, on which this is based.
 :host {
   @include controls.compact-buttons;
+  @include shell.sticky-bar;
 }
 
 .list-app-bar-primary-content {

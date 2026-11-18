@@ -1,8 +1,10 @@
 @use "controls";
+@use "shell";
 @use "src/assets/styles/_variables.scss" as vars;
 
 :host {
   @include controls.compact-buttons;
+  @include shell.sticky-bar;
 }
 
 .top-app-bar {
