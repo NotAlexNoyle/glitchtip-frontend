@@ -115,7 +115,7 @@ A collection of records with a name and a few actions is a `gt-list` of `gt-list
 Small labels come in four kinds. Shape says what kind of thing it is; color gives its value.
 
 - **Badge:** a squared grey label for data you could copy or compare: identifiers in mono (`.chip`: an issue id, a URL), fixed attributes (`.list-row__tag`: Owner, Primary).
-- **State:** a rounded grey pill with a colored dot (`gt-status-pill`) for a state that changes: Up, Down, Unresolved, Invite pending. A dot always means a state.
+- **State:** a rounded grey pill with a colored dot (`gt-status-pill`) for a state that changes: Up, Down, Unresolved, Invite pending. A dot always means a state. In a list, a row shows its state only when it differs from the list's default and the search doesn't already name it: the issue list pills Resolved and Ignored at the start of the caption, never Unresolved, and none under `is:resolved`. No state glyphs (checks, bells) before titles.
 - **Level:** a colored bar, as on issue list rows. On an issue's header the bar runs down the title block and the meta line names the level in plain text. A bar always means a level; fatal is striped.
 - **Count:** a rounded grey pill with a number (`.tab-count`) after a label.
 

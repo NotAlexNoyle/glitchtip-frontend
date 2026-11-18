@@ -54,12 +54,15 @@ import {
   withAssignedFilter,
 } from "../assignee-query";
 import { IssueActor } from "../interfaces";
+import { ISSUE_STATUS } from "../issue-status";
+import { StatusPillComponent } from "src/app/shared/status-pill/status-pill.component";
 
 @Component({
   templateUrl: "./issues-page.html",
   styleUrls: ["./issues-page.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    StatusPillComponent,
     MatTableModule,
     DataFilterBarComponent,
     MatCheckboxModule,
@@ -138,10 +141,24 @@ export class IssuesPage implements OnInit, OnDestroy {
   allColumns = ["select", "title", "trend", "events"];
   xSmallScreenColumns = ["select", "title"];
   mediumScreenColumns = ["select", "title", "events"];
+  readonly statusOf = (status: IssueStatus) => ISSUE_STATUS[status];
   isLargeScreen = signal(true);
   displayedColumns = signal(this.allColumns);
   readonly assigneeLabel = assigneeLabel;
   private effectiveQuery = computed(() => this.query() ?? "is:unresolved");
+  // Statuses the search already names (is:resolved), so rows don't repeat them.
+  private readonly queriedStatuses = computed(
+    () =>
+      new Set(
+        this.effectiveQuery()
+          .split(/\s+/)
+          .filter((term) => term.startsWith("is:"))
+          .map((term) => term.slice(3)),
+      ),
+  );
+  /** A row says its status only when it isn't unresolved and the search doesn't already. */
+  readonly showStatus = (status: IssueStatus) =>
+    status !== "unresolved" && !this.queriedStatuses().has(status);
   readonly assigneeFilter = computed(() =>
     assignedFilter(this.effectiveQuery()),
   );

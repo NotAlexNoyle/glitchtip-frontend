@@ -32,6 +32,7 @@ import { RecordBandComponent } from "src/app/shared/record-band/record-band.comp
 import { TopAppBar } from "src/app/shared/top-app-bar/top-app-bar";
 import { IssueStatusUpdateDropdownComponent } from "src/app/shared/issue-status-update-dropdown/issue-status-update-dropdown";
 import { IssueStatus } from "../interfaces";
+import { ISSUE_STATUS } from "../issue-status";
 import { ConfirmDialogComponent } from "src/app/shared/confirm-dialog/confirm-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
 import { PanelComponent } from "src/app/shared/panel/panel.component";
@@ -47,12 +48,6 @@ import {
   assigneeInitials,
   assigneeLabel,
 } from "src/app/shared/assignee-picker/assignee-options.service";
-
-const ISSUE_STATUS: Record<IssueStatus, { label: string; color: string }> = {
-  unresolved: { label: $localize`Unresolved`, color: "var(--info-color)" },
-  resolved: { label: $localize`Resolved`, color: "var(--success-color)" },
-  ignored: { label: $localize`Ignored`, color: "var(--mat-sys-outline)" },
-};
 
 @Component({
   selector: "gt-issue-detail",
