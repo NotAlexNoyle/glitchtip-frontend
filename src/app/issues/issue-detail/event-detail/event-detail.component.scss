@@ -11,11 +11,11 @@ $bar-height: 44px;
   gap: var(--gt-space-3, 12px);
 }
 
-// Opaque, so panels scroll under it; the app bar is not sticky.
+// Opaque, so panels scroll under it; sticks just below the sticky app bar.
 .event-bar {
   container: gt-bar / inline-size;
   position: sticky;
-  top: 0;
+  top: var(--gt-app-bar-offset, 0px);
   z-index: 2;
   display: flex;
   align-items: center;
@@ -26,7 +26,7 @@ $bar-height: 44px;
   padding: var(--gt-space-1, 4px) var(--gt-space-1, 4px) var(--gt-space-1, 4px)
     var(--gt-space-2, 8px);
   border: 1px solid var(--mat-sys-outline-variant);
-  border-radius: vars.$shape-radius;
+  border-radius: vars.$surface-radius;
   background: var(--mat-sys-surface-container-high);
 
   @media (prefers-reduced-motion: no-preference) {
@@ -59,14 +59,16 @@ $bar-height: 44px;
   display: flex;
   flex-direction: column;
   gap: var(--gt-space-4, 16px);
-  border-radius: vars.$shape-radius;
+  border-radius: vars.$surface-radius;
   // Read by the step tint (element.animate) when the event changes.
   --gt-step-tint: #{controls.state-layer-color(hover)};
 }
 
 // Focus and jumps land below the stuck bar (WCAG 2.4.11), inside the child panels too.
 .event-zone__body ::ng-deep * {
-  scroll-margin-top: calc(#{$bar-height} + var(--gt-space-3, 12px));
+  scroll-margin-top: calc(
+    var(--gt-app-bar-offset, 0px) + #{$bar-height} + var(--gt-space-3, 12px)
+  );
 }
 
 // A data panel with nothing to show leaves no gap in the zone.

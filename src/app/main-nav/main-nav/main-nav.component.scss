@@ -7,6 +7,15 @@ mat-sidenav {
   @include shell.dot-corner(300px 360px at 0 100%);
 }
 
+// Height of the sticky top app bar, for anything else that sticks below it.
+mat-sidenav-content {
+  --gt-app-bar-offset: 0px;
+
+  @media screen and (min-width: variables.$tablet) {
+    --gt-app-bar-offset: #{variables.$top-app-bar-height};
+  }
+}
+
 mat-sidenav-container {
   position: absolute;
   top: 0;

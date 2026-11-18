@@ -297,10 +297,17 @@ export class EventDetailComponent {
     effect((onCleanup) => {
       const el = this.sentinel()?.nativeElement;
       if (!el) return;
-      const observer = new IntersectionObserver(([entry]) =>
-        this.stuck.set(
-          !entry.isIntersecting && entry.boundingClientRect.top < 0,
-        ),
+      // The bar sticks below the sticky app bar, so the line is that far down.
+      const offset =
+        parseFloat(
+          getComputedStyle(el).getPropertyValue("--gt-app-bar-offset"),
+        ) || 0;
+      const observer = new IntersectionObserver(
+        ([entry]) =>
+          this.stuck.set(
+            !entry.isIntersecting && entry.boundingClientRect.top < offset,
+          ),
+        { rootMargin: `${-offset}px 0px 0px 0px` },
       );
       observer.observe(el);
       onCleanup(() => observer.disconnect());
