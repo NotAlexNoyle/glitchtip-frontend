@@ -19,6 +19,13 @@
   );
 }
 
+// Resting outline for our own fields: the form fields' mix, 3:1 against the page.
+$field-outline: color-mix(
+  in srgb,
+  var(--mat-sys-outline) 85%,
+  var(--mat-sys-outline-variant)
+);
+
 // Container widths where content changes layout; the last width of the narrow range.
 $narrow-bar: 599px;
 $narrow-panel: 479px;

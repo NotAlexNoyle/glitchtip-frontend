@@ -8,64 +8,74 @@
 ></gt-list-app-bar>
 
 <section class="l-body l-body--full-width l-body--flex mat-elevation-z0">
-  <!-- Filter bar -->
-  <div class="filter-bar">
-    <form
-      [formGroup]="searchForm"
-      (ngSubmit)="searchSubmit()"
-      class="search-form"
-    >
-      <mat-form-field appearance="outline" class="search-field">
-        <mat-label i18n>Search logs</mat-label>
-        <input i18n-placeholder
-          matInput
+  <div class="filter-bar-container">
+    <div class="filter-bar">
+      <form
+        [formGroup]="searchForm"
+        (ngSubmit)="searchSubmit()"
+        class="gt-filter-bar__search gt-filter-search"
+      >
+        <input
+          class="gt-filter-search__input"
+          type="search"
           formControlName="query"
+          i18n-aria-label
+          aria-label="Search logs"
+          i18n-placeholder
           placeholder="Search message body..."
         />
-        <button i18n-aria-label
+        <button
+          i18n-aria-label
           mat-icon-button
-          matSuffix
           type="submit"
-          class="input-icon-button"
+          class="gt-filter-search__action"
           aria-label="Search"
         >
-          <mat-icon>search</mat-icon>
+          <mat-icon class="material-symbols-outlined">search</mat-icon>
         </button>
-      </mat-form-field>
-    </form>
+      </form>
 
-    <mat-form-field appearance="outline" class="filter-field">
-      <mat-label i18n>Level</mat-label>
-      <mat-select
-        [formControl]="levelForm.controls.level"
-        multiple
-        (selectionChange)="onLevelChange($event)"
-      >
-        @for (opt of levelOptions; track opt.value) {
-          <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
+      <span gtSelectGhost>
+        <mat-select
+          i18n-aria-label
+          aria-label="Level"
+          i18n-placeholder
+          placeholder="All levels"
+          [panelWidth]="null"
+          [formControl]="levelForm.controls.level"
+          multiple
+          (selectionChange)="onLevelChange($event)"
+        >
+          @for (opt of levelOptions; track opt.value) {
+            <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+          }
+        </mat-select>
+      </span>
 
-    <mat-form-field appearance="outline" class="filter-field">
-      <mat-label i18n>Service</mat-label>
-      <mat-select
-        [formControl]="serviceForm.controls.service"
-        (selectionChange)="onServiceChange($event)"
-      >
-        <mat-option i18n value="">All services</mat-option>
-        @for (opt of serviceOptions(); track opt.value) {
-          <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
+      <span gtSelectGhost>
+        <mat-select
+          i18n-aria-label
+          aria-label="Service"
+          i18n-placeholder
+          placeholder="All services"
+          [panelWidth]="null"
+          [formControl]="serviceForm.controls.service"
+          (selectionChange)="onServiceChange($event)"
+        >
+          <mat-option i18n value="">All services</mat-option>
+          @for (opt of serviceOptions(); track opt.value) {
+            <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+          }
+        </mat-select>
+      </span>
 
-    @if (query() || level().length || service_() || start() || end()) {
-      <button mat-button (click)="clearFilters()" class="clear-btn">
-        <mat-icon>clear</mat-icon>
-        <span i18n>Clear filters</span>
-      </button>
-    }
+      @if (query() || level().length || service_() || start() || end()) {
+        <button mat-button (click)="clearFilters()" class="clear-btn">
+          <mat-icon>clear</mat-icon>
+          <span i18n>Clear filters</span>
+        </button>
+      }
+    </div>
   </div>
 
   <!-- Log output (terminal style) -->
