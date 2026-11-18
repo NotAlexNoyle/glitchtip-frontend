@@ -146,6 +146,102 @@ describe("ProjectRowsComponent", () => {
     expect(el.textContent).toContain("Not a member");
   });
 
+  describe("while rows scroll into view", () => {
+    // Each row's visibility callback, in row order; tests call one to scroll it in.
+    let reveal: (() => void)[];
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+      vi.unstubAllGlobals();
+    });
+
+    function renderUnseen(
+      count: number,
+      get: (url: string) => Promise<unknown>,
+    ) {
+      reveal = [];
+      vi.stubGlobal(
+        "IntersectionObserver",
+        class {
+          constructor(private callback: IntersectionObserverCallback) {}
+          observe() {
+            reveal.push(() =>
+              this.callback(
+                [{ isIntersecting: true }] as IntersectionObserverEntry[],
+                this as unknown as IntersectionObserver,
+              ),
+            );
+          }
+          disconnect() {}
+        },
+      );
+      vi.spyOn(client, "GET").mockImplementation(get as never);
+      TestBed.configureTestingModule({ providers: [provideRouter([])] });
+      const fixture = TestBed.createComponent(ProjectRowsComponent);
+      fixture.componentRef.setInput("orgSlug", "acme");
+      fixture.componentRef.setInput(
+        "projects",
+        Array.from({ length: count }, (_, i) => ({
+          id: i + 1,
+          name: `service-${i + 1}`,
+          slug: `service-${i + 1}`,
+          firstEvent: "2026-10-22",
+          isMember: true,
+        })),
+      );
+      fixture.detectChanges();
+      return fixture;
+    }
+
+    const pulsing = (el: HTMLElement) =>
+      el.querySelectorAll(".glance__skeleton--loading").length;
+
+    it("pulses only the rows whose facts are loading", () => {
+      const fixture = renderUnseen(3, () => new Promise(() => {}));
+      const el = fixture.nativeElement as HTMLElement;
+      expect(el.querySelectorAll(".glance__skeleton").length).toBe(3);
+      expect(pulsing(el)).toBe(0);
+
+      reveal[0]();
+      fixture.detectChanges();
+      expect(pulsing(el)).toBe(1);
+    });
+
+    const countOf = (hits: number, maxHits: number) =>
+      renderUnseen(1, async (url) => ({
+        data: url.endsWith("/stats_v2/") ? { intervals: [], groups: [] } : [],
+        response: new Response(null, {
+          headers: {
+            link: "",
+            "x-hits": `${hits}`,
+            "x-max-hits": `${maxHits}`,
+          },
+        }),
+      }));
+
+    async function countText(hits: number, maxHits: number) {
+      const fixture = countOf(hits, maxHits);
+      reveal[0]();
+      const el = fixture.nativeElement as HTMLElement;
+      await vi.waitFor(() => {
+        fixture.detectChanges();
+        expect(el.querySelector(".glance__count b")?.textContent).not.toBe("–");
+      });
+      return el
+        .querySelector(".glance__count")!
+        .textContent!.replace(/\s+/g, " ")
+        .trim();
+    }
+
+    it("shortens large counts", async () => {
+      expect(await countText(12345, 100000)).toBe("12.3K unresolved");
+    });
+
+    it("marks a count that stopped at the API's limit", async () => {
+      expect(await countText(1000, 1000)).toBe("1K+ unresolved");
+    });
+  });
+
   describe("in the settings list", () => {
     afterEach(() => vi.restoreAllMocks());
 
