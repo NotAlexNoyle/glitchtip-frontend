@@ -8,9 +8,7 @@ import {
   signal,
 } from "@angular/core";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
-import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
-import { MatInputModule } from "@angular/material/input";
 import { MatDividerModule } from "@angular/material/divider";
 import {
   AssigneeOption,
@@ -31,9 +29,7 @@ interface Shortcut {
   selector: "gt-assignee-filter",
   imports: [
     MatAutocompleteModule,
-    MatFormFieldModule,
     MatIconModule,
-    MatInputModule,
     MatDividerModule,
     AssigneeOptionComponent,
   ],
@@ -51,7 +47,7 @@ export class AssigneeFilterComponent {
   readonly typed = signal<string | null>(null);
 
   readonly shortcuts: Shortcut[] = [
-    { value: null, label: $localize`Anyone` },
+    { value: null, label: $localize`Any assignee` },
     { value: "me", label: $localize`Assigned to me` },
     { value: "my_teams", label: $localize`My teams` },
     { value: "none", label: $localize`Unassigned` },

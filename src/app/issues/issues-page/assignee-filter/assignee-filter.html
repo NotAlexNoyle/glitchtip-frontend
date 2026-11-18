@@ -1,15 +1,20 @@
-<mat-form-field appearance="outline" subscriptSizing="dynamic">
-  <mat-label i18n>Assignee</mat-label>
+<!-- A ghost control like the band's selects, but you can type into it: the
+     list is long, so the value is also its filter field. -->
+<label class="gt-select-ghost ghost" [class.gt-select-ghost--open]="auto.isOpen">
   <input
-    matInput
+    class="ghost__input"
     type="text"
     autocomplete="off"
+    i18n-aria-label
+    aria-label="Assignee"
+    i18n-placeholder
+    placeholder="Any assignee"
     [value]="text()"
     [matAutocomplete]="auto"
     (input)="typed.set($any($event.target).value)"
     (focus)="$any($event.target).select()"
   />
-  <mat-icon matSuffix>arrow_drop_down</mat-icon>
+  <span class="ghost__arrow" aria-hidden="true"></span>
   <mat-autocomplete
     #auto="matAutocomplete"
     class="gt-assignee-filter-panel"
@@ -56,4 +61,4 @@
       <div class="note">{{ note }}</div>
     }
   </mat-autocomplete>
-</mat-form-field>
+</label>

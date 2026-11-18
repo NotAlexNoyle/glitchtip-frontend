@@ -1,16 +1,41 @@
 @use "@angular/material" as mat;
-@use "variables" as vars;
 @use "controls";
+@use "filter-bar";
 
-// Same widths as the Environment field next to it.
-mat-form-field {
-  @media (max-width: vars.$medium - 1) {
-    width: 170px;
-  }
+:host {
+  @include filter-bar.cell;
+}
 
-  @media (max-width: vars.$small - 1) {
-    width: 160px;
+// Looks like the band's ghost selects (.gt-select-ghost gives the hover and
+// open fill); the input sizes to its text so the caret follows it.
+.ghost {
+  cursor: text;
+}
+
+.ghost__input {
+  field-sizing: content;
+  min-width: 7ch;
+  max-width: 200px;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-label-large);
+  text-overflow: ellipsis;
+
+  &::placeholder {
+    color: var(--mat-sys-on-surface);
+    opacity: 1;
   }
+}
+
+// The same 10x5 caret and 8px gap as mat-select's arrow in a ghost select.
+.ghost__arrow {
+  flex: none;
+  margin-inline-start: var(--gt-space-2, 8px);
+  border-inline: 5px solid transparent;
+  border-top: 5px solid var(--mat-sys-on-surface-variant);
 }
 
 // Picker rows: one 36px line, as in gt-assignee-picker.

@@ -59,6 +59,11 @@
   align-items: center;
 }
 
+// Bar controls sit 8px apart; the hairline after it brings its own margins.
+.assign-button {
+  margin-inline-start: var(--gt-space-2, 8px);
+}
+
 .level-name {
   font-weight: 600;
   color: var(--mat-sys-on-surface);
