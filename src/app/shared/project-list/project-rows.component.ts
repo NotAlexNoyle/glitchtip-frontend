@@ -7,7 +7,7 @@ import {
   signal,
 } from "@angular/core";
 import { OrganizationsService } from "src/app/api/organizations.service";
-import { DatePipe, DecimalPipe } from "@angular/common";
+import { DatePipe } from "@angular/common";
 import { RouterLink } from "@angular/router";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
@@ -15,6 +15,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
 import { client } from "src/app/shared/api/api";
 import { getPaginationHeaders } from "src/app/shared/pagination.utils";
 import { limitConcurrency } from "src/app/shared/async.utils";
+import { CompactNumberPipe } from "src/app/shared/compact-number.pipe";
 import { DaysAgoPipe } from "src/app/shared/days-ago.pipe";
 import { OnVisibleDirective } from "src/app/shared/on-visible.directive";
 import { IssueChart } from "src/app/issues/issues-page/charts/issue-chart";
@@ -65,11 +66,11 @@ const SUMMARY_BATCH = 100;
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     DatePipe,
-    DecimalPipe,
     RouterLink,
     MatButtonModule,
     MatIconModule,
     MatTooltipModule,
+    CompactNumberPipe,
     DaysAgoPipe,
     IssueChart,
     ListComponent,
@@ -163,7 +164,8 @@ const SUMMARY_BATCH = 100;
                     ><b>{{
                       facts?.unresolved === undefined
                         ? "–"
-                        : (facts!.unresolved | number) // i18n(ph="count")
+                        : (facts!.unresolved
+                          | compactNumber) // i18n(ph="count")
                     }}</b>
                     unresolved</span
                   >
@@ -203,7 +205,8 @@ const SUMMARY_BATCH = 100;
     }
 
     .glance__count {
-      min-width: 11ch;
+      // Fits a bold "999.9K unresolved", so every row's chart starts at the same x.
+      min-width: 18ch;
       white-space: nowrap;
       font-variant-numeric: tabular-nums;
 

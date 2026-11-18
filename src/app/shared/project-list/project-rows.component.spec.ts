@@ -240,6 +240,11 @@ describe("ProjectRowsComponent", () => {
       ]);
     });
 
+    it("shortens large counts", async () => {
+      const { el } = await renderTrend(200, 101);
+      expect(el.textContent).toContain("10.1K unresolved");
+    });
+
     it("falls back to a request per fact when the backend has no summary", async () => {
       const { el, calls, fixture, projects } = await renderTrend(404);
       expect(summaryCalls(calls).length).toBe(1);
