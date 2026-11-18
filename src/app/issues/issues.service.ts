@@ -8,6 +8,7 @@ import { getPaginationHeaders, getPaginator } from "../shared/pagination.utils";
 import { keepPreviousValue } from "../shared/signal.utils";
 import { IssueStatus, IssueStatusUpdate, StatsPeriod } from "./interfaces";
 import { apiResource } from "../shared/api/api-resource-factory";
+import { AssigneeChoice } from "../shared/assignee-picker/assignee-picker";
 
 export interface DataParams {
   orgSlug: string;
@@ -125,7 +126,8 @@ export class IssuesService extends StatefulService<IssuesState> {
     const params = this.params();
     const issues = this.issues();
     const statsPeriod = this.statsPeriod();
-    if (!params || !issues) {
+    // An empty page has nothing to chart, and the endpoint rejects no ids.
+    if (!params || !issues?.length) {
       return undefined;
     }
     return {
@@ -328,6 +330,61 @@ export class IssuesService extends StatefulService<IssuesState> {
         this.snackbar.open($localize`Error, unable to update issue`);
       }
     }
+  }
+
+  /** Assign the selected issues, or every issue matching the filters when all results are selected. */
+  async assign(
+    orgSlug: string,
+    choice: AssigneeChoice,
+    allResults?: {
+      projectIds: string[];
+      query?: string | null;
+      start?: string;
+      end?: string;
+      environment?: string;
+    },
+  ) {
+    const ids = this.selectedIssues();
+    const query = allResults
+      ? {
+          project: allResults.projectIds?.map((id) => parseInt(id)),
+          query: allResults.query,
+          start: allResults.start,
+          end: allResults.end,
+          environment: allResults.environment
+            ? [allResults.environment]
+            : undefined,
+        }
+      : { id: ids.map((id) => parseInt(id)) };
+    const { error } = await client.PUT(
+      "/api/0/organizations/{organization_id_or_slug}/issues/",
+      {
+        params: { path: this.organizationsService.orgPath(orgSlug), query },
+        body: { assignedTo: choice.value },
+      },
+    );
+    if (error) {
+      this.snackbar.open($localize`Error, unable to assign issues`);
+      return;
+    }
+    this.setState({ selectedIssues: [], allResultsSelected: false });
+    // Every match changed, including other pages, so fetch the list again.
+    if (allResults) {
+      this.issuesResource.reload();
+      return;
+    }
+    this.issuesResource.update((update) =>
+      update
+        ? {
+            ...update,
+            data: update.data.map((issue) =>
+              ids.includes(issue.id)
+                ? { ...issue, assignedTo: choice.actor }
+                : issue,
+            ),
+          }
+        : update,
+    );
   }
 
   async mergeIssues(orgSlug: string, issues: string[]) {

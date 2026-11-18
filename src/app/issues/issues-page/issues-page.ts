@@ -42,6 +42,18 @@ import { PaginationButtons } from "src/app/list-elements/pagination-buttons/pagi
 import { toSignal } from "@angular/core/rxjs-interop";
 import { MatMenuModule } from "@angular/material/menu";
 import { SearchHelpConfig } from "../../list-elements/data-filter-bar/data-filter-bar.component";
+import {
+  AssigneeChoice,
+  AssigneePickerComponent,
+} from "src/app/shared/assignee-picker/assignee-picker";
+import { assigneeLabel } from "src/app/shared/assignee-picker/assignee-options.service";
+import { AssigneeFilterComponent } from "./assignee-filter/assignee-filter";
+import {
+  assignedFilter,
+  assignedValueFor,
+  withAssignedFilter,
+} from "../assignee-query";
+import { IssueActor } from "../interfaces";
 
 @Component({
   templateUrl: "./issues-page.html",
@@ -66,6 +78,8 @@ import { SearchHelpConfig } from "../../list-elements/data-filter-bar/data-filte
     IssueChart,
     MatButtonToggleModule,
     PaginationButtons,
+    AssigneePickerComponent,
+    AssigneeFilterComponent,
   ],
   providers: [IssuesService],
 })
@@ -126,6 +140,33 @@ export class IssuesPage implements OnInit, OnDestroy {
   mediumScreenColumns = ["select", "title", "events"];
   isLargeScreen = signal(true);
   displayedColumns = signal(this.allColumns);
+  readonly assigneeLabel = assigneeLabel;
+  private effectiveQuery = computed(() => this.query() ?? "is:unresolved");
+  readonly assigneeFilter = computed(() =>
+    assignedFilter(this.effectiveQuery()),
+  );
+
+  linkLabel(actor: IssueActor) {
+    return $localize`Show issues assigned to ${assigneeLabel(actor)}`;
+  }
+
+  /** The current query narrowed to one assignee, for the caption links. */
+  assigneeQuery(actor: IssueActor) {
+    return withAssignedFilter(this.effectiveQuery(), assignedValueFor(actor));
+  }
+
+  filterByAssignee(value: string | null) {
+    // From the search box, so text typed there but not yet submitted is kept.
+    const query = withAssignedFilter(
+      this.form.value.query ?? this.effectiveQuery(),
+      value,
+    );
+    this.form.patchValue({ query });
+    this.router.navigate([], {
+      queryParams: { query, cursor: null },
+      queryParamsHandling: "merge",
+    });
+  }
   private lastClickedIssueId = signal<string | null>(null);
   // The trend chart has a fixed width, so it needs room beyond the sidebar.
   private readonly roomForTrend = toSignal(
@@ -176,6 +217,12 @@ export class IssuesPage implements OnInit, OnDestroy {
           "level:debug",
           "level:sample",
         ],
+        mutuallyExclusive: true,
+      },
+      {
+        title: $localize`Assignee`,
+        examples: ["assigned:me", "assigned:my_teams", "assigned:none"],
+        samples: ["assigned:#team", "assigned:email"],
         mutuallyExclusive: true,
       },
       {
@@ -357,6 +404,24 @@ export class IssuesPage implements OnInit, OnDestroy {
         this.service.updateStatusByIssueId(orgSlug, status);
       }
     }
+  }
+
+  assignSelected(choice: AssigneeChoice) {
+    const orgSlug = this.orgSlug();
+    if (!orgSlug) return;
+    this.service.assign(
+      orgSlug,
+      choice,
+      this.allResultsSelected()
+        ? {
+            projectIds: this.projects(),
+            query: this.query(),
+            start: this.start(),
+            end: this.end(),
+            environment: this.environment(),
+          }
+        : undefined,
+    );
   }
 
   mergeSelectedIssues() {

@@ -1,0 +1,68 @@
+@use "@angular/material" as mat;
+@use "variables" as vars;
+@use "controls";
+
+// Same widths as the Environment field next to it.
+mat-form-field {
+  @media (max-width: vars.$medium - 1) {
+    width: 170px;
+  }
+
+  @media (max-width: vars.$small - 1) {
+    width: 160px;
+  }
+}
+
+// Picker rows: one 36px line, as in gt-assignee-picker.
+.item {
+  @include mat.option-overrides(
+    (
+      label-text-font: var(--mat-sys-label-large-font),
+      label-text-size: var(--mat-sys-label-large-size),
+      label-text-weight: var(--mat-sys-label-large-weight),
+    )
+  );
+  min-height: 36px;
+}
+
+.note {
+  padding: var(--gt-space-2, 8px) var(--gt-space-4, 16px);
+  color: var(--mat-sys-on-surface-variant);
+  font: var(--mat-sys-body-small);
+}
+
+// Group labels and notes are our own elements, as in gt-assignee-picker, on
+// the options' 16px inset.
+.group-label {
+  padding: var(--gt-space-3, 12px) var(--gt-space-4, 16px)
+    var(--gt-space-1, 4px);
+  color: var(--mat-sys-on-surface-variant);
+  font: var(--mat-sys-label-medium);
+}
+
+// Label or name on the left, the current choice's check on the right.
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--gt-space-3, 12px);
+  width: 248px;
+}
+
+.label {
+  flex: 1;
+}
+
+.check {
+  @include controls.icon-size(18px);
+  flex: none;
+  margin: 0;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+// Shortcuts and the people and teams are different kinds, so a line splits them.
+.split {
+  margin-block: var(--gt-space-1, 4px);
+}

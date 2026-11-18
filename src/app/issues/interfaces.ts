@@ -146,9 +146,19 @@ export interface AnnotatedRequest extends Request {
 export type IssueStatus = "resolved" | "unresolved" | "ignored";
 export type IssueStatusUpdate = IssueStatus | "merge";
 
+/** Who an issue is assigned to: one org member or one team. */
+export interface IssueActor {
+  type: "user" | "team";
+  id: string;
+  name: string;
+  username?: string | null;
+  email?: string | null;
+  slug?: string | null;
+}
+
 export interface Issue {
   annotations: string[];
-  assignedTo: string | null;
+  assignedTo: IssueActor | null;
   count: string;
   culprit: string | null;
   firstSeen: string;

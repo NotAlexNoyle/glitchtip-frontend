@@ -80,3 +80,61 @@
 
   @include issue-level.accent;
 }
+
+// Narrow bar: status keeps its label and the other actions move into More
+// actions, as Primer does with a page header's trailing actions.
+.narrow-only {
+  display: none;
+}
+
+// Zero-width point the narrow picker opens from, beside More actions; the
+// negative margin cancels the bar's gap so it adds no space.
+.picker-anchor {
+  align-self: flex-end;
+  width: 0;
+  margin-inline-end: calc(-1 * var(--gt-space-2, 8px));
+}
+
+// The picker renders only its menu, so it takes no place in the bar.
+gt-assignee-picker {
+  display: contents;
+}
+
+@include controls.narrow-bar {
+  .wide-only {
+    display: none;
+  }
+
+  .narrow-only {
+    display: inline-flex;
+  }
+}
+
+// Unassigned is the outline glyph in the muted colour, an empty slot; the
+// More actions item's icon is filled and in full colour once someone owns it.
+.assign-icon:not(.assign-icon--empty) {
+  color: var(--mat-sys-on-surface);
+}
+
+// Who owns the issue, without words: initials in a circle for a person and a
+// rounded square for a team, the usual people-vs-groups avatar shapes.
+.assign-initials {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  box-sizing: border-box;
+  // The edge tells person from team, so it gets the fields' 3:1 outline.
+  border: 1px solid controls.$field-outline;
+  background: var(--mat-sys-surface-container-highest);
+  color: var(--mat-sys-on-surface);
+  font: 500 11px / 1 var(--mat-sys-label-small-font);
+  letter-spacing: 0.02em;
+  // Where an icon button puts its mat-icon, not on the text baseline.
+  vertical-align: top;
+}
+
+.assign-initials--team {
+  border-radius: 6px;
+}

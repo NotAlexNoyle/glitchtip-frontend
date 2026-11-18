@@ -19,6 +19,13 @@
   );
 }
 
+// Label width of every outlined dropdown in a bar, so they match and never
+// change size; longer labels ellipsize.
+$bar-label-width: 96px;
+
+// Side padding that makes a 32px outlined button holding one 18px icon square.
+$icon-only-padding: 6px;
+
 // Resting outline for our own fields: the form fields' mix, 3:1 against the page.
 $field-outline: color-mix(
   in srgb,

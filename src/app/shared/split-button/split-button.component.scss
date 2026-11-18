@@ -1,4 +1,3 @@
-@use "sass:math";
 @use "@angular/material" as mat;
 @use "controls";
 @use "variables" as vars;
@@ -8,8 +7,6 @@ $border: 1px;
 // Both buttons sit inside the outline.
 $inner-height: $height - 2 * $border;
 $icon-size: 18px;
-// Icon-only main button is square.
-$icon-only-padding: math.div($inner-height - $icon-size, 2);
 
 // One outlined shape; neutral, since it acts on the record without changing it.
 :host {
@@ -50,7 +47,7 @@ $icon-only-padding: math.div($inner-height - $icon-size, 2);
 
     @include mat.button-overrides(
       (
-        text-with-icon-horizontal-padding: $icon-only-padding,
+        text-with-icon-horizontal-padding: controls.$icon-only-padding,
         text-icon-spacing: 0,
         text-icon-offset: 0,
       )

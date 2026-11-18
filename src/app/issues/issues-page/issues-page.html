@@ -22,7 +22,13 @@
       (filterByEnvironment)="filterByEnvironment($event)"
       (searchSubmit)="searchSubmit()"
       (sortByChanged)="sortByChanged($event)"
-    />
+    >
+      <gt-assignee-filter
+        gtFilterBarField
+        [value]="assigneeFilter()"
+        (changed)="filterByAssignee($event)"
+      />
+    </gt-data-filter-bar>
   }
   <div class="table-container">
     <gt-loading-overlay i18n-label [loading]="loading()" label="Loading issues">
@@ -97,6 +103,13 @@
                     >
                     <button
                       mat-stroked-button
+                      [matMenuTriggerFor]="bulkPicker.menu()"
+                      [disabled]="thereAreSelectedIssues() === false"
+                      i18n
+                      >Assign</button
+                    >
+                    <button
+                      mat-stroked-button
                       (click)="mergeSelectedIssues()"
                       [disabled]="
                         numberOfSelectedIssues() < 2 ||
@@ -138,6 +151,12 @@
                     >
                     <button mat-menu-item (click)="updateStatus('ignored')" i18n
                       >Mark ignored</button
+                    >
+                    <button
+                      mat-menu-item
+                      [matMenuTriggerFor]="bulkPicker.menu()"
+                      i18n
+                      >Assign</button
                     >
                     <button
                       mat-menu-item
@@ -225,6 +244,17 @@
                     </time></ng-container>
                   }
                 </span>
+                @if (element.assignedTo; as actor) {
+                  <a
+                    class="caption-text row-assignee"
+                    [routerLink]="[]"
+                    [queryParams]="{ query: assigneeQuery(actor), cursor: null }"
+                    queryParamsHandling="merge"
+                    [title]="linkLabel(actor)"
+                    [attr.aria-label]="linkLabel(actor)"
+                    >{{ assigneeLabel(actor) }}</a
+                  >
+                }
                 @if (element.type && element.type === "csp") {
                   <span class="caption-text">
                     @if (appliedProjectCount() !== 1 && element.type) {
@@ -348,6 +378,11 @@
             </td>
           </tr>
         </table>
+        <gt-assignee-picker
+          #bulkPicker="gtAssigneePicker"
+          xPosition="after"
+          (picked)="assignSelected($event)"
+        />
       }
     </gt-loading-overlay>
   </div>
