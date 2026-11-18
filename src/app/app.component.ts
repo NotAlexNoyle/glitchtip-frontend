@@ -41,7 +41,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.matIconRegistry.setDefaultFontSetClass("material-symbols-filled");
+    this.matIconRegistry.setDefaultFontSetClass("material-symbols");
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         const params = this.route.snapshot.firstChild?.params;

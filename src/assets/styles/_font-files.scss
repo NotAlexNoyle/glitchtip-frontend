@@ -61,7 +61,9 @@
   src: url("#{ vars.$font-path}/material-symbols.woff2") format("woff2");
 }
 
-.material-symbols-filled {
+// Icons are outlined at grade 0 by default; actions, navigation and inputs
+// stay light next to text.
+.material-symbols {
   font-family: "Material Symbols Outlined";
   font-weight: normal;
   font-style: normal;
@@ -77,19 +79,14 @@
   -webkit-font-feature-settings: "liga";
   -webkit-font-smoothing: antialiased;
   font-variation-settings:
-    "FILL" 1,
+    "FILL" 0,
     "wght" 300,
-    "GRAD" 200,
+    "GRAD" 0,
     "opsz" 24;
 }
 
-.material-symbols-outlined {
-  font-variation-settings:
-    "FILL" 0,
-    "wght" 300,
-    "GRAD" 200,
-    "opsz" 24;
-}
+// Filled marks state: the active nav item, a value that is set, a selected
+// toggle. Add it next to the default class.
 
 .section-header-text {
   font: var(--mat-sys-headline-small);
