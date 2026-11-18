@@ -1,28 +1,19 @@
 @use "variables" as vars;
+@use "filter-bar";
 
 // Log stream styled with Material Design 3 tokens
 
+// The same filter row as every list page; see _filter-bar.scss.
+.filter-bar-container {
+  @include filter-bar.band;
+}
+
 .filter-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--gt-space-3, 12px);
-  // The page body already pads the sides.
-  padding-bottom: var(--gt-space-3, 12px);
+  @include filter-bar.row;
 }
 
-.search-form {
-  flex: 1;
-  min-width: 200px;
-  max-width: 400px;
-}
-
-.search-field {
-  width: 100%;
-}
-
-.filter-field {
-  min-width: 120px;
+.gt-filter-search {
+  @include filter-bar.search;
 }
 
 .clear-btn {
@@ -183,19 +174,6 @@
 
 // Responsive adjustments
 @media (max-width: 768px) {
-  .filter-bar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .search-form {
-    max-width: none;
-  }
-
-  .filter-field {
-    width: 100%;
-  }
-
   .log-output {
     font-size: 12px;
   }

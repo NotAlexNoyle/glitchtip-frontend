@@ -1,3 +1,4 @@
+import { SelectGhostDirective } from "src/app/shared/select-ghost.directive";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -26,6 +27,7 @@ import { LoadingOverlayComponent } from "../shared/loading-overlay/loading-overl
   templateUrl: "./logs.html",
   styleUrls: ["./logs.scss"],
   imports: [
+    SelectGhostDirective,
     DatePipe,
     UpperCasePipe,
     ListAppBar,

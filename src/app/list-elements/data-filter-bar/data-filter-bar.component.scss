@@ -1,65 +1,13 @@
-@use "variables" as vars;
+@use "filter-bar";
 
-.data-filter-bar-container {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  margin-bottom: 15px;
-  gap: 15px;
-
-  @media (max-width: vars.$small - 1) {
-    gap: 10px;
-  }
+:host {
+  @include filter-bar.band;
 }
 
-.sort-form,
-.environment-form {
-  @media (max-width: vars.$medium - 1) {
-    mat-form-field {
-      width: 170px;
-    }
-  }
-
-  @media (max-width: vars.$small - 1) {
-    mat-form-field {
-      width: 160px;
-    }
-  }
-}
-.search-form {
-  @media (min-width: vars.$small) {
-    mat-form-field {
-      width: 350px;
-    }
-  }
-  @media (min-width: vars.$large) {
-    mat-form-field {
-      width: 450px;
-    }
-  }
-  @media (max-width: vars.$small - 1) {
-    width: 100%;
-    mat-form-field {
-      width: 100%;
-    }
-  }
+.gt-filter-bar {
+  @include filter-bar.row;
 }
 
-.right-block {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 15px;
-}
-
-.stats-period-select {
-  width: 110px;
-}
-
-.left-block {
-  @media (min-width: vars.$medium) {
-    display: flex;
-    justify-content: space-between;
-    gap: 15px;
-  }
+.gt-filter-search {
+  @include filter-bar.search;
 }

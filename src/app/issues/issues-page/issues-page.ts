@@ -41,7 +41,10 @@ import { IssueChart } from "./charts/issue-chart";
 import { PaginationButtons } from "src/app/list-elements/pagination-buttons/pagination-buttons";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { MatMenuModule } from "@angular/material/menu";
-import { SearchHelpConfig } from "../../list-elements/data-filter-bar/data-filter-bar.component";
+import {
+  SearchHelpConfig,
+  TREND_MEDIA_QUERY,
+} from "../../list-elements/data-filter-bar/data-filter-bar.component";
 
 @Component({
   templateUrl: "./issues-page.html",
@@ -129,7 +132,7 @@ export class IssuesPage implements OnInit, OnDestroy {
   private lastClickedIssueId = signal<string | null>(null);
   // The trend chart has a fixed width, so it needs room beyond the sidebar.
   private readonly roomForTrend = toSignal(
-    this.breakPointObserver.observe("(min-width: 1080px)"),
+    this.breakPointObserver.observe(TREND_MEDIA_QUERY),
   );
   breakPointSignal = toSignal(
     this.breakPointObserver.observe([
