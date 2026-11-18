@@ -22,7 +22,13 @@
       (filterByEnvironment)="filterByEnvironment($event)"
       (searchSubmit)="searchSubmit()"
       (sortByChanged)="sortByChanged($event)"
-    />
+    >
+      <gt-assignee-filter
+        gtFilterBarField
+        [value]="assigneeFilter()"
+        (changed)="filterByAssignee($event)"
+      />
+    </gt-data-filter-bar>
   }
   <div class="table-container">
     <gt-loading-overlay i18n-label [loading]="loading()" label="Loading issues">
@@ -239,9 +245,15 @@
                   }
                 </span>
                 @if (element.assignedTo; as actor) {
-                  <span class="caption-text row-assignee">{{
-                    assigneeLabel(actor)
-                  }}</span>
+                  <a
+                    class="caption-text row-assignee"
+                    [routerLink]="[]"
+                    [queryParams]="{ query: assigneeQuery(actor), cursor: null }"
+                    queryParamsHandling="merge"
+                    [title]="linkLabel(actor)"
+                    [attr.aria-label]="linkLabel(actor)"
+                    >{{ assigneeLabel(actor) }}</a
+                  >
                 }
                 @if (element.type && element.type === "csp") {
                   <span class="caption-text">

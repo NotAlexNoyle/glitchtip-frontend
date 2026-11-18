@@ -115,6 +115,7 @@
           </mat-form-field>
         </form>
       }
+      <ng-content select="[gtFilterBarField]" />
       @if (isLargeScreen()) {
         <ng-container *ngTemplateOutlet="searchFormTemplate"></ng-container>
       }

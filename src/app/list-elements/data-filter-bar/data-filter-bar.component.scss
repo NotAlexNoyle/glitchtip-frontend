@@ -26,16 +26,18 @@
     }
   }
 }
+// Grows to its old width when there is room and gives way to extra fields.
 .search-form {
   @media (min-width: vars.$small) {
+    flex: 1 1 350px;
+    min-width: 240px;
+    max-width: 350px;
     mat-form-field {
-      width: 350px;
+      width: 100%;
     }
   }
   @media (min-width: vars.$large) {
-    mat-form-field {
-      width: 450px;
-    }
+    max-width: 450px;
   }
   @media (max-width: vars.$small - 1) {
     width: 100%;
@@ -57,9 +59,12 @@
 }
 
 .left-block {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gt-space-2, 8px);
   @media (min-width: vars.$medium) {
-    display: flex;
-    justify-content: space-between;
+    flex: 1;
+    flex-wrap: nowrap;
     gap: 15px;
   }
 }
