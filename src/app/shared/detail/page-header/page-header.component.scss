@@ -1,3 +1,4 @@
+@use "variables" as vars;
 @use "object-header";
 
 // Block, so padding a page adds to the host (the issue level bar) indents the header.
@@ -19,7 +20,7 @@
   place-items: center;
   width: 40px;
   height: 40px;
-  border-radius: 12px;
+  border-radius: vars.$surface-radius;
   background-color: var(--mat-sys-secondary-container);
   color: var(--mat-sys-on-secondary-container);
 }
