@@ -42,15 +42,23 @@ describe("homeProjects", () => {
 describe("ProjectListComponent footer", () => {
   const org = { id: "1", slug: "acme", name: "Acme" };
 
-  function render(count: number, activeOrgOnly = false) {
-    const projects = Array.from({ length: count }, (_, i) => ({
-      id: String(i),
+  function render(
+    count: number,
+    activeOrgOnly = false,
+    { canWrite = true, selected = "acme" as string | null } = {},
+  ) {
+    const project = (i: number, orgId: number) => ({
+      id: `${orgId}-${i}`,
       name: `p${i}`,
       slug: `p${i}`,
       isMember: true,
       firstEvent: null,
-      organization: { id: 1 },
-    }));
+      organization: { id: orgId },
+    });
+    const projects = [
+      ...Array.from({ length: count }, (_, i) => project(i, 1)),
+      ...Array.from({ length: 3 }, (_, i) => project(i, 2)),
+    ];
     TestBed.configureTestingModule({
       imports: [ProjectListComponent],
       providers: [
@@ -58,10 +66,10 @@ describe("ProjectListComponent footer", () => {
         {
           provide: OrganizationsService,
           useValue: {
-            organizations: signal([org]),
             activeOrganization: signal(org),
             initialLoad: signal(true),
-            canWriteProject: signal(true),
+            canWriteProject: signal(canWrite),
+            selectedOrganizationSlug: signal(selected),
             orgPath: (slug: string) => ({ organization_id_or_slug: slug }),
           },
         },
@@ -95,6 +103,25 @@ describe("ProjectListComponent footer", () => {
     const el = render(HOME_PROJECT_LIMIT);
     expect(el.querySelector(".gt-panel__footer-actions a")).toBeNull();
     expect(footerText(el)?.trim() ?? "").toBe("");
+  });
+
+  it("shows only the active org on Home", () => {
+    const el = render(2);
+    const titles = [...el.querySelectorAll(".org-projects__title")];
+    expect(titles.map((t) => t.textContent?.trim())).toEqual(["Acme"]);
+    expect(el.querySelectorAll("gt-list-row").length).toBe(2);
+  });
+
+  const newProject = (el: HTMLElement) =>
+    el.querySelector(".org-projects__header a");
+
+  it("hides New project on Home from a member who can't create one", () => {
+    expect(newProject(render(2, false, { canWrite: false }))).toBeNull();
+  });
+
+  it("keeps New project on Home while the org is the first-org fallback", () => {
+    const el = render(2, false, { canWrite: false, selected: null });
+    expect(newProject(el)?.textContent?.trim()).toBe("New project");
   });
 
   it("lists every project on the Projects page", () => {
