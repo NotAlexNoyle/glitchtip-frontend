@@ -106,7 +106,7 @@
 }
 
 .gt-panel__body {
-  padding: var(--gt-space-4, 16px);
+  padding: var(--gt-panel-padding, var(--gt-space-4, 16px));
 
   &--flush {
     padding: 0;

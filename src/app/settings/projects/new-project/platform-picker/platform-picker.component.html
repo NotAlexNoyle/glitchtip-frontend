@@ -1,11 +1,6 @@
-<div class="heading">
-  <div class="text-info">
-    <label i18n for="project-picker" class="body-text">Platform</label>
-    <p i18n class="caption-text">
-      The primary platform for this project. Used for documentation.
-    </p>
-  </div>
-  <mat-form-field appearance="outline">
+<!-- The page around the picker gives it its title and description. -->
+<div class="picker-bar">
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
     <mat-label i18n>Filter platforms</mat-label>
     <input i18n-aria-label
       #filterInput
@@ -15,60 +10,51 @@
       matInput
     />
   </mat-form-field>
+  <mat-button-toggle-group
+    class="gt-segmented"
+    hideSingleSelectionIndicator
+    i18n-aria-label
+    aria-label="Platform category"
+    [value]="selected()"
+    (change)="setSelected($event.value)"
+  >
+    @for (category of categoryList; track category; let i = $index) {
+      <mat-button-toggle [value]="i">{{ category.name }}</mat-button-toggle>
+    }
+    <mat-button-toggle [value]="allTabIndex" i18n>All</mat-button-toggle>
+  </mat-button-toggle-group>
 </div>
-<mat-tab-group
-  id="project-picker"
-  [selectedIndex]="selected"
-  (selectedIndexChange)="setSelected($event)"
->
-  @for (category of categoryList; track category) {
-    <mat-tab label="{{ category.name }}">
-      <ul>
-        @for (platform of category.platforms; track platform) {
-          <li>
-            <button
-              data-test
-              mat-stroked-button
-              type="button"
-              (click)="writeValue(getPlatformId(platform), true)"
-              [class.active]="activePlatform === getPlatformId(platform)"
-              [color]="
-                activePlatform === getPlatformId(platform) ? 'primary' : ''
-              "
-            >
-              {{ getPlatformName(platform) }}
-            </button>
-          </li>
+<ul class="platform-grid">
+  @for (platform of shownPlatforms(); track platform.id) {
+    <li>
+      <button
+        data-test
+        type="button"
+        class="platform-tile"
+        [class.platform-tile--active]="activePlatform === platform.id"
+        [attr.aria-pressed]="activePlatform === platform.id"
+        (click)="writeValue(platform.id, true)"
+      >
+        <span class="platform-tile__name">{{ platform.name }}</span>
+        @if (activePlatform === platform.id) {
+          <mat-icon class="platform-tile__check">check</mat-icon>
         }
-      </ul>
-    </mat-tab>
+      </button>
+    </li>
+  } @empty {
+    <li>
+      <button
+        type="button"
+        class="platform-tile"
+        [class.platform-tile--active]="activePlatform === 'other'"
+        [attr.aria-pressed]="activePlatform === 'other'"
+        (click)="writeValue('other', true)"
+      >
+        <span class="platform-tile__name" i18n>Other</span>
+        @if (activePlatform === "other") {
+          <mat-icon class="platform-tile__check">check</mat-icon>
+        }
+      </button>
+    </li>
   }
-  <mat-tab i18n-label label="All">
-    <ul>
-      @if (filteredPlatforms()?.length === 0) {
-        <li>
-          <button i18n
-            mat-stroked-button
-            type="button"
-            (click)="writeValue('other', true)"
-            [class.active]="activePlatform === getPlatformId('other')"
-          >
-            Other
-          </button>
-        </li>
-      }
-      @for (platform of filteredPlatforms(); track platform) {
-        <li>
-          <button
-            mat-stroked-button
-            type="button"
-            (click)="writeValue(platform.id, true)"
-            [class.active]="activePlatform === getPlatformId(platform.id)"
-          >
-            {{ platform.name }}
-          </button>
-        </li>
-      }
-    </ul>
-  </mat-tab>
-</mat-tab-group>
+</ul>

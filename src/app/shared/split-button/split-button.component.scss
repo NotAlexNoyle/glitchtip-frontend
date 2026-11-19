@@ -26,9 +26,6 @@ $icon-only-padding: math.div($inner-height - $icon-size, 2);
       text-container-height: $inner-height,
       text-horizontal-padding: var(--gt-space-3, 12px),
       text-with-icon-horizontal-padding: var(--gt-space-3, 12px),
-      text-label-text-color: var(--mat-sys-on-surface),
-      text-state-layer-color: var(--mat-sys-on-surface),
-      text-ripple-color: controls.state-layer-color(pressed),
       text-container-shape: vars.$shape-radius 0 0 vars.$shape-radius,
       text-icon-spacing: var(--gt-space-2, 8px),
     )

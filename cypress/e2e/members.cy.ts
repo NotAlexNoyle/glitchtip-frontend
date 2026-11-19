@@ -13,9 +13,9 @@ describe("Organization Members", () => {
     cy.visit(`/${seededOrg.slug}/settings/members`);
     cy.contains("a", seededUser2.email).should("not.exist");
 
-    cy.contains("a", "Invite Member").click();
+    cy.contains("a", "Invite members").click();
     cy.get("input[formcontrolname=email]").type(seededUser2.email);
-    cy.contains("button", "Add Member(s)").click();
+    cy.contains("button", "Send invites").click();
 
     cy.url().should("match", /\/settings\/members$/);
     cy.contains("gt-list-row", seededUser2.email)

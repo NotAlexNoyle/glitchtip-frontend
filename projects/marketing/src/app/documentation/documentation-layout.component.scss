@@ -211,10 +211,7 @@
   a[mat-list-item] {
     color: var(--mat-sys-on-surface-variant);
 
-    // Selected item matches the product sidenav's active row (main-nav
-    // .active-section): a solid brand-red fill with white text. Material renders
-    // the label in its own .mdc-list-item__primary-text span that ignores `color`
-    // on the anchor, so on-primary is applied there directly.
+    // Matches the app's active nav item; the label span ignores the anchor's color.
     &.is-active {
       background: var(--mat-sys-primary);
       font-weight: 600;

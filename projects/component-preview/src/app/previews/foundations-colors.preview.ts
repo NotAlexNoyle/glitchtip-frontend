@@ -99,12 +99,6 @@ interface ResolvedPair {
         from the app. Toggle the color scheme in the toolbar to see tokens
         change.
       </p>
-      <p class="preview-note">
-        Note: the brand overrides for
-        <code>--mat-sys-primary</code> / <code>--mat-sys-error</code> in dark
-        mode are gated on your operating system's color-scheme setting, so those
-        specific swatches follow the OS rather than this in-app toggle.
-      </p>
     </header>
 
     @for (grp of groups(); track grp.group) {

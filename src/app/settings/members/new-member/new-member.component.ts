@@ -2,9 +2,11 @@ import {
   Component,
   OnInit,
   OnDestroy,
+  computed,
   inject,
   ChangeDetectionStrategy,
 } from "@angular/core";
+import { OrganizationsService } from "src/app/api/organizations.service";
 import {
   FormGroup,
   FormControl,
@@ -13,7 +15,7 @@ import {
   ValidationErrors,
   ReactiveFormsModule,
 } from "@angular/forms";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, RouterLink } from "@angular/router";
 import { map } from "rxjs/operators";
 import { OrganizationDetailService } from "src/app/api/organizations/organization-detail.service";
 import { SettingsService } from "src/app/api/settings.service";
@@ -23,8 +25,14 @@ import { MatSelectModule } from "@angular/material/select";
 import { MatRadioModule } from "@angular/material/radio";
 import { MatInputModule } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatDividerModule } from "@angular/material/divider";
-import { MatCardModule } from "@angular/material/card";
+import { MatButtonModule } from "@angular/material/button";
+import { SettingsSectionComponent } from "src/app/shared/settings-section/settings-section.component";
+import { PageHeaderComponent } from "src/app/shared/detail/page-header/page-header.component";
+import { BackLinkComponent } from "src/app/shared/detail/back-link/back-link.component";
+import { TopAppBar } from "src/app/shared/top-app-bar/top-app-bar";
+import { FormErrorComponent } from "src/app/shared/forms/form-error/form-error.component";
+import { MEMBER_ROLES, roleDescription, roleName } from "../member-roles";
+import { PanelComponent } from "src/app/shared/panel/panel.component";
 
 /** Custom validator to vaildate emails separated by commas */
 function validateEmails(emails: string) {
@@ -50,11 +58,14 @@ function emailsValidator(control: AbstractControl): ValidationErrors | null {
 @Component({
   selector: "gt-new-member",
   templateUrl: "./new-member.component.html",
-  styleUrls: ["./new-member.component.scss"],
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
-    MatCardModule,
-    MatDividerModule,
+    RouterLink,
+    MatButtonModule,
+    TopAppBar,
+    BackLinkComponent,
+    PageHeaderComponent,
+    SettingsSectionComponent,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -62,6 +73,8 @@ function emailsValidator(control: AbstractControl): ValidationErrors | null {
     MatSelectModule,
     MatOptionModule,
     LoadingButtonComponent,
+    FormErrorComponent,
+    PanelComponent,
   ],
 })
 export class NewMemberComponent implements OnInit, OnDestroy {
@@ -71,8 +84,6 @@ export class NewMemberComponent implements OnInit, OnDestroy {
 
   enableUserRegistration = this.settingsService.enableUserRegistration;
   organizationTeams = this.organizationsService.organizationTeams;
-  filteredOrganizationTeams =
-    this.organizationsService.filteredOrganizationTeams;
   errors = this.organizationsService.errors;
   loading = this.organizationsService.loading;
   form = new FormGroup({
@@ -81,6 +92,15 @@ export class NewMemberComponent implements OnInit, OnDestroy {
     teams: new FormControl([]),
   });
   formRole = this.form.get("role") as FormControl;
+  /** The backend refuses inviting above your own role; only owners outrank managers. */
+  readonly canGrantOwner = inject(OrganizationsService).canAdminOrg;
+  readonly roles = computed(() =>
+    this.canGrantOwner()
+      ? MEMBER_ROLES
+      : MEMBER_ROLES.filter((role) => role !== "owner"),
+  );
+  roleName = roleName;
+  roleDescription = roleDescription;
 
   ngOnInit(): void {
     this.route.params

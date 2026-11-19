@@ -43,8 +43,8 @@
   width: 100%;
   max-width: 560px;
 
-  // Lists and empty states span the body so they centre; the cap is for fields.
-  &:has(gt-empty-state, gt-list) {
+  // Lists, empty states and the platform picker span the body; the cap is for fields.
+  &:has(gt-empty-state, gt-list, gt-platform-picker) {
     max-width: none;
   }
 

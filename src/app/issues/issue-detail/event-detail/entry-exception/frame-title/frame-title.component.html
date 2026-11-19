@@ -31,7 +31,7 @@
         >
       }
       @if (frame.function && !mangled) {
-        <ng-container i18n>in</ng-container>
+        &ngsp;<ng-container i18n>in</ng-container>
       }
     }
     <!-- TODO: Add rawFunction conditions-->
@@ -47,7 +47,7 @@
       }
     }
     @if (frame.package) {
-      <ng-container i18n>within {{ cleanPackagePath(frame.package, frame.platform) }}</ng-container>
+      &ngsp;<ng-container i18n>within {{ cleanPackagePath(frame.package, frame.platform) }}</ng-container>
     }
     <!--origAbsPath not in frame docs
     code: https://gitlab.com/glitchtip/sentry-open-source/sentry/-/blob/master/src/sentry/static/sentry/app/components/events/interfaces/frame.jsx#L245

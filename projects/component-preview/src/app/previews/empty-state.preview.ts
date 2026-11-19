@@ -131,6 +131,13 @@ export class EmptyStatePreview {
       description: "aria-level for the title; match the surrounding page",
     },
     {
+      name: "tall",
+      type: "boolean",
+      default: "false",
+      description:
+        "Sit lower in a page-level list box that fills the viewport; leave off in tabs and panels",
+    },
+    {
       name: "(content)",
       type: "projected",
       default: "",

@@ -23,7 +23,7 @@ All tokens are CSS custom properties. Read them live; never hardcode a raw value
 - **Material 3 system roles:** `--mat-sys-*` (primary, surface, on-surface, error, outline, and their containers). Defined by `@include mat.theme(...)` in `src/styles.scss`.
 - **Extended app roles:** `--warning-color`, `--info-color`, `--success-color` (each with a `-container` and `on-` pair), plus product accents `--issues-color`, `--uptime-color`, `--logs-color`. Defined at `:root` in `src/styles.scss`.
 - **Issue level roles:** `--gt-level-sample`, `-debug`, `-info`, `-warning`, `-error`, `-fatal`, aliasing the roles above. Painted by the `issue-level` accent mixin (fatal is striped), with each surface keeping its own bar geometry. Defined at `:root` in `src/styles.scss`.
-- **Theming:** light and dark are driven by `color-scheme` and `prefers-color-scheme`. The brand overrides for `--mat-sys-primary` and `--mat-sys-error` in dark mode are gated on the OS setting.
+- **Theming:** light and dark are driven by `color-scheme` and `prefers-color-scheme`. The brand overrides for `--mat-sys-primary`, `--mat-sys-on-primary` and `--mat-sys-error` are `light-dark()` pairs set with `mat.theme-overrides`, so they follow `color-scheme` like the rest of the theme: the user's preference, or the OS when it is set to System. Light mode uses `$brand-red` (`#cb3753`, in `_variables.scss`, shared with marketing): white labels on it are 5:1 and red text on the light page 4.7:1, but small red text on the darker greys (panel strips, marketing's page) fails, so keep red there to large text and non-text. Dark mode uses `#d94a5f`. Red fills (filled buttons, the active nav item) get no grey or white state layer, which muddies or washes out the red: hover and press darken the red itself with `--gt-primary-hover` and `--gt-primary-pressed` (derived from primary, so they follow the theme), nothing stays after a click, and keyboard focus gets `controls.focus-ring`. Chart labels and gridlines use role tokens, so they follow it too.
 - **Monitor status roles:** `--gt-monitor-up`, `--gt-monitor-down`, `--gt-monitor-none`, aliasing the success, error and outline roles. Used for the status pill and the check bars. Defined at `:root` in `src/styles.scss`.
 
 Rule: use a semantic role, not a raw hex. Text on a colored surface uses that surface's `on-` token so contrast holds in both schemes.
@@ -138,6 +138,11 @@ Every record detail page opens with `gt-page-header`: the record's name, then on
 - The back link and page actions live in the top app bar, never in the header.
 - The title is the record's own name, not a sentence about it ("checkout-api", not "Settings for checkout-api"). Titles have one style; an identifier title (an email, a version) is not set in mono.
 
+### Page width
+
+- Width follows the page's job. Pages for watching data (the Projects, Issues, Logs, Performance, Releases and Uptime lists, and the issue, transaction, release and monitor pages) are full width (`l-body l-body--full-width`), so the body shares the top app bar's edges.
+- Settings pages (including project, team and member settings) and forms stay centered at 1100px (`l-body`) on every screen; forms read worse wider. The settings projects list is centered even though the Projects list is full width.
+
 ### Top app bar
 
 - The top app bar is 52px. Every control in it is 32px: compact buttons (`controls.compact-buttons` from `_controls.scss`, also used by panel headers) and ghost select filters. Visual customisation of Material goes through its overrides/density mixins in `material-overrides/`, never internal classes or `::ng-deep`.
@@ -200,6 +205,14 @@ Every setting on a settings page is a `gt-settings-section`: a title, an optiona
 ### Tag chips
 
 - Tags always render as tag chips (`.gt-tag-chip` in `.gt-tag-chips`): key muted, value bold, in a hairline pill with no shadow. A share ("93%", "2 of 15") sits inside the chip, muted, after a middle dot. `.gt-tag-chip--compact` (24px, label-medium) is the size for a summary line.
+
+### Tables
+
+Tables use `mat-table` inside `.table-container` with the shared global classes (see the Table pattern preview).
+
+- **Numeric columns:** put `.table-numeric` on the header and cells. They right-align with tabular figures, and the sort arrow goes before the label (`arrowPosition="before"`). Identifiers that happen to be numbers, such as issue IDs, stay left-aligned.
+- **End column:** put `.table-end` on a short last column, such as a date, so it right-aligns.
+- **One right edge:** every table ends on the same right edge. The primary column flexes, secondary columns get a fixed width, and overflowing content truncates.
 
 ## Accessibility
 

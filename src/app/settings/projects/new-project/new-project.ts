@@ -16,24 +16,33 @@ import { TeamsService } from "src/app/api/teams/teams.service";
 import { NewTeamComponent } from "../../teams/new-team/new-team";
 import { LoadingButtonComponent } from "../../../shared/loading-button/loading-button.component";
 import { MatIconModule } from "@angular/material/icon";
-import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatButtonModule } from "@angular/material/button";
 import { MatOptionModule } from "@angular/material/core";
 import { MatSelectModule } from "@angular/material/select";
 import { MatInputModule } from "@angular/material/input";
 import { PlatformPickerComponent } from "./platform-picker/platform-picker.component";
 import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatCardModule } from "@angular/material/card";
 import { NewProjectService } from "./new-project-state";
-import { Router } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
+import { SettingsSectionComponent } from "src/app/shared/settings-section/settings-section.component";
+import { PageHeaderComponent } from "src/app/shared/detail/page-header/page-header.component";
+import { BackLinkComponent } from "src/app/shared/detail/back-link/back-link.component";
+import { TopAppBar } from "src/app/shared/top-app-bar/top-app-bar";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { OrganizationsService } from "src/app/api/organizations.service";
+import { FormErrorComponent } from "src/app/shared/forms/form-error/form-error.component";
+import { PanelComponent } from "src/app/shared/panel/panel.component";
 
 @Component({
   templateUrl: "./new-project.html",
   styleUrls: ["./new-project.scss"],
   imports: [
-    MatCardModule,
     MatDialogModule,
+    RouterLink,
+    TopAppBar,
+    BackLinkComponent,
+    PageHeaderComponent,
+    SettingsSectionComponent,
     ReactiveFormsModule,
     MatFormFieldModule,
     PlatformPickerComponent,
@@ -41,9 +50,10 @@ import { MatSnackBar } from "@angular/material/snack-bar";
     MatSelectModule,
     MatOptionModule,
     MatButtonModule,
-    MatTooltipModule,
     MatIconModule,
     LoadingButtonComponent,
+    FormErrorComponent,
+    PanelComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [NewProjectService],
@@ -56,6 +66,7 @@ export class NewProject {
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
   dialog = inject(MatDialog);
+  canWriteTeam = inject(OrganizationsService).canWriteTeam;
 
   orgSlug = input.required<string>({ alias: "org-slug" });
   teams = this.teamsService.teams;

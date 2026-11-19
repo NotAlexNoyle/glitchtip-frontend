@@ -15,7 +15,8 @@ import { ActivatedRoute, RouterLink } from "@angular/router";
 import { MatButtonModule } from "@angular/material/button";
 import { MatInputModule } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatCardModule } from "@angular/material/card";
+import { PanelComponent } from "../shared/panel/panel.component";
+import { AuthBrandComponent } from "../shared/auth-brand/auth-brand.component";
 import { MarkdownComponent, provideMarkdown } from "ngx-markdown";
 import { FormErrorComponent } from "../shared/forms/form-error/form-error.component";
 import { LoginWebAuthnComponent } from "./login-webauthn/login-webauthn.component";
@@ -34,9 +35,9 @@ type SocialApp = components["schemas"]["SocialAppSchema"];
 @Component({
   selector: "gt-login",
   templateUrl: "./login.html",
-  styleUrls: ["./login.scss"],
   imports: [
-    MatCardModule,
+    PanelComponent,
+    AuthBrandComponent,
     MarkdownComponent,
     LoginTotpComponent,
     LoginWebAuthnComponent,
