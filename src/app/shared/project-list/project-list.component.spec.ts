@@ -45,7 +45,11 @@ describe("ProjectListComponent footer", () => {
   function render(
     count: number,
     activeOrgOnly = false,
-    { canWrite = true, selected = "acme" as string | null } = {},
+    {
+      canWrite = true,
+      selected = "acme" as string | null,
+      detailLoaded = true,
+    } = {},
   ) {
     const project = (i: number, orgId: number) => ({
       id: `${orgId}-${i}`,
@@ -66,7 +70,9 @@ describe("ProjectListComponent footer", () => {
         {
           provide: OrganizationsService,
           useValue: {
-            activeOrganization: signal(org),
+            organizations: signal([org]),
+            activeOrganizationSlug: signal("acme"),
+            activeOrganization: signal(detailLoaded ? org : undefined),
             initialLoad: signal(true),
             canWriteProject: signal(canWrite),
             selectedOrganizationSlug: signal(selected),
@@ -109,6 +115,14 @@ describe("ProjectListComponent footer", () => {
     const el = render(2);
     const titles = [...el.querySelectorAll(".org-projects__title")];
     expect(titles.map((t) => t.textContent?.trim())).toEqual(["Acme"]);
+    expect(el.querySelectorAll("gt-list-row").length).toBe(2);
+  });
+
+  it("keeps the org on Home while its details load", () => {
+    const el = render(2, false, { detailLoaded: false });
+    expect(el.querySelector(".org-projects__title")?.textContent?.trim()).toBe(
+      "Acme",
+    );
     expect(el.querySelectorAll("gt-list-row").length).toBe(2);
   });
 
