@@ -59,7 +59,15 @@ export class ProjectListComponent implements OnInit {
   orgServiceInitialLoad = this.organizationsService.initialLoad;
   // Home and Projects both show only the org you are in.
   organization = computed(() => {
-    const organization = this.activeOrganization();
+    // The org list stands in while the org's details load, so switching doesn't blank the page.
+    const organization =
+      this.activeOrganization() ??
+      this.organizationsService
+        .organizations()
+        .find(
+          (org) =>
+            org.slug === this.organizationsService.activeOrganizationSlug(),
+        );
     if (!organization) return undefined;
     const projects = this.projects().filter(
       (project) => project.organization.id.toString() === organization.id,
