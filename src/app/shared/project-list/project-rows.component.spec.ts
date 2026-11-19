@@ -233,8 +233,8 @@ describe("ProjectRowsComponent", () => {
         .trim();
     }
 
-    it("shortens large counts", async () => {
-      expect(await countText(12345, 100000)).toBe("12.3K unresolved");
+    it("shows a count under the limit in full", async () => {
+      expect(await countText(999, 1000)).toBe("999 unresolved");
     });
 
     it("marks a count that stopped at the API's limit", async () => {
