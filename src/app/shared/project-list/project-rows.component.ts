@@ -207,8 +207,8 @@ const SKELETON_BARS = Array.from({ length: 14 }, (_, i) => i);
     }
 
     .glance__count {
-      // Fits a bold "999.9K unresolved", so every row's chart starts at the same x.
-      min-width: 18ch;
+      // Fits a bold "999 unresolved"; counts stop at "1K+", so every chart starts at the same x.
+      min-width: 15ch;
       white-space: nowrap;
       font-variant-numeric: tabular-nums;
 
