@@ -4,7 +4,7 @@
 
 // This make the app cover the whole screen at all times
 mat-sidenav {
-  @include shell.dot-corner(300px 360px at 0 100%);
+  @include shell.dot-corner(320px max(360px, 72vh) at 0 100%);
 }
 
 // Height of the sticky top app bar, for anything else that sticks below it.

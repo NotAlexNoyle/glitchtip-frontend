@@ -6,7 +6,13 @@
   $base: var(--mat-sys-surface-container-low);
 
   background:
-    radial-gradient($fade, transparent 0%, $base 90%) fixed,
+    radial-gradient(
+        $fade,
+        transparent 0%,
+        color-mix(in srgb, $base 55%, transparent) 45%,
+        $base 95%
+      )
+      fixed,
     radial-gradient(
         circle,
         color-mix(in srgb, var(--mat-sys-outline) 52%, transparent) 0.8px,
