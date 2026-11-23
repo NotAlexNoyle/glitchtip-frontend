@@ -120,9 +120,10 @@ export class EmptyStatePreview {
     },
     {
       name: "message",
-      type: "string",
+      type: "string | string[]",
       default: '""',
-      description: "One line of guidance; omit for title only",
+      description:
+        "One line of guidance; a list (separate translated sentences) renders one paragraph each",
     },
     {
       name: "headingLevel",
