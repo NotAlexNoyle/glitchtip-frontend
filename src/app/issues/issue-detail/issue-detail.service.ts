@@ -465,9 +465,7 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
       {
         params: {
           path: {
-            ...this.organization.orgPath(
-              this.organization.activeOrganizationSlug(),
-            ),
+            ...this.organization.orgPath(this.orgSlug()),
             issue_id: parseInt(issueID),
           },
         },
