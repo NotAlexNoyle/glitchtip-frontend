@@ -17,6 +17,17 @@ import { TopAppBar } from "../top-app-bar/top-app-bar";
 import { ListTitleComponent } from "src/app/list-elements/list-title/list-title.component";
 import { OrganizationsService } from "src/app/api/organizations.service";
 
+// Home lists this many projects per organization; the Projects page lists them all.
+export const HOME_PROJECT_LIMIT = 10;
+
+/** Home's share of an org's projects: members first, each group in the API's name order. */
+export function homeProjects<T extends { isMember: boolean }>(projects: T[]) {
+  return [
+    ...projects.filter((project) => project.isMember),
+    ...projects.filter((project) => !project.isMember),
+  ].slice(0, HOME_PROJECT_LIMIT);
+}
+
 @Component({
   selector: "gt-project-list",
   imports: [
@@ -48,13 +59,19 @@ export class ProjectListComponent implements OnInit {
   organizations = this.organizationsService.organizations;
   orgServiceInitialLoad = this.organizationsService.initialLoad;
   orgsAndProjects = computed(() =>
-    this.organizations().map((organization) => ({
-      ...organization,
-      newProjectLabel: $localize`Create new project in ${organization.name}:organization:`,
-      projects: this.projects().filter(
+    this.organizations().map((organization) => {
+      const projects = this.projects().filter(
         (project) => project.organization.id.toString() === organization.id,
-      ),
-    })),
+      );
+      return {
+        ...organization,
+        newProjectLabel: $localize`Create new project in ${organization.name}:organization:`,
+        viewAllLabel: $localize`View all projects in ${organization.name}:organization:`,
+        projects,
+        homeProjects: homeProjects(projects),
+        capped: projects.length > HOME_PROJECT_LIMIT,
+      };
+    }),
   );
   activeOrgProjectCount = computed(() => {
     const id = this.activeOrganization()?.id;

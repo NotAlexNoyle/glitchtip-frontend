@@ -195,6 +195,11 @@ const SKELETON_BARS = Array.from({ length: 14 }, (_, i) => i);
           </gt-list-row>
         }
       </gt-list>
+      <ng-content
+        select="[slot=footer-hint]"
+        ngProjectAs="[slot=footer-hint]"
+      />
+      <ng-content select="[slot=footer]" ngProjectAs="[slot=footer]" />
     </gt-panel>
   `,
   styles: `
