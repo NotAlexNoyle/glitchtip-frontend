@@ -208,6 +208,23 @@ describe("EntryExceptionComponent frames", () => {
     expect(texts(el, ".mech-line")).toEqual(["mechanism generic"]);
     expect(texts(el, ".chain__type")).toEqual(["Outer:", ""]);
   });
+
+  it("marks an unhandled exception with a badge, not a handled line", () => {
+    const el = renderChain([
+      {
+        type: "Outer",
+        value: "a",
+        mechanism: { type: "generic", handled: false },
+      },
+      {
+        type: "Inner",
+        value: "b",
+        mechanism: { type: "chained", handled: false },
+      },
+    ]);
+    expect(texts(el, ".chain__pill")).toEqual(["Unhandled", "Unhandled"]);
+    expect(texts(el, ".mech-line")).toEqual(["mechanism generic"]);
+  });
 });
 
 function render(frame: Partial<Frame>, platform: string) {

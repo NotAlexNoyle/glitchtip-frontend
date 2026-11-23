@@ -61,11 +61,7 @@
             <p class="single-head__value">
               <span class="single-head__text">{{ link.value }}</span>
               @if (link.unhandled) {
-                <gt-status-pill
-                  class="chain__pill"
-                  [label]="unhandledLabel"
-                  color="var(--mat-sys-error)"
-                />
+                <span class="chain__pill">{{ unhandledLabel }}</span>
               }
             </p>
           }
@@ -107,11 +103,7 @@
                 <span class="chain__msg">{{ link.value }}</span>
               }
               @if (link.unhandled) {
-                <gt-status-pill
-                  class="chain__pill"
-                  [label]="unhandledLabel"
-                  color="var(--mat-sys-error)"
-                />
+                <span class="chain__pill">{{ unhandledLabel }}</span>
               }
             </span>
             @if (link.mechanism; as m) {
@@ -322,8 +314,6 @@
     }
     @if (m.handled) {
       <span i18n>handled yes</span>
-    } @else if (m.handled === false) {
-      <span i18n>handled no</span>
     }
     @if (m.fn) {
       <span i18n>function {{ m.fn // i18n(ph="function") }}</span>

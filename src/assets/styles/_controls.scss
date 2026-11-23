@@ -114,3 +114,14 @@ $narrow-band: 899px;
   height: 7px;
   border-radius: 50%;
 }
+
+// Badge: a squared grey label for a fixed attribute (Owner, Primary,
+// Unhandled). Not a state: states are gt-status-pill, with a dot.
+@mixin badge {
+  padding: 0 var(--gt-space-2, 8px);
+  border-radius: var(--mat-sys-corner-extra-small);
+  font: var(--mat-sys-label-medium);
+  color: var(--mat-sys-on-surface-variant);
+  background-color: var(--mat-sys-surface-container-highest);
+  white-space: nowrap;
+}

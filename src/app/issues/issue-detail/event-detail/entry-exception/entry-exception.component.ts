@@ -14,7 +14,6 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { PanelComponent } from "src/app/shared/panel/panel.component";
-import { StatusPillComponent } from "src/app/shared/status-pill/status-pill.component";
 import {
   GhostSelectComponent,
   GhostSelectOption,
@@ -117,9 +116,10 @@ function topFrameIndex(frames: Frame[]): number {
 function mechanismOf(mech: Values["mechanism"]): Mechanism | null {
   if (!mech) return null;
   const fn = mech.data?.function ?? "";
-  if (mech.type === "chained" && mech.handled !== false && !fn) return null;
+  // handled: false is the Unhandled badge, so it never needs a line of its own.
+  if (mech.type === "chained" && !fn) return null;
   const handled = mech.handled ?? null;
-  if (!mech.type && handled === null && !fn) return null;
+  if (!mech.type && handled !== true && !fn) return null;
   return { type: mech.type ?? "", handled, fn };
 }
 
@@ -137,7 +137,6 @@ function roleOf(i: number, value: Values, root: boolean): string {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     PanelComponent,
-    StatusPillComponent,
     GhostSelectComponent,
     MatButtonModule,
     MatIconModule,
