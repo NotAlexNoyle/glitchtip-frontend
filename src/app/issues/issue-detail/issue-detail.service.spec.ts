@@ -127,7 +127,7 @@ async function loadIssue(put: unknown) {
     ],
   });
   const service = TestBed.inject(IssueDetailService);
-  service.issueID.set("1");
+  service.open("acme", "1");
   await TestBed.inject(ApplicationRef).whenStable();
   return { service, putSpy, snackBar };
 }
@@ -159,7 +159,7 @@ describe("IssueDetailService.setAssignee", () => {
       value: "team:platform",
       actor: platform,
     });
-    service.issueID.set("2");
+    service.open("acme", "2");
     await TestBed.inject(ApplicationRef).whenStable();
     reply({ data: { assignedTo: platform } });
     await pending;
