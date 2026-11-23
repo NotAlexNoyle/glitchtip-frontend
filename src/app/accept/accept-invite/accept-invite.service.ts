@@ -1,7 +1,7 @@
 import { Injectable, computed, effect, inject, signal } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { Router } from "@angular/router";
-import { client } from "src/app/shared/api/api";
+import { apiErrorMessage, client } from "src/app/shared/api/api";
 import { OrganizationsService } from "src/app/api/organizations.service";
 import { apiResource } from "src/app/shared/api/api-resource-factory";
 
@@ -76,30 +76,15 @@ export class AcceptInviteService {
       );
       this.#router.navigate(["/"]);
     }
+    // Read before narrowing: the schema declares no error responses
     const status = response.status;
     if (error) {
-      const errorMessage = (error as any).error;
-      if (status === 500) {
-        if (errorMessage.includes("already exists")) {
-          this.#snackBar.open($localize`
-                There was an error, probably because you tried to join an organization
-                that you're already a part of.
-              `);
-        } else {
-          this.#snackBar.open($localize`
-                There was an error. Try again later.
-              `);
-        }
-      } else {
-        if (errorMessage === "Not found.") {
-          this.#snackBar.open($localize`
-              This invitation link expired or is invalid. Please
-              issue a new invitation request.
-            `);
-        } else {
-          this.#snackBar.open(errorMessage.detail);
-        }
-      }
+      // A 500 here is almost always the member unique constraint: already joined
+      const fallback =
+        status >= 500
+          ? $localize`There was an error, probably because you tried to join an organization that you're already a part of.`
+          : $localize`This invitation link expired or is invalid. Please issue a new invitation request.`;
+      this.#snackBar.open(apiErrorMessage(error, response, fallback));
     }
   }
 }
