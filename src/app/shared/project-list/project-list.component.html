@@ -43,12 +43,12 @@
       </gt-empty-state>
     </gt-panel>
   }
-  @for (organization of orgsAndProjects(); track organization.id) {
-    @if (!activeOrgOnly || organization.id === activeOrganization()?.id) {
-      <section class="org-projects">
-        @if (!activeOrgOnly) {
-          <header class="org-projects__header">
-            <h2 class="org-projects__title">{{ organization.name }}</h2>
+  @if (organization(); as organization) {
+    <section class="org-projects">
+      @if (!activeOrgOnly) {
+        <header class="org-projects__header">
+          <h2 class="org-projects__title">{{ organization.name }}</h2>
+          @if (canEdit()) {
             <a
               mat-stroked-button
               [routerLink]="[
@@ -62,30 +62,47 @@
               i18n
               >New project</a
             >
-          </header>
-        }
-        @if (organization.projects.length === 0) {
-          <gt-panel>
-            <gt-empty-state
-              icon="folder"
-              i18n-title
-              title="No projects yet"
-              [headingLevel]="activeOrgOnly ? 2 : 3"
-              [message]="
-                !activeOrgOnly || canWriteProject()
-                  ? noProjectsCanCreate
-                  : noProjectsAskOwner
-              "
-            />
-          </gt-panel>
-        } @else {
-          <gt-project-rows
-            [projects]="organization.projects"
-            [orgSlug]="organization.slug"
-            [canEdit]="!activeOrgOnly || canWriteProject()"
+          }
+        </header>
+      }
+      @if (organization.projects.length === 0) {
+        <gt-panel>
+          <gt-empty-state
+            icon="folder"
+            i18n-title
+            title="No projects yet"
+            [headingLevel]="activeOrgOnly ? 2 : 3"
+            [message]="canEdit() ? noProjectsCanCreate : noProjectsAskOwner"
           />
-        }
-      </section>
-    }
+        </gt-panel>
+      } @else {
+        <gt-project-rows
+          [projects]="
+            activeOrgOnly ? organization.projects : organization.homeProjects
+          "
+          [orgSlug]="organization.slug"
+          [canEdit]="canEdit()"
+        >
+          @if (!activeOrgOnly && organization.capped) {
+            <span slot="footer-hint" i18n
+              >{{ organization.homeProjects.length // i18n(ph="shown") }} of
+              {{ organization.projects.length // i18n(ph="total") }}
+              projects</span
+            >
+          }
+          <!-- Separate blocks: a block with two roots isn't projected into named slots. -->
+          @if (!activeOrgOnly && organization.capped) {
+            <a
+              slot="footer"
+              mat-button
+              [routerLink]="['/', organization.slug, 'projects']"
+              [attr.aria-label]="organization.viewAllLabel"
+              i18n
+              >View all projects</a
+            >
+          }
+        </gt-project-rows>
+      }
+    </section>
   }
 </section>

@@ -7,7 +7,7 @@ import {
   signal,
 } from "@angular/core";
 import { OrganizationsService } from "src/app/api/organizations.service";
-import { DatePipe, DecimalPipe } from "@angular/common";
+import { DatePipe } from "@angular/common";
 import { RouterLink } from "@angular/router";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
@@ -15,6 +15,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
 import { client } from "src/app/shared/api/api";
 import { getPaginationHeaders } from "src/app/shared/pagination.utils";
 import { limitConcurrency } from "src/app/shared/async.utils";
+import { CompactNumberPipe } from "src/app/shared/compact-number.pipe";
 import { DaysAgoPipe } from "src/app/shared/days-ago.pipe";
 import { OnVisibleDirective } from "src/app/shared/on-visible.directive";
 import { IssueChart } from "src/app/issues/issues-page/charts/issue-chart";
@@ -42,6 +43,8 @@ interface ProjectRow {
 interface RowFacts {
   days?: FormattedStatsDataPoint[];
   unresolved?: number;
+  /** The count stopped at the API's limit, so the real one is higher. */
+  unresolvedAtLimit?: boolean;
   lastSeen?: string | null;
   alerts?: number;
 }
@@ -63,11 +66,11 @@ const SKELETON_BARS = Array.from({ length: 14 }, (_, i) => i);
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     DatePipe,
-    DecimalPipe,
     RouterLink,
     MatButtonModule,
     MatIconModule,
     MatTooltipModule,
+    CompactNumberPipe,
     DaysAgoPipe,
     IssueChart,
     ListComponent,
@@ -149,7 +152,7 @@ const SKELETON_BARS = Array.from({ length: 14 }, (_, i) => i);
                   } @else {
                     <span
                       class="glance__chart glance__skeleton"
-                      [class.glance__skeleton--loading]="state !== 'failed'"
+                      [class.glance__skeleton--loading]="state === 'loading'"
                       aria-hidden="true"
                     >
                       @for (bar of skeletonBars; track bar) {
@@ -161,7 +164,10 @@ const SKELETON_BARS = Array.from({ length: 14 }, (_, i) => i);
                     ><b>{{
                       facts?.unresolved === undefined
                         ? "–"
-                        : (facts!.unresolved | number) // i18n(ph="count")
+                        : (facts!.unresolved | compactNumber) +
+                          (facts!.unresolvedAtLimit
+                            ? "+"
+                            : "") // i18n(ph="count")
                     }}</b>
                     unresolved</span
                   >
@@ -189,6 +195,11 @@ const SKELETON_BARS = Array.from({ length: 14 }, (_, i) => i);
           </gt-list-row>
         }
       </gt-list>
+      <ng-content
+        select="[slot=footer-hint]"
+        ngProjectAs="[slot=footer-hint]"
+      />
+      <ng-content select="[slot=footer]" ngProjectAs="[slot=footer]" />
     </gt-panel>
   `,
   styles: `
@@ -201,7 +212,8 @@ const SKELETON_BARS = Array.from({ length: 14 }, (_, i) => i);
     }
 
     .glance__count {
-      min-width: 11ch;
+      // Fits a bold "999 unresolved"; counts stop at "1K+", so every chart starts at the same x.
+      min-width: 15ch;
       white-space: nowrap;
       font-variant-numeric: tabular-nums;
 
@@ -352,9 +364,11 @@ async function loadTrend(path: OrgPath, project: number): Promise<RowFacts> {
   if (!stats.response.ok || !unresolved.response.ok) {
     throw new Error("project trend failed to load");
   }
+  const { hits, maxHits } = getPaginationHeaders(unresolved.response);
   return {
     days: toDays(stats.data as StatsV2 | undefined, start),
-    unresolved: getPaginationHeaders(unresolved.response).hits,
+    unresolved: hits,
+    unresolvedAtLimit: hits >= maxHits,
     lastSeen: latest.data?.[0]?.lastSeen ?? null,
   };
 }
