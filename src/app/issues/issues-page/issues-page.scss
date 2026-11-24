@@ -92,19 +92,9 @@ table {
   padding: 0 24px;
 }
 
-.resolved {
-  > a {
-    text-decoration: line-through;
-  }
-}
-
-.resolved-icon,
-.unresolved-icon,
-.mute-icon {
-  margin-right: 5px;
-  padding-right: 4px;
-  color: var(--mat-sys-outline);
-  border-right: 1px solid var(--mat-sys-outline);
+// Only rows that are not unresolved say their state, with the issue page's pill.
+.row-status {
+  margin-inline-end: var(--gt-space-2, 8px);
   vertical-align: middle;
 }
 
