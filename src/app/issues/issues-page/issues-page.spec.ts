@@ -30,6 +30,7 @@ function setup(query?: string) {
     updateParams: vi.fn(),
     bulkUpdateStatus: vi.fn(),
     bulkDeleteIssues: vi.fn(),
+    assign: vi.fn(),
   };
   TestBed.configureTestingModule({
     providers: [
@@ -75,21 +76,27 @@ describe("IssuesPage bulk actions with every result selected", () => {
     const { page, issues } = setup();
     page.updateStatus("resolved");
     page.deleteSelectedIssues();
+    page.assignSelected({ value: null, actor: null });
     expect(issues.updateParams).toHaveBeenCalledWith(
       expect.objectContaining({ query: "is:unresolved" }),
     );
     expect(issues.bulkUpdateStatus.mock.calls[0][3]).toBe("is:unresolved");
     expect(issues.bulkDeleteIssues.mock.calls[0][2]).toBe("is:unresolved");
+    expect(issues.assign.mock.calls[0][2].query).toBe("is:unresolved");
   });
 
   it("send the searched query as typed", () => {
     const { page, issues } = setup("is:resolved level:error");
     page.updateStatus("unresolved");
     page.deleteSelectedIssues();
+    page.assignSelected({ value: null, actor: null });
     expect(issues.bulkUpdateStatus.mock.calls[0][3]).toBe(
       "is:resolved level:error",
     );
     expect(issues.bulkDeleteIssues.mock.calls[0][2]).toBe(
+      "is:resolved level:error",
+    );
+    expect(issues.assign.mock.calls[0][2].query).toBe(
       "is:resolved level:error",
     );
   });

@@ -374,7 +374,7 @@ export class IssuesPage implements OnInit, OnDestroy {
       this.allResultsSelected()
         ? {
             projectIds: this.projects(),
-            query: this.query(),
+            query: this.listQuery(),
             start: this.start(),
             end: this.end(),
             environment: this.environment(),
