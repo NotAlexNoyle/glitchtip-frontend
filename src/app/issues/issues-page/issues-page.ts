@@ -88,6 +88,8 @@ export class IssuesPage implements OnInit, OnDestroy {
   sort = input(undefined, { transform: stringAttribute });
   projects = input([], { alias: "project", transform: stringArrAttribute });
   environment = input(undefined, { transform: stringAttribute });
+  // Bulk actions send the same query the list shows, or they hit every status
+  listQuery = computed(() => this.query() ?? "is:unresolved");
 
   paginator = this.service.paginator;
   loading = this.service.loading;
@@ -217,7 +219,7 @@ export class IssuesPage implements OnInit, OnDestroy {
       this.service.updateParams({
         orgSlug: this.orgSlug(),
         cursor: this.cursor(),
-        query: this.query() ?? "is:unresolved",
+        query: this.listQuery(),
         start: this.start(),
         end: this.end(),
         sort: this.sort(),
@@ -272,10 +274,7 @@ export class IssuesPage implements OnInit, OnDestroy {
       }
     });
     effect(() => {
-      const query = this.query();
-      this.form.setValue({
-        query: query ?? "is:unresolved",
-      });
+      this.form.setValue({ query: this.listQuery() });
     });
     effect(() => {
       const sort = this.sort();
@@ -348,7 +347,7 @@ export class IssuesPage implements OnInit, OnDestroy {
           status,
           orgSlug,
           this.projects(),
-          this.query(),
+          this.listQuery(),
           this.start(),
           this.end(),
           this.environment(),
@@ -398,7 +397,7 @@ export class IssuesPage implements OnInit, OnDestroy {
           this.service.bulkDeleteIssues(
             orgSlug,
             this.projects(),
-            this.query(),
+            this.listQuery(),
             this.start(),
             this.end(),
             this.environment(),
