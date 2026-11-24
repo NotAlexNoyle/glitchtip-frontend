@@ -12,13 +12,12 @@ $one-line: 720px;
 $search-min: 240px;
 $search-max: 480px;
 
-// Put on the band's host or wrapper.
-@mixin band {
+// The band: gt-data-filter-bar's host, or a wrapper on pages with their own filters.
+.gt-filter-band {
   container: gt-filter-bar / inline-size;
   display: block;
-  // Full bleed over the page inset and flush under the top app bar, like
-  // gt-record-band; -15px undoes .l-body's top margin.
-  margin: -15px calc(var(--gt-page-inset) * -1) var(--gt-space-4, 16px);
+  // Full bleed over the page inset, like gt-record-band.
+  margin: 0 calc(var(--gt-page-inset) * -1) var(--gt-space-4, 16px);
   padding: var(--gt-space-2, 8px) var(--gt-page-inset);
   background: var(--mat-sys-surface-container);
   border-bottom: 1px solid var(--mat-sys-outline-variant);
@@ -26,9 +25,15 @@ $search-max: 480px;
   @include controls.compact-buttons;
 }
 
-// Put on the row inside the band. Give search `.gt-filter-bar__search` and the
+// Flush under the top app bar: the page body drops its top space for the band.
+.l-body:has(> .gt-filter-band:first-child) {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+// The row inside the band. Give search `.gt-filter-bar__search` and the
 // first view control `.gt-filter-bar__view`.
-@mixin row {
+.gt-filter-bar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -89,7 +94,7 @@ $search-max: 480px;
 
 // Search is an outlined field like every other input, so it reads as the
 // place to type, and a fill can't be mistaken for a hovered control.
-@mixin search {
+.gt-filter-search {
   display: flex;
   align-items: center;
   gap: var(--gt-space-1, 4px);

@@ -9,8 +9,9 @@
 ></gt-list-app-bar>
 
 <section class="l-body l-body--full-width l-body--flex mat-elevation-z0">
-  <div class="filter-bar-container">
-    <div class="filter-bar">
+  <!-- The same filter band as every list page; see _filter-bar.scss. -->
+  <div class="gt-filter-band">
+    <div class="gt-filter-bar">
       <form
         [formGroup]="searchForm"
         (ngSubmit)="searchSubmit()"

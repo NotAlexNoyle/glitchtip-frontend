@@ -1,152 +1,149 @@
-@if (sortForm) {
-  <!-- Search first, then filters, then view controls; see _filter-bar.scss. -->
-  <div class="gt-filter-bar">
-    @if (searchForm) {
-      <form
-        [formGroup]="searchForm"
-        (ngSubmit)="searchSubmit.emit()"
-        class="gt-filter-bar__search gt-filter-search"
-        data-cy="list-search-form"
+<!-- Search first, then filters, then view controls; see _filter-bar.scss. -->
+<div class="gt-filter-bar">
+  @if (searchForm) {
+    <form
+      [formGroup]="searchForm"
+      (ngSubmit)="searchSubmit.emit()"
+      class="gt-filter-bar__search gt-filter-search"
+      data-cy="list-search-form"
+    >
+      <mat-icon class="gt-filter-search__icon" aria-hidden="true"
+        >search</mat-icon
       >
-        <mat-icon class="gt-filter-search__icon" aria-hidden="true"
-          >search</mat-icon
-        >
-        <input
-          class="gt-filter-search__input"
-          type="search"
-          formControlName="query"
+      <input
+        class="gt-filter-search__input"
+        type="search"
+        formControlName="query"
+        i18n-aria-label
+        aria-label="Search"
+        data-cy="list-search-field"
+      />
+      @if (searchHelp()) {
+        <span class="gt-bar-divider" aria-hidden="true"></span>
+        <button
+          type="button"
+          mat-button
+          class="gt-filter-search__syntax"
+          [matMenuTriggerFor]="searchHelpMenu"
           i18n-aria-label
-          aria-label="Search"
-          data-cy="list-search-field"
-        />
-        @if (searchHelp()) {
-          <span class="gt-bar-divider" aria-hidden="true"></span>
-          <button
-            type="button"
-            mat-button
-            class="gt-filter-search__syntax"
-            [matMenuTriggerFor]="searchHelpMenu"
-            i18n-aria-label
-            aria-label="Search syntax help"
-            data-cy="list-search-help"
-            i18n
-          >
-            Syntax
-          </button>
-        }
-        <mat-menu
-          #searchHelpMenu="matMenu"
-          class="search-help-menu"
-          xPosition="before"
+          aria-label="Search syntax help"
+          data-cy="list-search-help"
+          i18n
         >
-          @if (searchHelp(); as help) {
-            <div class="search-help" (click)="$event.stopPropagation()">
-              <h3 class="search-help__heading">{{ help.heading }}</h3>
-              @for (section of help.sections; track section.title) {
-                <div class="search-help__section">
-                  <p class="search-help__section-title">
-                    {{ section.title }}
-                  </p>
-                  @if (section.examples?.length) {
-                    <mat-chip-set>
-                      @for (example of section.examples; track example) {
-                        <mat-chip
-                          class="search-help__chip"
-                          [highlighted]="isTokenActive(example)"
-                          (click)="
-                            toggleSearchToken(
-                              example,
-                              !!section.mutuallyExclusive
-                            )
-                          "
-                        >
-                          <code>{{ example }}</code>
-                        </mat-chip>
-                      }
-                    </mat-chip-set>
-                  }
-                  @if (section.samples?.length) {
-                    <p class="search-help__samples">
-                      @for (
-                        sample of section.samples;
-                        track sample;
-                        let last = $last
-                      ) {
-                        <code>{{ sample }}</code>
-                        @if (!last) {
-                          <span class="search-help__samples-sep">·</span>
-                        }
-                      }
-                    </p>
-                  }
-                  @if (section.note) {
-                    <p class="search-help__section-note">
-                      {{ section.note }}
-                    </p>
-                  }
-                </div>
-              }
-              @if (help.footer) {
-                <p class="search-help__footer">{{ help.footer }}</p>
-              }
-            </div>
-          }
-        </mat-menu>
-      </form>
-    }
-    @if (environmentForm) {
-      <form [formGroup]="environmentForm">
-        <span gtSelectGhost>
-          <mat-select
-            i18n-aria-label
-            aria-label="Environment"
-            i18n-placeholder
-            placeholder="All Environments"
-            [panelWidth]="null"
-            (selectionChange)="filterByEnvironment.emit($event)"
-            formControlName="environment"
-          >
-            <mat-select-trigger>
-              <span class="gt-select-ghost__value">{{
-                environmentForm.value.environment
-              }}</span>
-            </mat-select-trigger>
-            <mat-option i18n [value]="null">All Environments</mat-option>
-            @for (
-              environment of organizationEnvironments();
-              track environment
-            ) {
-              <mat-option [value]="environment">
-                {{ environment }}
-              </mat-option>
-            }
-          </mat-select>
-        </span>
-      </form>
-    }
-    @if (isLargeScreen()) {
-      @if (currentStatsPeriod(); as statsPeriod) {
-        <span gtSelectGhost class="gt-filter-bar__view">
-          <mat-select
-            i18n-aria-label
-            aria-label="Trend period"
-            [panelWidth]="null"
-            hideSingleSelectionIndicator
-            [value]="statsPeriod"
-            [disabled]="statsPeriodToggleDisabled()"
-            (selectionChange)="onStatsPeriodToggle.emit($event.value)"
-          >
-            <mat-select-trigger>
-              <span class="gt-select-ghost__value" i18n
-                >{{ statsPeriod }} trend</span
-              >
-            </mat-select-trigger>
-            <mat-option value="24h" i18n>Last 24 hours</mat-option>
-            <mat-option value="14d" i18n>Last 14 days</mat-option>
-          </mat-select>
-        </span>
+          Syntax
+        </button>
       }
+      <mat-menu
+        #searchHelpMenu="matMenu"
+        class="search-help-menu"
+        xPosition="before"
+      >
+        @if (searchHelp(); as help) {
+          <div class="search-help" (click)="$event.stopPropagation()">
+            <h3 class="search-help__heading">{{ help.heading }}</h3>
+            @for (section of help.sections; track section.title) {
+              <div class="search-help__section">
+                <p class="search-help__section-title">
+                  {{ section.title }}
+                </p>
+                @if (section.examples?.length) {
+                  <mat-chip-set>
+                    @for (example of section.examples; track example) {
+                      <mat-chip
+                        class="search-help__chip"
+                        [highlighted]="isTokenActive(example)"
+                        (click)="
+                          toggleSearchToken(
+                            example,
+                            !!section.mutuallyExclusive
+                          )
+                        "
+                      >
+                        <code>{{ example }}</code>
+                      </mat-chip>
+                    }
+                  </mat-chip-set>
+                }
+                @if (section.samples?.length) {
+                  <p class="search-help__samples">
+                    @for (
+                      sample of section.samples;
+                      track sample;
+                      let last = $last
+                    ) {
+                      <code>{{ sample }}</code>
+                      @if (!last) {
+                        <span class="search-help__samples-sep">·</span>
+                      }
+                    }
+                  </p>
+                }
+                @if (section.note) {
+                  <p class="search-help__section-note">
+                    {{ section.note }}
+                  </p>
+                }
+              </div>
+            }
+            @if (help.footer) {
+              <p class="search-help__footer">{{ help.footer }}</p>
+            }
+          </div>
+        }
+      </mat-menu>
+    </form>
+  }
+  @if (environmentForm) {
+    <form [formGroup]="environmentForm">
+      <span gtSelectGhost>
+        <mat-select
+          i18n-aria-label
+          aria-label="Environment"
+          i18n-placeholder
+          placeholder="All Environments"
+          [panelWidth]="null"
+          (selectionChange)="filterByEnvironment.emit($event)"
+          formControlName="environment"
+        >
+          <mat-select-trigger>
+            <span class="gt-select-ghost__value">{{
+              environmentForm.value.environment
+            }}</span>
+          </mat-select-trigger>
+          <mat-option i18n [value]="null">All Environments</mat-option>
+          @for (environment of organizationEnvironments(); track environment) {
+            <mat-option [value]="environment">
+              {{ environment }}
+            </mat-option>
+          }
+        </mat-select>
+      </span>
+    </form>
+  }
+  @if (showTrend()) {
+    @if (currentStatsPeriod(); as statsPeriod) {
+      <span gtSelectGhost class="gt-filter-bar__view">
+        <mat-select
+          i18n-aria-label
+          aria-label="Trend period"
+          [panelWidth]="null"
+          hideSingleSelectionIndicator
+          [value]="statsPeriod"
+          [disabled]="statsPeriodToggleDisabled()"
+          (selectionChange)="onStatsPeriodToggle.emit($event.value)"
+        >
+          <mat-select-trigger>
+            <span class="gt-select-ghost__value" i18n
+              >{{ statsPeriod }} trend</span
+            >
+          </mat-select-trigger>
+          <mat-option value="24h" i18n>Last 24 hours</mat-option>
+          <mat-option value="14d" i18n>Last 14 days</mat-option>
+        </mat-select>
+      </span>
     }
+  }
+  @if (sortForm) {
     <form [formGroup]="sortForm" class="gt-filter-bar__view">
       <span gtSelectGhost>
         <mat-select
@@ -168,5 +165,5 @@
         </mat-select>
       </span>
     </form>
-  </div>
-}
+  }
+</div>

@@ -51,7 +51,8 @@ export interface SearchHelpConfig {
   ],
   templateUrl: "./data-filter-bar.component.html",
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ["./data-filter-bar.component.scss"],
+  // The band and its row are global; see _filter-bar.scss.
+  host: { class: "gt-filter-band" },
 })
 export class DataFilterBarComponent {
   @Input() sortForm?: FormGroup;
@@ -74,7 +75,7 @@ export class DataFilterBarComponent {
   readonly searchSubmit = output();
   readonly sortByChanged = output<MatSelectChange>();
 
-  isLargeScreen = signal(true);
+  showTrend = signal(true);
 
   /** The chosen sort's name, for the ghost select's trigger. */
   sortLabel() {
@@ -85,7 +86,7 @@ export class DataFilterBarComponent {
   constructor() {
     this.breakPointObserver
       .observe(TREND_MEDIA_QUERY)
-      .subscribe((result) => this.isLargeScreen.set(result.matches));
+      .subscribe((result) => this.showTrend.set(result.matches));
   }
 
   isTokenActive(token: string): boolean {
