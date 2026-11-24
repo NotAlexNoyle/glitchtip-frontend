@@ -1,4 +1,11 @@
-import { Injectable, computed, inject, resource, signal } from "@angular/core";
+import {
+  Injectable,
+  computed,
+  inject,
+  resource,
+  signal,
+  untracked,
+} from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { ActivatedRoute, Router } from "@angular/router";
 import { OrganizationsService } from "../api/organizations.service";
@@ -253,6 +260,10 @@ export class IssuesService extends StatefulService<IssuesState> {
   }
 
   updateParams(params: DataParams) {
+    // A new list drops the old selection; untracked because the page calls this from an effect
+    if (JSON.stringify(params) !== JSON.stringify(untracked(this.params))) {
+      this.setCancelAllOnPageSelection();
+    }
     this.params.set(params);
   }
 
@@ -387,15 +398,19 @@ export class IssuesService extends StatefulService<IssuesState> {
   }
 
   async mergeIssues(orgSlug: string, issues: string[]) {
-    await client.PUT("/api/0/organizations/{organization_id_or_slug}/issues/", {
-      params: {
-        path: this.organizationsService.orgPath(orgSlug),
-        query: {
-          id: issues.map((issue) => parseInt(issue)),
+    const { error } = await client.PUT(
+      "/api/0/organizations/{organization_id_or_slug}/issues/",
+      {
+        params: {
+          path: this.organizationsService.orgPath(orgSlug),
+          query: {
+            id: issues.map((issue) => parseInt(issue)),
+          },
         },
+        body: { merge: 1 },
       },
-      body: { merge: 1 },
-    });
+    );
+    if (!error) this.setCancelAllOnPageSelection();
     this.issuesResource.reload();
   }
 
