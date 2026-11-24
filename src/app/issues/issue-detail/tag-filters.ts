@@ -33,6 +33,9 @@ export function byTagSignal(a: RankableTag, b: RankableTag): number {
   return tagSignal(b) - tagSignal(a) || a.key.localeCompare(b.key);
 }
 
+// The backend splits search with shlex, where only \ and " are escapes inside quotes
+const quoted = (s: string) => `"${s.replace(/[\\"]/g, "\\$&")}"`;
+
 /** Issue list params for one tag value, keeping the page's project and environment. */
 export function tagFilterParams(
   key: string,
@@ -46,7 +49,7 @@ export function tagFilterParams(
   if (key === "environment") {
     params["environment"] = value;
   } else {
-    params["query"] = `is:unresolved "${key}":"${value}"`;
+    params["query"] = `is:unresolved ${quoted(key)}:${quoted(value)}`;
   }
   return params;
 }

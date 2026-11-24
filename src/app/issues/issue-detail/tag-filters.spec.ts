@@ -51,4 +51,10 @@ describe("tag filters", () => {
       environment: "staging",
     });
   });
+
+  it("escapes quotes and backslashes, so the backend reads the exact value", () => {
+    expect(tagFilterParams("msg", 'say "hi" at C:\\tmp').query).toBe(
+      'is:unresolved "msg":"say \\"hi\\" at C:\\\\tmp"',
+    );
+  });
 });
