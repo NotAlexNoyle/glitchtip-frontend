@@ -36,10 +36,10 @@ import { PanelComponent } from "src/app/shared/panel/panel.component";
 import { EmptyStateComponent } from "src/app/shared/empty-state/empty-state.component";
 import { IssueTagsSummaryComponent } from "./issue-tags-summary/issue-tags-summary.component";
 
-const ISSUE_STATUS: Record<IssueStatus, { label: string; color: string }> = {
-  unresolved: { label: $localize`Unresolved`, color: "var(--info-color)" },
-  resolved: { label: $localize`Resolved`, color: "var(--success-color)" },
-  ignored: { label: $localize`Ignored`, color: "var(--mat-sys-outline)" },
+const STATUS_COLOR: Record<IssueStatus, string> = {
+  unresolved: "var(--info-color)",
+  resolved: "var(--success-color)",
+  ignored: "var(--mat-sys-outline)",
 };
 
 @Component({
@@ -155,8 +155,8 @@ export class IssueDetailComponent implements OnInit {
       : {};
   });
 
-  readonly status = computed(
-    () => ISSUE_STATUS[this.issue()?.status ?? "unresolved"],
+  readonly statusColor = computed(
+    () => STATUS_COLOR[this.issue()?.status ?? "unresolved"],
   );
 
   readonly resolvedInRelease = computed(() => {

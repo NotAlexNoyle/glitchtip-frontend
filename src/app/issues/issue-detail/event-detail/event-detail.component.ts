@@ -221,6 +221,12 @@ export class EventDetailComponent {
   readonly eventLoading = this.issueService.eventLoading;
 
   readonly shortId = computed(() => shortEventId(this.event()?.id ?? ""));
+  // Holds the visible text at every width, so the button's name matches what it shows
+  readonly switchLabel = computed(() =>
+    this.nextEvent() === false
+      ? $localize`Latest event ${this.shortId()}:id:`
+      : $localize`Event ${this.shortId()}:id:`,
+  );
   readonly eventCount = computed(
     () => +(this.issueService.issue()?.count ?? 0),
   );

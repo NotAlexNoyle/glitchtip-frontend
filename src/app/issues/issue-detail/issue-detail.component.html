@@ -35,7 +35,7 @@
       <div class="top-bar-actions">
         <gt-issue-status-update-dropdown
           [selectedValue]="issue.status"
-          [statusColor]="status().color"
+          [statusColor]="statusColor()"
           [resolvedInRelease]="!!resolvedInRelease()"
           (optionSelected)="updateIssueStatus($event)"
           (resolveInNextReleaseSelected)="resolveInNextRelease()"

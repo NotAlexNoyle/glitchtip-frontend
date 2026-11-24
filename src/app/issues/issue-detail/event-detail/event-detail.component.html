@@ -50,8 +50,7 @@
           <button
             type="button"
             class="gt-select-ghost event-switch"
-            i18n-aria-label
-            aria-label="Event"
+            [attr.aria-label]="switchLabel()"
             [matTooltip]="event.id"
             [matMenuTriggerFor]="eventMenu"
             (menuOpened)="onSwitcherOpened()"
