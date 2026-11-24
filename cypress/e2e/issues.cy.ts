@@ -35,7 +35,7 @@ describe("Issues Page", () => {
       cy.get("[data-cy=bulkUpdateProject]").click();
       cy.contains("All 55 issues are currently selected");
 
-      cy.intercept("PUT", "/api/0/organizations/*/issues/").as(
+      cy.intercept("PUT", "/api/0/organizations/*/issues/?*").as(
         "issuesUpdateRequest",
       );
       // A request made before the org list loads falls back to the slug, so
@@ -47,7 +47,9 @@ describe("Issues Page", () => {
         cy.get("[data-cy='bulkMarkResolved']").click();
         cy.wait("@issuesUpdateRequest")
           .its("request.url")
-          .should("contain", `/api/0/organizations/${org.id}/issues/`);
+          .should("contain", `/api/0/organizations/${org.id}/issues/`)
+          // Select all must keep the list's query, or it resolves every status
+          .and("contain", "query=is%3Aunresolved");
       });
       cy.log(
         "To ensure this made a successful network call, we search for resolved events.",
