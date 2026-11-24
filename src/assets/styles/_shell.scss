@@ -1,0 +1,35 @@
+@use "variables" as vars;
+
+// The app's one decorative touch: faint gray dots in the nav's empty bottom
+// left, fading up and inward. Fixed to the window, so it stays put on scroll.
+@mixin dot-corner($fade) {
+  $base: var(--mat-sys-surface-container-low);
+
+  background:
+    radial-gradient(
+        $fade,
+        transparent 0%,
+        color-mix(in srgb, $base 55%, transparent) 45%,
+        $base 95%
+      )
+      fixed,
+    radial-gradient(
+        circle,
+        color-mix(in srgb, var(--mat-sys-outline) 52%, transparent) 0.8px,
+        transparent 1.3px
+      )
+      0 0 / 10px 10px fixed,
+    $base;
+}
+
+// Put on a top app bar's :host. From tablet width the bar stays at the top
+// while the page scrolls, so the nav's corner (main-nav) always meets it.
+@mixin sticky-bar {
+  @media screen and (min-width: vars.$tablet) {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    display: block;
+    background: var(--mat-sys-surface-container-low);
+  }
+}

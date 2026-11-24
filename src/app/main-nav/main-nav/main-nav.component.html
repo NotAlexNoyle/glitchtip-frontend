@@ -1,4 +1,7 @@
-<mat-sidenav-container>
+<mat-sidenav-container
+  [class.nav-docked]="isLoggedIn() && !mobileNav()"
+  [class.nav-collapsed]="isCollapsed()"
+>
   @if (isLoggedIn()) {
     <mat-sidenav
       #sidenav
