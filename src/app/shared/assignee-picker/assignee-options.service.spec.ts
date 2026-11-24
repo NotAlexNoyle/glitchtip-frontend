@@ -37,7 +37,7 @@ const page = (data: unknown[], next?: string) => ({
   }),
 });
 
-async function setup(members: unknown[][], teams: unknown[] = []) {
+async function setup(members: unknown[][], teams: unknown[] = [], load = true) {
   const slug = signal("acme");
   const get = vi.spyOn(client, "GET").mockImplementation(((
     url: string,
@@ -62,6 +62,7 @@ async function setup(members: unknown[][], teams: unknown[] = []) {
     ],
   });
   const service = TestBed.inject(AssigneeOptionsService);
+  if (load) service.load();
   await TestBed.inject(ApplicationRef).whenStable();
   return { service, get, slug };
 }
@@ -70,6 +71,20 @@ describe("AssigneeOptionsService", () => {
   afterEach(() => {
     vi.restoreAllMocks();
     TestBed.resetTestingModule();
+  });
+
+  it("fetches nothing until a picker asks, and counts as loading until then", async () => {
+    const { service, get } = await setup(
+      [[member("1", "a@acme.test")]],
+      [],
+      false,
+    );
+    expect(get).not.toHaveBeenCalled();
+    expect(service.loading()).toBe(true);
+    service.load();
+    await TestBed.inject(ApplicationRef).whenStable();
+    expect(get).toHaveBeenCalled();
+    expect(service.loading()).toBe(false);
   });
 
   it("follows every page of members, not just the first", async () => {

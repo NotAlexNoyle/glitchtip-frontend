@@ -239,9 +239,10 @@
                   }
                 </span>
                 @if (element.assignedTo; as actor) {
-                  <span class="caption-text row-assignee">{{
-                    assigneeLabel(actor)
-                  }}</span>
+                  <span class="caption-text row-assignee" i18n
+                    ><span class="cdk-visually-hidden">Assigned to </span
+                    >{{ assigneeLabel(actor) }}</span
+                  >
                 }
                 @if (element.type && element.type === "csp") {
                   <span class="caption-text">

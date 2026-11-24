@@ -20,6 +20,7 @@
         [value]="query()"
         (input)="query.set(filter.value)"
         (keydown)="onFilterKeydown($event)"
+        (focus)="loadOptions()"
         gtFocusOnOpen
       />
     </div>
@@ -59,13 +60,15 @@
           }
         }
       }
-      @if (loading()) {
-        <div class="note" i18n>Loading…</div>
-      } @else if (noMatches()) {
-        <div class="note" i18n>No one matches</div>
-      } @else if (moreNote(); as note) {
-        <div class="note">{{ note }}</div>
-      }
+      <div role="status">
+        @if (loading()) {
+          <div class="note" i18n>Loading…</div>
+        } @else if (noMatches()) {
+          <div class="note" i18n>No one matches</div>
+        } @else if (moreNote(); as note) {
+          <div class="note">{{ note }}</div>
+        }
+      </div>
     </div>
     @if (showUnassign()) {
       <mat-divider />

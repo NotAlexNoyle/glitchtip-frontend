@@ -108,13 +108,18 @@ export class AssigneePickerComponent {
     );
   }
 
+  loadOptions() {
+    this.options.load();
+  }
+
   onMenuClosed() {
     this.query.set("");
   }
 
   /** Keep typing out of the menu's type-ahead; Enter picks the first match. */
   onFilterKeydown(event: KeyboardEvent) {
-    if (event.key === "Escape" || event.key === "ArrowDown") return;
+    // The menu handles these: close, move into the list, close on Tab
+    if (["Escape", "ArrowDown", "Tab"].includes(event.key)) return;
     event.stopPropagation();
     if (event.key === "Enter") {
       // Otherwise the same Enter re-clicks the trigger once focus returns to it.

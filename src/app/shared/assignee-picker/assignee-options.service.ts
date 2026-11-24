@@ -1,4 +1,4 @@
-import { Injectable, computed, inject } from "@angular/core";
+import { Injectable, computed, inject, signal } from "@angular/core";
 import { OrganizationsService } from "src/app/api/organizations.service";
 import { UserService } from "src/app/api/user/user.service";
 import { IssueActor } from "src/app/issues/interfaces";
@@ -17,21 +17,21 @@ export class AssigneeOptionsService {
   private organizationsService = inject(OrganizationsService);
   private userService = inject(UserService);
 
+  // Nothing loads until a picker opens, so pages that only show issues skip it
+  #wanted = signal(false);
+  #slug = computed(() =>
+    this.#wanted() ? this.organizationsService.activeOrganizationSlug() : null,
+  );
+
   // Every page, not the first 50: a picker that drops people can't be trusted.
-  #members = apiResource.fetchAll(
-    this.organizationsService.activeOrganizationSlug,
-    (slug) => ({
-      url: "/api/0/organizations/{organization_id_or_slug}/members/",
-      options: { params: { path: this.organizationsService.orgPath(slug) } },
-    }),
-  );
-  #teams = apiResource.fetchAll(
-    this.organizationsService.activeOrganizationSlug,
-    (slug) => ({
-      url: "/api/0/organizations/{organization_id_or_slug}/teams/",
-      options: { params: { path: this.organizationsService.orgPath(slug) } },
-    }),
-  );
+  #members = apiResource.fetchAll(this.#slug, (slug) => ({
+    url: "/api/0/organizations/{organization_id_or_slug}/members/",
+    options: { params: { path: this.organizationsService.orgPath(slug) } },
+  }));
+  #teams = apiResource.fetchAll(this.#slug, (slug) => ({
+    url: "/api/0/organizations/{organization_id_or_slug}/teams/",
+    options: { params: { path: this.organizationsService.orgPath(slug) } },
+  }));
 
   readonly members = computed<AssigneeOption[]>(() => {
     const meId = this.userService.user()?.id;
@@ -79,9 +79,16 @@ export class AssigneeOptionsService {
 
   readonly me = computed(() => this.members().find((m) => m.isMe) ?? null);
 
+  // Not asked for yet counts too, so a picker never says "No one matches" first
   readonly loading = computed(
-    () => this.#members.isLoading() || this.#teams.isLoading(),
+    () =>
+      !this.#wanted() || this.#members.isLoading() || this.#teams.isLoading(),
   );
+
+  /** Start loading, and keep the lists up to date from then on. */
+  load() {
+    this.#wanted.set(true);
+  }
 }
 
 /** Most rows a picker shows; past this, typing narrows the list. */

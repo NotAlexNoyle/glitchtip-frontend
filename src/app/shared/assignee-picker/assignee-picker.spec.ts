@@ -1,5 +1,5 @@
 import type {} from "@angular/localize/init";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { signal } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
 import {
@@ -39,6 +39,7 @@ function setup() {
           ]),
           me: signal(person("1", "Me", "me@acme.test", true)),
           loading: signal(false),
+          load: vi.fn(),
         },
       },
     ],
@@ -78,5 +79,23 @@ describe("AssigneePickerComponent", () => {
     picker.picked.subscribe((choice) => (picked = choice));
     picker.pick(null);
     expect(picked).toEqual({ value: null, actor: null });
+  });
+
+  it("keeps typing out of the menu but lets Tab close it", () => {
+    const picker = setup();
+    const key = (k: string) => {
+      const event = new KeyboardEvent("keydown", { key: k });
+      const stop = vi.spyOn(event, "stopPropagation");
+      picker.onFilterKeydown(event);
+      return stop;
+    };
+    expect(key("a")).toHaveBeenCalled();
+    expect(key("Tab")).not.toHaveBeenCalled();
+  });
+
+  it("starts loading people when opened", () => {
+    const picker = setup();
+    picker.loadOptions();
+    expect(TestBed.inject(AssigneeOptionsService).load).toHaveBeenCalled();
   });
 });
