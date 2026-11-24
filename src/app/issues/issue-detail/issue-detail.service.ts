@@ -449,37 +449,55 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
   }
 
   #assignCall = 0;
+  #assignIssueID = "";
+  // Bumped when counting restarts, so calls from an earlier visit don't count
+  #assignRun = 0;
+  #assignsInFlight = 0;
+  // What the server last confirmed; shown once no assign is in flight
+  #savedAssignee: IssueDetail["assignedTo"] = null;
 
   async setAssignee(choice: AssigneeChoice) {
     const issue = this.issue();
     if (!issue) return;
     const issueID = this.issueID();
     const call = ++this.#assignCall;
-    const previous = issue.assignedTo ?? null;
+    if (this.#assignIssueID !== issueID || this.#assignsInFlight === 0) {
+      this.#assignIssueID = issueID;
+      this.#assignRun++;
+      this.#assignsInFlight = 0;
+      this.#savedAssignee = issue.assignedTo ?? null;
+    }
     const show = (assignedTo: IssueDetail["assignedTo"]) =>
       this.#issueResource.update((i) => (i ? { ...i, assignedTo } : i));
     // Optimistic: the name is known locally, so show it before the round trip.
     show(choice.actor);
-    const { data, error } = await client.PUT(
-      "/api/0/organizations/{organization_id_or_slug}/issues/{issue_id}/",
-      {
-        params: {
-          path: {
-            ...this.organization.orgPath(this.orgSlug()),
-            issue_id: parseInt(issueID),
+    const run = this.#assignRun;
+    this.#assignsInFlight++;
+    let saved: IssueDetail["assignedTo"] | undefined;
+    try {
+      const { data, error } = await client.PUT(
+        "/api/0/organizations/{organization_id_or_slug}/issues/{issue_id}/",
+        {
+          params: {
+            path: {
+              ...this.organization.orgPath(this.orgSlug()),
+              issue_id: parseInt(issueID),
+            },
           },
+          body: { assignedTo: choice.value },
         },
-        body: { assignedTo: choice.value },
-      },
-    );
-    // A newer assign or another issue owns the view now.
-    if (call !== this.#assignCall || issueID !== this.issueID()) return;
-    if (error || !data) {
-      show(previous);
-      this.snackBar.open($localize`Error, unable to assign issue`);
-      return;
+      );
+      if (!error && data) saved = data.assignedTo ?? null;
+    } catch {
+      // A network failure is a failed assign too
     }
-    show(data.assignedTo ?? null);
+    if (issueID !== this.issueID() || run !== this.#assignRun) return;
+    this.#assignsInFlight--;
+    if (saved !== undefined) this.#savedAssignee = saved;
+    else if (call === this.#assignCall) {
+      this.snackBar.open($localize`Error, unable to assign issue`);
+    }
+    if (this.#assignsInFlight === 0) show(this.#savedAssignee);
   }
 
   updateCommentCount(num: number) {
