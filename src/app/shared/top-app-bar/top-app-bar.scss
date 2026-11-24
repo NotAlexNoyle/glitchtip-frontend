@@ -11,13 +11,9 @@
   height: vars.$top-app-bar-height;
   align-items: center;
   gap: var(--gt-space-4, 16px);
-  padding: 0 var(--gt-space-4, 16px);
+  // The page inset, so the back chevron lines up with the content.
+  padding: 0 var(--gt-page-inset);
   border-bottom: 1px solid var(--mat-sys-outline-variant);
-
-  // The page's phone inset (.l-body), so the back chevron lines up with the content.
-  @media screen and (max-width: vars.$small - 1) {
-    padding: 0 15px;
-  }
 }
 
 .left-section,
