@@ -1,3 +1,4 @@
+import { SelectGhostDirective } from "src/app/shared/select-ghost.directive";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -21,11 +22,13 @@ import { ListAppBar } from "../list-elements/list-app-bar/list-app-bar";
 import { stringArrAttribute, stringAttribute } from "../shared/shared.utils";
 import { EmptyStateComponent } from "../shared/empty-state/empty-state.component";
 import { LoadingOverlayComponent } from "../shared/loading-overlay/loading-overlay.component";
+import { FilterSearchComponent } from "../shared/filter-search/filter-search";
 
 @Component({
   templateUrl: "./logs.html",
   styleUrls: ["./logs.scss"],
   imports: [
+    SelectGhostDirective,
     DatePipe,
     UpperCasePipe,
     ListAppBar,
@@ -39,6 +42,7 @@ import { LoadingOverlayComponent } from "../shared/loading-overlay/loading-overl
     ReactiveFormsModule,
     EmptyStateComponent,
     LoadingOverlayComponent,
+    FilterSearchComponent,
   ],
   providers: [LogsService],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -68,6 +72,10 @@ export class Logs {
   services = this.service.services;
   hasNextPage = this.service.hasNextPage;
   hitCount = this.service.hitCount;
+
+  readonly filtersActive = computed(
+    () => !!this.query() || this.level().length > 0 || !!this.service_(),
+  );
 
   searchForm = new FormGroup({
     query: new FormControl(""),
@@ -177,17 +185,17 @@ export class Logs {
     });
   }
 
+  // The band's own filters; project and time range belong to the top app bar.
   clearFilters() {
+    this.searchForm.setValue({ query: "" });
     this.router.navigate([], {
       queryParams: {
         query: undefined,
         level: undefined,
         service: undefined,
-        start: undefined,
-        end: undefined,
-        project: undefined,
         cursor: undefined,
       },
+      queryParamsHandling: "merge",
     });
   }
 }

@@ -2,33 +2,6 @@
 
 // Log stream styled with Material Design 3 tokens
 
-.filter-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--gt-space-3, 12px);
-  // The page body already pads the sides.
-  padding-bottom: var(--gt-space-3, 12px);
-}
-
-.search-form {
-  flex: 1;
-  min-width: 200px;
-  max-width: 400px;
-}
-
-.search-field {
-  width: 100%;
-}
-
-.filter-field {
-  min-width: 120px;
-}
-
-.clear-btn {
-  white-space: nowrap;
-}
-
 // Log container
 .log-container {
   display: flex;
@@ -184,19 +157,6 @@
 
 // Responsive adjustments
 @media (max-width: 768px) {
-  .filter-bar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .search-form {
-    max-width: none;
-  }
-
-  .filter-field {
-    width: 100%;
-  }
-
   .log-output {
     font-size: 12px;
   }

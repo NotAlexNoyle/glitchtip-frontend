@@ -41,7 +41,10 @@ import { IssueChart } from "./charts/issue-chart";
 import { PaginationButtons } from "src/app/list-elements/pagination-buttons/pagination-buttons";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { MatMenuModule } from "@angular/material/menu";
-import { SearchHelpConfig } from "../../list-elements/data-filter-bar/data-filter-bar.component";
+import {
+  SearchHelpConfig,
+  TREND_MEDIA_QUERY,
+} from "../../list-elements/data-filter-bar/data-filter-bar.component";
 import {
   AssigneeChoice,
   AssigneePickerComponent,
@@ -104,6 +107,11 @@ export class IssuesPage implements OnInit, OnDestroy {
   environment = input(undefined, { transform: stringAttribute });
   // Bulk actions send the same query the list shows, or they hit every status
   listQuery = computed(() => this.query() ?? "is:unresolved");
+  readonly filtersActive = computed(() => !!this.environment());
+  // When the search's ✕ shows, so the empty state offers the same clear.
+  readonly searchClearable = computed(
+    () => this.listQuery().trim() !== "" || this.filtersActive(),
+  );
 
   paginator = this.service.paginator;
   loading = this.service.loading;
@@ -172,7 +180,7 @@ export class IssuesPage implements OnInit, OnDestroy {
   private lastClickedIssueId = signal<string | null>(null);
   // The trend chart has a fixed width, so it needs room beyond the sidebar.
   private readonly roomForTrend = toSignal(
-    this.breakPointObserver.observe("(min-width: 1080px)"),
+    this.breakPointObserver.observe(TREND_MEDIA_QUERY),
   );
   breakPointSignal = toSignal(
     this.breakPointObserver.observe([
@@ -523,6 +531,16 @@ export class IssuesPage implements OnInit, OnDestroy {
   sortByChanged(event: MatSelectChange) {
     this.router.navigate([], {
       queryParams: { cursor: null, sort: event.value },
+      queryParamsHandling: "merge",
+    });
+  }
+
+  // The band's own filters; project and time range belong to the top app bar.
+  clearFilters() {
+    this.form.setValue({ query: "" });
+    // An empty query, not none: none means the is:unresolved default.
+    this.router.navigate([], {
+      queryParams: { query: "", environment: null, cursor: null },
       queryParamsHandling: "merge",
     });
   }

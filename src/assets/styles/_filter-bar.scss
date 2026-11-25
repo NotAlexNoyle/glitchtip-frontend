@@ -1,0 +1,150 @@
+@use "controls";
+@use "variables" as vars;
+
+// The toolbar band above a list: a tinted, full-bleed strip with a hairline,
+// holding search first, then filters, then view controls (trend, sort) at the
+// end. Filters and view controls are 32px ghost selects; search is a compact
+// input. One line when the band is wide enough; otherwise search takes the
+// first line and the ghost selects follow.
+
+// The band width from which search shares the line with everything else.
+$one-line: 720px;
+$search-min: 240px;
+$search-max: 480px;
+
+// The band: gt-data-filter-bar's host, or a wrapper on pages with their own filters.
+.gt-filter-band {
+  container: gt-filter-bar / inline-size;
+  display: block;
+  // Full bleed over the page inset, like gt-record-band.
+  margin: 0 calc(var(--gt-page-inset) * -1) var(--gt-space-4, 16px);
+  padding: var(--gt-space-2, 8px) var(--gt-page-inset);
+  background: var(--mat-sys-surface-container);
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+
+  @include controls.compact-buttons;
+}
+
+// Flush under the top app bar: the page body drops its top space for the band.
+.l-body:has(> .gt-filter-band:first-child) {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+// The row inside the band. Give search `.gt-filter-bar__search` and the
+// first view control `.gt-filter-bar__view`.
+.gt-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gt-space-2, 8px) var(--gt-space-1, 4px);
+
+  > * {
+    flex: none;
+    min-width: 0;
+  }
+
+  // Wrapped: two controls share a line, so their fixed widths give way.
+  > :not(.gt-filter-bar__search) {
+    max-width: calc(50% - var(--gt-space-1, 4px));
+  }
+
+  // Selects hug their value, so the caret follows the text.
+  .gt-select-ghost {
+    width: auto;
+    max-width: min(100%, 240px);
+
+    mat-select {
+      width: auto;
+      min-width: 0;
+    }
+  }
+
+  // View controls (trend, sort) sit at the end of their line at every width.
+  > .gt-filter-bar__view {
+    margin-inline-start: auto;
+  }
+
+  > .gt-filter-bar__view ~ * {
+    margin-inline-start: 0;
+  }
+
+  // Wrapped: search has its own line, at touch height.
+  > .gt-filter-bar__search {
+    flex: 1 1 100%;
+    height: 40px;
+  }
+
+  // Wrapped: the filters share what the view controls leave, so the line
+  // never breaks again on a phone; a long value truncates instead.
+  > :not(.gt-filter-bar__search, .gt-filter-bar__view, .gt-filter-bar__view ~ *) {
+    flex: 1 1 0;
+  }
+
+  @container gt-filter-bar (min-width: #{$one-line}) {
+    flex-wrap: nowrap;
+
+    // One line: search grows.
+    > .gt-filter-bar__search {
+      flex: 1 1 $search-min;
+      max-width: none;
+      height: 32px;
+      margin-inline-end: var(--gt-space-2, 8px);
+    }
+
+    > :not(.gt-filter-bar__search) {
+      flex: none;
+      max-width: none;
+    }
+  }
+}
+
+// Search is an outlined field like every other input, so it reads as the
+// place to type, and a fill can't be mistaken for a hovered control.
+.gt-filter-search {
+  display: flex;
+  align-items: center;
+  gap: var(--gt-space-1, 4px);
+  @include controls.outlined-input;
+  padding-inline-start: var(--gt-space-2, 8px);
+  background: var(--mat-sys-surface);
+
+  .gt-bar-divider {
+    margin-inline: 0;
+  }
+
+  .gt-filter-search__icon {
+    @include controls.icon-size(18px);
+    flex: none;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  .gt-filter-search__input {
+    @include controls.bare-input;
+
+    &::placeholder {
+      color: var(--mat-sys-on-surface-variant);
+    }
+
+    // type="search" keeps the phone keyboard's Search key; drop the browser's
+    // own clear glyph, which the theme can't style.
+    &::-webkit-search-cancel-button {
+      appearance: none;
+    }
+  }
+
+  // Clear filters sits in the field's own spare room, so nothing shifts.
+  .gt-filter-search__clear {
+    @include controls.icon-button-size(28px, 18px);
+    flex: none;
+    // The glyph lands 8px from the edge, mirroring the search icon.
+    margin-inline-end: 3px;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  // Syntax help is link text, not a ? icon: the ? is Help & Support in the nav.
+  .gt-filter-search__syntax {
+    flex: none;
+    color: var(--mat-sys-on-surface);
+  }
+}

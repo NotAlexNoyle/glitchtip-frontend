@@ -5,10 +5,11 @@ import {
   computed,
   inject,
   input,
+  output,
   resource,
 } from "@angular/core";
 import { NgTemplateOutlet } from "@angular/common";
-import { ActivatedRoute, Router, RouterLink } from "@angular/router";
+import { RouterLink } from "@angular/router";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { MarkdownComponent, provideMarkdown } from "ngx-markdown";
@@ -38,11 +39,12 @@ import { client } from "src/app/shared/api/api";
 })
 export class IssueZeroStatesComponent implements OnInit {
   projects = input<string[]>();
+  /** The search or the band has something to clear, as the search's ✕ shows. */
+  readonly filtersActive = input(false);
+  readonly cleared = output();
   private issuesService = inject(IssuesService);
   private organizationsService = inject(OrganizationsService);
   private projectsService = inject(ProjectsService);
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
 
   projectKeyResource = resource({
     params: () => ({
@@ -196,14 +198,20 @@ export class IssueZeroStatesComponent implements OnInit {
    * states are mutually exclusive, so the page never stacks two of them.
    */
   zeroStateKind = computed<
-    "no-projects" | "no-access" | "onboarding" | "no-results" | null
+    | "no-projects"
+    | "no-access"
+    | "onboarding"
+    | "no-results"
+    | "no-issues"
+    | null
   >(() => {
     if (!this.displayZeroStates()) return null;
     if (!this.orgHasAProject()) return "no-projects";
     if (this.adminNotOnTeam()) return "no-access";
     if (this.singleProjectApplied() && this.showOnboarding())
       return "onboarding";
-    return "no-results";
+    // Nothing to clear means the project or time range is why it's empty.
+    return this.filtersActive() ? "no-results" : "no-issues";
   });
 
   noAccessMessage = computed(() =>
@@ -211,10 +219,6 @@ export class IssueZeroStatesComponent implements OnInit {
       ? $localize`You're not on this project's team. Ask an organization admin to add you.`
       : $localize`You're not on the team for at least one of the selected projects. Ask an organization admin to add you.`,
   );
-
-  clearFilters() {
-    this.router.navigate([], { relativeTo: this.route, queryParams: {} });
-  }
 
   ngOnInit() {
     this.projectsService.retrieveProjects();

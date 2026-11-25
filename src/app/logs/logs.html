@@ -1,4 +1,5 @@
-<gt-list-app-bar i18n-listTitle
+<gt-list-app-bar
+  i18n-listTitle
   listTitle="Logs"
   [searchHits]="hitCount()"
   [queriedProjects]="projects()"
@@ -8,69 +9,66 @@
 ></gt-list-app-bar>
 
 <section class="l-body l-body--full-width l-body--flex mat-elevation-z0">
-  <!-- Filter bar -->
-  <div class="filter-bar">
-    <form
-      [formGroup]="searchForm"
-      (ngSubmit)="searchSubmit()"
-      class="search-form"
-    >
-      <mat-form-field appearance="outline" class="search-field">
-        <mat-label i18n>Search logs</mat-label>
-        <input i18n-placeholder
-          matInput
-          formControlName="query"
-          placeholder="Search message body..."
-        />
-        <button i18n-aria-label
-          mat-icon-button
-          matSuffix
-          type="submit"
-          class="input-icon-button"
-          aria-label="Search"
+  <!-- The same filter band as every list page; see _filter-bar.scss. -->
+  <div class="gt-filter-band">
+    <div class="gt-filter-bar">
+      <form
+        gtFilterSearch
+        [formGroup]="searchForm"
+        [control]="searchForm.controls.query"
+        i18n-label
+        label="Search logs"
+        i18n-placeholder
+        placeholder="Search message body..."
+        [active]="filtersActive()"
+        (ngSubmit)="searchSubmit()"
+        (cleared)="clearFilters()"
+      ></form>
+
+      <span gtSelectGhost>
+        <mat-select
+          i18n-aria-label
+          aria-label="Level"
+          i18n-placeholder
+          placeholder="All levels"
+          [panelWidth]="null"
+          [formControl]="levelForm.controls.level"
+          multiple
+          (selectionChange)="onLevelChange($event)"
         >
-          <mat-icon>search</mat-icon>
-        </button>
-      </mat-form-field>
-    </form>
+          @for (opt of levelOptions; track opt.value) {
+            <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+          }
+        </mat-select>
+      </span>
 
-    <mat-form-field appearance="outline" class="filter-field">
-      <mat-label i18n>Level</mat-label>
-      <mat-select
-        [formControl]="levelForm.controls.level"
-        multiple
-        (selectionChange)="onLevelChange($event)"
-      >
-        @for (opt of levelOptions; track opt.value) {
-          <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field appearance="outline" class="filter-field">
-      <mat-label i18n>Service</mat-label>
-      <mat-select
-        [formControl]="serviceForm.controls.service"
-        (selectionChange)="onServiceChange($event)"
-      >
-        <mat-option i18n value="">All services</mat-option>
-        @for (opt of serviceOptions(); track opt.value) {
-          <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-
-    @if (query() || level().length || service_() || start() || end()) {
-      <button mat-button (click)="clearFilters()" class="clear-btn">
-        <mat-icon>clear</mat-icon>
-        <span i18n>Clear filters</span>
-      </button>
-    }
+      <span gtSelectGhost>
+        <mat-select
+          i18n-aria-label
+          aria-label="Service"
+          i18n-placeholder
+          placeholder="All services"
+          [panelWidth]="null"
+          [formControl]="serviceForm.controls.service"
+          (selectionChange)="onServiceChange($event)"
+        >
+          <mat-option i18n value="">All services</mat-option>
+          @for (opt of serviceOptions(); track opt.value) {
+            <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+          }
+        </mat-select>
+      </span>
+    </div>
   </div>
 
   <!-- Log output (terminal style) -->
   <div class="log-container">
-    <gt-loading-overlay i18n-label [loading]="isLoading()" label="Loading logs" fullHeight>
+    <gt-loading-overlay
+      i18n-label
+      [loading]="isLoading()"
+      label="Loading logs"
+      fullHeight
+    >
       <div class="log-output">
         @if (errors()?.length) {
           <div class="log-empty">
@@ -106,15 +104,20 @@
               </div>
             }
           } @else if (initialLoadComplete() && !isLoading()) {
-            @if (query() || level().length || service_()) {
+            @if (filtersActive()) {
               <gt-empty-state
                 tall
                 icon="search"
                 i18n-title
                 title="No matching logs"
                 i18n-message
-                message="Try adjusting or clearing your filters."
-              />
+                message="Try adjusting your search, or clear your filters to see everything."
+              >
+                <button mat-button (click)="clearFilters()">
+                  <mat-icon>clear</mat-icon>
+                  <span i18n>Clear filters</span>
+                </button>
+              </gt-empty-state>
             } @else {
               <gt-empty-state
                 tall

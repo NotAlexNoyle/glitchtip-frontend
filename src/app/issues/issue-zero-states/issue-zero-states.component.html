@@ -101,11 +101,21 @@
         i18n-message
         message="Try adjusting your search, or clear your filters to see everything."
       >
-        <button mat-button data-cy="no-results" (click)="clearFilters()">
+        <button mat-button data-cy="no-results" (click)="cleared.emit()">
           <mat-icon>clear</mat-icon>
           <span i18n>Clear filters</span>
         </button>
       </gt-empty-state>
+    }
+    @case ("no-issues") {
+      <gt-empty-state
+        tall
+        icon="search"
+        i18n-title
+        title="No issues"
+        i18n-message
+        message="Nothing in the selected projects and time range."
+      />
     }
     @case ("onboarding") {
       <div class="install-wrapper">

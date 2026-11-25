@@ -33,6 +33,12 @@
     height: 100%;
   }
 
+  // The one internal class we target: mat-select has no token for the gap
+  // before its arrow, and placeholders and multi-selects need it too.
+  .mat-mdc-select-arrow-wrapper {
+    margin-inline-start: var(--gt-space-2, 8px);
+  }
+
   &:hover {
     @include controls.state-layer(hover);
   }
@@ -91,9 +97,8 @@ button.gt-select-ghost {
   font: var(--mat-sys-label-large);
 }
 
-// Wraps the trigger text for room before the arrow (mat-select has no token for it).
+// The trigger text in a custom mat-select-trigger.
 .gt-select-ghost__value {
-  margin-inline-end: var(--gt-space-2, 8px);
   color: var(--mat-sys-on-surface);
   font: var(--mat-sys-label-large);
 }
