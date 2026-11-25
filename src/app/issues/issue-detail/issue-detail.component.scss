@@ -136,8 +136,9 @@ gt-assignee-picker {
   background: var(--mat-sys-surface-container-highest);
   color: var(--mat-sys-on-surface);
   font: var(--mat-sys-label-small);
-  line-height: 1;
   letter-spacing: 0.02em;
+  // Center the capitals, not the line box, so no font metric shifts them.
+  text-box: trim-both cap alphabetic;
   // Where an icon button puts its mat-icon, not on the text baseline.
   vertical-align: top;
 }
