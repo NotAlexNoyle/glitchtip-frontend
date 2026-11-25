@@ -1,7 +1,7 @@
 import {
   Component,
-  OnInit,
   computed,
+  effect,
   inject,
   input,
   signal,
@@ -27,6 +27,8 @@ import { MatTooltipModule } from "@angular/material/tooltip";
 import { OrganizationsService } from "src/app/api/organizations.service";
 import { BackLinkComponent } from "src/app/shared/detail/back-link/back-link.component";
 import { TopAppBar } from "src/app/shared/top-app-bar/top-app-bar";
+import { TimeRangeSelect } from "src/app/list-elements/timerange-select/time-range-select";
+import { stringAttribute } from "src/app/shared/shared.utils";
 import { EmptyStateComponent } from "src/app/shared/empty-state/empty-state.component";
 
 type SpanSortKey = "totalTime" | "avgDuration" | "p95Duration" | "count";
@@ -48,6 +50,7 @@ type SpanSortKey = "totalTime" | "avgDuration" | "p95Duration" | "count";
     EmptyStateComponent,
     BackLinkComponent,
     HumanizeDurationPipe,
+    TimeRangeSelect,
     ShortDurationPipe,
     CompactNumberPipe,
     MatTooltipModule,
@@ -58,12 +61,15 @@ type SpanSortKey = "totalTime" | "avgDuration" | "p95Duration" | "count";
   changeDetection: ChangeDetectionStrategy.Eager,
   providers: [TransactionGroupDetailService],
 })
-export class TransactionGroupDetail implements OnInit {
+export class TransactionGroupDetail {
   private organizationsService = inject(OrganizationsService);
   private transactionGroupDetailService = inject(TransactionGroupDetailService);
 
   orgSlug = input.required<string>({ alias: "org-slug" });
   id = input.required<number>({ alias: "transaction-group-id" });
+  start = input(undefined, { transform: stringAttribute });
+  end = input(undefined, { transform: stringAttribute });
+
   activeOrganizationSlug = this.organizationsService.activeOrganizationSlug;
   organization = this.organizationsService.activeOrganization;
   initialLoadComplete = this.transactionGroupDetailService.initialLoadComplete;
@@ -159,8 +165,15 @@ export class TransactionGroupDetail implements OnInit {
     return total > 0 ? totalTime / total : 0;
   }
 
-  ngOnInit() {
-    this.transactionGroupDetailService.setParams(this.orgSlug(), this.id());
+  constructor() {
+    effect(() => {
+      this.transactionGroupDetailService.setParams(
+        this.orgSlug(),
+        this.id(),
+        this.start(),
+        this.end(),
+      );
+    });
   }
 
   onSortChange(event: Sort) {

@@ -2,10 +2,17 @@ import { computed, inject, Injectable, resource, signal } from "@angular/core";
 import { OrganizationsService } from "src/app/api/organizations.service";
 import { client } from "src/app/shared/api/api";
 
+interface DetailParams {
+  orgSlug: string;
+  id: number;
+  start?: string;
+  end?: string;
+}
+
 @Injectable()
 export class TransactionGroupDetailService {
   private organizationsService = inject(OrganizationsService);
-  #params = signal<{ orgSlug: string; id: number } | undefined>(undefined);
+  #params = signal<DetailParams | undefined>(undefined);
   #transactionGroupResource = resource({
     params: () => ({ params: this.#params() }),
     loader: async ({ params }) => {
@@ -42,6 +49,10 @@ export class TransactionGroupDetailService {
               ...this.organizationsService.orgPath(params.params.orgSlug),
               id: params.params.id,
             },
+            query: {
+              start: params.params.start,
+              end: params.params.end,
+            },
           },
         },
       );
@@ -49,8 +60,8 @@ export class TransactionGroupDetailService {
     },
   });
 
-  setParams(orgSlug: string, id: number) {
-    this.#params.set({ orgSlug, id });
+  setParams(orgSlug: string, id: number, start?: string, end?: string) {
+    this.#params.set({ orgSlug, id, start, end });
   }
   transactionGroup = computed(() => this.#transactionGroupResource.value());
   loading = computed(() => this.#transactionGroupResource.isLoading());
