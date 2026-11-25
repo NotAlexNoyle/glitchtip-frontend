@@ -1,9 +1,13 @@
 import {
   Component,
   ChangeDetectionStrategy,
+  ElementRef,
+  Injector,
+  afterNextRender,
   inject,
   computed,
   signal,
+  viewChild,
 } from "@angular/core";
 import { Router } from "@angular/router";
 import { MainNavService } from "../main-nav.service";
@@ -18,7 +22,7 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { RouterLink, RouterLinkActive } from "@angular/router";
 import { MatToolbarModule } from "@angular/material/toolbar";
-import { MatSidenavModule } from "@angular/material/sidenav";
+import { MatSidenavContent, MatSidenavModule } from "@angular/material/sidenav";
 import { MatMenuModule } from "@angular/material/menu";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { AuthService } from "src/app/auth.service";
@@ -70,6 +74,8 @@ export class MainNavComponent {
   private auth = inject(AuthService);
   private settingsService = inject(SettingsService);
   private userService = inject(UserService);
+  private injector = inject(Injector);
+  private content = viewChild(MatSidenavContent, { read: ElementRef });
 
   navItems: NavItem[] = [
     {
@@ -220,7 +226,17 @@ export class MainNavComponent {
   toggleCollapse() {
     this.isCollapsed.update((val) => !val);
     localStorage.setItem(COLLAPSED_KEY, this.isCollapsed().toString());
-    this.dispatchResizeEvent();
+    // Charts redraw on resize, so tell them once the page edge has settled.
+    afterNextRender(
+      () => {
+        const moves = this.content()?.nativeElement.getAnimations() ?? [];
+        Promise.all(moves.map((move: Animation) => move.finished)).then(
+          () => this.dispatchResizeEvent(),
+          () => undefined, // Toggled again mid-way; that toggle reports.
+        );
+      },
+      { injector: this.injector },
+    );
   }
 
   closeSideNav() {

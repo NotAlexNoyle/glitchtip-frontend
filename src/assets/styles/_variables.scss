@@ -7,11 +7,14 @@ $shape-radius: 4px;
 // Surfaces on the page (cards, panels, tables, code blocks) and dialogs. A
 // control inside a surface stays at 4px, close to concentric with 8px.
 $surface-radius: 8px;
+// The layout corner where the top app bar turns down into the side nav's edge.
+$shell-radius: $surface-radius;
 
 // Light-mode brand red shared by the app and marketing; white text on it is 5:1.
 $brand-red: #cb3753;
 
 $side-nav-width: 240px;
+$side-nav-collapsed-width: 72px;
 $top-app-bar-height: 52px;
 $mobile-nav-height: 44px;
 // Column header row of every table.

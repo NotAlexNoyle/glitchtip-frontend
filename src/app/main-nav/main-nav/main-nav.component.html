@@ -1,4 +1,7 @@
-<mat-sidenav-container>
+<mat-sidenav-container
+  [class.nav-docked]="isLoggedIn() && !mobileNav()"
+  [class.nav-collapsed]="isCollapsed()"
+>
   @if (isLoggedIn()) {
     <mat-sidenav
       #sidenav
@@ -108,7 +111,7 @@
               matTooltipPosition="right"
             >
               <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
-              <span class="nav-text">{{ item.name }}</span>
+              <span matListItemTitle class="nav-text">{{ item.name }}</span>
             </a>
           } @else {
             <mat-list-item
@@ -118,7 +121,7 @@
               matTooltipPosition="right"
             >
               <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
-              <span class="nav-text">{{ item.name }}</span>
+              <span matListItemTitle class="nav-text">{{ item.name }}</span>
             </mat-list-item>
           }
         }

@@ -1,13 +1,74 @@
 @use "@angular/material" as mat;
 @use "variables";
+@use "shell";
+
+// The nav, the page edge and the shell corner move together on one ease.
+$nav-motion: 200ms cubic-bezier(0.2, 0, 0, 1);
 
 // This make the app cover the whole screen at all times
+mat-sidenav {
+  @include shell.dot-corner(320px max(360px, 72vh) at 0 100%);
+}
+
 mat-sidenav-container {
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
+  --gt-nav-width: #{variables.$side-nav-width};
+
+  &.nav-collapsed {
+    --gt-nav-width: #{variables.$side-nav-collapsed-width};
+  }
+}
+
+// The nav and the top app bar share one strip: the nav's edge stops at the
+// bar and turns into the bar's hairline with a rounded corner. Drawn here,
+// above both, since the content clips anything on its own edge.
+mat-sidenav-container.nav-docked {
+  // Ours, not Material's margin: Material measures the nav after it resizes,
+  // so its margin trails the nav and leaves a gap.
+  > mat-sidenav-content {
+    margin-left: var(--gt-nav-width) !important;
+    transition: margin-left $nav-motion;
+  }
+
+  // Docked, the nav never slides in, so its width takes Material's transition.
+  > mat-sidenav {
+    transition: width $nav-motion;
+  }
+
+  // Hides the edge beside the bar.
+  &::before,
+  // Turns the bar's hairline down into the edge; its shadow paints the page
+  // color outside the curve, over the straight lines it replaces.
+  &::after {
+    content: "";
+    position: absolute;
+    z-index: 5;
+    pointer-events: none;
+    left: calc(var(--gt-nav-width) - 1px);
+    transition: left $nav-motion;
+  }
+
+  &::before {
+    top: 0;
+    width: 1px;
+    height: variables.$top-app-bar-height - 1px;
+    background: var(--mat-sys-surface-container-low);
+  }
+
+  &::after {
+    top: variables.$top-app-bar-height - 1px;
+    width: variables.$shell-radius;
+    height: variables.$shell-radius;
+    border-top: 1px solid var(--mat-sys-outline-variant);
+    border-left: 1px solid var(--mat-sys-outline-variant);
+    border-top-left-radius: variables.$shell-radius;
+    box-shadow: (-1 * variables.$shell-radius) (-1 * variables.$shell-radius) 0
+      variables.$shell-radius var(--mat-sys-surface-container-low);
+  }
 }
 
 mat-nav-list {
@@ -23,11 +84,12 @@ mat-nav-list {
     text-align: inherit;
   }
 
+  // Short, like the rows, so it never meets the content's edge.
   .nav-section-divider {
-    margin-left: -10px;
-    margin-right: -10px;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: var(--gt-space-1, 4px);
+    margin-bottom: var(--gt-space-1, 4px);
     border-color: var(--mat-sys-outline-variant);
   }
 
@@ -44,7 +106,22 @@ mat-nav-list {
 }
 
 mat-sidenav {
-  width: variables.$side-nav-width;
+  width: var(--gt-nav-width);
+
+  mat-nav-list {
+    transition: padding $nav-motion;
+  }
+
+  // Labels fade and slide under the moving edge whole: no wrapping, popping
+  // or "…" mid-motion. A block of our own, so the list's ellipsis can't reach it.
+  .nav-text,
+  [matListItemMeta] {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: clip;
+    transition: opacity $nav-motion;
+  }
 
   mat-icon[matListItemIcon] {
     margin-right: 8px;
@@ -52,20 +129,20 @@ mat-sidenav {
   }
 
   &.collapsed {
-    width: 72px;
-
     .org-create-button-container,
     .org-dropdown-container,
     .version {
       display: none;
     }
 
-    .nav-text {
-      display: none;
+    // Faded, not removed, so each row keeps its name for screen readers.
+    .nav-text,
+    [matListItemMeta] {
+      opacity: 0;
     }
 
     mat-nav-list {
-      padding: 16px;
+      padding: 0 16px 16px;
     }
 
     mat-list-item {
@@ -73,19 +150,16 @@ mat-sidenav {
       padding: 0;
     }
 
-    [matListItemMeta] {
-      display: none;
-    }
-
+    // Stacked logo and toggle: 16 + 24 + 16 + 40 keeps the hairline at 100px.
     .logo-toolbar {
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      margin-top: 8px;
+      justify-content: flex-start;
+      height: 96px;
 
       .collapsed-logo {
         width: 24px;
-        margin-bottom: 20px;
+        margin-bottom: var(--gt-space-4, 16px);
         cursor: pointer;
       }
 
@@ -102,7 +176,7 @@ mat-sidenav {
       container-background-color: transparent,
     )
   );
-  height: fit-content;
+  height: 44px;
   padding-top: 16px;
   justify-content: space-between;
 
@@ -120,14 +194,18 @@ mat-sidenav {
 }
 
 .org-create-button-container,
+// Logo (44) + switcher (16 + 32 + 4) + divider margin (4) puts the first
+// hairline at 100px, on the filter band's bottom line (bar 52 + band 48).
 .org-dropdown-container {
   box-sizing: border-box;
   width: 100%;
-  padding: var(--gt-space-4, 16px) var(--gt-space-2, 8px) var(--gt-space-1, 4px);
+  padding: var(--gt-space-4, 16px) 10px var(--gt-space-1, 4px);
 }
 
+// Same box as a nav row; its caret ends 16px in, like the rows' carets.
 .org-select {
   width: 100%;
+  padding-inline-end: var(--gt-space-4, 16px);
 }
 
 .org-create-button {
@@ -147,7 +225,10 @@ mat-sidenav {
 
 mat-list-item,
 button[mat-list-item] {
+  // Cancels the glyph's side bearing so the caret ends at the row's 16px
+  // trailing padding, like the organization switcher's.
   .arrow-icon {
+    margin-inline-end: -7px;
     transition:
       transform 200ms ease-in-out,
       color 200ms ease-in-out;
@@ -155,5 +236,17 @@ button[mat-list-item] {
 
   &[aria-expanded="true"] .arrow-icon {
     transform: rotate(180deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  mat-sidenav-container.nav-docked > mat-sidenav,
+  mat-sidenav mat-nav-list,
+  mat-sidenav .nav-text,
+  mat-sidenav [matListItemMeta],
+  mat-sidenav-container.nav-docked > mat-sidenav-content,
+  mat-sidenav-container.nav-docked::before,
+  mat-sidenav-container.nav-docked::after {
+    transition: none;
   }
 }
