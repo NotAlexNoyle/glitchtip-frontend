@@ -70,20 +70,21 @@ describe("Join and Leave Teams", () => {
   it("should move the team between lists without a stuck spinner", () => {
     const teamLink = `#${seededTeam.name}`;
     cy.visit(`/${seededOrg.slug}/settings/teams`);
-    cy.contains("mat-card", "Other Teams")
-      .contains("button", "Join Team")
+    cy.contains("gt-settings-section", "Other teams")
+      .contains("button", "Join team")
       .click();
-    cy.contains("mat-card", "Your Teams").contains(teamLink);
-    cy.contains("mat-card", "Your Teams")
-      .contains("button", "Leave Team")
+    cy.contains("gt-settings-section", "Your teams").contains(teamLink);
+    cy.contains("gt-settings-section", "Your teams")
+      .contains("button", "Leave team")
       .click();
-    cy.contains("mat-card", "Other Teams").contains(teamLink);
+    cy.get("[data-cy='dialog-confirm']").click();
+    cy.contains("gt-settings-section", "Other teams").contains(teamLink);
     // Joining again checks that neither loading key was left set.
-    cy.contains("mat-card", "Other Teams")
-      .contains("button", "Join Team")
+    cy.contains("gt-settings-section", "Other teams")
+      .contains("button", "Join team")
       .click();
-    cy.contains("mat-card", "Your Teams")
-      .contains("button", "Leave Team")
+    cy.contains("gt-settings-section", "Your teams")
+      .contains("button", "Leave team")
       .should("be.enabled");
   });
 });
