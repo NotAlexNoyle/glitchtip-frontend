@@ -37,7 +37,8 @@
   min-height: 400px;
   border-radius: vars.$shape-radius;
   border: 1px solid var(--mat-sys-outline-variant);
-  margin-bottom: var(--gt-space-4, 16px);
+  // Same as .table-container, so every list box ends on one line.
+  margin-bottom: var(--gt-space-5, 24px);
   overflow: hidden;
 }
 
