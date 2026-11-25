@@ -78,6 +78,15 @@ export const COLOR_TOKENS: TokenGroup[] = [
     ],
   },
   {
+    group: "Monitor status",
+    note: "Uptime monitor and check accents, aliasing the success, error and outline roles.",
+    tokens: [
+      { name: "--gt-monitor-up", label: "Up" },
+      { name: "--gt-monitor-down", label: "Down" },
+      { name: "--gt-monitor-none", label: "No data" },
+    ],
+  },
+  {
     group: "Extended (app-specific)",
     note: "Custom roles layered on top of Material 3, defined at :root in src/styles.scss.",
     tokens: [
@@ -93,6 +102,18 @@ export const COLOR_TOKENS: TokenGroup[] = [
       { name: "--issues-color", label: "Issues" },
       { name: "--uptime-color", label: "Uptime" },
       { name: "--logs-color", label: "Logs" },
+    ],
+  },
+  {
+    group: "Issue levels",
+    note: "Level accents for issue bars, aliasing the roles above. Paint them with the issue-level accent mixin; fatal is drawn striped.",
+    tokens: [
+      { name: "--gt-level-sample", label: "Sample" },
+      { name: "--gt-level-debug", label: "Debug" },
+      { name: "--gt-level-info", label: "Info" },
+      { name: "--gt-level-warning", label: "Warning" },
+      { name: "--gt-level-error", label: "Error" },
+      { name: "--gt-level-fatal", label: "Fatal" },
     ],
   },
 ];
@@ -139,6 +160,7 @@ export const TYPE_TOKENS: TokenDef[] = [
  */
 export const CUSTOM_TYPE_CLASSES: { className: string; usage: string }[] = [
   { className: "section-header-text", usage: "Page titles" },
+  { className: "gt-bar-title", usage: "Top app bar titles" },
   { className: "section-header-text-light", usage: "Issue titles (lighter weight)" },
   { className: "body-text", usage: "Longer text blocks" },
   { className: "body-text-strong", usage: "Emphasized body text" },
@@ -146,10 +168,11 @@ export const CUSTOM_TYPE_CLASSES: { className: string; usage: string }[] = [
 ];
 
 /**
- * The additive spacing scale (8px base grid) defined at :root in
+ * The additive spacing scale (multiples of a 4px unit) defined at :root in
  * `src/styles.scss`. Migrating existing ad-hoc px usage onto these is roadmap.
  */
 export const SPACE_TOKENS: TokenDef[] = [
+  { name: "--gt-space-unit" },
   { name: "--gt-space-0" },
   { name: "--gt-space-1" },
   { name: "--gt-space-2" },

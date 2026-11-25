@@ -1,11 +1,12 @@
 <ng-template #filters>
   @if (queriedProjects(); as queriedProjects) {
     <div class="project-multiselect-container">
-      @if (displayAddProject() && activeOrgHasNoProjects()) {
+      @if (
+        displayAddProject() && activeOrgHasNoProjects() && canWriteProject()
+      ) {
         <a
           mat-flat-button
           color="primary"
-          [disabled]="!accessProjectWrite()"
           class="add-project-button"
           [routerLink]="['/', activeOrgSlug(), 'settings', 'projects', 'new']"
         >
@@ -14,19 +15,24 @@
         </a>
       } @else {
         <gt-project-multiselect [queriedProjects]="queriedProjects" />
-        <button
-          matIconButton
-          [disabled]="!singleQueriedProjectSlug()"
-          [routerLink]="[
-            '/',
-            activeOrgSlug(),
-            'settings',
-            'projects',
-            singleQueriedProjectSlug(),
-          ]"
-        >
-          <mat-icon>settings</mat-icon>
-        </button>
+        @if (singleQueriedProjectSlug(); as projectSlug) {
+          <a
+            matIconButton
+            i18n-aria-label
+            aria-label="Project settings"
+            i18n-matTooltip
+            matTooltip="Project settings"
+            [routerLink]="[
+              '/',
+              activeOrgSlug(),
+              'settings',
+              'projects',
+              projectSlug,
+            ]"
+          >
+            <mat-icon>settings</mat-icon>
+          </a>
+        }
       }
     </div>
   }
@@ -51,11 +57,12 @@
     </div>
     @if (activeOrgLoaded()) {
       <div class="right-section">
-        @if (displayAddProject() && activeOrgHasNoProjects()) {
+        @if (
+          displayAddProject() && activeOrgHasNoProjects() && canWriteProject()
+        ) {
           <a
             mat-flat-button
             color="primary"
-            [disabled]="!accessProjectWrite()"
             class="add-project-button"
             [routerLink]="['/', activeOrgSlug(), 'settings', 'projects', 'new']"
           >

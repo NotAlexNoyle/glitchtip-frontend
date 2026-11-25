@@ -263,13 +263,6 @@ body {
   margin: 0 0 var(--gt-space-3);
 }
 
-.preview-note {
-  font: var(--mat-sys-body-small);
-  color: var(--mat-sys-on-surface-variant);
-  max-width: 68ch;
-  margin: 0;
-}
-
 // A short muted note directly under a section title.
 .preview-section__note {
   font: var(--mat-sys-body-small);
@@ -320,16 +313,6 @@ body {
   --mkt-container-narrow: 600px;
   --mkt-gutter: 48px;
   --mkt-section: clamp(40px, 5vw, 64px);
-
-  // --gt-space-* scale, mirrored so the reference app is self-contained.
-  --gt-space-0: 0;
-  --gt-space-1: 4px;
-  --gt-space-2: 8px;
-  --gt-space-3: 12px;
-  --gt-space-4: 16px;
-  --gt-space-5: 24px;
-  --gt-space-6: 32px;
-  --gt-space-7: 48px;
 }
 
 .marketing-display {

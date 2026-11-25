@@ -116,6 +116,10 @@ function createObjectResource<
   return Object.assign(res, { serverError });
 }
 
+// The API's largest page; the page cap only guards against a cursor loop.
+const FETCH_ALL_PAGE_LIMIT = 100;
+export const FETCH_ALL_MAX_PAGES = 100;
+
 // Overload for static requests (no params).
 function createFetchAllResource<TUrl extends PathsWithMethod<apiPaths, "get">>(
   getRequestOptions: () => {
@@ -147,8 +151,8 @@ function createFetchAllResource<
 >;
 
 /**
- * The internal implementation for creating a resource that fetches all pages of a
- * paginated endpoint up to a hardcoded limit.
+ * The internal implementation for creating a resource that fetches every page of a
+ * paginated endpoint, stopping only at a safety ceiling.
  * @private Not exported directly. Consumed by the public `apiResource` constant.
  */
 function createFetchAllResource<
@@ -177,15 +181,13 @@ function createFetchAllResource<
 
       const allData: any[] = [];
       let pageCount = 0;
-      const MAX_PAGES = 5;
-      const PAGE_LIMIT = 200;
       let cursor: string | null = null;
 
       do {
         // Construct query parameters for the current page
         const queryParams = {
           ...(options?.params?.query as object),
-          limit: PAGE_LIMIT,
+          limit: FETCH_ALL_PAGE_LIMIT,
           cursor: cursor,
         };
 
@@ -209,7 +211,11 @@ function createFetchAllResource<
 
         pageCount++;
         cursor = getCursor(response);
-      } while (cursor && pageCount < MAX_PAGES && !abortSignal.aborted);
+      } while (
+        cursor &&
+        pageCount < FETCH_ALL_MAX_PAGES &&
+        !abortSignal.aborted
+      );
 
       return allData as TData;
     },

@@ -10,8 +10,6 @@ import {
 import { FormControl, ReactiveFormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
 import { MatOptionSelectionChange } from "@angular/material/core";
-import { MatInputModule } from "@angular/material/input";
-import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSelectModule, MatSelectChange } from "@angular/material/select";
 import {
@@ -19,18 +17,14 @@ import {
   CustomTimeRangeOutput,
 } from "./custom-timerange-form/custom-time-range-form";
 import { DateRange } from "@angular/material/datepicker";
+import { SelectGhostDirective } from "src/app/shared/select-ghost.directive";
 
 const NO_FILTER_TEXT = $localize`All times`;
 
 @Component({
   standalone: true,
   selector: "gt-time-range-select",
-  imports: [
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule
-],
+  imports: [ReactiveFormsModule, MatSelectModule, SelectGhostDirective],
   templateUrl: "./time-range-select.html",
   styleUrl: "./time-range-select.scss",
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -38,7 +32,7 @@ const NO_FILTER_TEXT = $localize`All times`;
 export class TimeRangeSelect {
   protected router = inject(Router);
   dialog = inject(MatDialog);
-  timeRangePresets = [
+  allPresets = [
     { display: NO_FILTER_TEXT, value: "" },
     { display: $localize`Last hour`, value: "now-1h" },
     { display: $localize`Last 24 hours`, value: "now-1d" },
@@ -46,18 +40,25 @@ export class TimeRangeSelect {
     { display: $localize`Last 14 days`, value: "now-14d" },
     { display: $localize`Last 30 days`, value: "now-30d" },
   ];
+  /** Preset the API applies when no start/end is sent; replaces "All times". */
+  defaultRange = input("");
+  timeRangePresets = computed(() =>
+    this.defaultRange()
+      ? this.allPresets.filter((preset) => preset.value)
+      : this.allPresets,
+  );
   queriedTimeRangeStart = input<string | undefined>();
   queriedTimeRangeEnd = input<string | undefined>();
   presetRangeForm = new FormControl<string | null>("");
   queriedPresetTimeRange = computed(() => {
-    const presetValues = this.timeRangePresets.map((preset) => preset.value);
+    const presetValues = this.timeRangePresets().map((preset) => preset.value);
     const start = this.queriedTimeRangeStart();
     const end = this.queriedTimeRangeEnd();
     if (start && presetValues.includes(start) && (!end || end === "now")) {
       return start;
     }
     if (!start && !end) {
-      return "";
+      return this.defaultRange();
     }
     return null;
   });
@@ -79,7 +80,7 @@ export class TimeRangeSelect {
   queriedTimerangeDisplay = computed(() => {
     const queriedPreset = this.queriedPresetTimeRange();
     if (queriedPreset) {
-      return this.timeRangePresets.find(
+      return this.timeRangePresets().find(
         (preset) => preset.value === queriedPreset,
       )?.display;
     }

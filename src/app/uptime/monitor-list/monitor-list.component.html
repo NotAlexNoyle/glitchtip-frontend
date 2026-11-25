@@ -1,23 +1,25 @@
 <gt-top-app-bar>
   <ng-container slot="left">
-    <gt-list-title
+    <gt-list-title i18n-title
       title="Uptime Monitors"
       [searchHits]="$safeNavigationMigration(paginator()?.count)"
     ></gt-list-title>
   </ng-container>
 
   <ng-container slot="right">
-    <a
-      id="add-monitor"
-      class="add-monitor-button"
-      mat-flat-button
-      color="primary"
-      [routerLink]="['new']"
-    >
-      <mat-icon>add</mat-icon>
-      <span class="add-monitor-text-long" i18n>Add monitor</span>
-      <span class="add-monitor-text-short" i18n>Add</span>
-    </a>
+    @if (canWriteProject()) {
+      <a
+        id="add-monitor"
+        class="add-monitor-button"
+        mat-flat-button
+        color="primary"
+        [routerLink]="['new']"
+      >
+        <mat-icon>add</mat-icon>
+        <span class="add-monitor-text-long" i18n>New monitor</span>
+        <span class="add-monitor-text-short" i18n>New</span>
+      </a>
+    }
   </ng-container>
 </gt-top-app-bar>
 <section class="l-body l-body--full-width l-body--flex mat-elevation-z0">
@@ -28,7 +30,7 @@
   />
   @if (monitors(); as monitors) {
     <div class="table-container">
-      <gt-loading-overlay [loading]="loading()" label="Loading monitors">
+      <gt-loading-overlay i18n-label [loading]="loading()" label="Loading monitors">
         <table mat-table [dataSource]="monitors" class="mat-elevation-z2">
           <ng-container matColumnDef="pagination">
             <th
@@ -37,21 +39,15 @@
               [attr.colspan]="displayedColumns().length"
               class="table-header__actions"
             >
-              <div class="pagination-container">
-                <!-- Loading shown by the top progress bar; keep prev/next stable during reload. -->
-                <gt-pagination-buttons
-                  [paginator]="paginator()"
-                  [settled]="initialLoadComplete()"
-                />
-              </div>
+              <!-- Loading shown by the top progress bar; keep prev/next stable during reload. -->
+              <gt-pagination-buttons
+                [paginator]="paginator()"
+                [settled]="initialLoadComplete()"
+              />
             </th>
           </ng-container>
           <ng-container matColumnDef="name">
-            <td
-              mat-cell
-              class="status-color--{{ monitor.isUp }}"
-              *matCellDef="let monitor"
-            >
+            <td mat-cell *matCellDef="let monitor">
               <div class="name-and-url-container">
                 <div (mouseover)="checkIfTooltipIsNecessary($event)">
                   <a
@@ -90,16 +86,33 @@
             </td>
           </ng-container>
           <ng-container matColumnDef="status">
-            <td mat-cell *matCellDef="let monitor">
-              @if (monitor.isUp) {
-                <span>Up</span>
-              }
-              @if (monitor.isUp === false) {
-                <span>Down</span>
-              }
-              @if (monitor.lastChange) {
-                {{ monitor.lastChange | timeFor }}
-              }
+            <td mat-cell *matCellDef="let monitor" class="table-end">
+              <div class="monitor-status">
+                @if (monitor.isUp) {
+                  <gt-status-pill
+                    i18n-label="Uptime check reports up"
+                    label="Up"
+                    color="var(--gt-monitor-up)"
+                  />
+                } @else if (monitor.isUp === false) {
+                  <gt-status-pill
+                    i18n-label="Uptime check reports down"
+                    label="Down"
+                    color="var(--gt-monitor-down)"
+                  />
+                } @else {
+                  <gt-status-pill
+                    i18n-label
+                    label="No data"
+                    color="var(--gt-monitor-none)"
+                  />
+                }
+                @if (monitor.lastChange && monitor.isUp !== null) {
+                  <div class="caption-text">
+                    {{ monitor.lastChange | timeFor }}
+                  </div>
+                }
+              </div>
             </td>
           </ng-container>
           <tr
@@ -122,13 +135,25 @@
                   <div class="body-text-strong">{{ error.msg || error }}</div>
                 }
               } @else if (!loading()) {
-                <gt-empty-state
-                  icon="share_eta"
-                  i18n-title
-                  title="No uptime monitors"
-                  i18n-message
-                  message="Add a monitor to get alerted when a site or service goes down."
-                />
+                @if (canWriteProject()) {
+                  <gt-empty-state
+                    tall
+                    icon="share_eta"
+                    i18n-title
+                    title="No uptime monitors"
+                    i18n-message
+                    message="Add a monitor to get alerted when a site or service goes down."
+                  />
+                } @else {
+                  <gt-empty-state
+                    tall
+                    icon="share_eta"
+                    i18n-title
+                    title="No uptime monitors"
+                    i18n-message
+                    message="Ask an organization Admin or above to add one."
+                  />
+                }
               }
             </td>
           </tr>

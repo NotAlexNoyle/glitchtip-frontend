@@ -1,17 +1,16 @@
-<mat-form-field
-  appearance="outline"
-  subscriptSizing="dynamic"
-  [class]="{'time-range-select-formfield': true, 'wide': extendSelectSize()}"
->
+<span gtSelectGhost [class.wide]="extendSelectSize()">
   <mat-select
     [formControl]="presetRangeForm"
     i18n-placeholder
     placeholder="Time range"
+    i18n-aria-label
+    aria-label="Time range"
+    panelWidth="220px"
     (selectionChange)="onPresetSelect($event)"
     hideSingleSelectionIndicator
   >
     <mat-select-trigger> {{ queriedTimerangeDisplay() }} </mat-select-trigger>
-    @for (preset of timeRangePresets; track preset.value) {
+    @for (preset of timeRangePresets(); track preset.value) {
     <mat-option [value]="preset.value">{{preset.display}}</mat-option>
     }
     <mat-option
@@ -21,4 +20,4 @@
       >Custom range</mat-option
     >
   </mat-select>
-</mat-form-field>
+</span>

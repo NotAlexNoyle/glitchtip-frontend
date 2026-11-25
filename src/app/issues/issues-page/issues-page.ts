@@ -11,7 +11,7 @@ import {
   signal,
   ViewChild,
 } from "@angular/core";
-import { DatePipe, I18nPluralPipe } from "@angular/common";
+import { DatePipe, DecimalPipe } from "@angular/common";
 import { FormControl, FormGroup } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCheckboxModule } from "@angular/material/checkbox";
@@ -59,9 +59,9 @@ import { SearchHelpConfig } from "../../list-elements/data-filter-bar/data-filte
     RouterLink,
     IssueZeroStatesComponent,
     DatePipe,
+    DecimalPipe,
     DaysAgoPipe,
     DaysOldPipe,
-    I18nPluralPipe,
     ListAppBar,
     IssueChart,
     MatButtonToggleModule,
@@ -127,6 +127,10 @@ export class IssuesPage implements OnInit, OnDestroy {
   isLargeScreen = signal(true);
   displayedColumns = signal(this.allColumns);
   private lastClickedIssueId = signal<string | null>(null);
+  // The trend chart has a fixed width, so it needs room beyond the sidebar.
+  private readonly roomForTrend = toSignal(
+    this.breakPointObserver.observe("(min-width: 1080px)"),
+  );
   breakPointSignal = toSignal(
     this.breakPointObserver.observe([
       Breakpoints.Medium,
@@ -145,17 +149,13 @@ export class IssuesPage implements OnInit, OnDestroy {
     this.organizationsService.activeOrganizationProjects;
   activeOrganization = this.organizationsService.activeOrganization;
   // errors = this.service.errors;
-  eventCountPluralMapping: { [k: string]: string } = {
-    "=1": "1 event",
-    other: "# events",
-  };
   sorts = [
-    { param: "-last_seen", display: "Last Seen" },
-    { param: "first_seen", display: "First Seen" },
-    { param: "-count", display: "Most Frequent" },
-    { param: "count", display: "Least Frequent" },
-    { param: "-priority", display: "Highest Priority" },
-    { param: "priority", display: "Lowest Priority" },
+    { param: "-last_seen", display: $localize`Last Seen` },
+    { param: "first_seen", display: $localize`First Seen` },
+    { param: "-count", display: $localize`Most Frequent` },
+    { param: "count", display: $localize`Least Frequent` },
+    { param: "-priority", display: $localize`Highest Priority` },
+    { param: "priority", display: $localize`Lowest Priority` },
   ];
 
   readonly searchHelp: SearchHelpConfig = {
@@ -301,7 +301,11 @@ export class IssuesPage implements OnInit, OnDestroy {
     effect(() => {
       const breakPointResult = this.breakPointSignal();
       if (breakPointResult?.matches) {
-        this.displayedColumns.set(this.mediumScreenColumns);
+        this.displayedColumns.set(
+          this.roomForTrend()?.matches
+            ? this.allColumns
+            : this.mediumScreenColumns,
+        );
         if (breakPointResult.breakpoints[Breakpoints.XSmall]) {
           this.displayedColumns.set(this.xSmallScreenColumns);
         }

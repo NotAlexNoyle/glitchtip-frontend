@@ -5,6 +5,7 @@ import {
   signal,
   ChangeDetectionStrategy,
 } from "@angular/core";
+import { ViewportScroller } from "@angular/common";
 import { RouterLink, RouterOutlet } from "@angular/router";
 import { LinksService } from "./links.service";
 import { MatToolbar } from "@angular/material/toolbar";
@@ -29,6 +30,7 @@ export class AppComponent implements OnInit {
   private links = inject(LinksService);
   private matIconRegistry = inject(MatIconRegistry);
   private supportChat = inject(SupportChatService);
+  private viewportScroller = inject(ViewportScroller);
 
   title = "glitchtip-marketing";
   registerLink = this.links.registerLink;
@@ -44,6 +46,8 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
+    // Router anchor scrolling ignores scroll-padding-top; match it in styles.scss.
+    this.viewportScroller.setOffset([0, 88]);
     this.matIconRegistry.setDefaultFontSetClass("material-symbols-filled");
     this.supportChat.resumeExistingConversation();
   }

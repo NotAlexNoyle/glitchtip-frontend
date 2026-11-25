@@ -17,13 +17,13 @@ describe("Organization Settings", () => {
       cy.get("#update-org").click();
       cy.get("input[formcontrolname=name]").should("have.value", newOrgName);
       cy.get("#delete-org").click();
-      cy.contains("Are you sure you want to remove");
+      cy.contains("Its projects, teams and events are deleted too.");
       cy.intercept("GET", `api/0/projects/*`).as("getProjectsRequest");
       cy.get("[data-cy='dialog-confirm']").click();
       cy.contains("successfully deleted");
       cy.url().should("eq", "http://localhost:4200/");
       cy.wait("@getProjectsRequest").then(({ response }) =>
-        cy.contains("In order to use GlitchTip, you'll need to create an"),
+        cy.contains("No organization yet"),
       );
     },
   );

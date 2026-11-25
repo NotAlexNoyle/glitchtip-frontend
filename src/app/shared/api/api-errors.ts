@@ -65,9 +65,11 @@ export function handleError(
       }
       break;
     case 402:
+    case 403:
     case 502:
-      // The server writes owner-facing text for these (a card decline, a failed
-      // Stripe call); passing it through beats a generic message.
+      // The server writes user-facing text for these (a card decline, the scope
+      // a role lacks, a failed Stripe call); passing it through beats a generic
+      // message.
       if (error && typeof error === "object" && "detail" in error) {
         return { detail: [{ msg: error.detail }] };
       }
@@ -83,4 +85,22 @@ export function handleError(
       return { detail: [{ msg: SERVER_ERROR }] };
   }
   return { detail: [{ msg: UNHANDLED_ERROR }] };
+}
+
+/**
+ * One readable line for a failed request: the server's message when it sent
+ * one, otherwise `fallback`, which names what failed.
+ */
+export function apiErrorMessage(
+  error: unknown,
+  response: Response,
+  fallback: string,
+): string {
+  if (!error || typeof error !== "object" || !("detail" in error)) {
+    return fallback;
+  }
+  const msg: unknown = handleError(error, response).detail[0]?.msg;
+  return typeof msg === "string" && msg && msg !== UNHANDLED_ERROR
+    ? msg
+    : fallback;
 }

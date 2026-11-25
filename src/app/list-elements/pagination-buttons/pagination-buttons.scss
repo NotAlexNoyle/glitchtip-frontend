@@ -1,5 +1,11 @@
 @use '@angular/material' as mat;
 
+:host {
+  display: flex;
+  justify-content: flex-end;
+  margin-inline-start: auto;
+}
+
 .pagination-buttons-container {
   display: flex;
   width: 85px;
