@@ -1,3 +1,4 @@
+@use "variables" as vars;
 @use "controls";
 @use "issue-level";
 
@@ -128,18 +129,19 @@ gt-assignee-picker {
   place-items: center;
   width: 24px;
   height: 24px;
-  border-radius: 50%;
+  border-radius: var(--mat-sys-corner-full);
   box-sizing: border-box;
   // The edge tells person from team, so it gets the fields' 3:1 outline.
   border: 1px solid controls.$field-outline;
   background: var(--mat-sys-surface-container-highest);
   color: var(--mat-sys-on-surface);
-  font: 500 11px / 1 var(--mat-sys-label-small-font);
+  font: var(--mat-sys-label-small);
+  line-height: 1;
   letter-spacing: 0.02em;
   // Where an icon button puts its mat-icon, not on the text baseline.
   vertical-align: top;
 }
 
 .assign-initials--team {
-  border-radius: 6px;
+  border-radius: vars.$shape-radius;
 }
