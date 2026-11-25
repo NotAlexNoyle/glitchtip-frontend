@@ -35,7 +35,7 @@ https://your-glitchtip.example.com/mcp
 
 Claude Desktop walks you through signing in to GlitchTip the first time you connect. Custom connectors are reached from Anthropic's servers, so your GlitchTip must be reachable from the internet over HTTPS.
 
-For a GlitchTip on a private network, use the [`mcp-remote`](https://www.npmjs.com/package/mcp-remote) bridge. Add it under **Settings → Developer → Edit Config** and restart Claude Desktop:
+For GlitchTip on a private network, use the [`mcp-remote`](https://www.npmjs.com/package/mcp-remote) bridge. Add it under **Settings → Developer → Edit Config** and restart Claude Desktop:
 
 ```json
 {
