@@ -88,10 +88,6 @@
                 }
               </mat-form-field>
             </div>
-
-              <a class="auth-aside-link" routerLink="/reset-password" i18n
-                  >Forgot password?</a
-                >
             <gt-loading-button
               i18n-buttonText
               buttonText="Log in"
@@ -100,6 +96,9 @@
               id="submit"
             >
             </gt-loading-button>
+            <a class="auth-aside-link" routerLink="/reset-password" i18n
+                >Forgot password?</a
+              >
           </form>
           @if (socialApps(); as socialApps) {
             @if (socialApps.length) {
