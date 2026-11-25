@@ -93,7 +93,7 @@ export class AppComponent {
   readonly themeClass = computed(() => `preview-theme--${this.theme()}`);
 
   constructor() {
-    this.matIconRegistry.setDefaultFontSetClass("material-symbols-filled");
+    this.matIconRegistry.setDefaultFontSetClass("material-symbols");
 
     // Bare mode reports its content height to the embedding preview-doc so the
     // example iframe hugs the content instead of a fixed tall box.

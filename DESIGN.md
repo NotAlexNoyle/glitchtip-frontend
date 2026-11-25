@@ -38,6 +38,7 @@ Colour only for meaning: error, warning, success and status (level bars, status 
 - **Semantic classes** (in `src/assets/styles/_font-files.scss`): `.section-header-text` (page titles), `.section-header-text-light` (issue titles), `.body-text`, `.body-text-strong`, `.caption-text`. These are responsive.
 - **In-page subheading:** `.gt-subheading` (title-small, 600, on-surface, in `src/styles.scss`) for a heading inside a page section, such as a `gt-list` label. `.gt-subheading__description` is the muted line under it.
 - **Fonts:** IBM Plex Sans (UI), IBM Plex Mono (code), Material Symbols (icons), all self-hosted as woff2.
+- **Icons:** Material Symbols, outlined at weight 300 and grade 0 (`.material-symbols`, the registry's default class), so actions, navigation and inputs stay light next to text. There is no filled variant: state and emphasis come from color, text or the item's fill (the active nav item), never a filled glyph, since several glyphs barely change when filled. One glyph, one meaning: `help` (?) is Help & Support; help next to a field is link text ("Syntax"), as GitLab's Pajamas recommends.
 - **Weights:** three, each with one job: 400 for text you read, 500 for controls (buttons, tabs, the bar), 600 for headings, titles and links. Plex Sans ships a real file for each, so no weight is synthesized; don't use 700 or `bold`.
 
 Rule: prefer a semantic class where one exists; otherwise apply the matching type token.
