@@ -60,3 +60,31 @@ describe("List Team Members", () => {
     cy.contains("No team members");
   });
 });
+
+describe("Join and Leave Teams", () => {
+  beforeEach(() => {
+    seedBackend();
+    requestLogin();
+  });
+
+  it("should move the team between lists without a stuck spinner", () => {
+    const teamLink = `#${seededTeam.name}`;
+    cy.visit(`/${seededOrg.slug}/settings/teams`);
+    cy.contains("gt-settings-section", "Other teams")
+      .contains("button", "Join team")
+      .click();
+    cy.contains("gt-settings-section", "Your teams").contains(teamLink);
+    cy.contains("gt-settings-section", "Your teams")
+      .contains("button", "Leave team")
+      .click();
+    cy.get("[data-cy='dialog-confirm']").click();
+    cy.contains("gt-settings-section", "Other teams").contains(teamLink);
+    // Joining again checks that neither loading key was left set.
+    cy.contains("gt-settings-section", "Other teams")
+      .contains("button", "Join team")
+      .click();
+    cy.contains("gt-settings-section", "Your teams")
+      .contains("button", "Leave team")
+      .should("be.enabled");
+  });
+});
