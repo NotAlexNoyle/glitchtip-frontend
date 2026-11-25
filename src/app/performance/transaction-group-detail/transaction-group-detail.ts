@@ -28,10 +28,7 @@ import { OrganizationsService } from "src/app/api/organizations.service";
 import { BackLinkComponent } from "src/app/shared/detail/back-link/back-link.component";
 import { TopAppBar } from "src/app/shared/top-app-bar/top-app-bar";
 import { TimeRangeSelect } from "src/app/list-elements/timerange-select/time-range-select";
-import {
-  stringArrAttribute,
-  stringAttribute,
-} from "src/app/shared/shared.utils";
+import { stringAttribute } from "src/app/shared/shared.utils";
 import { EmptyStateComponent } from "src/app/shared/empty-state/empty-state.component";
 
 type SpanSortKey = "totalTime" | "avgDuration" | "p95Duration" | "count";
@@ -72,24 +69,6 @@ export class TransactionGroupDetail {
   id = input.required<number>({ alias: "transaction-group-id" });
   start = input(undefined, { transform: stringAttribute });
   end = input(undefined, { transform: stringAttribute });
-  projects = input([], { alias: "project", transform: stringArrAttribute });
-
-  backLinkParams = computed(() => {
-    const params: { [key: string]: any } = {};
-    const projects = this.projects();
-    if (projects.length) {
-      params["project"] = projects;
-    }
-    const start = this.start();
-    if (start) {
-      params["start"] = start;
-    }
-    const end = this.end();
-    if (end) {
-      params["end"] = end;
-    }
-    return params;
-  });
 
   activeOrganizationSlug = this.organizationsService.activeOrganizationSlug;
   organization = this.organizationsService.activeOrganization;

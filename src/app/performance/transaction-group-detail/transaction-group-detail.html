@@ -3,7 +3,7 @@
     <gt-back-link
       i18n-backLinkText
       backLinkText="Performance"
-      [backLinkParams]="backLinkParams()"
+      paramsHandling="preserve"
     />
   </ng-container>
 </gt-top-app-bar>
@@ -19,7 +19,7 @@
       i18n-message
       message="It may have been deleted, or it belongs to a project you cannot access."
     >
-      <a mat-button [routerLink]="['..']" [queryParams]="backLinkParams()" i18n
+      <a mat-button [routerLink]="['..']" queryParamsHandling="preserve" i18n
         >View all transaction groups in
         {{ organization.name // i18n(ph="organization") }}</a
       >
@@ -72,6 +72,7 @@
   <gt-panel i18n-title title="Span breakdown" flush>
     <gt-time-range-select
       slot="actions"
+      defaultRange="now-7d"
       [queriedTimeRangeStart]="start()"
       [queriedTimeRangeEnd]="end()"
     />
@@ -80,9 +81,9 @@
         <gt-empty-state
           icon="avg_pace"
           i18n-title
-          title="No span data"
+          title="No matching spans"
           i18n-message
-          message="Spans appear here once child spans are recorded for this transaction group."
+          message="Try a longer time range."
         />
       } @else {
         <div class="span-breakdown-intro">

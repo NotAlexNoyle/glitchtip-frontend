@@ -10,7 +10,7 @@
     hideSingleSelectionIndicator
   >
     <mat-select-trigger> {{ queriedTimerangeDisplay() }} </mat-select-trigger>
-    @for (preset of timeRangePresets; track preset.value) {
+    @for (preset of timeRangePresets(); track preset.value) {
     <mat-option [value]="preset.value">{{preset.display}}</mat-option>
     }
     <mat-option
