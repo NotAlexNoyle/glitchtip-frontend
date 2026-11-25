@@ -57,11 +57,9 @@
               </mat-form-field>
             </div>
             <div class="auth-field">
-              <div class="auth-label-row">
-                <label class="auth-label" for="login-password" i18n
-                  >Password</label
-                >
-              </div>
+              <label class="auth-label" for="login-password" i18n
+                >Password</label
+              >
               <mat-form-field appearance="outline" subscriptSizing="dynamic">
                 <input
                   id="login-password"
@@ -87,6 +85,9 @@
                   </mat-error>
                 }
               </mat-form-field>
+              <a class="auth-aside-link" routerLink="/reset-password" i18n
+                >Forgot password?</a
+              >
             </div>
             <gt-loading-button
               i18n-buttonText
@@ -96,9 +97,6 @@
               id="submit"
             >
             </gt-loading-button>
-            <a class="auth-aside-link" routerLink="/reset-password" i18n
-                >Forgot password?</a
-              >
           </form>
           @if (socialApps(); as socialApps) {
             @if (socialApps.length) {

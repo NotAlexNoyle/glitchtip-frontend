@@ -100,18 +100,13 @@ $grid-line: color-mix(in srgb, var(--mat-sys-outline-variant) 55%, transparent);
   gap: var(--gt-space-2, 8px);
 }
 
-.auth-label-row {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-}
-
 .auth-label {
   font: var(--mat-sys-label-large);
   font-weight: 600;
 }
 
 .auth-aside-link {
+  align-self: flex-end;
   font: var(--mat-sys-body-small);
   color: var(--mat-sys-on-surface-variant);
 }
