@@ -1,8 +1,10 @@
 @use "@angular/material" as mat;
+@use "variables" as vars;
 
 // Material defaults dialogs to `surface`, which matches the page background.
 @include mat.dialog-overrides(
   (
     container-color: var(--mat-sys-surface-container-highest),
+    container-shape: vars.$surface-radius,
   )
 );

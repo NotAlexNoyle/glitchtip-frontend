@@ -2,7 +2,11 @@ $font-path: "../fonts";
 $font-sans-serif: "Plex Sans";
 $font-mono: "Plex Mono";
 
+// Two radii. Controls, and what pops out of them (menus, dropdowns, tooltips).
 $shape-radius: 4px;
+// Surfaces on the page (cards, panels, tables, code blocks) and dialogs. A
+// control inside a surface stays at 4px, close to concentric with 8px.
+$surface-radius: 8px;
 
 // Light-mode brand red shared by the app and marketing; white text on it is 5:1.
 $brand-red: #cb3753;

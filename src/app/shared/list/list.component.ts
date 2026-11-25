@@ -24,6 +24,8 @@ let nextId = 0;
     </div>
   `,
   styles: `
+    @use "variables" as vars;
+
     :host {
       display: block;
       margin-bottom: var(--gt-space-5, 24px);
@@ -36,7 +38,7 @@ let nextId = 0;
     // Clips a navigable row's hover layer to the rounded corners.
     .list__rows {
       border: 1px solid var(--mat-sys-outline-variant);
-      border-radius: var(--mat-sys-corner-extra-small);
+      border-radius: vars.$surface-radius;
       overflow: hidden;
     }
 

@@ -39,7 +39,7 @@
 // Source context: numbered lines, crash line tinted with a 2px error bar.
 .gt-code {
   overflow-x: auto;
-  border-radius: vars.$shape-radius;
+  border-radius: vars.$surface-radius;
   background: var(--gt-code-bg);
 
   &:focus-visible {
@@ -84,7 +84,7 @@ pre:has(> code[class*="language-"]) {
   margin: 0 0 var(--gt-space-4, 16px);
   padding: var(--gt-space-3, 12px) var(--gt-space-4, 16px);
   overflow-x: auto;
-  border-radius: vars.$shape-radius;
+  border-radius: vars.$surface-radius;
   background: var(--gt-code-bg);
   color: var(--gt-code-text);
   font-family: rows.$mono;
