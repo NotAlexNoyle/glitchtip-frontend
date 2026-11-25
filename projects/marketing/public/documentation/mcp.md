@@ -27,19 +27,26 @@ The MCP server supports two ways to authenticate:
 
 ### Claude Desktop
 
-Add GlitchTip as an MCP server in your Claude Desktop configuration:
+In Claude Desktop, open **Settings → Connectors → Add custom connector** and enter your MCP endpoint:
+
+```
+https://your-glitchtip.example.com/mcp
+```
+
+Claude Desktop walks you through signing in to GlitchTip the first time you connect. Custom connectors are reached from Anthropic's servers, so your GlitchTip must be reachable from the internet over HTTPS.
+
+`claude_desktop_config.json` only accepts servers Claude Desktop starts itself, so a `url` entry there is rejected. If your GlitchTip is not reachable from the internet, run the [`mcp-remote`](https://www.npmjs.com/package/mcp-remote) bridge locally instead. Add it under **Settings → Developer → Edit Config** and restart Claude Desktop:
 
 ```json
 {
   "mcpServers": {
     "glitchtip": {
-      "url": "https://your-glitchtip.example.com/mcp"
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://your-glitchtip.example.com/mcp"]
     }
   }
 }
 ```
-
-Claude Desktop will handle the OAuth flow automatically when you first connect.
 
 ### Claude Code
 
