@@ -47,8 +47,7 @@ import {
 } from "../../list-elements/data-filter-bar/data-filter-bar.component";
 import { StatusPillComponent } from "src/app/shared/status-pill/status-pill.component";
 import { ISSUE_STATUS } from "../issue-status";
-import { termValue, termValues, withTerm } from "../search-terms";
-import { StatusFilterComponent } from "./status-filter/status-filter";
+import { termValues } from "../search-terms";
 
 @Component({
   templateUrl: "./issues-page.html",
@@ -56,7 +55,6 @@ import { StatusFilterComponent } from "./status-filter/status-filter";
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     StatusPillComponent,
-    StatusFilterComponent,
     MatTableModule,
     DataFilterBarComponent,
     MatCheckboxModule,
@@ -138,8 +136,6 @@ export class IssuesPage implements OnInit, OnDestroy {
   isLargeScreen = signal(true);
   displayedColumns = signal(this.allColumns);
   readonly statusOf = (status: IssueStatus) => ISSUE_STATUS[status];
-  /** The is: value in the search; null when the list shows every status. */
-  readonly statusFilter = computed(() => termValue(this.listQuery(), "is"));
   // Statuses the search already names (is:resolved), so rows don't repeat them
   private readonly queriedStatuses = computed(
     () => new Set(termValues(this.listQuery(), "is")),
@@ -348,17 +344,6 @@ export class IssuesPage implements OnInit, OnDestroy {
 
   trackIssues(index: number, issue: { id: string }): string {
     return issue.id;
-  }
-
-  filterByStatus(value: string | null) {
-    // From the search box, so text typed there but not yet submitted is kept
-    const query = withTerm(
-      this.form.value.query ?? this.listQuery(),
-      "is",
-      value,
-    );
-    this.form.patchValue({ query });
-    this.searchSubmit();
   }
 
   searchSubmit() {

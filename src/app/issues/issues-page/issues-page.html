@@ -22,13 +22,7 @@
       (filterByEnvironment)="filterByEnvironment($event)"
       (searchSubmit)="searchSubmit()"
       (sortByChanged)="sortByChanged($event)"
-    >
-      <gt-status-filter
-        gtFilterBarField
-        [value]="statusFilter()"
-        (changed)="filterByStatus($event)"
-      />
-    </gt-data-filter-bar>
+    />
   }
   <div class="table-container">
     <gt-loading-overlay i18n-label [loading]="loading()" label="Loading issues">
