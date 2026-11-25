@@ -2,6 +2,7 @@ import {
   booleanAttribute,
   ChangeDetectionStrategy,
   Component,
+  computed,
   input,
 } from "@angular/core";
 import { MatIconModule } from "@angular/material/icon";
@@ -33,8 +34,8 @@ import { MatIconModule } from "@angular/material/icon";
       >
         {{ title() }}
       </p>
-      @if (message()) {
-        <p class="empty-state__message">{{ message() }}</p>
+      @for (line of paragraphs(); track $index) {
+        <p class="empty-state__message">{{ line }}</p>
       }
       <span class="empty-state__action"><ng-content></ng-content></span>
     </div>
@@ -80,7 +81,11 @@ import { MatIconModule } from "@angular/material/icon";
 export class EmptyStateComponent {
   readonly icon = input<string>("");
   readonly title = input.required<string>();
-  readonly message = input<string>("");
+  /** One sentence; a list renders one paragraph per message. */
+  readonly message = input<string | readonly string[]>("");
   readonly headingLevel = input<number>(3);
   readonly tall = input(false, { transform: booleanAttribute });
+  protected readonly paragraphs = computed(() =>
+    ([] as string[]).concat(this.message()).filter(Boolean),
+  );
 }

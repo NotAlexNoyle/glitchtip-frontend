@@ -19,22 +19,16 @@
   text-decoration: none;
   vertical-align: middle;
 
+  // A state layer, so hover shows on any surface (band, strip or panel).
   &:is(a):hover {
     border-color: var(--mat-sys-outline);
-    background-color: var(--mat-sys-surface-container);
+    text-decoration: none;
+    @include controls.state-layer(hover);
   }
 
   &:focus-visible {
     @include controls.focus-ring;
   }
-}
-
-.gt-tag-chip--compact {
-  height: 24px;
-  align-items: center;
-  padding: 0 var(--gt-space-2, 8px);
-  font: var(--mat-sys-label-medium);
-  font-weight: 400;
 }
 
 .gt-tag-chip__key {

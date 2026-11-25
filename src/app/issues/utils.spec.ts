@@ -1,10 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  isStacktrace,
-  isIosPlatform,
-  cleanIosPath,
-  isSwiftNameMangled,
-} from "./utils";
+import { isIosPlatform, cleanIosPath, isSwiftNameMangled } from "./utils";
 
 /**
  * These helpers drive how iOS/Swift crash frames are rendered in the issue
@@ -14,18 +9,6 @@ import {
  * detect before attempting to demangle. Pure string logic — fast and worth
  * locking down so a rendering regression shows up here, not in the UI.
  */
-
-describe("isStacktrace", () => {
-  it("treats an object with a `frames` property as a stacktrace", () => {
-    expect(isStacktrace({ frames: [] })).toBe(true);
-  });
-
-  it("rejects null, undefined, and frame-less objects", () => {
-    expect(isStacktrace(null)).toBe(false);
-    expect(isStacktrace(undefined)).toBe(false);
-    expect(isStacktrace({})).toBe(false);
-  });
-});
 
 describe("isIosPlatform", () => {
   it("recognizes the cocoa/objc platforms", () => {

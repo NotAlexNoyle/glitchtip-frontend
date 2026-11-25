@@ -1,41 +1,114 @@
-import { Injectable, computed, inject, resource, signal } from "@angular/core";
+import {
+  Injectable,
+  computed,
+  inject,
+  linkedSignal,
+  resource,
+  signal,
+  untracked,
+} from "@angular/core";
 import { Router } from "@angular/router";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import {
   IssueStatus,
-  ExceptionValueData,
   Request,
   AnnotatedRequest,
   CSP,
   Message,
-  Values,
   EntryType,
-  AnnotatedContexts,
   BreadcrumbValueData,
+  ExceptionValueData,
+  Values,
   IssueTags,
   IssueTagsAdjusted,
 } from "../interfaces";
-import { generateIconPath } from "../../shared/shared.utils";
-import { Json } from "src/app/interface-primitives";
 import { OrganizationsService } from "src/app/api/organizations.service";
 import { StatefulService } from "src/app/shared/stateful-service/signal-state.service";
 import { client } from "src/app/shared/api/api";
+import { getCursor } from "src/app/shared/pagination.utils";
 import { components } from "src/app/api/api-schema";
+import { rawTrace, stackFrames } from "./event-detail/event-format";
 
 type EventDetail = components["schemas"]["IssueEventDetailSchema"];
 type IssueDetail = components["schemas"]["IssueDetailSchema"];
+type IssueEventSummary = components["schemas"]["IssueEventSchema"];
+
+/** One of an issue's events, as the event switcher lists it. */
+export type RecentEvent = Pick<
+  IssueEventSummary,
+  "id" | "eventID" | "dateCreated" | "tags" | "user"
+>;
+
+/** Recent events of one issue, newest first. */
+export interface RecentEvents {
+  issueID: string;
+  events: RecentEvent[];
+  /** Next page cursor; null once every event is loaded. */
+  cursor: string | null;
+  loading: boolean;
+  /** The last page failed to load; opening the switcher again retries. */
+  failed: boolean;
+}
+
+const RECENT_EVENTS_PAGE = 20;
 
 interface IssueDetailState {
-  tags: IssueTags[] | null;
   isReversed: boolean;
-  showShowMore: boolean;
 }
 
 const initialState: IssueDetailState = {
-  tags: null,
   isReversed: true,
-  showShowMore: false,
 };
+
+/** localStorage: "false" when the reader wants frames oldest first. */
+const NEWEST_FIRST_KEY = "issueFramesNewestFirst";
+
+function readNewestFirst(): boolean {
+  try {
+    return localStorage.getItem(NEWEST_FIRST_KEY) !== "false";
+  } catch {
+    return true;
+  }
+}
+
+/** Tag keys that identify a user, in order of preference. */
+const USER_TAG_KEYS = ["user.id", "user.email", "user.username", "user.ip"];
+
+/** The events list sends snake_case keys although its schema says camelCase. */
+function toRecentEvent(e: IssueEventSummary): RecentEvent {
+  const raw = e as IssueEventSummary & {
+    event_id?: string;
+    date_created?: string;
+  };
+  return {
+    id: e.id,
+    eventID: e.eventID ?? raw.event_id ?? e.id,
+    dateCreated: e.dateCreated ?? raw.date_created,
+    tags: e.tags,
+    user: e.user,
+  };
+}
+
+export interface LoadedEvent<T> {
+  value: T | null | undefined;
+  loading: boolean;
+  issueID: string | null;
+  /** Bumped by open(); an event from an earlier visit is never held. */
+  visit: number;
+}
+
+/** Keeps the shown event while the next one of the same issue loads, so Older and Newer do not blank the page. */
+export function holdWhileLoading<T>(
+  next: LoadedEvent<T>,
+  prev: { source: LoadedEvent<T>; value: T | null | undefined } | undefined,
+): T | null | undefined {
+  return next.value === undefined &&
+    next.loading &&
+    prev?.source.issueID === next.issueID &&
+    prev.source.visit === next.visit
+    ? prev.value
+    : next.value;
+}
 
 @Injectable({
   providedIn: "root",
@@ -45,20 +118,41 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
   private snackBar = inject(MatSnackBar);
   private router = inject(Router);
 
-  readonly issue = computed(() => this.#issueResource.value());
+  // value() throws once a load has failed, so read it only when there is one.
+  readonly issue = computed(() =>
+    this.#issueResource.hasValue() ? this.#issueResource.value() : undefined,
+  );
   readonly issueInitialLoadComplete = computed(() =>
     this.#issueResource.hasValue(),
   );
-  readonly event = computed(() => this.#eventResource.value());
-  readonly tags = computed(() => {
-    const state = this.state();
-    return state.tags && this.tagsWithPercent(state.tags);
+  readonly #shownEvent = linkedSignal<
+    LoadedEvent<EventDetail>,
+    EventDetail | null | undefined
+  >({
+    source: () => ({
+      value: this.#eventResource.hasValue()
+        ? this.#eventResource.value()
+        : undefined,
+      loading: this.#eventResource.isLoading(),
+      issueID: this.issueID(),
+      visit: this.#visit(),
+    }),
+    computation: (next, prev) => holdWhileLoading(next, prev),
   });
+  readonly event = this.#shownEvent.asReadonly();
+  private readonly rawTags = computed(() =>
+    this.#tagsResource.hasValue() ? this.#tagsResource.value() : null,
+  );
+  readonly tags = computed(() => {
+    const tags = this.rawTags();
+    return tags && this.tagsWithPercent(tags);
+  });
+  /** While true, the page may still show the event it had before. */
+  readonly eventLoading = computed(() => this.#eventResource.isLoading());
   readonly eventInitialLoadComplete = computed(() =>
     this.#eventResource.hasValue(),
   );
   readonly isReversed = computed(() => this.state().isReversed);
-  readonly showShowMore = computed(() => this.state().showShowMore);
   readonly hasNextEvent = computed(
     () => this.event() && this.event()?.nextEventID !== null,
   );
@@ -85,15 +179,20 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
     }
     return null;
   });
-  readonly eventEntryException = computed(() => {
-    const event = this.event();
-    const isReversed = this.isReversed();
-
-    return event ? this.reverseFrames(event, isReversed) : undefined;
+  /** Thrown exception first, its causes under it, root cause last. */
+  readonly exceptionChain = computed<Values[]>(() => {
+    const entry = this.event()?.entries?.find((e) => e.type === "exception");
+    const values = (entry?.data as ExceptionValueData | undefined)?.values;
+    return [...(values ?? [])].reverse();
   });
-  readonly rawStacktraceValues = computed(() => {
-    const event = this.event();
-    return event ? this.getRawStacktraceValues(event) : undefined;
+  /** Without frames there is nothing to filter, order, show raw or copy. */
+  readonly exceptionHasFrames = computed(() =>
+    this.exceptionChain().some((v) => stackFrames(v).length),
+  );
+  /** Raw view, Copy trace and the event menu share this text. */
+  readonly exceptionTrace = computed(() => {
+    const chain = this.exceptionChain();
+    return chain.length ? rawTrace(chain, this.event()?.platform) : "";
   });
   readonly eventEntryRequest = computed(() => {
     const event = this.event();
@@ -107,78 +206,200 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
     const event = this.event();
     return event ? this.getEventEntryMessage(event) : undefined;
   });
-  readonly specialContexts = computed(() => {
-    const event = this.event();
-    return event ? this.getSpecialContexts(event) : undefined;
-  });
   readonly breadcrumbs = computed(() => {
     const event = this.event();
     return event ? this.eventEntryBreadcrumbs(event) : undefined;
   });
 
+  /** Distinct users from the issue's user tag (the API userCount is unfilled). */
+  readonly userCount = computed(() => {
+    const tags = this.rawTags();
+    if (!tags) return null;
+    for (const key of USER_TAG_KEYS) {
+      const tag = tags.find((t) => t.key === key);
+      if (tag) {
+        return { count: tag.uniqueValues, key, tagged: tag.totalValues };
+      }
+    }
+    return null;
+  });
+
   issueID = signal("");
+  orgSlug = signal("");
   eventID = signal<string | null>(null);
+  readonly #visit = signal(0);
+
+  /** Loaded when the issue opens; kept while it is open. */
+  readonly recentEvents = signal<RecentEvents | null>(null);
+
+  /** Loads the first page, or the next one when `more` is set. */
+  async loadRecentEvents(more = false) {
+    const issueID = this.issueID();
+    const orgSlug = this.orgSlug();
+    const current = this.recentEvents();
+    const same = current?.issueID === issueID;
+    if (!issueID || !orgSlug || (same && current.loading)) return;
+    if (same && !more && !current.failed) return;
+    const cursor = more && same ? current.cursor : null;
+    if (more && !cursor) return;
+    const kept = more && same ? current.events : [];
+    const state = {
+      issueID,
+      events: kept,
+      cursor,
+      loading: true,
+      failed: false,
+    };
+    this.recentEvents.set(state);
+    let page: RecentEvent[] | null = null;
+    let next: string | null = null;
+    try {
+      const { data, response } = await client.GET(
+        "/api/0/organizations/{organization_id_or_slug}/issues/{issue_id}/events/",
+        {
+          params: {
+            path: {
+              ...this.organization.orgPath(orgSlug),
+              issue_id: parseInt(issueID),
+            },
+            query: { limit: RECENT_EVENTS_PAGE, cursor },
+          },
+        },
+      );
+      page = data ? data.map(toRecentEvent) : null;
+      // No Link header means no further pages.
+      if (data?.length && response.headers.has("link")) {
+        next = getCursor(response);
+      }
+    } catch {
+      // A network error leaves page null, so the switcher offers a retry.
+    }
+    // A newer load or another issue took over meanwhile.
+    if (this.recentEvents() !== state) return;
+    const seen = new Set(kept.map((e) => e.id));
+    this.recentEvents.set({
+      issueID,
+      events: [...kept, ...(page ?? []).filter((e) => !seen.has(e.id))],
+      cursor: page ? next : cursor,
+      loading: false,
+      failed: !page,
+    });
+  }
+
+  /** The route of one of this issue's events, as Older and Newer use. */
+  eventUrlFor(eventID: string) {
+    return this.eventUrl(this.orgSlug(), this.issue() ?? null, eventID);
+  }
+
   #issueResource = resource({
-    params: () => ({ issueID: this.issueID() }),
+    params: () => ({ issueID: this.issueID(), orgSlug: this.orgSlug() }),
     loader: async ({ params }) => {
-      if (!params.issueID) {
+      if (!params.issueID || !params.orgSlug) {
         return;
       }
-      const { data } = await client.GET("/api/0/issues/{issue_id}/", {
-        params: { path: { issue_id: parseInt(params.issueID) } },
-      });
-      return data;
+      const { data } = await client.GET(
+        "/api/0/organizations/{organization_id_or_slug}/issues/{issue_id}/",
+        {
+          params: {
+            path: {
+              ...this.organization.orgPath(params.orgSlug),
+              issue_id: parseInt(params.issueID),
+            },
+          },
+        },
+      );
+      // null, not undefined: a missing issue is a loaded value (not found).
+      return data ?? null;
+    },
+  });
+  #tagsResource = resource({
+    params: () => ({ issueID: this.issueID(), orgSlug: this.orgSlug() }),
+    loader: async ({ params }) => {
+      if (!+params.issueID || !params.orgSlug) return null;
+      const { data } = await client.GET(
+        "/api/0/organizations/{organization_id_or_slug}/issues/{issue_id}/tags/",
+        {
+          params: {
+            path: {
+              ...this.organization.orgPath(params.orgSlug),
+              issue_id: +params.issueID,
+            },
+          },
+        },
+      );
+      return (data as IssueTags[] | undefined) ?? null;
     },
   });
   #eventResource = resource({
-    params: () => ({ issueID: this.issueID(), eventID: this.eventID() }),
+    // A new visit refetches; reload() would keep showing the old event.
+    params: () => ({
+      issueID: this.issueID(),
+      orgSlug: this.orgSlug(),
+      eventID: this.eventID(),
+      visit: this.#visit(),
+    }),
     loader: async ({ params }) => {
       const issueID = parseInt(params.issueID);
       const eventID = params.eventID;
-      if (!issueID) {
+      if (!issueID || !params.orgSlug) {
         return undefined;
       }
+      const orgPath = this.organization.orgPath(params.orgSlug);
       if (eventID) {
         const { data } = await client.GET(
-          "/api/0/issues/{issue_id}/events/{event_id}/",
+          "/api/0/organizations/{organization_id_or_slug}/issues/{issue_id}/events/{event_id}/",
           {
             params: {
-              path: { issue_id: issueID, event_id: eventID },
+              path: { ...orgPath, issue_id: issueID, event_id: eventID },
             },
           },
         );
-        return data;
+        return data ?? null;
       }
       const { data } = await client.GET(
-        "/api/0/issues/{issue_id}/events/latest/",
+        "/api/0/organizations/{organization_id_or_slug}/issues/{issue_id}/events/latest/",
         {
-          params: { path: { issue_id: issueID } },
+          params: { path: { ...orgPath, issue_id: issueID } },
         },
       );
-      return data;
+      return data ?? null;
     },
   });
 
   constructor() {
     super(initialState);
+    this.setState({ isReversed: readNewestFirst() });
   }
 
-  async retrieveTags(id: number, query?: string) {
-    const queryParams: any = query ? { query: query } : {};
-    const { data } = await client.GET("/api/0/issues/{issue_id}/tags/", {
-      params: { path: { issue_id: id }, query: queryParams },
-    });
-    if (data) {
-      this.setTags(data as any);
+  /** Opens an issue; coming back to the one last shown fetches it again. */
+  open(orgSlug: string, issueID: string, eventID: string | null = null) {
+    const revisit = untracked(
+      () => this.orgSlug() === orgSlug && this.issueID() === issueID,
+    );
+    this.orgSlug.set(orgSlug);
+    this.issueID.set(issueID);
+    this.eventID.set(eventID);
+    this.#visit.update((n) => n + 1);
+    if (revisit) {
+      this.#issueResource.reload();
+      this.#tagsResource.reload();
     }
   }
 
-  getReversedFrames() {
-    this.toggleIsReversed();
+  /** The frame order is the reader's choice, so it survives a new issue. */
+  override clearState() {
+    super.clearState();
+    this.setState({ isReversed: readNewestFirst() });
+    this.recentEvents.set(null);
   }
 
-  setShowShowMore(value: boolean) {
-    this.setState({ showShowMore: value });
+  setNewestFirst(newestFirst: boolean) {
+    this.setState({ isReversed: newestFirst });
+    try {
+      localStorage.setItem(NEWEST_FIRST_KEY, String(newestFirst));
+    } catch {
+      // The order still applies for this visit.
+    }
   }
 
   async setStatus(
@@ -231,9 +452,17 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
   }
 
   async deleteIssue(id: string) {
-    const { error } = await client.DELETE("/api/0/issues/{issue_id}/", {
-      params: { path: { issue_id: parseInt(id) } },
-    });
+    const { error } = await client.DELETE(
+      "/api/0/organizations/{organization_id_or_slug}/issues/{issue_id}/",
+      {
+        params: {
+          path: {
+            ...this.organization.orgPath(this.orgSlug()),
+            issue_id: parseInt(id),
+          },
+        },
+      },
+    );
     if (error) {
       this.snackBar.open(
         `There was an error deleting this issue. Please try again.`,
@@ -290,15 +519,6 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
     }));
   }
 
-  setTags(tags: IssueTags[]) {
-    this.setState({ tags });
-  }
-
-  private toggleIsReversed() {
-    const isReversed = this.state().isReversed;
-    this.setState({ isReversed: !isReversed });
-  }
-
   /* Return the message entry type for an event */
   private getEventEntryMessage(event: EventDetail): Message | undefined {
     const eventMessage = this.getMessageEntryData(event);
@@ -335,218 +555,14 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
     event: EventDetail,
   ): AnnotatedRequest | undefined {
     const eventRequest = this.getRequestEntryData(event);
-    if (eventRequest) {
-      let urlDomainName = "";
-      let urlPath = "";
-      try {
-        urlDomainName = new URL(eventRequest.url).hostname;
-        const path = new URL(eventRequest.url).pathname;
-        urlPath = path === "/" ? eventRequest.url : path;
-      } catch (_) {
-        urlPath = eventRequest.url;
-      }
-      return { ...eventRequest, domainName: urlDomainName, path: urlPath };
+    if (!eventRequest) return;
+    let path = eventRequest.url ?? "";
+    try {
+      path = new URL(path).pathname;
+    } catch {
+      // Not an absolute URL: show it as sent.
     }
-    return;
-  }
-
-  /* Reverse frame array, nested in the event object */
-  private reverseFrames(
-    event: EventDetail,
-    isReversed: boolean,
-  ): ExceptionValueData | undefined {
-    const eventException = this.getExceptionEntryData(event);
-
-    if (eventException) {
-      if (isReversed) {
-        const reversedFrames = eventException.values.map((value) => {
-          if (value.stacktrace && "frames" in value.stacktrace) {
-            const frameReverse = [...value.stacktrace.frames].reverse();
-            return {
-              ...value,
-              stacktrace: { ...value.stacktrace, frames: [...frameReverse] },
-            };
-          }
-          return value;
-        });
-        return {
-          ...eventException,
-          values: reversedFrames,
-        };
-      } else {
-        return { ...eventException };
-      }
-    }
-    return;
-  }
-
-  getRawStacktraceValues(event: EventDetail): Values[] | undefined {
-    const platform = event.platform;
-    const eventException = this.getExceptionEntryData(event);
-
-    if (eventException) {
-      const values = eventException.values.map((value) => {
-        if (
-          platform !== "python" &&
-          value.stacktrace &&
-          "frames" in value.stacktrace
-        ) {
-          const reverseFrames = [...value.stacktrace.frames].reverse();
-          return {
-            ...value,
-            stacktrace: { ...value.stacktrace, frames: reverseFrames },
-          };
-        } else {
-          return { ...value };
-        }
-      });
-      return [...values];
-    }
-    return;
-  }
-
-  checkContextName(
-    contextsObject: { [key: string]: Json },
-    defaultUnknown: string,
-  ) {
-    if (
-      contextsObject.name !== "Other" &&
-      typeof contextsObject.name === "string"
-    ) {
-      return contextsObject.name;
-    }
-    return `Unknown ${defaultUnknown}`;
-  }
-
-  /**
-   * For the contexts bar in event detail, find specific contexts and
-   * return array of matching objects to loop through in template.
-   * The order they are return in should always be user, browser, runtime
-   * os, device, gpu
-   */
-  getSpecialContexts(event: EventDetail): AnnotatedContexts[] {
-    const user: any = event.user;
-    const contexts = event.contexts;
-    const contextsArray: AnnotatedContexts[] = [];
-
-    for (const key in contexts) {
-      if (key) {
-        const contextsObject: any = contexts[key];
-
-        if (key === "browser") {
-          contextsArray.unshift({
-            type: key,
-            icon: contextsObject.name
-              ? generateIconPath(contextsObject.name as string)
-              : null,
-            matIcon: "tab",
-            title: this.checkContextName(contextsObject, "Browser"),
-            subtitle: contextsObject.version
-              ? (contextsObject.version as string)
-              : "Unknown",
-            key: "Version",
-          });
-        }
-        if (key === "runtime") {
-          contextsArray.unshift({
-            type: key,
-            icon: contextsObject.name
-              ? generateIconPath(contextsObject.name as string)
-              : null,
-            matIcon: "tab",
-            title: this.checkContextName(contextsObject, "Runtime"),
-            subtitle: contextsObject.version
-              ? (contextsObject.version as string)
-              : "Unknown",
-            key: "Version",
-          });
-        }
-        if (key === "os" || key === "client_os") {
-          contextsArray.unshift({
-            type: key,
-            icon: contextsObject.name
-              ? generateIconPath(contextsObject.name as string)
-              : null,
-            matIcon: "computer",
-            title: this.checkContextName(contextsObject, "Operating System"),
-            subtitle: contextsObject.version
-              ? (contextsObject.version as string)
-              : contextsObject.kernel_version
-                ? (contextsObject.kernel_version as string)
-                : "Unknown",
-            key: contextsObject.version
-              ? "Version"
-              : contextsObject.kernel_version
-                ? "Kernel"
-                : "Version",
-          });
-        }
-        if (key === "device") {
-          contextsArray.unshift({
-            type: key,
-            icon: contextsObject.model
-              ? generateIconPath(contextsObject.model as string)
-              : null,
-            matIcon: "devices_other",
-            title: contextsObject.model
-              ? (contextsObject.model as string)
-              : "Unknown Device",
-            subtitle: contextsObject.arch
-              ? (contextsObject.arch as string)
-              : contextsObject.model_id
-                ? (contextsObject.model_id as string)
-                : null,
-            key: contextsObject.arch
-              ? "Arch"
-              : contextsObject.model_id
-                ? "Model"
-                : null,
-          });
-        }
-        if (key === "gpu") {
-          contextsArray.unshift({
-            type: key,
-            icon: contextsObject.name
-              ? generateIconPath(contextsObject.name as string)
-              : null,
-            matIcon: "memory",
-            title: this.checkContextName(contextsObject, "GPU"),
-            subtitle: contextsObject.vendor_name
-              ? (contextsObject.vendor_name as string)
-              : "Unknown",
-            key: "Vendor",
-          });
-        }
-      }
-    }
-
-    if (user) {
-      let userTitle = user.email
-        ? user.email
-        : user.ip_address || user.id || user.username;
-      if (!userTitle) {
-        userTitle = "Unknown User";
-      }
-      let newKey = "";
-      let newSubtitle = "";
-      if (user.id && user.id !== userTitle) {
-        newKey = "ID";
-        newSubtitle = user.id;
-      } else if (user.username && user.username !== userTitle) {
-        newKey = "Username";
-        newSubtitle = user.username;
-      }
-      contextsArray.unshift({
-        type: "user",
-        icon: null,
-        matIcon: "account_circle",
-        title: userTitle,
-        subtitle: newSubtitle,
-        key: newKey,
-      });
-    }
-
-    return contextsArray;
+    return { ...eventRequest, path };
   }
 
   /**
@@ -556,12 +572,6 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
    * So here are a few helper functions that funnel into getEntryData and return
    * data which is typed the way we want.
    */
-  private getExceptionEntryData(event: EventDetail) {
-    return this.getEntryData(event, "exception") as
-      | ExceptionValueData
-      | undefined;
-  }
-
   private getMessageEntryData(event: EventDetail) {
     return this.getEntryData(event, "message") as Message | undefined;
   }

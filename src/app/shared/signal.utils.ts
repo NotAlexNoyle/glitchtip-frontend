@@ -24,3 +24,27 @@ export function keepPreviousValue<T>(
     computation: (value, previous) => value ?? previous?.value,
   }).asReadonly();
 }
+
+export interface OpenKeys extends Signal<ReadonlySet<string>> {
+  toggle(key: string): void;
+}
+
+/** Which expandable rows are open; starts from `initial` again when `source` changes. */
+export function openKeys<S>(
+  source: () => S,
+  initial: (value: S) => Iterable<string> = () => [],
+): OpenKeys {
+  const keys = linkedSignal<S, ReadonlySet<string>>({
+    source,
+    computation: (value) => new Set(initial(value)),
+  });
+  return Object.assign(keys.asReadonly(), {
+    toggle(key: string) {
+      keys.update((open) => {
+        const next = new Set(open);
+        if (!next.delete(key)) next.add(key);
+        return next;
+      });
+    },
+  });
+}

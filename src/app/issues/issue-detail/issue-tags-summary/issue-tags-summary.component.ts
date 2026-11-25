@@ -1,0 +1,133 @@
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  signal,
+} from "@angular/core";
+import { NgTemplateOutlet } from "@angular/common";
+import { Params, RouterLink } from "@angular/router";
+import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { PanelComponent } from "src/app/shared/panel/panel.component";
+import { OrganizationsService } from "src/app/api/organizations.service";
+import { IssueTagsAdjusted } from "../../interfaces";
+import { IssueDetailService } from "../issue-detail.service";
+import { openKeys } from "src/app/shared/signal.utils";
+import {
+  byTagSignal,
+  injectTagFilter,
+  isSpreadTag,
+  isUserTag,
+} from "../tag-filters";
+
+/** The one user tag the summary line may show, most readable first. */
+const LINE_USER_KEYS = ["user.email", "user.username", "user.id"];
+
+/** A user tag joins the line only when one user has this share (percent). */
+const USER_CONCENTRATION_MIN = 50;
+
+/** Chips on the line before All tags. */
+const TOP = 3;
+
+interface TagValue {
+  value: string;
+  percent: number;
+  query: Params;
+  tip: string;
+}
+
+interface RankedTag {
+  key: string;
+  top: TagValue;
+  values: TagValue[];
+  other: number;
+  /** One value and no others: the row itself filters, with nothing to open. */
+  expandable: boolean;
+}
+
+let nextId = 0;
+
+/**
+ * The issue zone's Tags line: the most concentrated values as chips that
+ * filter, and All tags to open the full ranking inline.
+ */
+@Component({
+  selector: "gt-issue-tags-summary",
+  imports: [
+    NgTemplateOutlet,
+    PanelComponent,
+    RouterLink,
+    MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: "./issue-tags-summary.component.html",
+  styleUrl: "./issue-tags-summary.component.scss",
+})
+export class IssueTagsSummaryComponent {
+  private issueService = inject(IssueDetailService);
+  readonly orgSlug = inject(OrganizationsService).activeOrganizationSlug;
+  private readonly tagFilter = injectTagFilter();
+
+  readonly open = signal(false);
+  readonly panelId = `gt-issue-tags-${nextId++}`;
+  readonly opened = openKeys(this.issueService.tags);
+
+  private readonly tags = computed(() =>
+    (this.issueService.tags() ?? []).filter((t) => t.topValues.length),
+  );
+
+  /** Every tag, so each one can be filtered by. */
+  readonly ranked = computed<RankedTag[]>(() =>
+    [...this.tags()].sort(byTagSignal).map((t) => this.toRanked(t)),
+  );
+
+  /** The line skips repeats, and shows one user tag only when one user dominates. */
+  readonly top = computed(() => {
+    const ranked = this.ranked();
+    const keys = ranked.map((t) => t.key);
+    const userKey = LINE_USER_KEYS.find((k) => keys.includes(k));
+    return ranked
+      .filter((t) =>
+        isUserTag(t.key)
+          ? t.key === userKey && t.top.percent >= USER_CONCENTRATION_MIN
+          : t.key === "release" || isSpreadTag(t.key, keys),
+      )
+      .slice(0, TOP)
+      .map((t) => ({ ...t, tip: `${t.key}: ${t.top.tip}` }));
+  });
+
+  /** All tags adds something only when it shows more than the chips do. */
+  readonly hasMore = computed(
+    () => this.ranked().length > 1 || this.ranked().some((t) => t.expandable),
+  );
+
+  /** When every top value is 100%, the shares say nothing. */
+  readonly showShares = computed(() =>
+    this.top().some((t) => t.top.percent < 100),
+  );
+
+  readonly tagged = computed(() =>
+    Math.max(0, ...this.tags().map((t) => t.totalValues)),
+  );
+
+  private toRanked(tag: IssueTagsAdjusted): RankedTag {
+    const values = tag.topValues.map((v) => ({
+      value: v.value,
+      percent: v.percentRounded,
+      query: this.tagFilter(tag.key, v.value),
+      tip: $localize`${v.count}:count: of ${tag.totalValues}:total:`,
+    }));
+    const other = tag.other ?? 0;
+    return {
+      key: tag.key,
+      top: values[0],
+      values,
+      other,
+      expandable: values.length > 1 || other > 0,
+    };
+  }
+}
