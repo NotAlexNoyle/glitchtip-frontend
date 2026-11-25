@@ -91,6 +91,12 @@ export class IssuesPage implements OnInit, OnDestroy {
   sort = input(undefined, { transform: stringAttribute });
   projects = input([], { alias: "project", transform: stringArrAttribute });
   environment = input(undefined, { transform: stringAttribute });
+  readonly filtersActive = computed(() => !!this.environment());
+  // When the search's ✕ shows, so the empty state offers the same clear.
+  readonly searchClearable = computed(
+    () =>
+      (this.query() ?? "is:unresolved").trim() !== "" || this.filtersActive(),
+  );
 
   paginator = this.service.paginator;
   loading = this.service.loading;
@@ -462,6 +468,16 @@ export class IssuesPage implements OnInit, OnDestroy {
   sortByChanged(event: MatSelectChange) {
     this.router.navigate([], {
       queryParams: { cursor: null, sort: event.value },
+      queryParamsHandling: "merge",
+    });
+  }
+
+  // The band's own filters; project and time range belong to the top app bar.
+  clearFilters() {
+    this.form.setValue({ query: "" });
+    // An empty query, not none: none means the is:unresolved default.
+    this.router.navigate([], {
+      queryParams: { query: "", environment: null, cursor: null },
       queryParamsHandling: "merge",
     });
   }

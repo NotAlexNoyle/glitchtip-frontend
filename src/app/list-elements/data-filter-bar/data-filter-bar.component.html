@@ -2,22 +2,18 @@
 <div class="gt-filter-bar">
   @if (searchForm) {
     <form
+      gtFilterSearch
       [formGroup]="searchForm"
+      [control]="searchControl()"
+      i18n-label
+      label="Search"
+      [active]="filtersActive()"
+      i18n-placeholder
+      placeholder="Search or filter, like level:error"
       (ngSubmit)="searchSubmit.emit()"
-      class="gt-filter-bar__search gt-filter-search"
+      (cleared)="clearFilters.emit()"
       data-cy="list-search-form"
     >
-      <mat-icon class="gt-filter-search__icon" aria-hidden="true"
-        >search</mat-icon
-      >
-      <input
-        class="gt-filter-search__input"
-        type="search"
-        formControlName="query"
-        i18n-aria-label
-        aria-label="Search"
-        data-cy="list-search-field"
-      />
       @if (searchHelp()) {
         <span class="gt-bar-divider" aria-hidden="true"></span>
         <button

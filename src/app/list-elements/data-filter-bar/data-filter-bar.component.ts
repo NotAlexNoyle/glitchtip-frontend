@@ -8,7 +8,7 @@ import {
   ChangeDetectionStrategy,
 } from "@angular/core";
 import { BreakpointObserver } from "@angular/cdk/layout";
-import { FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatOptionModule } from "@angular/material/core";
 import { MatSelectChange, MatSelectModule } from "@angular/material/select";
@@ -16,6 +16,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatChipsModule } from "@angular/material/chips";
 import { MatMenuModule } from "@angular/material/menu";
 import { SelectGhostDirective } from "src/app/shared/select-ghost.directive";
+import { FilterSearchComponent } from "src/app/shared/filter-search/filter-search";
 
 /** Wide enough for the issue list's Trend column; the trend control shows from here too. */
 export const TREND_MEDIA_QUERY = "(min-width: 1080px)";
@@ -48,6 +49,7 @@ export interface SearchHelpConfig {
     MatIconModule,
     MatChipsModule,
     MatMenuModule,
+    FilterSearchComponent,
   ],
   templateUrl: "./data-filter-bar.component.html",
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -66,6 +68,9 @@ export class DataFilterBarComponent {
   @Input() environmentForm?: FormGroup;
   @Input() searchForm?: FormGroup;
   readonly searchHelp = input<SearchHelpConfig>();
+  /** The band is off the page's default, so search offers Clear filters. */
+  readonly filtersActive = input(false);
+  readonly clearFilters = output();
   protected breakPointObserver = inject(BreakpointObserver);
   readonly organizationEnvironments = input<string[]>([]);
   statsPeriodToggleDisabled = input(true);
@@ -76,6 +81,10 @@ export class DataFilterBarComponent {
   readonly sortByChanged = output<MatSelectChange>();
 
   showTrend = signal(true);
+
+  searchControl() {
+    return this.searchForm?.get("query") as FormControl<string | null>;
+  }
 
   /** The chosen sort's name, for the ghost select's trigger. */
   sortLabel() {

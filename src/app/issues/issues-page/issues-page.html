@@ -21,6 +21,8 @@
       [statsPeriodToggleDisabled]="issues().length === 0"
       (filterByEnvironment)="filterByEnvironment($event)"
       (searchSubmit)="searchSubmit()"
+      [filtersActive]="filtersActive()"
+      (clearFilters)="clearFilters()"
       (sortByChanged)="sortByChanged($event)"
     />
   }
@@ -343,6 +345,8 @@
               @if (initialLoad()) {
                 <gt-issue-zero-states
                   [projects]="projects()"
+                  [filtersActive]="searchClearable()"
+                  (cleared)="clearFilters()"
                 ></gt-issue-zero-states>
               }
             </td>

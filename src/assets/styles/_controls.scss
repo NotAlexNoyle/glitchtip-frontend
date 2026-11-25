@@ -1,5 +1,6 @@
 @use "sass:list";
 @use "@angular/material" as mat;
+@use "variables" as vars;
 
 // 32px buttons and icon buttons for dense bars and panel headers.
 @mixin compact-buttons {
@@ -98,6 +99,46 @@ $narrow-band: 899px;
   height: $size;
   font-size: $size;
   line-height: $size;
+}
+
+// An icon button at a non-default size. Material centres the glyph from its
+// icon-size token, but mat-icon keeps its own 24px box; set both together.
+@mixin icon-button-size($button, $icon) {
+  @include mat.icon-button-overrides(
+    (
+      state-layer-size: $button,
+      icon-size: $icon,
+    )
+  );
+
+  .mat-icon {
+    @include icon-size($icon);
+  }
+}
+
+// A text box drawn like an outlined mat-form-field, for inputs that can't be one.
+@mixin outlined-input {
+  box-sizing: border-box;
+  height: 32px;
+  border-radius: vars.$shape-radius;
+  box-shadow: inset 0 0 0 1px $field-outline;
+
+  &:focus-within {
+    box-shadow: inset 0 0 0 2px
+      var(--mat-form-field-outlined-focus-outline-color, var(--mat-sys-primary));
+  }
+}
+
+// The bare input inside an outlined-input box.
+@mixin bare-input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
 }
 
 // Keyboard focus ring on our own controls and rows; negative offsets keep it

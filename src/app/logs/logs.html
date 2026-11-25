@@ -13,29 +13,17 @@
   <div class="gt-filter-band">
     <div class="gt-filter-bar">
       <form
+        gtFilterSearch
         [formGroup]="searchForm"
+        [control]="searchForm.controls.query"
+        i18n-label
+        label="Search logs"
+        i18n-placeholder
+        placeholder="Search message body..."
+        [active]="filtersActive()"
         (ngSubmit)="searchSubmit()"
-        class="gt-filter-bar__search gt-filter-search"
-      >
-        <input
-          class="gt-filter-search__input"
-          type="search"
-          formControlName="query"
-          i18n-aria-label
-          aria-label="Search logs"
-          i18n-placeholder
-          placeholder="Search message body..."
-        />
-        <button
-          i18n-aria-label
-          mat-icon-button
-          type="submit"
-          class="gt-filter-search__action"
-          aria-label="Search"
-        >
-          <mat-icon>search</mat-icon>
-        </button>
-      </form>
+        (cleared)="clearFilters()"
+      ></form>
 
       <span gtSelectGhost>
         <mat-select
@@ -70,13 +58,6 @@
           }
         </mat-select>
       </span>
-
-      @if (query() || level().length || service_() || start() || end()) {
-        <button mat-button (click)="clearFilters()" class="clear-btn">
-          <mat-icon>clear</mat-icon>
-          <span i18n>Clear filters</span>
-        </button>
-      }
     </div>
   </div>
 
@@ -123,15 +104,20 @@
               </div>
             }
           } @else if (initialLoadComplete() && !isLoading()) {
-            @if (query() || level().length || service_()) {
+            @if (filtersActive()) {
               <gt-empty-state
                 tall
                 icon="search"
                 i18n-title
                 title="No matching logs"
                 i18n-message
-                message="Try adjusting or clearing your filters."
-              />
+                message="Try adjusting your search, or clear your filters to see everything."
+              >
+                <button mat-button (click)="clearFilters()">
+                  <mat-icon>clear</mat-icon>
+                  <span i18n>Clear filters</span>
+                </button>
+              </gt-empty-state>
             } @else {
               <gt-empty-state
                 tall

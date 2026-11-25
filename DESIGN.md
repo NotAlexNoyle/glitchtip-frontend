@@ -163,8 +163,13 @@ Every record detail page opens with `gt-page-header`: the record's name, then on
 
 ### Tables
 
+Tables use `mat-table` inside `.table-container` with the shared global classes (see the Table pattern preview).
+
 - **Header row:** one size for every table. Column headers are 32px, in label-medium and `on-surface-variant`, set once in `material-overrides/_table.scss` (`$table-header-height`). The sticky action row above them (`.table-header`) keeps Material's own. Pages do not restyle header cells.
 - **Narrow screens:** columns drop as the window narrows, but the column header row stays, labeling the columns that remain.
+- **Numeric columns:** put `.table-numeric` on the header and cells. They right-align with tabular figures, and the sort arrow goes before the label (`arrowPosition="before"`). Identifiers that happen to be numbers, such as issue IDs, stay left-aligned.
+- **End column:** put `.table-end` on a short last column, such as a date, so it right-aligns.
+- **One right edge:** every table ends on the same right edge. The primary column flexes, secondary columns get a fixed width, and overflowing content truncates.
 
 ### Forms
 
@@ -173,10 +178,10 @@ Every record detail page opens with `gt-page-header`: the record's name, then on
 ### Filter bars
 
 - Two layers with two jobs. The top app bar scopes the data (projects, time range); the filter band under it refines the list (search, filters) and sets the view (trend period, sort).
-- The filter band is a full-bleed toolbar like `gt-record-band`: the `surface-container` tint, a bottom hairline, flush under the top app bar. `_filter-bar.scss` holds it as global classes (`gt-filter-band` on the band, `gt-filter-bar` on its row, `gt-filter-search` on the search); `gt-data-filter-bar` is a band, and Logs wraps its own filters in one. As the page's first child, the band takes the place of the body's top margin.
+- The filter band is a full-bleed toolbar like `gt-record-band`: the `surface-container` tint, a bottom hairline, flush under the top app bar. `_filter-bar.scss` holds it as global classes (`gt-filter-band` on the band, `gt-filter-bar` on its row); the search is the `form[gtFilterSearch]` component on every page; `gt-data-filter-bar` is a band, and Logs wraps its own filters in one. As the page's first child, the band takes the place of the body's top margin.
 - One order everywhere: search first and growing, then filters, then view controls at the end (`.gt-filter-bar__view` on the first). A page without search keeps the same order.
-- Search is an outlined field like every input (surface fill, the 3:1 field outline, the form field's 2px focus outline), so it reads as the place to type and is never mistaken for a hovered ghost select: an 18px leading icon, the text, then a submit glyph or, after a short hairline, a "Syntax" text button. It is 32px on one line and 40px on its own line when the band wraps.
-- Filters and view controls only change what you see, and each is a ghost select that shows only its value, written to explain itself ("All Environments", "24h trend", "Last Seen"), like the top app bar's "All projects" and "All times". The control's name stays its `aria-label`; no visible label in front. In the band they size to their value, so the caret follows the text (up to 240px, then the value truncates); the top app bar keeps fixed widths. View controls (trend, sort) sit at the end of their line at every width. Even a two-option choice is a ghost select here, so search stays the band's only shape; segmented controls belong in forms and settings.
+- Search is an outlined field like every input (surface fill, the 3:1 field outline, the form field's 2px focus outline), so it reads as the place to type and is never mistaken for a hovered ghost select: an 18px leading icon, the text, a clear button, and, after a short hairline, a "Syntax" text button when the page has search help. Enter submits; there is no submit glyph. The clear button (an ✕, labelled Clear filters) shows while the field has text or a band filter is set, and empties the search and the band's filters, not the top app bar's project or time range. On Issues that means every status: the is:unresolved default is ordinary search text. It sits in the field's spare room, so nothing moves when it appears. It is 32px on one line and 40px on its own line when the band wraps. The box and its focus are `controls.outlined-input`; use it for any other text box that can't be a form field, so every place you type looks and focuses the same.
+- Filters and view controls only change what you see, and each is a ghost select that shows only its value, written to explain itself ("All Environments", "24h trend", "Last Seen"), like the top app bar's "All projects" and "All times". The control's name stays its `aria-label`; no visible label in front. In the band they size to their value, so the caret follows the text (up to 240px, then the value truncates); the top app bar keeps fixed widths. View controls (trend, sort) sit at the end of their line at every width. Even a two-option choice is a ghost select here, so search stays the band's only shape; segmented controls belong in forms and settings. A filter's "all" choice comes first ("All Environments"). When the band wraps, the filters share the width the view controls leave, so a long value truncates instead of the line breaking again.
 - One line when the band is 720px or wider; below that search takes the first line and the other controls follow, two to a line on a phone. Wrapping follows the band's own width, not the window.
 
 ### Settings sections
@@ -214,14 +219,6 @@ Every setting on a settings page is a `gt-settings-section`: a title, an optiona
 ### Tag chips
 
 - Tags always render as tag chips (`.gt-tag-chip` in `.gt-tag-chips`): key muted, value bold, in a hairline pill with no shadow. A share ("93%", "2 of 15") sits inside the chip, muted, after a middle dot. `.gt-tag-chip--compact` (24px, label-medium) is the size for a summary line.
-
-### Tables
-
-Tables use `mat-table` inside `.table-container` with the shared global classes (see the Table pattern preview).
-
-- **Numeric columns:** put `.table-numeric` on the header and cells. They right-align with tabular figures, and the sort arrow goes before the label (`arrowPosition="before"`). Identifiers that happen to be numbers, such as issue IDs, stay left-aligned.
-- **End column:** put `.table-end` on a short last column, such as a date, so it right-aligns.
-- **One right edge:** every table ends on the same right edge. The primary column flexes, secondary columns get a fixed width, and overflowing content truncates.
 
 ## Accessibility
 
