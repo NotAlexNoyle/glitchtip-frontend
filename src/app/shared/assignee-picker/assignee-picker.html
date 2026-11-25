@@ -24,6 +24,25 @@
       />
     </div>
     <div class="scroll">
+      @for (shortcut of visibleShortcuts(); track shortcut.value) {
+        <button
+          mat-menu-item
+          class="item"
+          (click)="shortcutPicked.emit(shortcut.value)"
+        >
+          <span class="item__row">
+            <span class="item__name">{{ shortcut.label }}</span>
+            <mat-icon
+              class="item__check"
+              [class.invisible]="shortcut.value !== currentShortcut()"
+              >done</mat-icon
+            >
+          </span>
+        </button>
+      }
+      @if (visibleShortcuts().length && list().total) {
+        <mat-divider class="split" />
+      }
       @if (showMe() && me(); as me) {
         <button mat-menu-item class="item" (click)="pick(me)">
           <span class="item__row">

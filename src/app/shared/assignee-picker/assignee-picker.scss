@@ -3,6 +3,9 @@
 
 // Portaled into the menu overlay, but still in this component's style scope.
 
+// The theme's menu item inset, so labels, notes and names share one edge.
+$inset: 14px;
+
 .filter {
   display: flex;
   align-items: center;
@@ -41,15 +44,14 @@
   overflow-y: auto;
 }
 
-// The theme's 14px menu item inset, so labels and names share an edge.
 .group-label {
-  padding: var(--gt-space-3, 12px) 14px var(--gt-space-1, 4px);
+  padding: var(--gt-space-3, 12px) $inset var(--gt-space-1, 4px);
   color: var(--mat-sys-on-surface-variant);
   font: var(--mat-sys-label-medium);
 }
 
 .note {
-  padding: var(--gt-space-2, 8px) 14px;
+  padding: var(--gt-space-2, 8px) $inset;
   color: var(--mat-sys-on-surface-variant);
   font: var(--mat-sys-body-small);
 }
@@ -58,11 +60,11 @@
 .item {
   min-height: 36px;
 
-  // The trailing check makes Material use its 12px icon inset; keep the theme's 14px.
+  // The trailing check makes Material use its 12px icon inset; keep the theme's inset.
   @include mat.menu-overrides(
     (
-      item-with-icon-leading-spacing: 14px,
-      item-with-icon-trailing-spacing: 14px,
+      item-with-icon-leading-spacing: $inset,
+      item-with-icon-trailing-spacing: $inset,
     )
   );
 }

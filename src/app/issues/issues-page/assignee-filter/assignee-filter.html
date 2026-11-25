@@ -1,59 +1,23 @@
-<mat-form-field appearance="outline" subscriptSizing="dynamic">
-  <mat-label i18n>Assignee</mat-label>
-  <input
-    matInput
-    type="text"
-    autocomplete="off"
-    [value]="text()"
-    [matAutocomplete]="auto"
-    (input)="typed.set($any($event.target).value)"
-    (focus)="$any($event.target).select()"
-  />
-  <mat-icon matSuffix>arrow_drop_down</mat-icon>
-  <mat-autocomplete
-    #auto="matAutocomplete"
-    class="gt-assignee-filter-panel"
-    panelWidth="280px"
-    [displayWith]="labelFor"
-    (optionSelected)="select($event.option.value)"
-    (closed)="reset()"
-  >
-    @for (shortcut of visibleShortcuts(); track shortcut.value) {
-      <mat-option class="item" [value]="shortcut.value">
-        <span class="row">
-          <span class="label">{{ shortcut.label }}</span>
-          <mat-icon class="check" [class.invisible]="shortcut.value !== value()"
-            >done</mat-icon
-          >
-        </span>
-      </mat-option>
-    }
-    @if (list().total) {
-      <mat-divider class="split" />
-    }
-    @for (group of groups(); track group.label) {
-      @if (group.options.length) {
-        <div class="group-label">{{ group.label }}</div>
-        @for (option of group.options; track option.value) {
-          <mat-option
-            class="item"
-            [value]="valueFor(option)"
-            [title]="option.actor.email ?? ''"
-          >
-            <span class="row">
-              <gt-assignee-option [option]="option" />
-              <mat-icon class="check" [class.invisible]="!isCurrent(option)"
-                >done</mat-icon
-              >
-            </span>
-          </mat-option>
-        }
-      }
-    }
-    @if (noMatches()) {
-      <div class="note" i18n>No one matches</div>
-    } @else if (moreNote(); as note) {
-      <div class="note">{{ note }}</div>
-    }
-  </mat-autocomplete>
-</mat-form-field>
+<!-- A ghost dropdown like the band's selects; the shared picker's menu holds
+     the search, the shortcuts and the people and teams. -->
+<button
+  type="button"
+  class="gt-select-ghost"
+  [class.gt-select-ghost--open]="trigger.menuOpen"
+  [matMenuTriggerFor]="picker.menu()"
+  #trigger="matMenuTrigger"
+  [attr.aria-label]="ariaLabel()"
+>
+  <span class="gt-select-ghost__value">{{ display() || anyLabel }}</span>
+  <span class="gt-select-ghost__arrow" aria-hidden="true"></span>
+</button>
+<gt-assignee-picker
+  #picker="gtAssigneePicker"
+  xPosition="after"
+  [current]="currentActor()"
+  [showUnassign]="false"
+  [shortcuts]="shortcuts"
+  [currentShortcut]="currentShortcut()"
+  (shortcutPicked)="select($event)"
+  (picked)="select($event.actor ? valueForActor($event.actor) : null)"
+/>
