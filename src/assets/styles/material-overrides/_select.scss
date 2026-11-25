@@ -38,6 +38,7 @@
   }
 
   &:has(mat-select:focus-visible),
+  &:focus-visible,
   &.gt-select-ghost--open {
     @include controls.state-layer(focus);
   }
@@ -47,10 +48,39 @@
     outline: solid 1px;
 
     &:has(mat-select:focus-visible),
+    &:focus-visible,
     &.gt-select-ghost--open {
       outline-width: 2px;
     }
   }
+}
+
+// A menu trigger can be a ghost too: a bare button, with the same caret.
+button.gt-select-ghost {
+  gap: var(--gt-space-2, 8px);
+  border: 0;
+  background: transparent;
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-label-large);
+
+  // The state layer shows focus; forced colors keep the outline set above.
+  @media (forced-colors: none) {
+    outline: 0;
+  }
+
+  .gt-select-ghost__value {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+// mat-select's 10x5 arrow, for ghost triggers that aren't a mat-select.
+.gt-select-ghost__arrow {
+  flex: none;
+  border-inline: 5px solid transparent;
+  border-top: 5px solid var(--mat-sys-on-surface-variant);
 }
 
 // Muted label before the value ("Categories  All") when the value alone is unclear.

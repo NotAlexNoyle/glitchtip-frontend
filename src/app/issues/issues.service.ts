@@ -133,7 +133,8 @@ export class IssuesService extends StatefulService<IssuesState> {
     const params = this.params();
     const issues = this.issues();
     const statsPeriod = this.statsPeriod();
-    if (!params || !issues) {
+    // An empty page has nothing to chart, and the endpoint rejects no ids.
+    if (!params || !issues?.length) {
       return undefined;
     }
     return {

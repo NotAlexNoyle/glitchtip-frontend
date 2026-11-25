@@ -1,0 +1,23 @@
+<!-- A ghost dropdown like the band's selects; the shared picker's menu holds
+     the search, the shortcuts and the people and teams. -->
+<button
+  type="button"
+  class="gt-select-ghost"
+  [class.gt-select-ghost--open]="trigger.menuOpen"
+  [matMenuTriggerFor]="picker.menu()"
+  #trigger="matMenuTrigger"
+  [attr.aria-label]="ariaLabel()"
+>
+  <span class="gt-select-ghost__value">{{ display() || anyLabel }}</span>
+  <span class="gt-select-ghost__arrow" aria-hidden="true"></span>
+</button>
+<gt-assignee-picker
+  #picker="gtAssigneePicker"
+  xPosition="after"
+  [current]="currentActor()"
+  [showUnassign]="false"
+  [shortcuts]="shortcuts"
+  [currentShortcut]="currentShortcut()"
+  (shortcutPicked)="select($event)"
+  (picked)="select($event.actor ? valueForActor($event.actor) : null)"
+/>

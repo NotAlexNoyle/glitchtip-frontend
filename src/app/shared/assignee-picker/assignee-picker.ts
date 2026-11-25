@@ -30,6 +30,12 @@ export interface AssigneeChoice {
   actor: IssueActor | null;
 }
 
+/** A fixed row above the lists, in place of "Assign to me" (the list filter's Any assignee). */
+export interface AssigneeShortcut {
+  value: string | null;
+  label: string;
+}
+
 /** The menu focuses its panel once open; take focus back for typing. */
 @Directive({ selector: "input[gtFocusOnOpen]" })
 export class FocusOnOpenDirective {
@@ -64,6 +70,11 @@ export class AssigneePickerComponent {
   /** Which way the menu extends from its trigger. */
   readonly xPosition = input<"before" | "after">("before");
   readonly picked = output<AssigneeChoice>();
+  /** Rows above the lists instead of "Assign to me"; picking one emits shortcutPicked. */
+  readonly shortcuts = input<AssigneeShortcut[]>([]);
+  /** The shortcut to check, when the current value is one. */
+  readonly currentShortcut = input<string | null | undefined>(undefined);
+  readonly shortcutPicked = output<string | null>();
 
   readonly menu = viewChild.required(MatMenu);
 
@@ -82,12 +93,24 @@ export class AssigneePickerComponent {
     { label: $localize`Teams`, options: this.list().teams },
     { label: $localize`Members`, options: this.list().members },
   ]);
+  readonly visibleShortcuts = computed(() => {
+    const q = this.query().trim().toLowerCase();
+    return this.shortcuts().filter(
+      (s) => !q || s.label.toLowerCase().includes(q),
+    );
+  });
   readonly showMe = computed(() => {
     const me = this.me();
-    return !!me && matchesAssignee(me, this.query());
+    return (
+      !this.shortcuts().length && !!me && matchesAssignee(me, this.query())
+    );
   });
   readonly noMatches = computed(
-    () => !this.loading() && !this.showMe() && !this.list().total,
+    () =>
+      !this.loading() &&
+      !this.showMe() &&
+      !this.visibleShortcuts().length &&
+      !this.list().total,
   );
   readonly moreNote = computed(() => {
     const { shown, total } = this.list();
