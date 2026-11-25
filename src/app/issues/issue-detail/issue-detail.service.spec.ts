@@ -96,3 +96,132 @@ describe("IssueDetailService open", () => {
     );
   });
 });
+
+// Assignment (from !876).
+const ana = { type: "user" as const, id: "2", name: "Ana" };
+const platform = {
+  type: "team" as const,
+  id: "9",
+  name: "platform",
+  slug: "platform",
+};
+
+async function loadIssue(put: unknown) {
+  vi.spyOn(client, "GET").mockResolvedValue({
+    data: { id: "1", assignedTo: ana },
+    response: new Response(null, { status: 200 }),
+  } as never);
+  const putSpy = vi.spyOn(client, "PUT").mockResolvedValue(put as never);
+  const snackBar = { open: vi.fn() };
+  TestBed.configureTestingModule({
+    providers: [
+      provideRouter([]),
+      { provide: MatSnackBar, useValue: snackBar },
+      {
+        provide: OrganizationsService,
+        useValue: {
+          activeOrganizationSlug: signal("acme"),
+          orgPath: (slug: string) => ({ organization_id_or_slug: slug }),
+        },
+      },
+    ],
+  });
+  const service = TestBed.inject(IssueDetailService);
+  service.open("acme", "1");
+  await TestBed.inject(ApplicationRef).whenStable();
+  return { service, putSpy, snackBar };
+}
+
+describe("IssueDetailService.setAssignee", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+    TestBed.resetTestingModule();
+  });
+
+  it("sends the picked value and keeps the saved assignee", async () => {
+    const { service, putSpy } = await loadIssue({
+      data: { assignedTo: platform },
+    });
+    await service.setAssignee({ value: "team:platform", actor: platform });
+    expect(putSpy.mock.calls[0][1]).toMatchObject({
+      body: { assignedTo: "team:platform" },
+    });
+    expect(service.issue()?.assignedTo).toEqual(platform);
+  });
+
+  it("ignores a reply that arrives after moving to another issue", async () => {
+    let reply!: (value: unknown) => void;
+    const { service } = await loadIssue(undefined);
+    vi.mocked(client.PUT).mockReturnValue(
+      new Promise((resolve) => (reply = resolve)) as never,
+    );
+    const pending = service.setAssignee({
+      value: "team:platform",
+      actor: platform,
+    });
+    service.open("acme", "2");
+    await TestBed.inject(ApplicationRef).whenStable();
+    reply({ data: { assignedTo: platform } });
+    await pending;
+    expect(service.issue()?.assignedTo).toEqual(ana);
+  });
+
+  it("puts the previous assignee back when the backend refuses", async () => {
+    const { service, snackBar } = await loadIssue({
+      error: { detail: "Team not found" },
+    });
+    await service.setAssignee({ value: "team:platform", actor: platform });
+    expect(service.issue()?.assignedTo).toEqual(ana);
+    expect(snackBar.open).toHaveBeenCalled();
+  });
+
+  // Each PUT waits until the test answers it, so calls can overlap.
+  function heldPuts() {
+    const replies: ((value: unknown) => void)[] = [];
+    vi.mocked(client.PUT).mockImplementation(
+      () => new Promise((resolve) => replies.push(resolve)) as never,
+    );
+    return replies;
+  }
+
+  it("ends on the saved assignee when overlapping assigns both fail", async () => {
+    const { service, snackBar } = await loadIssue(undefined);
+    const replies = heldPuts();
+    const first = service.setAssignee({
+      value: "team:platform",
+      actor: platform,
+    });
+    const second = service.setAssignee({ value: "user:3", actor: null });
+    replies[0]({ error: { detail: "nope" } });
+    replies[1]({ error: { detail: "nope" } });
+    await Promise.all([first, second]);
+    // Not platform: the first assign never saved.
+    expect(service.issue()?.assignedTo).toEqual(ana);
+    expect(snackBar.open).toHaveBeenCalledTimes(1);
+  });
+
+  it("keeps the first assignee when only the second assign fails", async () => {
+    const { service } = await loadIssue(undefined);
+    const replies = heldPuts();
+    const first = service.setAssignee({
+      value: "team:platform",
+      actor: platform,
+    });
+    const second = service.setAssignee({ value: "user:3", actor: null });
+    replies[1]({ error: { detail: "nope" } });
+    await second;
+    // Still waiting on the first, so the bar doesn't jump back yet.
+    expect(service.issue()?.assignedTo).toBeNull();
+    replies[0]({ data: { assignedTo: platform } });
+    await first;
+    expect(service.issue()?.assignedTo).toEqual(platform);
+  });
+
+  it("treats a network failure as a failed assign", async () => {
+    const { service, snackBar } = await loadIssue(undefined);
+    vi.mocked(client.PUT).mockRejectedValue(new TypeError("Failed to fetch"));
+    await service.setAssignee({ value: "team:platform", actor: platform });
+    expect(service.issue()?.assignedTo).toEqual(ana);
+    expect(snackBar.open).toHaveBeenCalled();
+  });
+});

@@ -7,6 +7,8 @@ import {
   input,
   effect,
   LOCALE_ID,
+  viewChild,
+  ElementRef,
 } from "@angular/core";
 import { CompactNumberPipe } from "src/app/shared/compact-number.pipe";
 import { ActivatedRoute, RouterModule } from "@angular/router";
@@ -35,6 +37,16 @@ import { MatDialog } from "@angular/material/dialog";
 import { PanelComponent } from "src/app/shared/panel/panel.component";
 import { EmptyStateComponent } from "src/app/shared/empty-state/empty-state.component";
 import { IssueTagsSummaryComponent } from "./issue-tags-summary/issue-tags-summary.component";
+import { take } from "rxjs";
+import { MatMenuModule, MatMenuTrigger } from "@angular/material/menu";
+import {
+  AssigneeChoice,
+  AssigneePickerComponent,
+} from "src/app/shared/assignee-picker/assignee-picker";
+import {
+  assigneeInitials,
+  assigneeLabel,
+} from "src/app/shared/assignee-picker/assignee-options.service";
 
 const STATUS_COLOR: Record<IssueStatus, string> = {
   unresolved: "var(--info-color)",
@@ -67,6 +79,8 @@ const STATUS_COLOR: Record<IssueStatus, string> = {
     PanelComponent,
     EmptyStateComponent,
     IssueTagsSummaryComponent,
+    MatMenuModule,
+    AssigneePickerComponent,
   ],
 })
 export class IssueDetailComponent implements OnInit {
@@ -75,6 +89,26 @@ export class IssueDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private dialog = inject(MatDialog);
   private locale = inject(LOCALE_ID);
+
+  assignee = computed(() => this.issue()?.assignedTo ?? null);
+  assigneeLabel = computed(() => {
+    const actor = this.assignee();
+    return actor ? assigneeLabel(actor) : null;
+  });
+  assigneeIcon = computed(() => {
+    const actor = this.assignee();
+    return actor?.type === "team" ? "groups" : "person";
+  });
+  /** Initials in the bar: a circle for a person, a square for a team. */
+  assigneeInitials = computed(() => {
+    const actor = this.assignee();
+    return actor ? assigneeInitials(actor) : null;
+  });
+  // The button shows initials or an icon, so the full name lives in the tooltip.
+  assigneeTip = computed(() => {
+    const label = this.assigneeLabel();
+    return label ? $localize`Assigned to ${label}` : $localize`Assign issue`;
+  });
 
   readonly issueNotFoundMessage = [
     $localize`This may be because the URL is pointing to an issue that doesn't exist or was deleted.`,
@@ -185,6 +219,32 @@ export class IssueDetailComponent implements OnInit {
 
   updateIssueStatus(status: IssueStatus) {
     this.issueService.setStatus(status);
+  }
+
+  private narrowPicker = viewChild<MatMenuTrigger>("narrowPicker");
+
+  private moreButton = viewChild<string, ElementRef<HTMLElement>>(
+    "moreButton",
+    {
+      read: ElementRef,
+    },
+  );
+
+  /** Narrow bar: the More menu hands over to the picker once it has closed. */
+  openNarrowPicker() {
+    setTimeout(() => {
+      const trigger = this.narrowPicker();
+      if (!trigger) return;
+      // The anchor can't take focus, so give it back to More actions.
+      trigger.menuClosed
+        .pipe(take(1))
+        .subscribe(() => this.moreButton()?.nativeElement.focus());
+      trigger.openMenu();
+    });
+  }
+
+  setAssignee(choice: AssigneeChoice) {
+    this.issueService.setAssignee(choice);
   }
 
   resolveInNextRelease() {

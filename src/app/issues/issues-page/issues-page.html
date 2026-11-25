@@ -74,8 +74,7 @@
                   <div class="status-button-group">
                     <button
                       data-cy="bulkMarkResolved"
-                      mat-flat-button
-                      color="primary"
+                      mat-stroked-button
                       (click)="updateStatus('resolved')"
                       [disabled]="thereAreSelectedIssues() === false"
                       i18n
@@ -94,6 +93,13 @@
                       [disabled]="thereAreSelectedIssues() === false"
                       i18n
                       >Mark ignored</button
+                    >
+                    <button
+                      mat-stroked-button
+                      [matMenuTriggerFor]="bulkPicker.menu()"
+                      [disabled]="thereAreSelectedIssues() === false"
+                      i18n
+                      >Assign</button
                     >
                     <button
                       mat-stroked-button
@@ -138,6 +144,12 @@
                     >
                     <button mat-menu-item (click)="updateStatus('ignored')" i18n
                       >Mark ignored</button
+                    >
+                    <button
+                      mat-menu-item
+                      [matMenuTriggerFor]="bulkPicker.menu()"
+                      i18n
+                      >Assign</button
                     >
                     <button
                       mat-menu-item
@@ -225,6 +237,12 @@
                     </time></ng-container>
                   }
                 </span>
+                @if (element.assignedTo; as actor) {
+                  <span class="caption-text row-assignee" i18n
+                    ><span class="cdk-visually-hidden">Assigned to </span
+                    >{{ assigneeLabel(actor) }}</span
+                  >
+                }
                 @if (element.type && element.type === "csp") {
                   <span class="caption-text">
                     @if (appliedProjectCount() !== 1 && element.type) {
@@ -348,6 +366,11 @@
             </td>
           </tr>
         </table>
+        <gt-assignee-picker
+          #bulkPicker="gtAssigneePicker"
+          xPosition="after"
+          (picked)="assignSelected($event)"
+        />
       }
     </gt-loading-overlay>
   </div>

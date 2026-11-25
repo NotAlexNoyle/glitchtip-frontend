@@ -33,6 +33,12 @@
     </ng-container>
     <ng-container slot="right">
       <div class="top-bar-actions">
+        <gt-assignee-picker
+          #picker="gtAssigneePicker"
+          [current]="assignee()"
+          [showUnassign]="!!assignee()"
+          (picked)="setAssignee($event)"
+        />
         <gt-issue-status-update-dropdown
           [selectedValue]="issue.status"
           [statusColor]="statusColor()"
@@ -40,9 +46,35 @@
           (optionSelected)="updateIssueStatus($event)"
           (resolveInNextReleaseSelected)="resolveInNextRelease()"
         />
-        <span class="gt-bar-divider" aria-hidden="true"></span>
         <button
           mat-icon-button
+          class="wide-only assign-button"
+          [matMenuTriggerFor]="picker.menu()"
+          #assignIconTrigger="matMenuTrigger"
+          [matTooltip]="assigneeTip()"
+          [matTooltipDisabled]="assignIconTrigger.menuOpen"
+          [attr.aria-label]="assigneeTip()"
+        >
+          @if (assigneeInitials(); as initials) {
+            <span
+              class="assign-initials"
+              [class.assign-initials--team]="assignee()?.type === 'team'"
+              aria-hidden="true"
+              >{{ initials }}</span
+            >
+          } @else {
+            <mat-icon
+              class="assign-icon"
+              [class.assign-icon--empty]="!assignee()"
+              [class.material-symbols-outlined]="!assignee()"
+              >{{ assigneeIcon() }}</mat-icon
+            >
+          }
+        </button>
+        <span class="gt-bar-divider wide-only" aria-hidden="true"></span>
+        <button
+          mat-icon-button
+          class="wide-only"
           matTooltip="Delete issue"
           i18n-matTooltip
           aria-label="Delete issue"
@@ -51,6 +83,40 @@
         >
           <mat-icon>delete</mat-icon>
         </button>
+        <span
+          class="narrow-only picker-anchor"
+          aria-hidden="true"
+          [matMenuTriggerFor]="picker.menu()"
+          #narrowPicker="matMenuTrigger"
+        ></span>
+        <button
+          mat-icon-button
+          class="narrow-only"
+          #moreButton
+          [matMenuTriggerFor]="moreMenu"
+          matTooltip="More actions"
+          i18n-matTooltip
+          aria-label="More actions"
+          i18n-aria-label
+        >
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #moreMenu="matMenu" xPosition="before">
+          <!-- Opens the picker after this menu closes; a submenu doesn't open on tap. -->
+          <button mat-menu-item (click)="openNarrowPicker()">
+            <mat-icon
+              class="assign-icon"
+              [class.assign-icon--empty]="!assignee()"
+              [class.material-symbols-outlined]="!assignee()"
+              >{{ assigneeIcon() }}</mat-icon
+            >
+            <span>{{ assigneeTip() }}</span>
+          </button>
+          <button mat-menu-item (click)="deleteIssue()">
+            <mat-icon>delete</mat-icon>
+            <span i18n>Delete issue</span>
+          </button>
+        </mat-menu>
       </div>
     </ng-container>
   </gt-top-app-bar>

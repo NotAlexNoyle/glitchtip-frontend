@@ -28,6 +28,7 @@ import { client } from "src/app/shared/api/api";
 import { getCursor } from "src/app/shared/pagination.utils";
 import { components } from "src/app/api/api-schema";
 import { rawTrace, stackFrames } from "./event-detail/event-format";
+import { AssigneeChoice } from "src/app/shared/assignee-picker/assignee-picker";
 
 type EventDetail = components["schemas"]["IssueEventDetailSchema"];
 type IssueDetail = components["schemas"]["IssueDetailSchema"];
@@ -445,6 +446,58 @@ export class IssueDetailService extends StatefulService<IssueDetailState> {
         }
       }
     }
+  }
+
+  #assignCall = 0;
+  #assignIssueID = "";
+  // Bumped when counting restarts, so calls from an earlier visit don't count
+  #assignRun = 0;
+  #assignsInFlight = 0;
+  // What the server last confirmed; shown once no assign is in flight
+  #savedAssignee: IssueDetail["assignedTo"] = null;
+
+  async setAssignee(choice: AssigneeChoice) {
+    const issue = this.issue();
+    if (!issue) return;
+    const issueID = this.issueID();
+    const call = ++this.#assignCall;
+    if (this.#assignIssueID !== issueID || this.#assignsInFlight === 0) {
+      this.#assignIssueID = issueID;
+      this.#assignRun++;
+      this.#assignsInFlight = 0;
+      this.#savedAssignee = issue.assignedTo ?? null;
+    }
+    const show = (assignedTo: IssueDetail["assignedTo"]) =>
+      this.#issueResource.update((i) => (i ? { ...i, assignedTo } : i));
+    // Optimistic: the name is known locally, so show it before the round trip.
+    show(choice.actor);
+    const run = this.#assignRun;
+    this.#assignsInFlight++;
+    let saved: IssueDetail["assignedTo"] | undefined;
+    try {
+      const { data, error } = await client.PUT(
+        "/api/0/organizations/{organization_id_or_slug}/issues/{issue_id}/",
+        {
+          params: {
+            path: {
+              ...this.organization.orgPath(this.orgSlug()),
+              issue_id: parseInt(issueID),
+            },
+          },
+          body: { assignedTo: choice.value },
+        },
+      );
+      if (!error && data) saved = data.assignedTo ?? null;
+    } catch {
+      // A network failure is a failed assign too
+    }
+    if (issueID !== this.issueID() || run !== this.#assignRun) return;
+    this.#assignsInFlight--;
+    if (saved !== undefined) this.#savedAssignee = saved;
+    else if (call === this.#assignCall) {
+      this.snackBar.open($localize`Error, unable to assign issue`);
+    }
+    if (this.#assignsInFlight === 0) show(this.#savedAssignee);
   }
 
   updateCommentCount(num: number) {

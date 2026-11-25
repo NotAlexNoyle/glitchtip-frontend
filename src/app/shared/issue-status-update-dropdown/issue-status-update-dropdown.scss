@@ -16,9 +16,11 @@
   visibility: hidden;
 }
 
-// All labels in one grid cell: the button is as wide as the longest.
+// All labels in one grid cell, at the shared bar dropdown label width.
 .status-label {
   display: inline-grid;
+  width: controls.$bar-label-width;
+  text-align: start;
 
   > * {
     grid-area: 1 / 1;
@@ -35,7 +37,9 @@
   align-items: center;
 }
 
+// The dot sits centred in an 18px slot, the width of an icon in other bar
+// dropdowns, so labels start at the same offset.
 .status-dot {
   @include controls.status-dot;
-  margin-inline-end: var(--gt-space-2, 8px);
+  margin-inline: 5.5px calc(5.5px + var(--gt-space-2, 8px));
 }

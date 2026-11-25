@@ -1,0 +1,82 @@
+<mat-menu
+  class="gt-assignee-menu"
+  yPosition="below"
+  [xPosition]="xPosition()"
+  [overlapTrigger]="false"
+  (closed)="onMenuClosed()"
+>
+  <ng-template matMenuContent>
+    <div class="filter" (click)="$event.stopPropagation()">
+      <mat-icon class="filter__icon" aria-hidden="true">search</mat-icon>
+      <input
+        #filter
+        class="filter__input"
+        type="text"
+        autocomplete="off"
+        i18n-placeholder
+        placeholder="Filter people and teams"
+        i18n-aria-label
+        aria-label="Filter people and teams"
+        [value]="query()"
+        (input)="query.set(filter.value)"
+        (keydown)="onFilterKeydown($event)"
+        (focus)="loadOptions()"
+        gtFocusOnOpen
+      />
+    </div>
+    <div class="scroll">
+      @if (showMe() && me(); as me) {
+        <button mat-menu-item class="item" (click)="pick(me)">
+          <span class="item__row">
+            <span class="item__name" i18n>Assign to me</span>
+            <mat-icon class="item__check" [class.invisible]="!isCurrent(me)"
+              >done</mat-icon
+            >
+          </span>
+        </button>
+        @if (list().total) {
+          <mat-divider class="split" />
+        }
+      }
+      @for (group of groups(); track group.label) {
+        @if (group.options.length) {
+          <div class="group-label">{{ group.label }}</div>
+          @for (option of group.options; track option.value) {
+            <button
+              mat-menu-item
+              class="item"
+              [title]="option.actor.email ?? ''"
+              (click)="pick(option)"
+            >
+              <span class="item__row">
+                <gt-assignee-option [option]="option" />
+                <mat-icon
+                  class="item__check"
+                  [class.invisible]="!isCurrent(option)"
+                  >done</mat-icon
+                >
+              </span>
+            </button>
+          }
+        }
+      }
+      <div role="status">
+        @if (loading()) {
+          <div class="note" i18n>Loading…</div>
+        } @else if (noMatches()) {
+          <div class="note" i18n>No one matches</div>
+        } @else if (moreNote(); as note) {
+          <div class="note">{{ note }}</div>
+        }
+      </div>
+    </div>
+    @if (showUnassign()) {
+      <mat-divider />
+      <button mat-menu-item class="item" (click)="pick(null)">
+        <span class="item__row">
+          <span class="item__name" i18n>Unassign</span>
+        </span>
+      </button>
+    }
+  </ng-template>
+</mat-menu>
