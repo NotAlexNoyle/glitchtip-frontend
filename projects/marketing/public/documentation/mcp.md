@@ -64,7 +64,7 @@ Any MCP-compatible client can connect to the endpoint. The server uses the Strea
 
 ## Available Tools
 
-The MCP server exposes 17 tools across several categories:
+The MCP server exposes 18 tools across several categories:
 
 ### Organizations & Projects
 
@@ -77,6 +77,7 @@ The MCP server exposes 17 tools across several categories:
 - **get_issue** — Get details for a single issue by ID
 - **get_latest_event** — Get the latest event for an issue
 - **get_event** — Look up a specific event by ID, returned with its parent issue
+- **get_event_detail** — Get more information about a specific event
 - **update_issue** — Resolve, unresolve, or ignore an issue
 
 ### Performance Monitoring
