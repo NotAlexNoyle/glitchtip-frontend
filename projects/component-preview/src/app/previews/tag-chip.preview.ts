@@ -39,21 +39,6 @@ interface Tag {
           }
         </ul>
       </div>
-
-      <div class="preview-section">
-        <div class="preview-section__title">As text, for a summary line</div>
-        <ul class="gt-tag-chips gt-tag-chips--text">
-          @for (t of summary; track t.key) {
-            <li>
-              <a class="gt-tag-chip" href="#">
-                <span class="gt-tag-chip__key">{{ t.key }}</span>
-                <span class="gt-tag-chip__value">{{ t.value }}</span>
-                <span class="gt-tag-chip__share">{{ t.share }}</span>
-              </a>
-            </li>
-          }
-        </ul>
-      </div>
     </preview-doc>
   `,
 })
@@ -63,20 +48,14 @@ export class TagChipPreview {
     { key: "browser", value: "Firefox 131", share: "2 of 15" },
     { key: "release", value: "checkout@4.2.0" },
   ];
-  readonly summary: Tag[] = [
-    { key: "feature_flag", value: "checkout_v2", share: "93%" },
-    { key: "os", value: "Windows", share: "71%" },
-  ];
 
   readonly whenToUse = ["Showing a tag (key and value) anywhere"];
   readonly dos = [
     "Wrap several chips in a .gt-tag-chips list",
     "Put a share inside the chip in .gt-tag-chip__share",
-    "Add --text to the list on a one-line summary, so the tags read like the meta line",
   ];
   readonly donts = [
     "Type the middle dot into a translated string",
-    "Write a tag as key: value text by hand; use the --text list",
     "Colour a chip; tags are neutral",
   ];
   readonly api: ApiRow[] = [
@@ -94,12 +73,6 @@ export class TagChipPreview {
       name: ".gt-tag-chips",
       type: "class",
       description: "Wrapping list of chips (ul > li)",
-    },
-    {
-      name: ".gt-tag-chips--text",
-      type: "class",
-      description:
-        "On the list: tags as text with dots between, for a summary line",
     },
   ];
   readonly code = `<ul class="gt-tag-chips">

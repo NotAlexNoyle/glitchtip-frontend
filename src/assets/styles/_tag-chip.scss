@@ -1,6 +1,5 @@
 @use "controls";
 @use "row-mixins" as rows;
-@use "object-header";
 // A tag: muted key, bold value, optional share, in a hairline pill.
 .gt-tag-chip {
   display: inline-flex;
@@ -20,9 +19,11 @@
   text-decoration: none;
   vertical-align: middle;
 
+  // A state layer, so hover shows on any surface (band, strip or panel).
   &:is(a):hover {
     border-color: var(--mat-sys-outline);
-    background-color: var(--mat-sys-surface-container);
+    text-decoration: none;
+    @include controls.state-layer(hover);
   }
 
   &:focus-visible {
@@ -73,34 +74,5 @@
     align-items: center;
     min-width: 0;
     max-width: 100%;
-  }
-}
-
-// In a summary, tags read as text like the meta line: no pills, drawn dots
-// between them. A dot that starts a wrapped line is clipped.
-.gt-tag-chips--text {
-  column-gap: 0;
-  margin-left: calc(-1 * #{object-header.$sep-gap});
-  // Room above and below for the links' focus rings.
-  clip-path: inset(-4px -4px -4px object-header.$sep-gap);
-
-  > li {
-    position: relative;
-    margin-left: object-header.$sep-gap;
-
-    &::before {
-      @include object-header.separator;
-    }
-  }
-
-  .gt-tag-chip {
-    padding: 0;
-    border: 0;
-    font: var(--mat-sys-body-medium);
-
-    &:is(a):hover {
-      background-color: transparent;
-      text-decoration: underline;
-    }
   }
 }

@@ -214,7 +214,7 @@ $chev-slot: rows.$chev-slot;
   color: var(--mat-sys-on-surface-variant);
 
   .gt-mono {
-    font-size: 0.75rem;
+    font-size: var(--mat-sys-body-small-size);
   }
 }
 

@@ -57,7 +57,7 @@ $stack-below: 559px;
 .crumbs__time {
   grid-area: time;
   font-family: vars.$font-mono, monospace;
-  font-size: 0.75rem;
+  font-size: var(--mat-sys-body-small-size);
   font-variant-numeric: tabular-nums;
   color: var(--mat-sys-on-surface-variant);
 }
