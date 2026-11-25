@@ -57,12 +57,16 @@ import {
   withAssignedFilter,
 } from "../assignee-query";
 import { IssueActor } from "../interfaces";
+import { StatusPillComponent } from "src/app/shared/status-pill/status-pill.component";
+import { ISSUE_STATUS } from "../issue-status";
+import { termValues } from "../search-terms";
 
 @Component({
   templateUrl: "./issues-page.html",
   styleUrls: ["./issues-page.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    StatusPillComponent,
     MatTableModule,
     DataFilterBarComponent,
     MatCheckboxModule,
@@ -177,6 +181,15 @@ export class IssuesPage implements OnInit, OnDestroy {
       queryParamsHandling: "merge",
     });
   }
+
+  readonly statusOf = (status: IssueStatus) => ISSUE_STATUS[status];
+  // Statuses the search already names (is:resolved), so rows don't repeat them
+  private readonly queriedStatuses = computed(
+    () => new Set(termValues(this.listQuery(), "is")),
+  );
+  /** A row says its status only when it isn't unresolved and the search doesn't already. */
+  readonly showStatus = (status: IssueStatus) =>
+    status !== "unresolved" && !this.queriedStatuses().has(status);
   private lastClickedIssueId = signal<string | null>(null);
   // The trend chart has a fixed width, so it needs room beyond the sidebar.
   private readonly roomForTrend = toSignal(

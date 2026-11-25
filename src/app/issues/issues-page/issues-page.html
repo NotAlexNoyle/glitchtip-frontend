@@ -58,8 +58,6 @@
             <td
               mat-cell
               *matCellDef="let row"
-              [class.resolved]="row.status === 'resolved'"
-              [class.ignored]="row.status === 'ignored'"
               class="checkbox-cell level level--{{ row.level }}"
             >
               <mat-checkbox
@@ -199,21 +197,9 @@
             <td
               mat-cell
               *matCellDef="let element"
-              [class.resolved]="element.status === 'resolved'"
-              [class.ignored]="element.status === 'ignored'"
               class="title-cell"
             >
               <div class="table-group-label">
-                @if (element.status === "resolved") {
-                  <mat-icon inline="true" class="resolved-icon">
-                    done
-                  </mat-icon>
-                }
-                @if (element.status === "ignored") {
-                  <mat-icon inline="true" class="mute-icon">
-                    notifications_off
-                  </mat-icon>
-                }
                 <a [routerLink]="element.id" queryParamsHandling="merge">{{
                   element.title
                 }}</a>
@@ -222,6 +208,14 @@
                 <ng-container i18n>{element.count, plural, =1 {1 event} other {{{ element.count }} events}}</ng-container>
               </div>
               <div>
+                @if (showStatus(element.status)) {
+                  @let status = statusOf(element.status);
+                  <gt-status-pill
+                    class="row-status"
+                    [label]="status.label"
+                    [color]="status.color"
+                  />
+                }
                 @if (appliedProjectCount() !== 1) {
                   <span class="caption-text"> {{ element.projectSlug }} </span>
                 }
@@ -314,8 +308,6 @@
             <td
               mat-cell
               *matCellDef="let element"
-              [class.resolved]="element.status === 'resolved'"
-              [class.ignored]="element.status === 'ignored'"
               class="event-cell body-text table-numeric"
             >
               <p>{{ element.count | number }}</p>
@@ -330,8 +322,6 @@
             <td
               mat-cell
               *matCellDef="let element"
-              [class.resolved]="element.status === 'resolved'"
-              [class.ignored]="element.status === 'ignored'"
             >
               <div class="stats-cell-content">
                 <gt-issue-chart
