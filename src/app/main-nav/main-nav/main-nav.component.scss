@@ -7,7 +7,7 @@ $nav-motion: 200ms cubic-bezier(0.2, 0, 0, 1);
 
 // This make the app cover the whole screen at all times
 mat-sidenav {
-  @include shell.dot-corner(320px max(360px, 72vh) at 0 100%);
+  @include shell.dot-corner(240px 280px at 0 100%);
 }
 
 mat-sidenav-container {

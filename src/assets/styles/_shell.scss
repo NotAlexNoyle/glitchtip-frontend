@@ -1,24 +1,23 @@
 @use "variables" as vars;
 
 // The app's one decorative touch: faint gray dots in the nav's empty bottom
-// left, fading up and inward. Fixed to the window, so it stays put on scroll.
+// left corner, fading up and inward.
 @mixin dot-corner($fade) {
   $base: var(--mat-sys-surface-container-low);
 
   background:
     radial-gradient(
-        $fade,
-        transparent 0%,
-        color-mix(in srgb, $base 55%, transparent) 45%,
-        $base 95%
-      )
-      fixed,
+      $fade,
+      transparent 0%,
+      color-mix(in srgb, $base 60%, transparent) 40%,
+      $base 90%
+    ),
     radial-gradient(
         circle,
-        color-mix(in srgb, var(--mat-sys-outline) 52%, transparent) 0.8px,
-        transparent 1.3px
+        color-mix(in srgb, var(--mat-sys-outline) 30%, transparent) 0.7px,
+        transparent 1.2px
       )
-      0 0 / 10px 10px fixed,
+      0 0 / 10px 10px,
     $base;
 }
 
