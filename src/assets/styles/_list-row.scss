@@ -1,3 +1,5 @@
+@use "controls";
+
 // gt-list-row's projected content. Global, as these elements belong to the caller.
 
 gt-list-row .list-row__main a {
@@ -12,12 +14,7 @@ gt-list-row .list-row__main a {
 
 // Fixed attribute such as Owner or Primary; a state is a status pill.
 gt-list-row .list-row__tag {
-  padding: 0 var(--gt-space-2, 8px);
-  border-radius: var(--mat-sys-corner-extra-small);
-  font: var(--mat-sys-label-medium);
-  color: var(--mat-sys-on-surface-variant);
-  background-color: var(--mat-sys-surface-container-highest);
-  white-space: nowrap;
+  @include controls.badge;
 }
 
 // Each meta fact is its own span, so translators never see the separators.

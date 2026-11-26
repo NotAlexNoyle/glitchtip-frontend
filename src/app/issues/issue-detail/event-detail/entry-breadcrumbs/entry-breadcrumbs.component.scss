@@ -1,118 +1,215 @@
-@use "@angular/material" as mat;
+@use "controls";
 @use "variables" as vars;
+@use "row-mixins" as rows;
+@use "issue-level";
 
-.breadcrumbs-header {
+// A grid table that restacks under 560px, ending at the "This event" row.
+
+$time-w: 112px;
+$level-w: 80px;
+$cat-w: 112px;
+// Under this the row stacks: time, level and category, then the message.
+$stack-below: 559px;
+
+.crumbs__row {
+  display: grid;
+  grid-template-columns: $time-w $level-w $cat-w minmax(0, 1fr) rows.$chev-slot;
+  grid-template-areas: "time level cat msg end";
+  align-items: center;
+  column-gap: var(--gt-space-4, 16px);
+  box-sizing: border-box;
+  min-height: 32px;
+  padding: 0 var(--gt-space-4, 16px);
+  font: var(--mat-sys-body-medium);
+}
+
+.crumbs__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  > li {
+    border-top: 1px solid var(--mat-sys-outline-variant);
+  }
+}
+
+.crumbs__row--head {
+  font: var(--mat-sys-label-medium);
+  color: var(--mat-sys-on-surface-variant);
+
+  > :nth-child(1) {
+    grid-area: time;
+  }
+
+  > :nth-child(2) {
+    grid-area: level;
+  }
+
+  > :nth-child(3) {
+    grid-area: cat;
+  }
+
+  > :nth-child(4) {
+    grid-area: msg;
+  }
+}
+
+.crumbs__time {
+  grid-area: time;
+  font-family: vars.$font-mono, monospace;
+  font-size: var(--mat-sys-body-small-size);
+  font-variant-numeric: tabular-nums;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.crumbs__level {
+  grid-area: level;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 32px;
-  margin-bottom: 12px;
-  h3 {
-    margin: 0;
+  font: var(--mat-sys-label-medium);
+
+  // Level words carry their meaning in colour, AA on the row in both modes.
+  &--error {
+    color: var(--mat-sys-error);
   }
-  mat-form-field {
-    min-width: 200px;
+
+  &--warning {
+    color: color-mix(
+      in srgb,
+      var(--log-warn-color) 85%,
+      var(--mat-sys-on-surface)
+    );
   }
 }
 
-.wrapper {
+// Level is a bar plus a word, for warning, error and fatal only; the bar paints as on the issue header.
+.crumbs__level-bar {
   position: relative;
-  margin-bottom: 24px;
-  border: 1px solid var(--mat-sys-outline-variant);
+  display: inline-block;
+  flex: none;
+  width: 3px;
+  height: 10px;
+  margin-inline-end: 6px;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: var(--mat-sys-corner-full);
+  }
+
+  @include issue-level.accent;
 }
 
-ul {
-  padding-left: 0;
-  margin-top: 0;
-  margin-bottom: 0;
+.crumbs__cat {
+  grid-area: cat;
+  @include rows.truncate;
+  color: var(--mat-sys-on-surface-variant);
+}
 
-  li {
-    list-style: none;
-    font-size: 14px;
-    line-height: 20px;
+// 16px, neutral: colour stays with the level.
+.crumbs__icon {
+  @include controls.icon-size(16px);
+  margin-inline-end: var(--gt-space-1, 4px);
+  vertical-align: -3px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.crumbs__msg {
+  grid-area: msg;
+  @include rows.truncate;
+  min-width: 0;
+}
+
+.crumbs__end {
+  grid-area: end;
+}
+
+.crumbs__this {
+  font: var(--mat-sys-label-medium);
+  font-weight: 600;
+  color: var(--mat-sys-on-surface);
+}
+
+.crumbs__row--marker .crumbs__msg {
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.crumbs__more {
+  padding: 0 var(--gt-space-1, 4px);
+}
+
+// A long message in full, under the Message column.
+.crumbs__full {
+  margin: 0;
+  padding: 0 var(--gt-space-4, 16px) var(--gt-space-2, 8px)
+    calc(var(--gt-space-4, 16px) * 4 + #{$time-w + $level-w + $cat-w});
+  font: var(--mat-sys-body-medium);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+// Keys under Level and Category, values under Message.
+.crumbs__data {
+  padding-block: 0 var(--gt-space-2, 8px);
+
+  .gt-property-list__row {
+    --gt-label-w: calc(#{$level-w + $cat-w} + var(--gt-space-4, 16px));
+    min-height: 28px;
+    padding-inline-start: calc(var(--gt-space-4, 16px) * 2 + #{$time-w});
   }
 }
 
-.expand-button {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  text-align: left;
-  width: 100%;
-  position: absolute;
-  bottom: 0;
-  background: white;
-  border-top: 1px solid var(--mat-sys-outline-variant);
-  box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.12);
-  z-index: 1;
-
-  mat-icon {
-    margin-right: 8px;
-  }
+.narrow-only {
+  display: none;
 }
 
-.bread-box {
-  height: 1250px;
-  overflow: hidden;
-
-  &--expanded {
-    height: 100%;
-  }
-}
-
-.table-wrapper {
-  padding-left: 8px;
-  padding-right: 8px;
-}
-
-.category {
-  font-weight: 700;
-}
-
-.error {
-  background-color: var(--mat-sys-surface-container-high);
-}
-
-table {
-  width: 100%;
-  padding-top: 8px;
-  padding-bottom: 8px;
-
-  .column-one {
-    width: 24px;
-    padding-right: 8px;
-
-    // TODO: Use theme colors
-    .error {
-      color: red;
-    }
-
-    .ui {
-      color: rebeccapurple;
-    }
-
-    .xhr {
-      color: green;
-    }
+@container gt-panel (max-width: #{$stack-below}) {
+  .crumbs__row--head {
+    display: none;
   }
 
-  .column-two {
-    width: 15%;
+  .crumbs__row {
+    grid-template-columns: auto auto minmax(0, 1fr) rows.$chev-slot;
+    grid-template-areas:
+      "time level cat end"
+      "msg msg msg end";
+    justify-content: start;
+    row-gap: 2px;
+    column-gap: 0;
+    padding-block: var(--gt-space-2, 8px);
   }
 
-  .column-three {
-    width: 60%;
-    font-family: vars.$font-mono;
-    word-break: break-all;
+  .crumbs__level:not(:empty)::before,
+  .crumbs__cat::before {
+    @include controls.middot;
+    color: var(--mat-sys-on-surface-variant);
   }
 
-  .column-four {
-    width: 20%;
-    text-align: right;
+  .crumbs__msg {
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
-  td {
-    vertical-align: middle;
+  // The hairline above "Show 20 earlier" is the panel header line.
+  .crumbs__list > .crumbs__more:first-child {
+    border-top: 0;
+  }
+
+  .crumbs__full {
+    padding-inline-start: calc(var(--gt-space-4, 16px) * 2);
+  }
+
+  .crumbs__data .gt-property-list__row {
+    --gt-label-w: #{$cat-w};
+    padding-inline-start: calc(var(--gt-space-4, 16px) * 2);
+  }
+
+  .wide-only {
+    display: none;
+  }
+
+  .narrow-only {
+    display: inline;
   }
 }

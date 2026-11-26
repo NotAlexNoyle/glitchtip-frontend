@@ -39,21 +39,6 @@ interface Tag {
           }
         </ul>
       </div>
-
-      <div class="preview-section">
-        <div class="preview-section__title">Compact, for a summary line</div>
-        <ul class="gt-tag-chips">
-          @for (t of summary; track t.key) {
-            <li>
-              <a class="gt-tag-chip gt-tag-chip--compact" href="#">
-                <span class="gt-tag-chip__key">{{ t.key }}</span>
-                <span class="gt-tag-chip__value">{{ t.value }}</span>
-                <span class="gt-tag-chip__share">{{ t.share }}</span>
-              </a>
-            </li>
-          }
-        </ul>
-      </div>
     </preview-doc>
   `,
 })
@@ -63,20 +48,14 @@ export class TagChipPreview {
     { key: "browser", value: "Firefox 131", share: "2 of 15" },
     { key: "release", value: "checkout@4.2.0" },
   ];
-  readonly summary: Tag[] = [
-    { key: "feature_flag", value: "checkout_v2", share: "93%" },
-    { key: "os", value: "Windows", share: "71%" },
-  ];
 
   readonly whenToUse = ["Showing a tag (key and value) anywhere"];
   readonly dos = [
     "Wrap several chips in a .gt-tag-chips list",
     "Put a share inside the chip in .gt-tag-chip__share",
-    "Use --compact on a one-line summary",
   ];
   readonly donts = [
     "Type the middle dot into a translated string",
-    "Show a tag as plain key: value text",
     "Colour a chip; tags are neutral",
   ];
   readonly api: ApiRow[] = [
@@ -84,11 +63,6 @@ export class TagChipPreview {
       name: ".gt-tag-chip",
       type: "class",
       description: "The pill, on an a or span",
-    },
-    {
-      name: ".gt-tag-chip--compact",
-      type: "class",
-      description: "24px, label-medium",
     },
     {
       name: ".gt-tag-chip__key / __value / __share",

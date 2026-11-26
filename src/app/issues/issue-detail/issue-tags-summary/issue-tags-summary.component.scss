@@ -1,0 +1,216 @@
+@use "controls";
+@use "row-mixins" as rows;
+
+$spread-columns: 104px minmax(0, 1fr) 64px 40px rows.$chev-slot;
+// Below this the key and bar columns shrink.
+$spread-narrow: 419px;
+
+:host {
+  display: block;
+  min-width: 0;
+}
+
+:host:empty {
+  display: none;
+}
+
+.tags-summary {
+  container: tags-summary / inline-size;
+}
+
+.tags-summary__line {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas: "label top";
+  align-items: baseline;
+  column-gap: var(--gt-space-4, 16px);
+  min-height: 36px;
+  font: var(--mat-sys-body-medium);
+}
+
+.tags-summary__label {
+  grid-area: label;
+  color: var(--mat-sys-on-surface-variant);
+  white-space: nowrap;
+}
+
+// One line at full width: the chips shrink (values ellipsize) before wrapping.
+.tags-summary__top {
+  grid-area: top;
+  flex-wrap: nowrap;
+
+  > li {
+    max-width: 320px;
+  }
+
+  > li.tags-summary__more {
+    flex: none;
+  }
+
+  // Keys stay whole; a value shortens only when it is long.
+  .gt-tag-chip__key {
+    flex: none;
+  }
+
+  .gt-tag-chip__value {
+    min-width: 8ch;
+  }
+}
+
+// Two whole tags where three would not fit; the rest are under All tags.
+@container tags-summary (max-width: 879px) {
+  .tags-summary__top > li:nth-child(n + 3):not(.tags-summary__more) {
+    display: none;
+  }
+}
+
+// Trails the chips so it reads as part of them, wherever they wrap.
+.tags-summary__toggle {
+  @include controls.compact-buttons;
+
+  &[aria-expanded="true"] .tags-summary__chev {
+    transform: rotate(180deg);
+  }
+}
+
+.tags-summary__panel {
+  margin-top: var(--gt-space-1, 4px);
+}
+
+// Narrow: label and All tags on the first line, then two chips that wrap.
+@container tags-summary (max-width: #{controls.$narrow-bar}) {
+  .tags-summary__line {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "label"
+      "top";
+    row-gap: var(--gt-space-1, 4px);
+  }
+
+  .tags-summary__top {
+    flex-wrap: wrap;
+    padding-bottom: var(--gt-space-1, 4px);
+
+    > li {
+      max-width: 100%;
+    }
+
+    > li:nth-child(n + 3):not(.tags-summary__more) {
+      display: none;
+    }
+  }
+}
+
+.spread-list {
+  padding-block: var(--gt-space-1, 4px);
+}
+
+.spread-row {
+  display: grid;
+  grid-template-columns: $spread-columns;
+  align-items: center;
+  column-gap: var(--gt-space-3, 12px);
+  box-sizing: border-box;
+  min-height: 32px;
+  padding: var(--gt-space-1, 4px) var(--gt-space-2, 8px) var(--gt-space-1, 4px)
+    var(--gt-space-4, 16px);
+  color: var(--mat-sys-on-surface);
+}
+
+// An open row's values: same columns, the key column left empty.
+.spread-values {
+  margin: 0;
+  padding: 0 0 var(--gt-space-1, 4px);
+  list-style: none;
+}
+
+// A row with one value links straight to its filter.
+.spread-row--link {
+  @include rows.row-button;
+  text-decoration: none;
+}
+
+.spread-value {
+  display: grid;
+  grid-template-columns: $spread-columns;
+  grid-template-areas: ". name track pct .";
+  align-items: center;
+  column-gap: var(--gt-space-3, 12px);
+  box-sizing: border-box;
+  min-height: 28px;
+  padding: 2px var(--gt-space-2, 8px) 2px var(--gt-space-4, 16px);
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-on-surface);
+  text-decoration: none;
+
+  &:is(a):hover,
+  &:is(a):focus-visible {
+    @include controls.state-layer(hover);
+
+    .spread-value__name {
+      text-decoration: underline;
+    }
+  }
+
+  &:focus-visible {
+    @include controls.focus-ring(-2px);
+  }
+}
+
+.spread-value__name {
+  grid-area: name;
+  @include rows.truncate;
+}
+
+.spread-value__pct {
+  grid-area: pct;
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.spread-value--other {
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.spread-row__key {
+  @include rows.truncate;
+  font: var(--mat-sys-body-medium);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.spread-row__value {
+  @include rows.truncate;
+  font: var(--mat-sys-body-medium);
+  font-weight: 500;
+}
+
+// The share is the number to read; the bar stays neutral.
+.spread-row__pct {
+  font: var(--mat-sys-body-medium);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+  color: var(--mat-sys-on-surface);
+}
+
+.spread__track {
+  display: block;
+  height: 4px;
+  border-radius: 2px;
+  overflow: hidden;
+  background-color: var(--mat-sys-outline-variant);
+}
+
+.spread__fill {
+  display: block;
+  height: 100%;
+  background-color: var(--mat-sys-on-surface-variant);
+}
+
+@container gt-panel (max-width: #{$spread-narrow}) {
+  .spread-row,
+  .spread-value {
+    grid-template-columns: 88px minmax(0, 1fr) 40px 40px rows.$chev-slot;
+  }
+}

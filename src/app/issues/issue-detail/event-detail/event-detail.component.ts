@@ -6,73 +6,152 @@ import {
   computed,
   effect,
   signal,
+  viewChild,
+  ElementRef,
+  afterNextRender,
+  Injector,
+  viewChildren,
 } from "@angular/core";
-import { RouterLink } from "@angular/router";
-import { ClipboardModule } from "@angular/cdk/clipboard";
+import { OverlayContainer } from "@angular/cdk/overlay";
+import { Router, RouterLink } from "@angular/router";
+import { Clipboard, ClipboardModule } from "@angular/cdk/clipboard";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { IssueDetailService } from "../issue-detail.service";
+import { MatDialog } from "@angular/material/dialog";
+import { MatMenuItem, MatMenuModule } from "@angular/material/menu";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { MatIconModule } from "@angular/material/icon";
+import { MatButtonModule } from "@angular/material/button";
+import { DatePipe, DecimalPipe, NgTemplateOutlet } from "@angular/common";
+import { IssueDetailService, RecentEvent } from "../issue-detail.service";
 import { SettingsService } from "src/app/api/settings.service";
-import { EntryDataComponent } from "../../../shared/entry-data/entry-data.component";
+import { DaysAgoPipe } from "src/app/shared/days-ago.pipe";
+import { PanelComponent } from "src/app/shared/panel/panel.component";
+import { EmptyStateComponent } from "src/app/shared/empty-state/empty-state.component";
+import { LoadingOverlayComponent } from "src/app/shared/loading-overlay/loading-overlay.component";
+import { SplitButtonComponent } from "src/app/shared/split-button/split-button.component";
 import { EntryRequestComponent } from "./entry-request/entry-request.component";
 import { EntryBreadcrumbsComponent } from "./entry-breadcrumbs/entry-breadcrumbs.component";
 import { EntryCSPComponent } from "./entry-csp/entry-csp.component";
 import { EntryExceptionComponent } from "./entry-exception/entry-exception.component";
 import { EntryMessageComponent } from "./entry-message/entry-message.component";
-import { ContextsComponent } from "./context/contexts.component";
-import { MatDividerModule } from "@angular/material/divider";
-import { MatIconModule } from "@angular/material/icon";
-import { MatButtonModule } from "@angular/material/button";
-import { DatePipe, KeyValuePipe } from "@angular/common";
+import { EventFactsPanelComponent } from "./event-facts-panel/event-facts-panel.component";
+import { EventMoreDataComponent } from "./event-more-data/event-more-data.component";
+import { eventUser, shortEventId } from "./event-format";
+
+interface EventOption {
+  id: string;
+  short: string;
+  date: string;
+  /** Muted second line: environment, release, user. */
+  details: string;
+  latest: boolean;
+  /** The event on screen. */
+  current: boolean;
+  url: string | null;
+}
+
+type EventTags = { key?: string | null; value?: string | null }[] | null;
+
+function tagOf(tags: EventTags | undefined, key: string) {
+  return tags?.find((t) => t.key === key)?.value ?? null;
+}
+
+function userOf(user: unknown, tags: EventTags | undefined) {
+  const hit = eventUser(user as { [key: string]: unknown } | null);
+  if (hit) return hit.value;
+  const tag = tagOf(tags, "user");
+  return tag ? tag.replace(/^(id|email|username|ip):/, "") : null;
+}
+
+function toOption(
+  e: RecentEvent,
+  latest: boolean,
+  current: boolean,
+  url: string | null,
+): EventOption {
+  const details = [
+    tagOf(e.tags, "environment"),
+    tagOf(e.tags, "release"),
+    userOf(e.user, e.tags),
+  ].filter((v): v is string => !!v);
+  return {
+    id: e.id,
+    short: shortEventId(e.id),
+    date: e.dateCreated,
+    details: details.join(" · "),
+    latest,
+    current,
+    url,
+  };
+}
 
 /** localStorage flag: the one-time "connect your agent via MCP" tip has been shown. */
 const MCP_COPY_HINT_SEEN_KEY = "mcpCopyHintSeen";
+
+function readHintSeen(): boolean {
+  try {
+    return localStorage.getItem(MCP_COPY_HINT_SEEN_KEY) === "true";
+  } catch {
+    return false;
+  }
+}
 
 @Component({
   selector: "gt-event-detail",
   templateUrl: "./event-detail.component.html",
   styleUrls: ["./event-detail.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { "(document:keydown)": "onKeydown($event)" },
   imports: [
     MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    MatTooltipModule,
     RouterLink,
     ClipboardModule,
-    MatIconModule,
-    MatDividerModule,
-    ContextsComponent,
     EntryMessageComponent,
     EntryExceptionComponent,
     EntryCSPComponent,
     EntryBreadcrumbsComponent,
     EntryRequestComponent,
-    EntryDataComponent,
+    EventFactsPanelComponent,
+    EventMoreDataComponent,
     DatePipe,
-    KeyValuePipe,
+    DecimalPipe,
+    NgTemplateOutlet,
+    DaysAgoPipe,
+    PanelComponent,
+    EmptyStateComponent,
+    LoadingOverlayComponent,
+    SplitButtonComponent,
   ],
 })
 export class EventDetailComponent {
   private issueService = inject(IssueDetailService);
   private settingsService = inject(SettingsService);
   private snackBar = inject(MatSnackBar);
-  orgSlug = input.required<string>({ alias: "org-slug" });
-  issueID = input.required<string>({ alias: "issue-id" });
-  eventID = input<string | null>(null, { alias: "event-id" });
-  query = input<string | null>(null);
+  private router = inject(Router);
+  private clipboard = inject(Clipboard);
+  private dialog = inject(MatDialog);
+  private overlay = inject(OverlayContainer);
+  private injector = inject(Injector);
+  readonly orgSlug = input.required<string>({ alias: "org-slug" });
+  readonly issueID = input.required<string>({ alias: "issue-id" });
+  readonly eventID = input<string | null>(null, { alias: "event-id" });
 
-  event = this.issueService.event;
+  readonly event = this.issueService.event;
 
   /**
    * Whether the MCP feature is available on this instance. Gates the post-copy
    * hint ONLY — the "copy for AI" button works regardless. Reuses the already
    * loaded settings, no extra fetch.
    */
-  mcpEnabled = computed(() =>
+  readonly mcpEnabled = computed(() =>
     this.settingsService.enabledFeatures().includes("mcp"),
   );
 
   /** Frontend-only dismiss flag for the one-time MCP hint. */
-  private mcpHintSeen = signal(
-    localStorage.getItem(MCP_COPY_HINT_SEEN_KEY) === "true",
-  );
+  private readonly mcpHintSeen = signal(readHintSeen());
 
   /**
    * The event as a payload tuned for pasting into an LLM agent: a marker that
@@ -82,7 +161,7 @@ export class EventDetailComponent {
    * Light metadata only — deliberately NO pre-written prompt/ask. The added
    * context makes the plain paste-into-a-chatbot path work better on its own.
    */
-  aiPayload = computed(() => {
+  readonly aiPayload = computed(() => {
     const event = this.event();
     if (!event) {
       return "";
@@ -95,7 +174,7 @@ export class EventDetailComponent {
       `Organization: ${this.orgSlug()}`,
       `Issue ID: ${this.issueID()}`,
       `Event ID: ${event.id}`,
-      `Event URL: ${window.location.href}`,
+      `Event URL: ${this.eventLink()}`,
       "",
       "Raw event JSON:",
       "```json",
@@ -104,29 +183,241 @@ export class EventDetailComponent {
     ];
     return lines.join("\n");
   });
-  contexts = computed(() => this.event()?.contexts as { [key: string]: any });
-  initialLoadComplete = this.issueService.eventInitialLoadComplete;
-  nextEvent = this.issueService.hasNextEvent;
-  previousEvent = this.issueService.hasPreviousEvent;
-  nextEventUrl = this.issueService.nextEventUrl;
-  previousEventUrl = this.issueService.previousEventUrl;
+
+  readonly environment = computed(() =>
+    tagOf(this.event()?.tags, "environment"),
+  );
+  readonly release = computed(() => tagOf(this.event()?.tags, "release"));
+  /** The header already shows the first seen release. */
+  readonly showRelease = computed(() => {
+    const release = this.release();
+    const first = this.issueService.issue()?.firstRelease;
+    return (
+      !!release && release !== first?.version && release !== first?.shortVersion
+    );
+  });
+  readonly latestUrl = computed(
+    () => `/${this.orgSlug()}/issues/${this.issueID()}`,
+  );
+  readonly rawJsonUrl = computed(() => {
+    const event = this.event();
+    if (!event) return "";
+    return `/organizations/${this.orgSlug()}/issues/${event.groupID}/events/${event.id}/json/`;
+  });
+  readonly eventLink = computed(() => {
+    const event = this.event();
+    if (!event) return "";
+    return `${window.location.origin}/${this.orgSlug()}/issues/${this.issueID()}/events/${event.id}`;
+  });
+  readonly trace = this.issueService.exceptionTrace;
+  readonly traceHasFrames = this.issueService.exceptionHasFrames;
+  readonly eventNotFoundMessage = $localize`This may be because the URL is pointing to an event that doesn't exist or was deleted.`;
+  readonly initialLoadComplete = this.issueService.eventInitialLoadComplete;
+  readonly nextEvent = this.issueService.hasNextEvent;
+  readonly previousEvent = this.issueService.hasPreviousEvent;
+  readonly nextEventUrl = this.issueService.nextEventUrl;
+  readonly previousEventUrl = this.issueService.previousEventUrl;
+  /** Steps wait for the event on screen to be the one the URL names. */
+  readonly eventLoading = this.issueService.eventLoading;
+
+  readonly shortId = computed(() => shortEventId(this.event()?.id ?? ""));
+  // Holds the visible text at every width, so the button's name matches what it shows
+  readonly switchLabel = computed(() =>
+    this.nextEvent() === false
+      ? $localize`Latest event ${this.shortId()}:id:`
+      : $localize`Event ${this.shortId()}:id:`,
+  );
+  readonly eventCount = computed(
+    () => +(this.issueService.issue()?.count ?? 0),
+  );
+  /** With one event there is nothing to switch or step to. */
+  readonly canSwitch = computed(() => this.eventCount() > 1);
+  private readonly recent = computed(() => {
+    const r = this.issueService.recentEvents();
+    return r && r.issueID === this.issueID() ? r : null;
+  });
+  readonly recentLoading = computed(() => !!this.recent()?.loading);
+  readonly recentFailed = computed(() => !!this.recent()?.failed);
+  readonly hasMoreEvents = computed(() => !!this.recent()?.cursor);
+  /** Newest first; the current event is always an option, last if older. */
+  readonly switcherOptions = computed<EventOption[]>(() => {
+    const event = this.event();
+    if (!event) return [];
+    const url = (e: RecentEvent, latest: boolean) =>
+      latest ? this.latestUrl() : this.issueService.eventUrlFor(e.id);
+    const options = (this.recent()?.events ?? []).map((e, i) =>
+      toOption(e, i === 0, e.id === event.id, url(e, i === 0)),
+    );
+    if (!options.some((o) => o.current)) {
+      const latest = this.nextEvent() === false;
+      options.push(toOption(event, latest, true, url(event, latest)));
+    }
+    return options;
+  });
+
+  private readonly menuItems = viewChildren(MatMenuItem);
+  private readonly zoneBody = viewChild<ElementRef<HTMLElement>>("zoneBody");
+  /** The event on screen, to tell a step to another event from a reload. */
+  private shown: { issueID: string; eventID: string } | null = null;
+
+  /** A position counted from chevron steps, for events past the first page. */
+  private readonly stepped = signal<{ id: string; position: number } | null>(
+    null,
+  );
+  /** The last event shown, so a step from a known position can count on. */
+  private last: {
+    id: string;
+    position: number | null;
+    previousEventID?: string | null;
+    nextEventID?: string | null;
+  } | null = null;
+  /** Room for the widest "N of N", so the arrows stay put while stepping. */
+  readonly positionWidth = computed(() => {
+    const digits = String(this.eventCount()).length;
+    return 2 * (digits + Math.floor((digits - 1) / 3)) + 4;
+  });
+  /**
+   * 1 is the latest; counted by steps from there. Null for an older event opened
+   * directly, until the switcher has loaded the page it is on.
+   */
+  readonly position = computed<number | null>(() => {
+    const event = this.event();
+    if (!event) return null;
+    if (this.nextEvent() === false) return 1;
+    const i = this.recent()?.events.findIndex((e) => e.id === event.id) ?? -1;
+    if (i >= 0) return i + 1;
+    const s = this.stepped();
+    return s?.id === event.id ? s.position : null;
+  });
+
+  /** True while the event bar is stuck to the top of the scroll area. */
+  readonly stuck = signal(false);
+  private readonly sentinel = viewChild<ElementRef<HTMLElement>>("barSentinel");
 
   constructor() {
     effect(() => {
-      this.issueService.eventID.set(this.eventID());
+      // The router clears a missing event-id to undefined, not the null default.
+      this.issueService.eventID.set(this.eventID() ?? null);
+    });
+    // The sentinel marks the zone's top: once it scrolls out, the bar is stuck.
+    effect((onCleanup) => {
+      const el = this.sentinel()?.nativeElement;
+      if (!el) return;
+      const observer = new IntersectionObserver(([entry]) =>
+        this.stuck.set(
+          !entry.isIntersecting && entry.boundingClientRect.top < 0,
+        ),
+      );
+      observer.observe(el);
+      onCleanup(() => observer.disconnect());
+    });
+    // One step from a known position moves it by one.
+    effect(() => {
+      const event = this.event();
+      if (!event) return;
+      const prev = this.last;
+      if (prev && prev.id !== event.id && prev.position !== null) {
+        if (prev.previousEventID === event.id) {
+          this.stepped.set({ id: event.id, position: prev.position + 1 });
+        } else if (prev.nextEventID === event.id) {
+          this.stepped.set({ id: event.id, position: prev.position - 1 });
+        }
+      }
+      this.last = {
+        id: event.id,
+        position: this.position(),
+        previousEventID: event.previousEventID,
+        nextEventID: event.nextEventID,
+      };
+    });
+    effect(() => {
+      const event = this.event();
+      if (!event) return;
+      const issueID = this.issueID();
+      const prev = this.shown;
+      this.shown = { issueID, eventID: event.eventID };
+      if (prev && prev.issueID === issueID && prev.eventID !== event.eventID) {
+        this.tintZone();
+      }
     });
   }
 
-  /** TODO fix these types */
-  generateQuery(tag: { [key: string]: string | null }) {
-    // Assume unresolved if not present; tag overrides query otherwise
-    const unresolved = this.query() === undefined ? "is:unresolved " : "";
-
-    if (tag.key === "environment") {
-      return { environment: tag.value };
-    } else {
-      return { query: `${unresolved}"${tag.key}":"${tag.value}"` };
+  /** [ and ] step to the older and newer event, outside fields and overlays. */
+  onKeydown(e: KeyboardEvent) {
+    if ((e.key !== "[" && e.key !== "]") || this.eventLoading()) return;
+    // Some layouts type [ and ] with Option or AltGr.
+    if (e.metaKey || (e.ctrlKey && !e.getModifierState("AltGraph"))) return;
+    if (this.dialog.openDialogs.length) return;
+    const target = e.target as HTMLElement | null;
+    if (
+      target &&
+      (target.isContentEditable ||
+        ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName) ||
+        target.closest("mat-select") ||
+        this.overlay.getContainerElement().contains(target))
+    ) {
+      return;
     }
+    const url = e.key === "[" ? this.previousEventUrl() : this.nextEventUrl();
+    if (url) {
+      e.preventDefault();
+      this.router.navigateByUrl(url);
+    }
+  }
+
+  onSwitcherOpened() {
+    this.issueService.loadRecentEvents();
+  }
+
+  /** Show more keeps the menu open and moves focus to the first new event. */
+  async loadMore() {
+    const known = new Set(this.switcherOptions().map((o) => o.id));
+    await this.issueService.loadRecentEvents(true);
+    const index = this.switcherOptions().findIndex((o) => !known.has(o.id));
+    if (index < 0) return;
+    afterNextRender(() => this.menuItems()[index]?.focus("keyboard"), {
+      injector: this.injector,
+    });
+  }
+
+  /** A short neutral tint that fades out, so the step reads as this event's. */
+  private tintZone() {
+    const el = this.zoneBody()?.nativeElement;
+    if (!el || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const tint = getComputedStyle(el).getPropertyValue("--gt-step-tint");
+    el.animate(
+      [{ backgroundColor: tint }, { backgroundColor: "transparent" }],
+      {
+        duration: 300,
+        easing: "ease-out",
+      },
+    );
+  }
+
+  scrollToRequest() {
+    document
+      .getElementById("request")
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  copyForAI() {
+    if (this.clipboard.copy(this.aiPayload())) {
+      this.onCopiedForAI();
+    } else {
+      this.snackBar.open($localize`Could not copy to the clipboard`);
+    }
+  }
+
+  onCopiedId() {
+    this.snackBar.open($localize`Event ID copied`);
+  }
+
+  onCopiedTrace() {
+    this.snackBar.open($localize`Trace copied`);
+  }
+
+  onCopiedLink() {
+    this.snackBar.open($localize`Event link copied`);
   }
 
   /**
@@ -139,7 +430,11 @@ export class EventDetailComponent {
   onCopiedForAI() {
     if (this.mcpEnabled() && !this.mcpHintSeen()) {
       this.mcpHintSeen.set(true);
-      localStorage.setItem(MCP_COPY_HINT_SEEN_KEY, "true");
+      try {
+        localStorage.setItem(MCP_COPY_HINT_SEEN_KEY, "true");
+      } catch {
+        // The hint may show again next visit.
+      }
       const ref = this.snackBar.open(
         $localize`Copied. You can also connect your agent directly via MCP to pull this event, its related logs, and traces live instead of pasting.`,
         $localize`Set up MCP`,
@@ -157,19 +452,6 @@ export class EventDetailComponent {
         .subscribe(() => window.open(docsUrl, "_blank", "noopener"));
     } else {
       this.snackBar.open($localize`Copied for AI`);
-    }
-  }
-
-  /**
-   * Check if a string is a valid URL
-   */
-  isValidUrl(value: string | null): boolean {
-    if (!value) return false;
-    try {
-      new URL(value);
-      return true;
-    } catch {
-      return false;
     }
   }
 }

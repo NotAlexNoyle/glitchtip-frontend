@@ -78,7 +78,7 @@
   user-select: none;
 }
 
-// Markdown and gtPrism code blocks (pre > code.language-*).
+// Markdown code blocks (pre > code.language-*).
 pre[class*="language-"],
 pre:has(> code[class*="language-"]) {
   margin: 0 0 var(--gt-space-4, 16px);
