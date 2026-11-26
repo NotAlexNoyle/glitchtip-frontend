@@ -2,11 +2,20 @@ $font-path: "../fonts";
 $font-sans-serif: "Plex Sans";
 $font-mono: "Plex Mono";
 
-// Two radii. Controls, and what pops out of them (menus, dropdowns, tooltips).
-$shape-radius: 4px;
-// Surfaces on the page (cards, panels, tables, code blocks) and dialogs. A
-// control inside a surface stays at 4px, close to concentric with 8px.
-$surface-radius: 8px;
+// Size tokens as custom properties, so runtime code and the preview read them.
+@mixin root-tokens {
+  // Buttons, ghost selects and split buttons in bars and panel headers.
+  --gt-control-height: 32px;
+  // Controls, and what pops out of them (menus, dropdowns, tooltips).
+  --gt-radius-control: 4px;
+  // Surfaces on the page (cards, panels, tables, code blocks) and dialogs. A
+  // control inside a surface stays at 4px, close to concentric with 8px.
+  --gt-radius-surface: 8px;
+}
+
+$control-height: var(--gt-control-height);
+$shape-radius: var(--gt-radius-control);
+$surface-radius: var(--gt-radius-surface);
 
 // Light-mode brand red shared by the app and marketing; white text on it is 5:1.
 $brand-red: #cb3753;

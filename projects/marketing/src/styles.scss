@@ -25,6 +25,8 @@ html {
 
 // Brand color override
 :root {
+  // Control height and radii, for the app styles marketing reuses.
+  @include vars.root-tokens;
   --mat-sys-primary: #d94a5f;
   --mkt-accent-blue: #4a7fd9;
   --mkt-accent-yellow: #d9b44a;

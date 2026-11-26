@@ -6,11 +6,22 @@ import {
   inject,
   signal,
 } from "@angular/core";
-import { ELEVATION_TOKENS, resolveCssVar, SPACE_TOKENS } from "../foundations/tokens";
+import {
+  ELEVATION_TOKENS,
+  resolveCssVar,
+  SIZE_TOKENS,
+  SPACE_TOKENS,
+} from "../foundations/tokens";
 import { ThemeStore } from "../theme-store";
 
 interface ResolvedSpace {
   name: string;
+  value: string;
+}
+
+interface ResolvedSize {
+  name: string;
+  label?: string;
   value: string;
 }
 
@@ -50,6 +61,31 @@ interface ResolvedElevation {
       .fs-space-value {
         font-size: 0.75rem;
         color: var(--mat-sys-on-surface-variant);
+      }
+      .fs-sizes {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--gt-space-4, 16px);
+      }
+      .fs-size {
+        display: grid;
+        grid-template-rows: 64px auto auto;
+        gap: var(--gt-space-1, 4px);
+        font-size: 0.78rem;
+      }
+      .fs-size code {
+        font-family: var(--gt-font-mono, monospace);
+      }
+      .fs-size__label {
+        color: var(--mat-sys-on-surface-variant);
+      }
+      .fs-control {
+        align-self: center;
+        width: 96px;
+        background-color: var(--mat-sys-surface-container-high);
+        border: 1px solid var(--mat-sys-outline-variant);
+        border-radius: var(--gt-radius-control);
+        box-sizing: border-box;
       }
       .fs-radius {
         display: inline-flex;
@@ -193,12 +229,24 @@ interface ResolvedElevation {
     </div>
 
     <div class="preview-section">
-      <div class="preview-section__title">Radius</div>
+      <div class="preview-section__title">Radius and control height</div>
       <p class="preview-section__note">
-        Corner radius used across surfaces (<code>$shape-radius</code>).
+        Read live from the custom properties. In SCSS use
+        <code>vars.$shape-radius</code>, <code>vars.$surface-radius</code> and
+        <code>vars.$control-height</code>.
       </p>
-      <div class="fs-radius" [style.border-radius]="radius()">
-        {{ radius() }}
+      <div class="fs-sizes">
+        @for (s of sizes(); track s.name) {
+          <div class="fs-size">
+            @if (s.name === "--gt-control-height") {
+              <div class="fs-control" [style.height]="s.value"></div>
+            } @else {
+              <div class="fs-radius" [style.border-radius]="s.value">{{ s.value }}</div>
+            }
+            <code>{{ s.name }}: {{ s.value }}</code>
+            <span class="fs-size__label">{{ s.label }}</span>
+          </div>
+        }
       </div>
     </div>
 
@@ -246,7 +294,7 @@ export class FoundationsSpacingPreview {
   private readonly themeStore = inject(ThemeStore);
 
   readonly spaces = signal<ResolvedSpace[]>([]);
-  readonly radius = signal<string>("4px");
+  readonly sizes = signal<ResolvedSize[]>([]);
   readonly elevations = signal<ResolvedElevation[]>([]);
 
   /**
@@ -285,8 +333,13 @@ export class FoundationsSpacingPreview {
         })),
       );
 
-      // No CSS custom property for radius today; surface the known value.
-      this.radius.set("4px");
+      this.sizes.set(
+        SIZE_TOKENS.map((t) => ({
+          name: t.name,
+          label: t.label,
+          value: resolveCssVar(t.name, el),
+        })),
+      );
 
       this.elevations.set(
         ELEVATION_TOKENS.map((t) => ({

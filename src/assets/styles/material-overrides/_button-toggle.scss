@@ -18,13 +18,13 @@
   );
 }
 
-// Segmented control for a short view switch in a bar or panel header: 32px
-// with the border like the other header controls, neutral (selected is a
-// tint, not primary).
+// Segmented control for a short view switch in a bar or panel header: control
+// height with its 1px border like the other header controls, neutral (selected
+// is a tint, not primary).
 .gt-segmented {
   @include mat.button-toggle-overrides(
     (
-      height: 30px,
+      height: calc(#{vars.$control-height} - 2px),
       selected-state-background-color: controls.state-layer-color(focus),
       selected-state-text-color: var(--mat-sys-on-surface),
       text-color: var(--mat-sys-on-surface-variant),

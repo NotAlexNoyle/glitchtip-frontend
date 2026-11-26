@@ -97,6 +97,11 @@ html {
   --gt-space-7: calc(var(--gt-space-unit) * 12);
 }
 
+// Control height and radii, defined in _variables.scss.
+:root {
+  @include vars.root-tokens;
+}
+
 // Reading widths for running text, in characters so they follow font size.
 :root {
   --gt-measure: 70ch;
@@ -458,7 +463,7 @@ gt-back-link .mdc-button__label {
 // A labelled top bar button that keeps only its icon when the bar is narrow.
 .gt-bar-button.mat-mdc-outlined-button {
   @include controls.narrow-bar {
-    min-width: 32px;
+    min-width: vars.$control-height;
 
     @include mat.button-overrides(
       (

@@ -11,6 +11,7 @@ import {
   COLOR_TOKENS,
   TYPE_TOKENS,
   SPACE_TOKENS,
+  SIZE_TOKENS,
   ELEVATION_TOKENS,
   resolveCssVar,
   resolveComputedColor,
@@ -155,6 +156,7 @@ export class TokensCatalogPreview {
     ),
     ...TYPE_TOKENS.map((t) => ({ name: t.name, group: "Typography", isColor: false })),
     ...SPACE_TOKENS.map((t) => ({ name: t.name, group: "Spacing", isColor: false })),
+    ...SIZE_TOKENS.map((t) => ({ name: t.name, group: "Size", isColor: false })),
     ...ELEVATION_TOKENS.map((t) => ({ name: t.name, group: "Elevation", isColor: false })),
   ];
 

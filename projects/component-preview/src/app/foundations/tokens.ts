@@ -183,6 +183,16 @@ export const SPACE_TOKENS: TokenDef[] = [
   { name: "--gt-space-7" },
 ];
 
+/** Size tokens from root-tokens in _variables.scss. */
+export const SIZE_TOKENS: TokenDef[] = [
+  { name: "--gt-radius-control", label: "Controls and what pops out of them" },
+  { name: "--gt-radius-surface", label: "Surfaces on the page and dialogs" },
+  {
+    name: "--gt-control-height",
+    label: "Buttons and selects in bars and panel headers",
+  },
+];
+
 /** Material 3 elevation level tokens, probed (empties are hidden by the page). */
 export const ELEVATION_TOKENS: TokenDef[] = [
   { name: "--mat-sys-level0", label: "Level 0" },

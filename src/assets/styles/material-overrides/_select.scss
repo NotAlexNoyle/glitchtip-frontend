@@ -8,7 +8,7 @@
   display: inline-flex;
   align-items: center;
   box-sizing: border-box;
-  height: 32px;
+  height: vars.$control-height;
   padding-inline: var(--gt-space-2, 8px);
   border-radius: vars.$shape-radius;
   cursor: pointer;

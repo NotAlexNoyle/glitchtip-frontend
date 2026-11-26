@@ -1,4 +1,5 @@
 @use "controls";
+@use "variables" as vars;
 
 :host {
   display: block;
@@ -34,7 +35,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--gt-space-1, 4px) var(--gt-space-3, 12px);
-  min-height: 32px;
+  min-height: vars.$control-height;
   font: var(--mat-sys-body-medium);
 }
 
